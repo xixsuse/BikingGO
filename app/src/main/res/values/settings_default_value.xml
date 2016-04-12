@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+        This file defines default values of settings. The values will be
+        used when the needed value is not yet defined by the user
+-->
+<resources>
+
+    <!-- the directory contains data for engine -->
+    <string name="data_dir">/sdcard/BikingData/</string>
+
+    <!-- 是否顯示氣象資訊 -->
+    <string name="meteorol">false</string>
+
+    <!-- 是否開啟連線提示 -->
+    <string name="inetConfirmEnabled">true</string>
+
+    <!-- 是否於導航開始前詢問使用者是否進行軌跡錄製 -->
+    <string name="trackConfirmEnabled">true</string>
+
+    <!-- 是否開啟使用聲明提示 -->
+    <string name="announceEnabled">false</string>
+
+    <!-- POI查詢的距離範圍(In meter) -->
+    <string name="surroundRange">1000</string>
+
+    <!-- 是否開啟POI -->
+    <string name="poiEnabled">false</string>
+
+    <!-- 是否開啟GCN -->
+    <string name="gcmEnabled">true</string>
+
+    <!-- 是否開啟GPS -->
+    <bool name="gpsEnabled">true</bool>
+
+    <!-- 路徑規畫方式(PathFinder.BICYCLE) -->
+    <string name="routingMethod">1</string>
+
+    <!-- 地圖顯示方式(MapView.2D) -->
+    <string name="mapViewType">2</string>
+    
+    <!-- 地圖STYLE -->
+    <string name="mapStyle">0</string>
+
+    <!-- 語音類型(eeego.SOUND_CHINESE) -->
+    <string name="soundType">1</string>
+
+    <!-- 使用者年齡(0 for unknown) -->
+    <string name="userAge">25</string>
+
+    <!-- 使用者性別(0 for unknown) -->
+    <string name="userSex">1</string>
+
+    <!-- 使用者身高(0 for unknown) -->
+    <string name="userHeight">170</string>
+
+    <!-- 使用者體重(0 for unknown) -->
+    <string name="userWeight">60</string>
+
+    <!-- 使用者體重(0 for unknown) -->
+    <string name="mapDownloadArea">1</string>
+</resources>

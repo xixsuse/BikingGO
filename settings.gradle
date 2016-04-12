@@ -1,0 +1,3 @@
+include ':naviKingApi'
+include ':facebookSDK'
+include ':app'

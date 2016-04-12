@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kingwyatek.api"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+
+    <receiver
+        android:name="com.kingwaytek.api.ad.ClickReceiver"
+        android:enabled="true" >
+        <intent-filter>
+            <action android:name="NOTIFICATION_CALLER" />
+        </intent-filter>
+    </receiver>
+
+    <application android:allowBackup="true" >
+
+        <!-- GCM service -->
+        <service android:name="com.kingwaytek.api.gcm.GCMIntentService" />
+    </application>
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+</manifest>

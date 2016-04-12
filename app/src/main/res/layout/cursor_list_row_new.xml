@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:background="#00ff00"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/list_cell_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/catalog_cell" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/disclosure_arrow" />
+
+    <TextView
+        android:id="@+id/cursor_row_extention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/imageView2"
+        android:text="TextView"
+        android:textColor="#61a2f7"
+        android:textSize="15dip" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/cursor_row_extention"
+        android:layout_toRightOf="@+id/list_cell_imageview"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/cursor_row_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="TextView"
+            android:textColor="#000000"
+            android:textSize="21dip" />
+
+        <TextView
+            android:id="@+id/cursor_row_foot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="TextView"
+            android:textColor="#6fa71f"
+            android:textSize="15dip" />
+    </LinearLayout>
+
+</RelativeLayout>

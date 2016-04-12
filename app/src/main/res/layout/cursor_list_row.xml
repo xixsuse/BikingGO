@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff" >
+
+    <CheckBox
+        android:id="@+id/cursor_row_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dip"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/cursor_row_ref"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/cursor_row_checkbox"
+        android:text="Reference Text"
+        android:textColor="#000000" />
+
+    <RelativeLayout
+        android:id="@+id/cusor_list_row_relativelayout"
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
+        >
+
+        <ImageView
+            android:id="@+id/list_cell_imageview"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/catalog_cell" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/cursor_row_extention"
+            android:layout_toRightOf="@+id/list_cell_imageview"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/cursor_row_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:singleLine="true"
+                android:text="Title Text"
+                android:textColor="#000000"
+                android:textSize="21dip" />
+
+            <TextView
+                android:id="@+id/cursor_row_foot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cursor_row_text"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/cursor_row_extention"
+                android:layout_toRightOf="@+id/list_cell_imageview"
+                android:singleLine="true"
+                android:text="cursor_row_foot"
+                android:textColor="#6fa71f"
+                android:textSize="15dip"
+                android:visibility="gone" /> <!-- ?牢ode閮剖?spoi_content?ext_color -->
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/cursor_row_extention"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/imageView1"
+            android:singleLine="true"
+            android:layout_centerVertical="true"
+            android:text="cursor_row_extention Text"
+            android:textColor="#61a2f7"
+            android:textSize="15dip"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/disclosure_arrow" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/divider_bg" />
+
+</RelativeLayout>

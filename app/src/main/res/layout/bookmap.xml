@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Layout for MapActivity -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:kingwaytek="http://schemas.android.com/apk/res/com.kingwaytek.cpami.bykingTablet"
+    android:id="@+id/mapLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <com.sonavtek.sonav.MapView
+        android:id="@+id/bookmapView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="0dip"
+        android:layout_marginLeft="0dip"
+        android:layout_marginRight="0dip"
+        android:layout_marginTop="0dip"
+        android:background="#FF0000"
+        kingwaytek:center_latitude="25.06078"
+        kingwaytek:center_longitude="121.524668"
+        kingwaytek:route_destination_visible="true"
+        kingwaytek:route_essential1_visible="true"
+        kingwaytek:route_essential2_visible="true"
+        kingwaytek:route_start_visible="true"
+        kingwaytek:user_location_visible="true"
+        kingwaytek:view_style="0"
+        kingwaytek:view_type="2" />
+
+    <include layout="@layout/bookmenu" />
+
+</RelativeLayout>

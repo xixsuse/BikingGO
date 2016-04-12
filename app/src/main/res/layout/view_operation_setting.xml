@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/around_distance_text_kilometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="10dip"
+        android:text="@string/meter"
+        android:textColor="#61a2f7"
+        android:textSize="21sp"
+        android:visibility="invisible" />
+
+    <SeekBar
+        android:id="@+id/seekBar_around_distance"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_toLeftOf="@id/around_distance_text_kilometer"
+        android:max="10000"
+        android:paddingBottom="15dip"
+        android:paddingLeft="5dip"
+        android:paddingRight="12dip"
+        android:paddingTop="15dip"
+        android:progress="3000"
+        android:progressDrawable="@layout/seekbar_style"
+        android:visibility="invisible" />
+
+</RelativeLayout>

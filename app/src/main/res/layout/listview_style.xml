@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+
+    <CheckBox
+        android:id="@+id/CheckBox01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dip"
+        android:button="@drawable/check_selector"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false" >
+    </CheckBox>
+
+    <TextView
+        android:id="@+id/topTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dip"
+        android:paddingTop="10dip"
+        android:textColor="@color/black"
+        android:textSize="21sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/bottomTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/topTextView"
+        android:layout_marginLeft="10dip"
+        android:paddingBottom="10dip"
+        android:textColor="#6fa71f"
+        android:textSize="15sp" >
+    </TextView>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bottomTextView"
+        android:background="@drawable/divider_bg" />
+
+</RelativeLayout>

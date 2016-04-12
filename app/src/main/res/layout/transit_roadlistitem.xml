@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/navi_list_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dip"
+        android:minHeight="65dip" >
+
+        <RelativeLayout
+            android:id="@+id/relativelayout_test1"
+            android:layout_width="70dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="起點"
+                android:textColor="#297df0"
+                android:textSize="18dip"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/turn_image"
+                android:layout_width="48dip"
+                android:layout_height="48dip"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_transit_bus"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativelayout_test2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/relativelayout_test1" >
+
+            <RelativeLayout
+                android:id="@+id/relayout_test1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:id="@+id/roadlist_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:minWidth="50dip"
+                    android:text=""
+                    android:textColor="#297df0"
+                    android:textSize="15dip"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/roadlist_text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dip"
+                    android:layout_toLeftOf="@id/roadlist_time"
+                    android:text=""
+                    android:textColor="#297df0"
+                    android:textSize="18dip" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/relayout_test1"
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:id="@+id/roadlist_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:minWidth="50dip"
+                    android:text=""
+                    android:textColor="#6fa71f"
+                    android:textSize="15dip"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/area"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dip"
+                    android:layout_toLeftOf="@id/roadlist_distance"
+                    android:text=""
+                    android:textColor="#6fa71f"
+                    android:textSize="15dip" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/divider_bg" />
+
+</RelativeLayout>

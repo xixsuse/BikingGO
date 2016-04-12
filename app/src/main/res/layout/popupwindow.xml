@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="#B0B0B0">
+   
+  	<TextView
+	  android:layout_height="wrap_content" 
+      android:layout_width="wrap_content" 
+      android:id="@+id/text_title"
+      android:text= "title:xxxxxxxx"
+      android:textColor="#ffff9999" 
+    />	
+    
+  	<ScrollView 
+	 android:layout_width="fill_parent"
+	 android:layout_height="wrap_content"
+	 android:id="@+id/text_scroll"
+     android:scrollbars="horizontal"
+     android:layout_below="@id/text_title"
+     android:layout_marginBottom="50dip"
+  	>
+      <TextView
+		android:layout_height="wrap_content" 
+        android:layout_width="wrap_content" 
+        android:id="@+id/text_content"
+        android:text= ""
+       />	
+   </ScrollView>
+   
+   <Button
+     android:layout_height="wrap_content" 
+     android:layout_width="wrap_content" 
+     android:id="@+id/conform_button"
+     android:text="confrom"
+     android:layout_alignParentBottom="true"
+   />
+    
+</RelativeLayout>

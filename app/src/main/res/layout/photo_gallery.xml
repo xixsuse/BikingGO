@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+   
+  <TextView  
+    android:id="@+id/id"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:layout_alignParentTop="true"
+    android:textColor="#ffffff"
+    android:text=""
+    />
+    
+   <TextView  
+    android:id="@+id/position"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:layout_toRightOf="@id/id"
+  
+    android:text=""
+    
+    /> 
+   <Gallery  
+   android:id="@+id/mygallery"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   android:layout_below="@id/id"
+   android:layout_centerInParent="true"
+   
+    /> 
+
+ 
+  <!-- 
+
+  <RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true">
+  <Button
+   android:id="@+id/navi"
+   android:layout_width="wrap_content"  
+   android:layout_height="wrap_content" 
+ 
+   android:width="120px" 
+   android:height="150px"
+   android:textSize="22px" 
+   android:text="導航"
+  />
+  <Button
+   android:id="@+id/share"
+   android:layout_width="wrap_content"  
+   android:layout_height="wrap_content" 
+   
+   android:layout_toRightOf="@id/navi"
+   android:width="120px" 
+   android:height="150px"
+   android:textSize="22px" 
+   android:text="分享"
+  />
+  <Button
+   android:id="@+id/takePicture"
+   android:layout_width="wrap_content"  
+   android:layout_height="wrap_content"
+   
+   android:layout_toRightOf="@id/share"
+   android:width="120px" 
+   android:height="150px"
+   android:textSize="22px" 
+   android:text="照相"
+  />
+
+  <TextView
+   android:id="@+id/delete"
+   android:layout_width="wrap_content"  
+   android:layout_height="wrap_content" 
+   android:background="@drawable/ninepatch_list_bg02"
+   android:layout_toRightOf="@id/takePicture"
+   android:textSize="30sp" 
+   android:text="刪除"
+  
+
+  <Button
+   android:id="@+id/delete"
+   android:layout_width="wrap_content"  
+    android:layout_height="wrap_content" 
+ 
+   android:layout_toRightOf="@id/takePicture"
+   android:width="120px"
+   android:height="150px"
+   android:textSize="22px" 
+   android:text="刪除"
+  
+   />
+  
+  </RelativeLayout>
+
+   -->
+</RelativeLayout>
+

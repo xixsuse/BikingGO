@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <!-- Layout for MapActivity -->
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:kingwaytek="http://schemas.android.com/apk/res/com.kingwaytek.cpami.bykingTablet"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/mapLayout">
+ 
+
+    <com.sonavtek.sonav.MapView
+        android:id="@+id/mapView"
+        android:background="#FF0000"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="0dip"
+        android:layout_marginRight="0dip"
+        android:layout_marginTop="0dip"
+        android:layout_marginBottom="0dip"
+        kingwaytek:view_type="2"
+        kingwaytek:view_style="0"
+        kingwaytek:center_longitude="121.524668"
+        kingwaytek:center_latitude="25.06078"         
+        kingwaytek:user_location_visible="true"
+        kingwaytek:route_start_visible="true"
+        kingwaytek:route_essential1_visible="true"
+        kingwaytek:route_essential2_visible="true"
+        kingwaytek:route_destination_visible="true" />
+ <!-- 
+     <com.anchorpoint.eeego.MapView
+        android:id="@+id/mapView"
+        android:background="#FF0000"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="0dip"
+        android:layout_marginRight="0dip"
+        android:layout_marginTop="0dip"
+        android:layout_marginBottom="0dip"
+        kingwaytek:view_type="2"
+        kingwaytek:view_style="0"
+        kingwaytek:user_location_visible="true"
+        kingwaytek:route_start_visible="true"
+        kingwaytek:route_essential1_visible="true"
+        kingwaytek:route_essential2_visible="true"
+        kingwaytek:route_destination_visible="true" />
+ -->       
+  
+    <include
+        layout="@layout/map_options" />
+ 
+    <include
+        layout="@layout/zoom_in_out_v" />
+
+      
+	
+
+	
+
+   
+</RelativeLayout>

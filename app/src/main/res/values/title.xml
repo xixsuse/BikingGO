@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!-- texts and icons for title bar -->
+<resources>
+    <string
+        name="title_default">單車</string>
+        
+    <string
+        name="title_pref">設定</string>
+        
+    <string
+        name="title_pref_operate">設定：操作</string>
+        
+    <string
+        name="title_pref_navi">設定：導航</string>
+        
+    <string
+        name="title_pref_person">設定：個人健康管理</string>
+    
+    <string
+        name="title_pref_update">設定：版本及更新</string>
+        
+    <string
+        name="title_pref_about">設定：關於</string>
+</resources>

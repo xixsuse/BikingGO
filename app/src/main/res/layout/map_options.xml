@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Layout for options of on MapView -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:kingwaytek="http://schemas.android.com/apk/res/com.kingwaytek.cpami.bykingTablet"
+                android:id="@+id/option_view"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+    <!-- image for weather -->
+
+
+    <!-- the bottom panel -->
+
+    <RelativeLayout
+        android:id="@+id/map_menu_bg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#61a2f7"
+        android:gravity="center" >
+
+        <!-- to user location -->
+        <!-- android:onClick="onOptionClicked" -->
+
+
+        <!-- to user's favorite -->
+
+        <ImageButton
+            android:id="@+id/to_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/map_track"
+            android:visibility="gone" />
+        <!-- android:onClick="onOptionClicked" -->
+
+
+        <!-- to navigation mode -->
+        <!-- android:onClick="onOptionClicked" -->
+
+
+        <!-- to track record -->
+
+        <ImageButton
+            android:id="@+id/to_track_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/to_user_location"
+            android:background="@null"
+            android:src="@drawable/map_track_btn" />
+        <!-- android:onClick="onOptionClicked" -->
+
+
+        <!-- to surround POI -->
+
+        <ImageButton
+            android:id="@+id/to_poi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/to_track_record"
+            android:background="@null"
+            android:src="@drawable/selection_map_options_icon_spots"
+            android:visibility="gone" />
+        <!-- android:onClick="onOptionClicked" -->
+
+        <ImageButton
+            android:id="@+id/to_user_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@null"
+            android:src="@drawable/map_myloc_btn" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/to_user_location"
+            android:layout_alignRight="@+id/to_user_location"
+            android:layout_below="@+id/to_user_location"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="我的位置"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/to_track_record"
+            android:layout_alignRight="@+id/to_track_record"
+            android:layout_below="@+id/to_track_record"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="單車軌跡"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/to_navi"
+            android:layout_alignRight="@+id/to_navi"
+            android:layout_below="@+id/to_navi"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="導航"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+        <ImageButton
+            android:id="@+id/to_navi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/to_track_record"
+            android:background="@null"
+            android:src="@drawable/map_navi_btn" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/track_recording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/map_menu_bg"
+        android:layout_alignRight="@id/map_menu_bg"
+        android:layout_marginBottom="3dip"
+        android:text="@string/track_record_in_progress_text"
+        android:textColor="@color/yellow"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="#53d769" >
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:onClick="@string/title_view_back_pressed"
+            android:text="@string/title_view_back"
+            android:textColor="#61a2f7"
+            android:typeface="sans"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="@string/preference_navi"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ffffff"
+            android:typeface="sans" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:visibility="invisible" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/weather_layout"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_margin="10dp"
+        android:gravity="center" >
+
+        <ImageView
+            android:id="@+id/weather_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/weather_bg" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/weather_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14dip" />
+
+            <ImageView
+                android:id="@+id/weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_weather_unknown" />
+
+            <TextView
+                android:id="@+id/weather_uv_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#09a263"
+                android:textSize="14dip" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/top_right_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_above="@id/map_menu_bg"
+        android:layout_margin="10dp"
+        android:background="@drawable/btn_map_options"
+        android:visibility="visible" />
+
+</RelativeLayout>

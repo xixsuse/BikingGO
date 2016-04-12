@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- Defined contents for ListView -->
+<resources>
+	<!-- Icons for global main menu -->
+	<integer-array name="main_menu_icon">
+		<item>@drawable/selection_menu_icon_address</item>
+		<item>@drawable/selection_menu_icon_spots</item>
+		<item>@drawable/selection_menu_icon_spots_book</item>
+		<item>@drawable/selection_menu_icon_gps_photo</item>
+		<item>@drawable/selection_menu_icon_cycling_tracks</item>
+		<item>@drawable/selection_menu_icon_my_favorite</item>
+		<item>@drawable/selection_menu_icon_share_position</item>
+		<item>@drawable/selection_menu_icon_public_transportation</item>
+		<item>@drawable/selection_menu_icon_record_search</item>
+		<item>@drawable/selection_menu_icon_traffic_condition</item>
+		<item>@drawable/selection_menu_icon_info</item>
+		<item>@drawable/selection_menu_icon_cycling_tracks</item>
+		<item>@drawable/selection_menu_icon_settings</item>
+	</integer-array>
+
+	<!-- Texts for global main menu -->
+	<string-array name="main_menu_text">
+		<item>地址查詢</item>
+		<item>景點查詢</item>
+		<item>景點書</item>
+		<item>GPS相片</item>
+		<item>單車軌跡</item>
+		<item>我的最愛</item>
+		<item>位置分享</item>
+		<item>大眾運輸</item>
+		<item>查詢紀錄</item>
+		<item>車友通報</item>
+		<item>活動資訊</item>
+		<item>租車資訊</item>
+		<item>設定</item>
+	</string-array>
+	
+	<!-- Texts for menu when navigation -->
+	<string-array name="navi_menu_text">
+<!--	<item>錄製軌跡</item>  -->
+		<item>路徑清單</item>
+		<item>沿途景點</item>
+		<item>停止導航</item>
+	</string-array>
+	
+	<!-- Items for main menu of PreferenceActivity -->
+    <string-array
+        name="prefs_main_text">
+        <item>操作</item>
+        <item>導航</item>
+        <item>個人健康管理</item>
+        <item>版本及更新</item>
+        <item>關於</item>
+    </string-array>
+    
+    <!-- Items for menu of Roadconditon -->
+    <string-array name="roadcondition_array">
+	   <item>訊息上傳</item>
+	   <item>訊息瀏覽</item>
+	</string-array>	
+	
+	<!-- Items for menu of kind of conditon -->
+    <string-array name="type_array">
+	   <item>其他</item>
+	   <item>交通事故</item>
+	   <item>道路施工</item>
+	   <item>交通管制</item>
+	   <item>號誌故障</item>
+	</string-array>	
+	
+	<!-- Items for menu of Location -->
+	<string-array name="location_array">
+	   <item>台北市</item>
+	   <item>新北市</item>
+	   <item>基隆市</item>
+	   <item>宜蘭縣</item>
+	   <item>桃園縣</item>
+	   <item>新竹縣</item>
+	   <item>苗栗縣</item>
+	   <item>新竹市</item>
+	</string-array>	
+</resources>

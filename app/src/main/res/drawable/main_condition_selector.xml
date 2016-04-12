@@ -1,0 +1,6 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/main_condition_tap" android:state_pressed="true"/> <!-- pressed -->
+    <item android:drawable="@drawable/main_condition"/> <!-- default -->
+
+</selector>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- privacy_and_terms -->
+    <color name="privacy_and_terms_bg">#282828</color>
+    <color name="privacy_and_terms_btn_state_selected">#484848</color>
+    <color name="privacy_and_terms_text_blue">#33BEE5</color>
+    <color name="privacy_and_terms_text_white">#F3F3F3</color>
+
+</resources>

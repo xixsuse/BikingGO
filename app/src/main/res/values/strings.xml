@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">單車ing</string>
+
+    <!-- name of file which stores preferences -->
+    <string name="preference_file">general.pref</string>
+
+    <!-- default path to the sqlite databases location -->
+    <string name="SQLite_App_Database_Path">/sdcard/BikingData/sqlite/</string>
+    <string name="SQLite_Usr_Database_Path">/sdcard/_BikingData/</string>
+
+    <!-- default name of the sqlite database -->
+    <string name="SQLite_App_Database_Name">biking.sql</string>
+    <string name="SQLite_Usr_Database_Name">biking_data.sql</string>
+
+    <!-- default path to the track export location -->
+    <string name="Track_Export_Path">/sdcard/_BikingData/track/</string>
+
+    <!-- namespace for the application -->
+    <string name="app_namespace">		http://schemas.android.com/apk/res/com.kingwaytek.cpami.bykingTablet</string>
+    <!-- for check version -->
+    <string name="CodeVersion">2.0.0</string>
+    <string name="DataVersion">20140620</string>
+
+    <!-- 營建署URL -->
+    <string name="cpamiURL">http://biking.cpami.gov.tw/Service/</string>
+    <!-- 營建署URL     : http://biking.cpami.gov.tw/ -->
+    <!-- 勤崴測試機URL : http://192.168.1.186:8080/BikeGo/ -->
+
+
+    <!-- OK button for confirm dialog -->
+    <string name="confirm_ok">確定</string>
+    <string name="track_detail">詳細資訊</string>
+
+    <!-- Cancel button for confirm dialog -->
+    <string name="confirm_cancel">取消</string>
+
+    <!-- message of confirmation for stopping navigation -->
+    <string name="confirm_stop_navi">確定停止導航？</string>
+
+    <!-- message of confirmation for closing application -->
+    <string name="confirm_close_app">確定關閉程式？</string>
+
+    <!-- message for unexpected error occured -->
+    <string name="msg_err">程式發生錯誤</string>
+    <string name="strRceiver">收件人</string>
+    <string name="strcontact">選擇連絡人</string>
+    <string name="strSend_button">傳送</string>
+    <string name="strEnd_button">結束</string>
+
+    <!-- GPS Functions -->
+    <string name="gps_service_not_available">GPS無法定位，使用上次位置？</string>
+    <string name="gps_service_disable">目前無GPS服務</string>
+    <string name="gps_no_last_location">查無上次定位記錄</string>
+    <string name="gps_position_finish">GPS定位完成</string>
+
+    <!-- AP Functions -->
+    <string name="byking_function_address_search_title">地址查詢</string>
+    <string name="byking_function_poi_search_title">景點查詢</string>
+    <string name="byking_function_spoi_title">景點書</string>
+    <string name="byking_function_track_title">單車軌跡</string>
+    <string name="byking_function_address_title">地址查詢</string>
+    <string name="byking_function_favorite_title">我的最愛</string>
+    <string name="byking_function_history_title">查詢記錄</string>
+    <string name="byking_function_GPSPhoto_title">GPS相片</string>
+    <string name="byking_function_PublicTransport_title">大眾運輸</string>
+    <string name="byking_function_AroundScenic_title">沿途景點</string>
+    <string name="byking_function_RoadList_title">路徑清單</string>
+    <string name="byking_function_TrackDownLoad_title">軌跡下載</string>
+    <string name="byking_function_Report_title">車友通報</string>
+    <string name="byking_function_traffic_upload_title">訊息上傳</string>
+    <string name="byking_function_traffic_update_title">訊息瀏覽</string>
+    <string name="transport_plan">轉乘規劃</string>
+
+    <!-- 景點書 -->
+    <string name="spoi_title">景點書</string>
+    <string name="spoi_select_title">請選擇景點</string>
+
+    <!-- Terminalogies -->
+    <string name="byking_term_poi">重要地標</string>
+    <string name="byking_term_search">搜尋</string>
+    <string name="byking_term_result">結果</string>
+    <string name="byking_term_locate">定位</string>
+
+    <!-- Address Search -->
+    <string name="address_search_city_prompt">請選擇縣市</string>
+    <string name="address_search_town_prompt">請選擇鄉鎮</string>
+    <string name="address_search_input_prompt">請輸入路段地址</string>
+    <string name="address_search_road_prompt">請選擇路段地址</string>
+    <string name="address_search_no_result">查無地址資料，請返回重新查詢</string>
+    <string name="address_search_no_locate">查無定位資訊，請選擇其他地址</string>
+    <string name="address_search_result_options">定位完成，請選擇</string>
+
+    <!-- User Data -->
+    <string name="favorite_duplicate_poi_msg">重要地標已在我的最愛中</string>
+    <string name="favorite_duplicate_track_msg">軌跡已在我的最愛中</string>
+    <string name="favorite_add_success_msg">成功加入我的最愛</string>
+    <string name="favorite_add_fail_msg">加入失敗</string>
+    <string name="data_delete_fail_msg">刪除失敗</string>
+    <string name="data_delete_success_msg">刪除成功</string>
+    <string name="data_export_success_msg">匯出成功</string>
+    <string name="data_export_fail_msg">匯出失敗</string>
+    <string name="data_no_selection_msg">沒有選擇項目</string>
+    <string name="data_empty_msg">沒有項目</string>
+    <string name="data_delete_all_confirm_msg">確定刪除所有項目？</string>
+    <string name="data_delete_selection_confirm_msg">確定刪除選擇項目？</string>
+
+    <!-- POI Search -->
+    <string name="poi_search_method_prompt">請選擇查詢方式</string>
+    <string name="poi_search_category_prompt">請選擇類別</string>
+    <string name="poi_search_keyword_prompt">請輸入關鍵字</string>
+    <string name="poi_search_city_prompt">請選擇縣市</string>
+    <string name="poi_search_poiselection_prompt">請選擇景點</string>
+    <string name="poi_search_no_result">查無景點資料，請返回重新查詢</string>
+    <string name="poi_search_result_options">定位完成，請選擇</string>
+    <string name="poi_search_by_distance_no_result">無查詢結果。</string>
+
+    <!-- Track Export Messages -->
+    <string name="error_track_does_not_exist">軌跡不存在.</string>
+    <string name="io_no_external_storage_found">找不到外部儲存媒體，請確認您已插入SD卡並且確認您的手機沒有連結到電腦.</string>
+    <string name="io_write_failed">無法寫入檔案.</string>
+    <string name="io_read_failed">無法讀取檔案.</string>
+    <string name="io_create_dir_failed">無法在SD卡上建立資料夾.</string>
+    <string name="io_write_finished">完成寫入SD卡.</string>
+    <string name="io_read_finished">完成讀取SD卡.</string>
+    <string name="track_export_format_tilte">請選擇匯出格式</string>
+    <string name="track_export_in_progress_text">軌跡匯出中...</string>
+    <string name="track_record_in_progress_text">軌跡錄製中...</string>
+    <string name="track_record_battery_low_prompt_text">電量偏低，請充電後再行錄製！</string>
+    <string name="track_record_battery_low_auto_stop_text">電量偏低，已停止錄製軌跡！</string>
+    <string name="track_record_battery_low_warnning_text">電量偏低，軌跡將在數分鐘後自動停止錄製！</string>
+    <string name="track_record_exit_prompt_text">目前軌跡錄製中，離開程式將自動停止錄製！</string>
+    <string name="track_record_name_input_prompt_text">請輸入軌跡名稱</string>
+    <string name="cpami_byking_link">Created by &lt;a
+		href=\'http://www.cpami.gov.tw\'&gt;單車ing&lt;/a&gt; on Android.</string>
+
+    <!-- Dialog Messages -->
+    <string name="dialog_ok_button_text">確定</string>
+    <string name="dialog_cancel_button_text">取消</string>
+    <string name="dialog_delete_button_text">刪除</string>
+    <string name="dialog_export_button_text">匯出</string>
+    <string name="dialog_goback_button_text">返回</string>
+    <string name="dialog_close_button_text">關閉</string>
+    <string name="dialog_loading_title">請稍待</string>
+    <string name="dialog_loading_message">資料讀取中...</string>
+    <string name="dialog_search_message">搜尋中.....</string>
+    <string name="dialog_locating_message">定位中.....</string>
+    <string name="dialog_web_message">以下功能需使用網路,\n您可能需要支付網路費,\n是否要繼續?</string>
+    <string name="dialog_web_message2">目前無網路連線</string>
+    <string name="dialog_web_message3">下載失敗</string>
+    <string name="dialog_gps_message">無法取得您目前的位置</string>
+    <string name="dialog_navi_message">已到達目的地</string>
+
+    <!-- Context Menu Options -->
+    <string name="context_selection_option_setorigin">設為起點</string>
+    <string name="context_selection_option_setdestination">設為目的地</string>
+    <string name="context_selection_option_drawonmap">標示於地圖</string>
+
+    <dimen name="textsize">21dip</dimen>
+
+    <!-- 圖資分區下載 -->
+    <string name="progress">progress</string>
+    <string name="map_download">圖資下載</string>
+    <string name="title_view_text">圖資下載</string>
+
+    <!-- 最新消息列表 -->
+    <string name="infomation_cell_title">Name</string>
+    <string name="infomation_cell_description">Org</string>
+    <string name="cell_infomation_start">Sart</string>
+    <string name="cell_infomation_end">End</string>
+    <string name="cell_infomation_dash">" - "</string>
+    <string name="infomation_title">活動訊息</string>
+
+    <!-- 訊息詳細 -->
+    <string name="infomation_detail_title">詳細內容</string>
+    <string name="infomation_detail_name">Name</string>
+    <string name="infomation_detail_img">detail_image</string>
+    <string name="infomation_detail_description">description</string>
+    <string name="facebook_share">shareToFacebook</string>
+    <string name="share">分享</string>
+    <string name="infomation_detail_location">地址：</string>
+    <string name="infomation_detail_start_time">起始時間：</string>
+    <string name="infomation_detail_end_time">結束時間：</string>
+
+    <!-- Facebook id -->
+    <string name="app_id">332790266863951</string>
+
+    <!-- Title View -->
+    <string name="title_view_back">返回</string>
+    <string name="title_view_back_pressed">titleViewBackButtonPressed</string>
+    <string name="title_view_confirm">確定</string>
+    <string name="title_view_confirm_pressed">titleViewConfirmButtonPressed</string>
+    <string name="img_bottom_background">img_bottom_background</string>
+    <string name="empty">""</string>
+    <string name="project">"方案"</string>
+
+    <!-- UBike -->
+    <string name="ubike_title">YouBike</string>
+    <string name="rent_title">租借服務</string>
+    <string name="rent_station_title">租車站</string>
+    <string name="park_station_title">停車場</string>
+    <string name="error_config">Please set the %1$s constant and recompile the app.</string>
+    <string name="already_registered">Device is already registered on server.</string>
+    <string name="gcm_registered">From GCM: device successfully registered!</string>
+    <string name="gcm_unregistered">From GCM: device successfully unregistered!</string>
+    <string name="gcm_message">From GCM: you got message!</string>
+    <string name="gcm_error">From GCM: error (%1$s).</string>
+    <string name="gcm_recoverable_error">From GCM: recoverable error (%1$s).</string>
+    <string name="gcm_deleted">From GCM: server deleted %1$d pending messages!</string>
+    <string name="server_registering">Trying (attempt %1$d/%2$d) to register device on Demo Server.</string>
+    <string name="server_registered">From Demo Server: successfully added device!</string>
+    <string name="server_unregistered">From Demo Server: successfully removed device!</string>
+    <string name="server_register_error">Could not register device on Demo Server after %1$d attempts.</string>
+    <string name="server_unregister_error">Could not unregister device on Demo Server (%1$s).</string>
+    <string name="options_register">Register</string>
+    <string name="options_unregister">Unregister</string>
+    <string name="options_clear">Clear</string>
+    <string name="options_exit">Exit</string>
+
+    <!-- 設定 -->
+    <string name="preference_pref">設定</string>
+    <string name="preference_operation">操作</string>
+    <string name="preference_navi">導航</string>
+    <string name="preference_health">個人健康管理</string>
+    <string name="preference_update">版本及更新</string>
+    <string name="preference_about">關於</string>
+
+    <!-- Track -->
+    <string name="track_recording">軌跡錄製</string>
+    <string name="track_friend">車友分享</string>
+    <string name="track_bike_road">自行車道(營建署)</string>
+    <string name="track_bike_plan">車友規劃路線</string>
+    <string name="track_search">軌跡查詢</string>
+
+    <!-- 軟體使用聲明 -->
+    <string name="announce_title">軟體使用聲明</string>
+    <string name="announce_warnning">提醒您, 騎乘自行車上路請注意交通安全, 並務必遵守交通法規與標誌號誌指示</string>
+    <string name="announce_description">下載, 安裝或使用本應用程式及其所屬的任何原件(以下簡稱"本應用程式")時, 即表示您同意以下聲明 :</string>
+    <string name="announce_description1">您明確了解並同意, "本應用程式"提供之所有資訊, 僅供您參考應用, 建議您仍須根據實際道路或地點狀況進行判斷。</string>
+    <string name="announce_description2">使用"本應用程式"必須自行承擔所有風險, "本應用程式"不提供任何形式之擔保</string>
+    <string name="announce_description3">就任何因為個人行為而引致之行動裝置或其他裝置的損害或資料遺失, 您必須承擔全部責任</string>
+    <string name="announce_description4">"本應用程式"使用GPS定位技術, GPS定為結果可能因天候, 使用環境地點而有所影響, 因此"本應用程式"提供之坐標數據僅供參考</string>
+    <string name="announce_btn">確定</string>
+    <string name="announce_check">下次不再顯示</string>
+
+    <!-- 車友 -->
+    <string name="report_detail">詳細內容</string>
+
+    <string-array name="main_item">
+        <item>導航</item>
+        <item>地址查詢</item>
+        <item>景點查詢</item>
+        <item>景點書</item>
+        <item>GPS相片</item>
+        <item>單車軌跡</item>
+        <item>我的最愛</item>
+        <item>大眾運輸</item>
+        <item>查詢紀錄</item>
+        <item>車友通報</item>
+        <item>活動資訊</item>
+        <item>租借車</item>
+        <item>設定</item>
+    </string-array>
+
+    <string name="keyword_search">請輸入關鍵字</string>
+    <string name="share_facebook">Facebook Sharing</string>
+    <string name="share_hint">想補充些什麼嗎</string>
+    <string name="share_cancle">取消</string>
+    <string name="share_fb_confirm">發佈</string>
+    <string name="share_cancel_pressed">facebookShareCancelPressed</string>
+    <string name="share_confirm_pressed">facebookShareConfirmPressed</string>
+    <string name="map_tag_description">map_tag_description</string>
+    <string name="meter">1000 公尺</string>
+
+</resources>

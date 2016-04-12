@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="20dp"
+    android:background="@color/privacy_and_terms_bg"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textview_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/privacy_and_terms_default_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/privacy_and_terms_text_white" />
+
+    <TextView
+        android:id="@+id/textview_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/privacy_and_terms_default_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/privacy_and_terms_text_white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" >
+
+        <LinearLayout
+            android:id="@+id/button_negative"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/privacy_and_terms_btn_selector"
+            android:clickable="true"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp" >
+
+            <TextView
+                android:id="@+id/textview_negative"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/privacy_and_terms_text_white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/button_positive"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/privacy_and_terms_btn_selector"
+            android:clickable="true"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/agree"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/privacy_and_terms_text_white" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

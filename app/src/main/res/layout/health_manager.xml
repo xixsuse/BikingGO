@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#53d769" >
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:onClick="@string/title_view_back_pressed"
+            android:text="@string/title_view_back"
+            android:textColor="#61a2f7"
+            android:typeface="sans"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="@string/preference_health"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:typeface="sans" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:onClick="@string/title_view_confirm_pressed"
+            android:text="@string/title_view_confirm"
+            android:textAppearance="?android:attr/textAppearanceMediumInverse"
+            android:textColor="#61a2f7"
+            android:typeface="sans"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/ScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/linearLayout1"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:id="@+id/widget1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/sexText"
+                android:layout_width="wrap_content"
+                android:layout_height="50dip"
+                android:layout_marginLeft="10dip"
+                android:gravity="center_vertical"
+                android:text="性別"
+                android:textColor="#6d6d72"
+                android:textSize="21dip" />
+
+            <RadioGroup
+                android:id="@+id/Health_RadioGroup_sex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dip"
+                android:checkedButton="@+id/sex1"
+                android:gravity="left"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/Health_Radio_boy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="100dip"
+                    android:text="男"
+                    android:textColor="@color/black"
+                    android:textSize="21dip" />
+
+                <RadioButton
+                    android:id="@+id/Health_Radio_girl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="女"
+                    android:textColor="@color/black"
+                    android:textSize="21dip" />
+            </RadioGroup>
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/divider_bg" />
+
+            <TextView
+                android:id="@+id/ageText"
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:layout_marginLeft="10dip"
+                android:gravity="center_vertical"
+                android:text="年齡"
+                android:textColor="#6d6d72"
+                android:textSize="21dip" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <SeekBar
+                    android:id="@+id/seekBar_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_toLeftOf="@+id/age_dipalyText"
+                    android:max="80"
+                    android:paddingBottom="10dip"
+                    android:paddingLeft="7dip"
+                    android:paddingRight="8dip"
+                    android:paddingTop="10dip"
+                    android:progressDrawable="@layout/seekbar_style" />
+
+                <TextView
+                    android:id="@+id/age_dipalyText"
+                    android:layout_width="80dip"
+                    android:layout_height="50dip"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical|right"
+                    android:textColor="#007aff"
+                    android:layout_marginRight="10dp"
+                    android:textSize="21dip" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/divider_bg" />
+
+            <TextView
+                android:id="@+id/heightText"
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:layout_marginLeft="10dip"
+                android:gravity="center_vertical"
+                android:text="身高"
+                android:textColor="#6d6d72"
+                android:textSize="21dip" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <SeekBar
+                    android:id="@+id/seekBar_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_toLeftOf="@+id/height_dipalyText"
+                    android:max="250"
+                    android:paddingBottom="10dip"
+                    android:paddingLeft="7dip"
+                    android:paddingRight="8dip"
+                    android:paddingTop="10dip"
+                    android:progress="100"
+                    android:progressDrawable="@layout/seekbar_style" />
+
+                <TextView
+                    android:id="@+id/height_dipalyText"
+                    android:layout_width="80dip"
+                    android:layout_height="50dip"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical|right"
+                    android:textColor="#007aff"
+                    android:layout_marginRight="10dp"
+                    android:textSize="21dip" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/divider_bg" />
+
+            <TextView
+                android:id="@+id/weightText"
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:layout_marginLeft="10dip"
+                android:gravity="center_vertical"
+                android:text="體重"
+                android:textColor="#6d6d72"
+                android:textSize="21dip" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <SeekBar
+                    android:id="@+id/seekBar_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_toLeftOf="@+id/weight_dipalyText"
+                    android:max="150"
+                    android:paddingBottom="10dip"
+                    android:paddingLeft="7dip"
+                    android:paddingRight="8dip"
+                    android:paddingTop="10dip"
+                    android:progress="100"
+                    android:progressDrawable="@layout/seekbar_style" />
+
+                <TextView
+                    android:id="@+id/weight_dipalyText"
+                    android:layout_width="80dip"
+                    android:layout_height="50dip"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical|right"
+                    android:textColor="#007aff"
+                    android:layout_marginRight="10dp"
+                    android:textSize="21dip" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+                android:background="@drawable/divider_bg" />
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/cell_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/img_bottom_background"
+        android:scaleType="fitEnd"
+        android:src="@drawable/bottom_background" />
+
+</RelativeLayout>

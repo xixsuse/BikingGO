@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <!-- Layout for MenuActivity -->
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:kingwaytek="http://schemas.android.com/apk/res/com.kingwaytek.cpami.bykingTablet"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <com.kingwaytek.cpami.bykingTabletPad.view.IconListView
+        android:id="@+id/list"
+        kingwaytek:item_layout="@layout/menu_list_item"
+        kingwaytek:icons="@array/main_menu_icon"
+        kingwaytek:texts="@array/main_menu_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+        <!-- icons換圖要用程式處理(list_item.xml) -->
+
+</RelativeLayout>

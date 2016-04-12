@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- attributes for MapView -->
+    <declare-styleable
+        name="MapView">
+        
+        <attr
+            name="view_type"
+            format="integer" />
+            
+        <attr
+            name="view_style"
+            format="integer" />
+            
+        <attr
+            name="center_longitude"
+            format="float" />
+            
+        <attr
+            name="center_latitude"
+            format="float" />
+            
+        <attr
+            name="user_location_visible"
+            format="boolean" />
+            
+        <attr
+            name="route_start_visible"
+            format="boolean" />
+            
+        <attr
+            name="route_essential1_visible"
+            format="boolean" />
+            
+        <attr
+            name="route_essential2_visible"
+            format="boolean" />
+            
+        <attr
+            name="route_destination_visible"
+            format="boolean" />
+
+    </declare-styleable>
+
+    <!-- attributes for Menu -->
+    <declare-styleable
+        name="Menu">
+        
+        <attr
+            name="item_layout"
+            format="reference" />
+
+        <attr
+            name="icons"
+            format="reference" />
+            
+        <attr
+            name="texts"
+            format="reference" />
+
+    </declare-styleable>
+    
+   <declare-styleable name="Gallery">
+    <attr name="android:galleryItemBackground" />
+  </declare-styleable>    
+
+</resources>

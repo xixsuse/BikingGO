@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:orientation="horizontal" 
+    android:padding="10dp"
+    android:gravity="center_vertical"
+    android:background="#ffffff"
+    >
+
+    <ImageView
+        android:id="@+id/gps_cell_photo"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/announce_warning" />
+
+    <TextView
+        android:id="@+id/gps_cell_context"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="21sp"
+        android:textColor="#6fa71f"
+        android:layout_marginLeft="10dp"
+        android:lines="1"
+        android:singleLine="true"
+        android:text="TextView" />
+
+</LinearLayout>

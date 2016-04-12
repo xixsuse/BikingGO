@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/RelativeLayout0"
+        android:layout_width="match_parent"
+        android:padding="15dp"
+        android:background="@drawable/announce_background"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:text="注意！"
+                android:textColor="#fd472b"
+                android:textSize="21sp" />
+
+            <TextView
+                android:id="@+id/TextView02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="用目前位置之外的方法設為起點僅能做為模擬導航"
+                android:textColor="#fd472b"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_02"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:text="目前位置"
+                android:textColor="#6fa71f"
+                android:textSize="21sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_03"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:text="地圖上的點"
+                android:textColor="#6fa71f"
+                android:textSize="21sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_04"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView04"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:text="地址查詢"
+                android:textColor="#6fa71f"
+                android:textSize="21sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_05"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView05"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:text="景點查詢"
+                android:textColor="#6fa71f"
+                android:textSize="21sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_06"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:text="我的最愛"
+                android:textColor="#6fa71f"
+                android:textSize="21sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_07"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView07"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:text="查詢紀錄"
+                android:textColor="#6fa71f"
+                android:textSize="21sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_08"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView08"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:text="刪除設定"
+                android:textColor="#6fa71f"
+                android:textSize="21sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionsheet_start_end_09"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/TextView09"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="#61a2f7"
+                android:textSize="21sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="#cecece" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

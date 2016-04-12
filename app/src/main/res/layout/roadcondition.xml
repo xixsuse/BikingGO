@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:id="@+id/road_condition">
+  
+  <Button
+    android:id = "@+id/goto_upload"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="路況回報"
+    android:width="100dip"
+    android:height="40dip" 
+  />
+  
+  <Button
+    android:id="@+id/goto_update"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="路況更新"
+    android:width="100dip"
+    android:height="40dip"
+    
+  />
+  
+  <include
+        layout="@layout/bottom_bg" />
+</LinearLayout>
