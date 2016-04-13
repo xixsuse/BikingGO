@@ -22,7 +22,9 @@ import com.sonavtek.sonav.sonav;
  * Activity for Key-in road part in Address Search
  * 
  * @author Andy Chiao (andy.chiao@kingwaytek.com)
- * 
+ *
+ * 2016/04/13
+ * Modified by Vincent.
  */
 public class RoadInput extends Activity implements OnClickListener {
 
@@ -32,7 +34,6 @@ public class RoadInput extends Activity implements OnClickListener {
 	private EditText etAddress;
 
 	private static int whichDialog = 0;
-	// private static Dialog mDialog = null;
 	private UtilDialog progressDialog;
 
 	/** Called when the activity is first created. */
@@ -52,16 +53,7 @@ public class RoadInput extends Activity implements OnClickListener {
 		etAddress = (EditText) findViewById(R.id.road_input_edit);
 		Button btnLocate = (Button) findViewById(R.id.road_input_locate_button);
 		btnLocate.setOnClickListener(this);
-
-		// TODO remove this setText
-		// etAddress.setText("力行路");// "新生北路二段100號");
 	}
-
-	// @Override
-	// public void setTitle(CharSequence title) {
-	// ((TextView) findViewById(R.id.title_text)).setText(title);
-	// ((TextView) findViewById(R.id.title_text2)).setText("");
-	// }
 
 	@Override
 	protected void onResume() {
@@ -76,9 +68,8 @@ public class RoadInput extends Activity implements OnClickListener {
 		super.onPause();
 
 		Log.i("RoadInput_pause", "whichDialog:" + whichDialog);
-		if (whichDialog > 0) {
+		if (whichDialog > 0)
 			progressDialog.dismiss();
-		}
 	}
 
 	@Override
@@ -88,7 +79,8 @@ public class RoadInput extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.road_input_locate_button:
 			addressRest = etAddress.getText().toString();
-			if (addressRest == null || addressRest.length() <= 0) {
+
+			if (addressRest.isEmpty()) {
 				DialogHandler(DataProgressDialog.DIALOG_CONFIRM);
 				return;
 			}
@@ -104,39 +96,36 @@ public class RoadInput extends Activity implements OnClickListener {
 			};
 			t.start();
 			break;
-		default:
-			break;
 		}
 	}
 
 	protected void btnLocate_Click(Object sender) {
-		if (sender == null
-				|| !sender.getClass().getName().equals("android.widget.Button")) {
+        /**
+         * 這裡是在鬧什麼啦!!! (ˋ_>ˊ)
+         * by Vincent.
+         */
+		if (sender == null || !sender.getClass().getName().equals("android.widget.Button")) {
 			throw new IllegalArgumentException("sender is not valid.");
 		}
-		Log.i("RoadInput", "Locate Button Clicked. sender is : "
-				+ sender.getClass().getName());
-		String addressPart = itenCaller.getStringExtra("addressSelection");
+		Log.i("RoadInput", "Locate Button Clicked. sender is : " + sender.getClass().getName());
+        /*********************/
 
-		double[] addressXY = sonav.getInstance().showaddrxy1(
-				addressPart + addressRest);
+
+		String addressPart = itenCaller.getStringExtra("addressSelection");
+        Log.i("RoadInput", "addressPart: " + addressPart);
+
+		double[] addressXY = sonav.getInstance().showaddrxy1(addressPart + addressRest);
 
 		// has a result finish Activity here and put results
 		if (addressXY[0] > 0.0) {
 			Intent itenContent = new Intent(this, AddressContent.class);
 			itenContent.putExtra("addressResult", addressPart + addressRest);
 			itenContent.putExtra("addressLocation", addressXY);
-			itenContent.putExtra("setpoint",
-					itenCaller.getStringExtra("setpoint"));
+			itenContent.putExtra("setpoint", itenCaller.getStringExtra("setpoint"));
 
-			// itenCaller.putExtra("addressResult", addressPart + addressRest);
-			// itenCaller.putExtra("addressLocation", addressXY);
-			Log.i("RoadInput", "got Location" + addressXY[0] + ", "
-					+ addressXY[1] + ", " + addressXY[2]);
-			// DialogHandler(DataProgressDialog.DIALOG_SELECTION);
-			// Log.i("RoadInput_after_context", "whichDialog:" + whichDialog);
-			startActivityForResult(itenContent,
-					ActivityCaller.ADDRESS.getValue());
+			Log.i("RoadInput", "got Location" + addressXY[0] + ", " + addressXY[1] + ", " + addressXY[2]);
+
+			startActivityForResult(itenContent, ActivityCaller.ADDRESS.getValue());
 			return;
 		}
 
@@ -146,92 +135,63 @@ public class RoadInput extends Activity implements OnClickListener {
 		itenContent.putExtra("roadName", addressRest);
 		itenContent.putExtra("addressSelection", addressPart);
 		itenContent.putExtra("setpoint", itenCaller.getStringExtra("setpoint"));
-		Log.i("RoadInput", "no Location Found." + addressXY[0] + ", "
-				+ addressXY[1] + ", " + addressXY[2]);
+		Log.i("RoadInput", "no Location Found." + addressXY[0] + ", " + addressXY[1] + ", " + addressXY[2]);
 		startActivityForResult(itenContent, ActivityCaller.ADDRESS.getValue());
 	}
 
-	private void showContextSelection(
-			final DialogInterface.OnCancelListener dlgCancelListener) {
-		final String[] options = new String[] {
-				ContextMenuOptions.DRAW_MAP.getTitle(),
-				ContextMenuOptions.SET_ORIGIN.getTitle(),
-				ContextMenuOptions.SET_DESTINATION.getTitle() };
-		final DialogInterface.OnClickListener dlgListener = new DialogInterface.OnClickListener() {
+    private void showContextSelection() {
+        final String[] options = new String[] {
+                ContextMenuOptions.DRAW_MAP.getTitle(),
+                ContextMenuOptions.SET_ORIGIN.getTitle(),
+                ContextMenuOptions.SET_DESTINATION.getTitle() };
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-				itenCaller.putExtra("addressAction",
-						ContextMenuOptions.get(options[which]));
-				setResult(RESULT_OK, itenCaller);
-				finish();
-			}
-		};
+        final DialogInterface.OnClickListener dlgListener = new DialogInterface.OnClickListener() {
 
-		runOnUiThread(new Runnable() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                itenCaller.putExtra("addressAction", ContextMenuOptions.get(options[which]));
+                setResult(RESULT_OK, itenCaller);
+                finish();
+            }
+        };
+    }
 
-			@Override
-			public void run() {
+    private void DialogHandler(int which) {
+        switch (which) {
+            case DataProgressDialog.DIALOG_LOADING:
+                progressDialog.progressDialog(null, getString(R.string.dialog_loading_message));
+                break;
 
-				// mDialog =
-				// AlertDialogUtil.showContextSelection(RoadInput.this,
-				// getString(R.string.address_search_result_options),
-				// options, dlgListener);
-				// mDialog.setOnCancelListener(dlgCancelListener);
-				// whichDialog = DataProgressDialog.DIALOG_SELECTION;
-			}
-		});
-	}
+            case DataProgressDialog.DIALOG_SELECTION:
+                showContextSelection();
+                break;
 
-	private void DialogHandler(int which) {
-		Log.i("RoadInput_dialog_handler", "whichDialog:" + whichDialog);
-		DialogInterface.OnCancelListener dlgCancelListener = new DialogInterface.OnCancelListener() {
+            case DataProgressDialog.DIALOG_CONFIRM:
 
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				whichDialog = 0;
-			}
-		};
-
-		switch (which) {
-		case DataProgressDialog.DIALOG_LOADING:
-			// mDialog = DataProgressDialog.show(this, "",
-			// getString(R.string.dialog_loading_message));
-			progressDialog.progressDialog(null,
-					getString(R.string.dialog_loading_message));
-			break;
-		case DataProgressDialog.DIALOG_SELECTION:
-			showContextSelection(dlgCancelListener);
-			break;
-		case DataProgressDialog.DIALOG_CONFIRM:
-			// mDialog = AlertDialogUtil.showMsgWithConfirm(this,
-			// getString(R.string.address_search_input_prompt),
-			// getString(R.string.dialog_goback_button_text));
-			// mDialog.setOnCancelListener(dlgCancelListener);
-			break;
-		default:
-			break;
-		}
-		whichDialog = which;
-	}
+                break;
+        }
+        whichDialog = which;
+    }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (resultCode == RESULT_OK
-				&& requestCode == ActivityCaller.ADDRESS.getValue()) {
-			ContextMenuOptions option = (ContextMenuOptions) data
-					.getSerializableExtra("Action");
+		if (resultCode == RESULT_OK && requestCode == ActivityCaller.ADDRESS.getValue()) {
+			ContextMenuOptions option = (ContextMenuOptions) data.getSerializableExtra("Action");
+
 			String addressPart = data.getStringExtra("addressResult");
 			double[] addressXY = data.getDoubleArrayExtra("addressLocation");
+
 			itenCaller.putExtra("Action", option);
 			itenCaller.putExtra("addressResult", addressPart);
 			itenCaller.putExtra("addressLocation", addressXY);
+
 			setResult(RESULT_OK, itenCaller);
 			finish();
-		} else if (resultCode == RESULT_FIRST_USER) {
+		}
+        else if (resultCode == RESULT_FIRST_USER) {
 			setResult(RESULT_FIRST_USER);
 			finish();
 		}

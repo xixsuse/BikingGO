@@ -247,6 +247,9 @@
     <!-- 車友 -->
     <string name="report_detail">詳細內容</string>
 
+    <!-- API KEYs -->
+    <string name="GoogleMapApiKey">AIzaSyC8GOjYAXr5v7ifZz_4mVplHWw7q9O1iaE</string>
+
     <string-array name="main_item">
         <item>導航</item>
         <item>地址查詢</item>

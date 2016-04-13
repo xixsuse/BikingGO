@@ -1,18 +1,14 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import com.kingwaytek.cpami.bykingTablet.R;
-
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.kingwaytek.cpami.bykingTablet.R;
 
 public class UtilDialog {
 
@@ -36,28 +32,28 @@ public class UtilDialog {
 		Button dialog_b2 = (Button) dialog.findViewById(R.id.dialog_btn2);
 
 		// title
-		if (title != null) {
+		if (title != null)
 			dialog_title.setText(title);
-		} else {
+        else
 			dialog_title.setVisibility(View.GONE);
-		}
+
 		// content
-		if (content != null) {
+		if (content != null)
 			dialog_content.setText(content);
-		} else {
+		else
 			dialog_content.setVisibility(View.GONE);
-		}
+
 		// button1
 		if (btn1 != null) {
 			dialog_b1.setText(btn1);
 			dialog_b1.setOnClickListener(new OnClickListener() {
-
 				@Override
 				public void onClick(View v) {
 					click_btn_1();
 				}
 			});
-		} else {
+		}
+        else {
 			dialog_b1.setVisibility(View.GONE);
 		}
 
@@ -72,7 +68,8 @@ public class UtilDialog {
 					click_btn_2();
 				}
 			});
-		} else {
+		}
+        else {
 			dialog_b2.setVisibility(View.GONE);
 		}
 		if (dialog != null)
@@ -82,11 +79,11 @@ public class UtilDialog {
 
 	public void click_btn_1() {
 		dialog.dismiss();
-	};
+	}
 
 	public void click_btn_2() {
 		dialog.dismiss();
-	};
+	}
 
 	public void dismiss() {
 		dialog.dismiss();

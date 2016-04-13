@@ -55,43 +55,25 @@ public class AddressContent extends Activity {
         super.onCreate(icicle);
 
         itenCaller = getIntent();
-        // requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        setContentView(R.layout.map);
-        // getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-        // R.layout.title_bar);
-        // setTitle(getString(R.string.title_default));
-        //
-        // engine = sonav.getInstance();
-        //
-        // gohome = (Button)findViewById(R.id.go_home);
-        // gohome.setOnClickListener(new OnClickListener() {
-        //
-        // @Override
-        // public void onClick(View v) {
-        // setResult(RESULT_CANCELED);
-        // finish();
-        // return;
-        //
-        // }
-        // });
 
-        // myCaller = (ActivityCaller) itenCaller
-        // .getSerializableExtra("POI_Caller");
+        setContentView(R.layout.map);
+
         naviOption = itenCaller.getStringExtra("setpoint");
         addressRest = itenCaller.getStringExtra("addressResult");
         double[] addrPnt = itenCaller.getDoubleArrayExtra("addressLocation");
-        if (addrPnt != null) {
-            addressPoint = new GeoPoint(addrPnt[1], addrPnt[2]);
-        }
 
-        Log.i("AddressContent", "address:" + addressRest);
+        if (addrPnt != null)
+            addressPoint = new GeoPoint(addrPnt[1], addrPnt[2]);
+
+        Log.i("AddressContent", "addressRest:" + addressRest);
+        Log.i("AddressContent", "addressPoint:" + addrPnt[1] + ", " + addrPnt[2]);
 
         InitFixedMapView();
         AddFloatContentView();
         menu_button = (ImageButton) findViewById(R.id.menu_button);
         setActionSheet();
-        menu_button.setOnClickListener(new OnClickListener() {
 
+        menu_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 actionSheet.show();
@@ -102,16 +84,13 @@ public class AddressContent extends Activity {
     @Override
     public void setTitle(CharSequence title) {
         ((TextView) findViewById(R.id.title_text)).setText(title);
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (addressRest == null || addressRest.equals("")
-                || addressPoint == null) {
+        if (addressRest == null || addressRest.equals("") || addressPoint == null)
             return;
-        }
 
         SetupAddress();
     }
@@ -154,53 +133,43 @@ public class AddressContent extends Activity {
                     break;
             }
         }
-        actionSheet.setActionSheetLayout(R.layout.action_sheet_address,
-                sub_view);
-        actionSheet
-                .setOnActionSheetButtonClickListener(new ActionSheetButtonClickListener() {
+        actionSheet.setActionSheetLayout(R.layout.action_sheet_address, sub_view);
+        actionSheet.setOnActionSheetButtonClickListener(new ActionSheetButtonClickListener() {
+            @Override
+            public void onButtonClick(ActionSheet actionsheet, int index, int id) {
+                switch (id) {
+                    case R.id.actionsheet_address02:
+                        ToggleLocationSetting(NaviSetupAction.SET_ORIGIN);
+                        break;
 
-                    @Override
-                    public void onButtonClick(ActionSheet actionsheet,
-                                              int index, int id) {
+                    case R.id.actionsheet_address04:
+                        ToggleLocationSetting(NaviSetupAction.SET_DESTINATION);
+                        break;
 
-                        switch (id) {
-                            case R.id.actionsheet_address02:
-                                ToggleLocationSetting(NaviSetupAction.SET_ORIGIN);
-                                break;
-                            case R.id.actionsheet_address04:
-                                ToggleLocationSetting(NaviSetupAction.SET_DESTINATION);
-                                break;
-                            case R.id.actionsheet_address01: // cause finish
-                                isNaviNow = true;
-                                SetLocation(NaviSetupAction.SET_DESTINATION);
-                                Log.i("AddressContent",
-                                        "use item as end Point for navigation.");
-                                break;
-                            case R.id.actionsheet_address03:
-                                ToggleLocationSetting(null);
-                                isNaviNow = true;
-                                break;
+                    case R.id.actionsheet_address01: // cause finish
+                        isNaviNow = true;
+                        SetLocation(NaviSetupAction.SET_DESTINATION);
+                        Log.i("AddressContent", "use item as end Point for navigation.");
+                        break;
 
-                            default:
-                                break;
-                        }
-                    }
-                });
+                    case R.id.actionsheet_address03:
+                        ToggleLocationSetting(null);
+                        isNaviNow = true;
+                        break;
+                }
+            }
+        });
     }
 
     private void SetLocation(NaviSetupAction action) {
-        int flag = -1;
-        // boolean finishActivity = true;
+        int flag;
         switch (action) {
             case SET_ORIGIN:
-                // itenCaller.putExtra("POI_Action", POIMenu.SET_ORIGIN);
                 flag = MapActivity.START_POINT;
                 if (naviOption == null || naviOption.equals("")) {
-                    // finishActivity = false;
-                    // AlertDialogUtil.showMsgWithConfirm(this, "已設定為導航起點",
-                    // getString(R.string.dialog_ok_button_text));
                     HasPointSet(flag);
-                } else {
+                }
+                else {
                     // itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
                     SetPointAction(flag);
                 }
@@ -211,62 +180,55 @@ public class AddressContent extends Activity {
                 if (isNaviNow) {
                     itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
                     SetPointAction(flag);
-                    MapActivity.setgoimmediately(true);
-                } else if (naviOption == null || naviOption.equals("")) {
+                    MapActivity.setGoImmediately(true);
+                }
+                else if (naviOption == null || naviOption.equals("")) {
                     // itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
                     HasPointSet(flag);
-                } else {
+                }
+                else {
                     // itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
                     SetPointAction(flag);
                 }
                 break;
+
             case SET_VIA1:
                 flag = MapActivity.ESS1_POINT;
                 SetPointAction(flag);
                 break;
+
             case SET_VIA2:
                 flag = MapActivity.ESS2_POINT;
                 SetPointAction(flag);
                 break;
-            default:
-                break;
         }
-
-        // MapActivity.setPosition(addressRest, addressPoint, flag);
-        // if (finishActivity) {
-        // setResult(RESULT_OK, itenCaller);
-        // finish();
-        // }
     }
 
     private void ToggleLocationSetting(NaviSetupAction options) {
-        if (null == naviOption) {
+        if (null == naviOption)
             SetLocation(options);
-        } else {
+        else
             SetLocation(NaviSetupAction.get(naviOption));
-        }
     }
 
     private void HasPointSet(final int flag) {
         String locInfo = MapActivity.getName(flag);
-        locInfo += MapActivity.getAddress(flag) == "" ? "" : "\n"
-                + MapActivity.getAddress(flag);
+        locInfo += MapActivity.getAddress(flag).isEmpty() ? "" : "\n" + MapActivity.getAddress(flag);
         Log.i("HasPointSet", "flag:" + flag + ", info:" + locInfo);
+
         // if a point has been set already
         if (!locInfo.equals("")) {
-
             UtilDialog uit = new UtilDialog(AddressContent.this) {
                 @Override
                 public void click_btn_1() {
-                    itenCaller.putExtra("Action",
-                            ContextMenuOptions.NAVIGATION);
+                    itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
                     SetPointAction(flag);
                     super.click_btn_1();
                 }
             };
-            uit.showDialog_route_plan_choice("已設定:\n" + locInfo
-                    + "\n是否取代?", null, "是", "否");
-        } else {
+            uit.showDialog_route_plan_choice("已設定:\n" + locInfo + "\n是否取代?", null, "是", "否");
+        }
+        else {
             itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
             SetPointAction(flag);
         }
@@ -292,33 +254,18 @@ public class AddressContent extends Activity {
 
         engine = sonav.getInstance();
         int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-        if (mapstyle < 6) {
+
+        if (mapstyle < 6)
             engine.setmapstyle(0, mapstyle, 1);
-        }else{
-            mapstyle-=5;
+        else {
+            mapstyle -= 5;
             engine.setmapstyle(1, 0, mapstyle);
         }
         engine.savenaviparameter();
-//		final View emptyView = new View(this);
-//		emptyView.setMinimumWidth(engine.getMapWidth());
-//		emptyView.setMinimumHeight(engine.getMapHeight());
-//		emptyView.setOnTouchListener(new OnTouchListener() {
-//
-//			@Override
-//			public boolean onTouch(View v, MotionEvent event) {
-//				return true;
-//			}
-//		});
-//		rlMap.addView(emptyView);
-
-        // engine.setflagpoint(MapView.SELECTED_POINT, mapView.getCenter()
-        // .getLongitude(), mapView.getCenter().getLatitude());
-
     }
 
     private void AddFloatContentView() {
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.mapLayout);
-        // layout.removeView(layout.findViewById(RemovedResId));
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -326,10 +273,11 @@ public class AddressContent extends Activity {
         optionView.setId(R.id.poi_content_view);
 
         layout.addView(optionView);
+
         ibZoomIn = (ImageButton) optionView.findViewById(R.id.address_zoom_in);
         ibZoomOut = (ImageButton) optionView.findViewById(R.id.address_zoom_out);
-        ibZoomIn.setOnClickListener(new OnClickListener() {
 
+        ibZoomIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mapView.zoomIn();
@@ -337,7 +285,6 @@ public class AddressContent extends Activity {
         });
 
         ibZoomOut.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 mapView.zoomOut();
@@ -347,22 +294,11 @@ public class AddressContent extends Activity {
 
     private void SetupAddress() {
         mapView.setCenter(addressPoint);
-        engine.setflagpoint(MapView.SELECTED_POINT, mapView.getCenter()
-                .getLongitude(), mapView.getCenter().getLatitude());
+        engine.setflagpoint(MapView.SELECTED_POINT, mapView.getCenter().getLongitude(), mapView.getCenter().getLatitude());
 
         TextView tvName = (TextView) findViewById(R.id.map_data_content_view_name);
-        // TextView tvAddr = (TextView)
-        // findViewById(R.id.map_data_content_view_address);
-        // TextView tvTel = (TextView)
-        // findViewById(R.id.map_data_content_view_tel);
-        // Button btnCall = (Button)
-        // findViewById(R.id.map_data_content_view_call_button);
 
-        Town = engine.showcitytownname(mapView.getCenter().getLongitude(),
-                mapView.getCenter().getLatitude());
+        Town = engine.showcitytownname(mapView.getCenter().getLongitude(), mapView.getCenter().getLatitude());
         tvName.setText(addressRest);
-        // tvAddr.setVisibility(TextView.GONE);
-        // tvTel.setVisibility(TextView.GONE);
-        // btnCall.setVisibility(Button.GONE);
     }
 }

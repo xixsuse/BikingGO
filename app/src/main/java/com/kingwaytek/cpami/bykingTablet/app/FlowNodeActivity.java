@@ -2,25 +2,20 @@ package com.kingwaytek.cpami.bykingTablet.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.view.IconListView;
@@ -248,9 +243,8 @@ public abstract class FlowNodeActivity extends Activity {
     public void goTo(Class<?> clazz, boolean clearTop) {
         Intent intent = new Intent(this, clazz);
 
-        if (clearTop) {
+        if (clearTop)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        }
 
         startActivity(intent);
     }
@@ -272,9 +266,8 @@ public abstract class FlowNodeActivity extends Activity {
     public void goToForResult(Class<?> clazz, boolean clearTop, int requestCode) {
         Intent intent = new Intent(this, clazz);
 
-        if (clearTop) {
+        if (clearTop)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        }
 
         startActivityForResult(intent, requestCode);
     }

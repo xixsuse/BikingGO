@@ -1,17 +1,9 @@
 package com.kingwaytek.cpami.bykingTablet.app.Infomation;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -20,10 +12,16 @@ import android.widget.ListView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
 import com.kingwaytek.cpami.bykingTablet.app.IsAllowedConnection;
-import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
 
-public class InfomationActivity extends CommunicationBaseActivity implements OnItemClickListener {
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+public class InformationActivity extends CommunicationBaseActivity implements OnItemClickListener {
 
 	/* API query command */
 	private static final String requestCommand = "http://biking.cpami.gov.tw/Service/ListActivity?code=";
@@ -56,16 +54,16 @@ public class InfomationActivity extends CommunicationBaseActivity implements OnI
 
 		} else {
 
-			UtilDialog uit = new UtilDialog(InfomationActivity.this) {
+			UtilDialog uit = new UtilDialog(InformationActivity.this) {
 				@Override
 				public void click_btn_1() {
-					InfomationActivity.this.startHttpGet(requestCommand, true, "資料讀取中", "請稍候", null, null);
+					InformationActivity.this.startHttpGet(requestCommand, true, "資料讀取中", "請稍候", null, null);
 					super.click_btn_1();
 				}
 
 				@Override
 				public void click_btn_2() {
-					InfomationActivity.this.finish();
+					InformationActivity.this.finish();
 					super.click_btn_2();
 				}
 			};
@@ -129,7 +127,7 @@ public class InfomationActivity extends CommunicationBaseActivity implements OnI
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						InfomationActivity.this.finish();
+						InformationActivity.this.finish();
 					}
 				}).show();
 	}

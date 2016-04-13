@@ -1,5 +1,26 @@
 package com.kingwaytek.cpami.bykingTablet.app.Infomation;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.StatFs;
+import android.util.Log;
+import android.widget.Toast;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -20,32 +41,10 @@ import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.SocketFactory;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.StatFs;
-import android.util.Log;
-import android.widget.Toast;
 
 public class CommunicationBaseActivity extends Activity {
 
@@ -77,18 +76,15 @@ public class CommunicationBaseActivity extends Activity {
 	 * 
 	 * Perform a HTTP request with HTTP request string and prompt messages.
 	 **/
-	protected boolean startHttpGet(String targetHttpGetString,
-			boolean showProgressDialog, String promptTitle,
-			String promptmessage, List<String> extraHeaderNames,
-			List<String> extraHeaderValues) {
+	protected boolean startHttpGet(String targetHttpGetString, boolean showProgressDialog, String promptTitle,
+			String promptmessage, List<String> extraHeaderNames, List<String> extraHeaderValues) {
 
 		/* Return when URL is null or empty */
 		if (targetHttpGetString == null || targetHttpGetString.length() == 0) {
 			return false;
 		}
 
-		HttpGetThread thread = new HttpGetThread(targetHttpGetString,
-				extraHeaderNames, extraHeaderValues);
+		HttpGetThread thread = new HttpGetThread(targetHttpGetString, extraHeaderNames, extraHeaderValues);
 		thread.setName("HttpGetBackground");
 		thread.start();
 
@@ -113,13 +109,10 @@ public class CommunicationBaseActivity extends Activity {
 		private List<String> extraHttpGetHeaderNameArray;
 		private List<String> extraHttpGetHeaderValueArray;
 
-		HttpGetThread(String httpGetString, List<String> extraHeaderNameArray,
-				List<String> extraHttpGetHeaderValueArray) {
-
+		HttpGetThread(String httpGetString, List<String> extraHeaderNameArray, List<String> extraHttpGetHeaderValueArray) {
 			this.targetHttpGetString = httpGetString;
 			this.extraHttpGetHeaderNameArray = extraHeaderNameArray;
 			this.extraHttpGetHeaderValueArray = extraHttpGetHeaderValueArray;
-
 		}
 
 		public void run() {
@@ -133,9 +126,7 @@ public class CommunicationBaseActivity extends Activity {
 	 * 
 	 * Start HTTP Request
 	 **/
-	private void performHttpGet(String currentHttpGetString,
-			List<String> extraHttpGetHeaderNameArray,
-			List<String> extraHttpGetHeaderValueArray) {
+	private void performHttpGet(String currentHttpGetString, List<String> extraHttpGetHeaderNameArray, List<String> extraHttpGetHeaderValueArray) {
 
 		String serverResponse = BAD_RESPONSE;
 		String httpGetResultString = null;
@@ -150,10 +141,8 @@ public class CommunicationBaseActivity extends Activity {
 
 			if (extraHttpGetHeaderNameArray != null) {
 				for (int i = 0; i < extraHttpGetHeaderNameArray.size(); i++) {
-					String headerNameTmp = (String) extraHttpGetHeaderNameArray
-							.get(i);
-					String headerValueTmp = (String) extraHttpGetHeaderValueArray
-							.get(i);
+					String headerNameTmp = extraHttpGetHeaderNameArray.get(i);
+					String headerValueTmp = extraHttpGetHeaderValueArray.get(i);
 
 					request.setHeader(headerNameTmp, headerValueTmp);
 				}
@@ -161,7 +150,7 @@ public class CommunicationBaseActivity extends Activity {
 
 			HttpResponse response = client.execute(request);
 
-			String retSrc = null;
+			String retSrc = "";
 
 			HttpEntity entity = response.getEntity();
 
@@ -176,15 +165,11 @@ public class CommunicationBaseActivity extends Activity {
 
 			httpGetResultString = retSrc.replace("/", "");
 
-			Log.i(TAG, "performHttpGet Done with Command: "
-					+ currentHttpGetString + " Result:\n" + retSrc);
-
-		} catch (Exception e) {
-
+			Log.i(TAG, "performHttpGet Done with Command: " + currentHttpGetString + " Result:\n" + retSrc);
+		}
+        catch (Exception e) {
 			serverResponse = printException(e);
-
-			Log.e(TAG, "Exception happened in performHttpGet(): "
-					+ serverResponse);
+			Log.e(TAG, "Exception happened in performHttpGet(): " + serverResponse);
 		}
 
 		/* Notify the result to upper layer. */
@@ -208,9 +193,7 @@ public class CommunicationBaseActivity extends Activity {
 		private String originalHttpGetResultString;
 		private Header[] originalHttpGetRespondHeaders;
 
-		public didFinishGetRequestRunnable(String httpGetString,
-				String httpGetResultString, Header[] httpGetRespondHeaders) {
-
+		public didFinishGetRequestRunnable(String httpGetString, String httpGetResultString, Header[] httpGetRespondHeaders) {
 			this.originalHttpGetString = httpGetString;
 			this.originalHttpGetResultString = httpGetResultString;
 			this.originalHttpGetRespondHeaders = httpGetRespondHeaders;
@@ -219,11 +202,10 @@ public class CommunicationBaseActivity extends Activity {
 		@Override
 		public void run() {
 			CommunicationBaseActivity.this.dismissProgressDialog();
-			CommunicationBaseActivity.this.didFinishWithGetRequest(
-					originalHttpGetString, originalHttpGetResultString,
-					originalHttpGetRespondHeaders);
+			CommunicationBaseActivity.this.didFinishWithGetRequest(originalHttpGetString,
+                    originalHttpGetResultString, originalHttpGetRespondHeaders);
 		}
-	};
+	}
 
 	/** Call back with Failed HTTP request or Exception **/
 	private class didFailGetRequestRunnable implements Runnable {
@@ -231,8 +213,7 @@ public class CommunicationBaseActivity extends Activity {
 		private String originalHttpGetString;
 		private String originalHttpGetResultString;
 
-		public didFailGetRequestRunnable(String httpGetString,
-				String httpGetResultString) {
+		public didFailGetRequestRunnable(String httpGetString, String httpGetResultString) {
 
 			this.originalHttpGetString = httpGetString;
 			this.originalHttpGetResultString = httpGetResultString;
@@ -241,18 +222,16 @@ public class CommunicationBaseActivity extends Activity {
 		@Override
 		public void run() {
 			CommunicationBaseActivity.this.dismissProgressDialog();
-			CommunicationBaseActivity.this.didFailWithGetRequest(
-					originalHttpGetString, originalHttpGetResultString);
+			CommunicationBaseActivity.this.didFailWithGetRequest(originalHttpGetString, originalHttpGetResultString);
 		}
-	};
+	}
 
 	/**
 	 * startHttpPost()
 	 * 
 	 * Perform a HTTP Post request with HTTP Post request and prompt messages.
 	 **/
-	protected boolean startHttpPost(String targetHttpPostString,
-			boolean showProgressDialog, String promptTitle,
+	protected boolean startHttpPost(String targetHttpPostString, boolean showProgressDialog, String promptTitle,
 			String promptMessage, ArrayList<NameValuePair> targetRequest,
 			List<String> extraHeaderNames, List<String> extraHeaderValues) {
 
@@ -348,21 +327,16 @@ public class CommunicationBaseActivity extends Activity {
 
 			httpPostResultString = retSrc;
 
-			Log.i(TAG, "performHttpPost Done with Command: "
-					+ httpPostResultString + " Result:\n" + retSrc);
-
-		} catch (Exception e) {
-
+			Log.i(TAG, "performHttpPost Done with Command: " + httpPostResultString + " Result:\n" + retSrc);
+		}
+        catch (Exception e) {
 			serverResponse = this.printException(e);
-
-			Log.e(TAG, "Exception happened in performHttpPost(): "
-					+ serverResponse);
+			Log.e(TAG, "Exception happened in performHttpPost(): " + serverResponse);
 		}
 
 		/* Notify the result to upper layer. */
 		if (httpPostResultString != null) {
-			didFinishPostRequestRunnable runnable = new didFinishPostRequestRunnable(
-					currentHttpPostString, httpPostResultString,
+			didFinishPostRequestRunnable runnable = new didFinishPostRequestRunnable(currentHttpPostString, httpPostResultString,
 					lastHttpPostRespondHeaders);
 
 			this.runOnUiThread(runnable);
@@ -382,9 +356,7 @@ public class CommunicationBaseActivity extends Activity {
 		private String originalHttpPostResultString;
 		private Header[] originalHttpPostRespondHeaders;
 
-		public didFinishPostRequestRunnable(String httpPostString,
-				String httpPostResultString, Header[] httpPostRespondHeaders) {
-
+		public didFinishPostRequestRunnable(String httpPostString, String httpPostResultString, Header[] httpPostRespondHeaders) {
 			this.originalHttpPostString = httpPostString;
 			this.originalHttpPostResultString = httpPostResultString;
 			this.originalHttpPostRespondHeaders = httpPostRespondHeaders;
@@ -392,13 +364,11 @@ public class CommunicationBaseActivity extends Activity {
 
 		@Override
 		public void run() {
-
 			CommunicationBaseActivity.this.dismissProgressDialog();
-			CommunicationBaseActivity.this.didFinishWithPostRequest(
-					originalHttpPostString, originalHttpPostResultString,
+			CommunicationBaseActivity.this.didFinishWithPostRequest(originalHttpPostString, originalHttpPostResultString,
 					originalHttpPostRespondHeaders);
 		}
-	};
+	}
 
 	/** Call back with failed HTTP post or Exceptions **/
 	private class didFailPostRequestRunnable implements Runnable {
@@ -417,21 +387,17 @@ public class CommunicationBaseActivity extends Activity {
 		@Override
 		public void run() {
 			CommunicationBaseActivity.this.dismissProgressDialog();
-			CommunicationBaseActivity.this.didFailWithPostRequest(
-					originalHttpPostString, originalHttpPostContent,
-					serverResponse);
-
+			CommunicationBaseActivity.this.didFailWithPostRequest(originalHttpPostString, originalHttpPostContent, serverResponse);
 		}
-	};
+	}
 
 	/**
 	 * startHttpPostFile()
 	 * 
 	 * Post file to the destination server
 	 **/
-	protected boolean startHttpPostFile(String targetHttpPostString,
-			boolean showProgressDialog, String promptTitle,
-			String promptMessage, String postFilePathString) {
+	protected boolean startHttpPostFile(String targetHttpPostString, boolean showProgressDialog,
+                                        String promptTitle, String promptMessage, String postFilePathString) {
 
 		if (targetHttpPostString == null || targetHttpPostString.length() == 0
 				|| postFilePathString == null
@@ -452,7 +418,7 @@ public class CommunicationBaseActivity extends Activity {
 
 		Log.d(TAG, "Start HTTP Post File URL: " + targetHttpPostString);
 
-		if (showProgressDialog == true) {
+		if (showProgressDialog) {
 			displayProgressDialog(promptTitle, promptMessage);
 		}
 
@@ -470,13 +436,12 @@ public class CommunicationBaseActivity extends Activity {
 		private String httpPostFilePathString;
 
 		HttpPostFileThread(String httpPostString, String postFilePathString) {
-			this.targetHttpPostString = httpPostString;
+            this.targetHttpPostString = httpPostString;
 			this.httpPostFilePathString = postFilePathString;
 		}
 
 		public void run() {
-			CommunicationBaseActivity.this.performHttpPostFile(
-					targetHttpPostString, httpPostFilePathString);
+			CommunicationBaseActivity.this.performHttpPostFile(targetHttpPostString, httpPostFilePathString);
 		}
 	}
 
@@ -484,9 +449,7 @@ public class CommunicationBaseActivity extends Activity {
 	 * Warning! this method would have problem when upload large file due to
 	 * Java's limitation of HttpURLConnection.
 	 **/
-	private void performHttpPostFile(String currentHttpPostString,
-			String httpPostFilePathString) {
-
+	private void performHttpPostFile(String currentHttpPostString, String httpPostFilePathString) {
 		String httpPostResultString = null;
 		int serverResponseCode = -1;
 		String serverResponseMessage = BAD_RESPONSE;
@@ -505,8 +468,7 @@ public class CommunicationBaseActivity extends Activity {
 		int maxBufferSize = 1 * 1024 * 1024;
 
 		try {
-			FileInputStream fileInputStream = new FileInputStream(new File(
-					pathToOurFile));
+			FileInputStream fileInputStream = new FileInputStream(new File(pathToOurFile));
 
 			URL url = new URL(urlServer);
 			connection = (HttpURLConnection) url.openConnection();
@@ -520,14 +482,11 @@ public class CommunicationBaseActivity extends Activity {
 			connection.setRequestMethod("POST");
 
 			connection.setRequestProperty("Connection", "Keep-Alive");
-			connection.setRequestProperty("Content-Type",
-					"multipart/form-data;boundary=" + boundary);
+			connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
 			outputStream = new DataOutputStream(connection.getOutputStream());
 			outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-			outputStream
-					.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\""
-							+ pathToOurFile + "\"" + lineEnd);
+			outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + pathToOurFile + "\"" + lineEnd);
 			outputStream.writeBytes(lineEnd);
 
 			bytesAvailable = fileInputStream.available();
@@ -549,8 +508,7 @@ public class CommunicationBaseActivity extends Activity {
 			}
 
 			outputStream.writeBytes(lineEnd);
-			outputStream.writeBytes(twoHyphens + boundary + twoHyphens
-					+ lineEnd);
+			outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
 			/* Responses from the server (code and message) */
 			serverResponseCode = connection.getResponseCode();
@@ -1051,11 +1009,10 @@ public class CommunicationBaseActivity extends Activity {
 
 	private void performOpenSocket(String requestURL, int port, String header) {
 
-		String exception = BAD_RESPONSE;
-		String resultString = null;
+		String exception;
+		String resultString;
 
 		try {
-
 			/* Setup Socket */
 			Socket socket = SocketFactory.getDefault().createSocket();
 
@@ -1065,8 +1022,7 @@ public class CommunicationBaseActivity extends Activity {
 
 			InputStream inputStream = socket.getInputStream();
 
-			BufferedReader is = new BufferedReader(new InputStreamReader(
-					inputStream));
+			BufferedReader is = new BufferedReader(new InputStreamReader(inputStream));
 
 			DataOutputStream os = new DataOutputStream(socket.getOutputStream());
 
@@ -1080,34 +1036,18 @@ public class CommunicationBaseActivity extends Activity {
 				resultString = is.readLine();
 				Log.i(TAG, "Socket Response: " + resultString);
 
-				socketRunnable runnable = new socketRunnable(requestURL, port,
-						resultString);
+				socketRunnable runnable = new socketRunnable(requestURL, port, resultString);
 				this.runOnUiThread(runnable);
 			}
-
 			socket.close();
-
-		} catch (UnknownHostException e) {
-
-			exception = this.printException(e);
-			socketExceptionRunnable runnable = new socketExceptionRunnable(
-					requestURL, port, exception);
-			this.runOnUiThread(runnable);
-			Log.e(TAG, "IOException happened in performOpenSocket(): "
-					+ exception);
-
-		} catch (IOException e) {
-
-			exception = this.printException(e);
-			socketExceptionRunnable runnable = new socketExceptionRunnable(
-					requestURL, port, exception);
-			this.runOnUiThread(runnable);
-			Log.e(TAG, "IOException happened in performOpenSocket(): "
-					+ exception);
 		}
-
-		socketRunnable runnable = new socketRunnable(requestURL, port,
-				"Socket Closed");
+        catch (IOException e) {
+			exception = this.printException(e);
+			socketExceptionRunnable runnable = new socketExceptionRunnable(requestURL, port, exception);
+			this.runOnUiThread(runnable);
+			Log.e(TAG, "IOException happened in performOpenSocket(): " + exception);
+		}
+		socketRunnable runnable = new socketRunnable(requestURL, port, "Socket Closed");
 		this.runOnUiThread(runnable);
 	}
 
@@ -1117,8 +1057,7 @@ public class CommunicationBaseActivity extends Activity {
 		private int socketPort;
 		private String serverMessage;
 
-		public socketRunnable(String socketIP, int socketPort,
-				String serverMessage) {
+		public socketRunnable(String socketIP, int socketPort, String serverMessage) {
 			this.socketIP = socketIP;
 			this.socketPort = socketPort;
 			this.serverMessage = serverMessage;
@@ -1127,10 +1066,9 @@ public class CommunicationBaseActivity extends Activity {
 		@Override
 		public void run() {
 			CommunicationBaseActivity.this.dismissProgressDialog();
-			CommunicationBaseActivity.this.socketResponse(socketIP, socketPort,
-					serverMessage);
+			CommunicationBaseActivity.this.socketResponse(socketIP, socketPort, serverMessage);
 		}
-	};
+	}
 
 	/** Call back when Socket Exception happened **/
 	private class socketExceptionRunnable implements Runnable {
@@ -1138,8 +1076,7 @@ public class CommunicationBaseActivity extends Activity {
 		private int socketPort;
 		private String exception;
 
-		public socketExceptionRunnable(String socketIP, int socketPort,
-				String exception) {
+		public socketExceptionRunnable(String socketIP, int socketPort, String exception) {
 			this.socketIP = socketIP;
 			this.socketPort = socketPort;
 			this.exception = exception;
@@ -1148,10 +1085,9 @@ public class CommunicationBaseActivity extends Activity {
 		@Override
 		public void run() {
 			CommunicationBaseActivity.this.dismissProgressDialog();
-			CommunicationBaseActivity.this.socketBadResponse(socketIP,
-					socketPort, exception);
+			CommunicationBaseActivity.this.socketBadResponse(socketIP, socketPort, exception);
 		}
-	};
+	}
 
 	/** Call this method when you want to close Socket connection **/
 	public void closeSocket() {
@@ -1167,15 +1103,9 @@ public class CommunicationBaseActivity extends Activity {
 
 		/* return value is in bytes */
 		@SuppressWarnings("deprecation")
-		double free_memory = (double) stat.getAvailableBlocks()
-				* (double) stat.getBlockSize();
+		double free_memory = (double) stat.getAvailableBlocks() * (double) stat.getBlockSize();
 
-		if (free_memory < Constants.MIN_FREE_SPACE) {
-
-			return false;
-		}
-
-		return true;
+		return free_memory > Constants.MIN_FREE_SPACE;
 	}
 
 	/** Time out parameter of Connection methods **/
@@ -1189,8 +1119,7 @@ public class CommunicationBaseActivity extends Activity {
 		 */
 		int timeoutConnection = Constants.CONNECTION_TIMEOUT;
 
-		HttpConnectionParams.setConnectionTimeout(httpParameters,
-				timeoutConnection);
+		HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
 
 		/*
 		 * Set the default socket timeout (SO_TIMEOUT) in milliseconds which is
@@ -1211,8 +1140,7 @@ public class CommunicationBaseActivity extends Activity {
 	 **/
 	private String convertStreamToString(InputStream is) throws Exception {
 
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(is/* ,"UTF-8" */));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is/* ,"UTF-8" */));
 
 		StringBuilder sb = new StringBuilder();
 
@@ -1222,18 +1150,19 @@ public class CommunicationBaseActivity extends Activity {
 			while ((line = reader.readLine()) != null) {
 				sb.append(line + "\n");
 			}
-		} catch (IOException e) {
-			Log.e(TAG, "IOException happened in downloadFile(): "
-					+ printException(e));
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				Log.e(TAG, "IOException happened in downloadFile(): "
-						+ printException(e));
-			}
 		}
-		return sb.toString();
+        catch (IOException e) {
+            Log.e(TAG, "IOException happened in downloadFile(): " + printException(e));
+        }
+        finally {
+            try {
+                is.close();
+            }
+            catch (IOException e) {
+                Log.e(TAG, "IOException happened in downloadFile(): " + printException(e));
+            }
+        }
+        return sb.toString();
 	}
 
 	/** Use to Print Exception **/

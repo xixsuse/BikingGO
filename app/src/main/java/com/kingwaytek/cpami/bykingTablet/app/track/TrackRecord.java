@@ -1,8 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.track;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.DisplayMetrics;

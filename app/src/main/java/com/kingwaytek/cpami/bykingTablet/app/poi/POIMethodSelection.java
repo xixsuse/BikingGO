@@ -1,15 +1,10 @@
 package com.kingwaytek.cpami.bykingTablet.app.poi;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -19,6 +14,9 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.view.ListViewAdapter;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.SearchMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * POI Query Select Method
@@ -81,8 +79,7 @@ public class POIMethodSelection extends ListActivity {
 			listItem_Click(position);
 			break;
 		case MULTIPLE:
-			CheckBox ckbSelect = (CheckBox) v
-					.findViewById(R.id.selection_listview_item_checkbox);
+			CheckBox ckbSelect = (CheckBox) v.findViewById(R.id.selection_listview_item_checkbox);
 			ckbSelect.toggle();
 			listAdapter.getCheckBoxData().put(position, ckbSelect.isChecked());
 		default:
@@ -118,10 +115,8 @@ public class POIMethodSelection extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (resultCode == RESULT_OK
-				&& requestCode == ActivityCaller.POI.getValue()) {
-			itenCaller.putExtra("Action", data
-					.getSerializableExtra("POI_Action"));
+		if (resultCode == RESULT_OK && requestCode == ActivityCaller.POI.getValue()) {
+			itenCaller.putExtra("Action", data.getSerializableExtra("POI_Action"));
 			// itenCaller.putExtra("Name", data.getStringExtra("POI_Name"));
 			// itenCaller.putExtra("Location", data
 			// .getParcelableExtra("POI_Location"));
@@ -129,7 +124,8 @@ public class POIMethodSelection extends ListActivity {
 			// .getStringArrayExtra("POI_Others"));
 			setResult(RESULT_OK, itenCaller);
 			finish();
-		}else if(resultCode == RESULT_FIRST_USER){
+		}
+        else if (resultCode == RESULT_FIRST_USER) {
 			setResult(RESULT_FIRST_USER);
 			finish();
 		}
@@ -138,10 +134,10 @@ public class POIMethodSelection extends ListActivity {
 	private void ShowList() {
 		List<String> methodList = fillMethodList();
 
-		listAdapter = new ListViewAdapter(this,
-				R.layout.selection_listview_item_poi,
-				R.id.selection_listview_item_text, fillMethodList().toArray(
-						new String[methodList.size()]));
+		listAdapter = new ListViewAdapter(
+                this, R.layout.selection_listview_item_poi,
+                R.id.selection_listview_item_text, fillMethodList().toArray(new String[methodList.size()])
+        );
 
 		setListAdapter(listAdapter);
 	}

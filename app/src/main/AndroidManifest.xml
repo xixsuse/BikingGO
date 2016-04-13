@@ -10,8 +10,6 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -25,7 +23,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.SET_ORIENTATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
@@ -34,31 +31,13 @@
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.STATUS_BAR" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.PERSISTENT_ACTIVITY" />
 
-    <!--
-     Creates a custom permission so only this app can receive its messages.
-
-     NOTE: the permission *must* be called PACKAGE.permission.C2D_MESSAGE,
-           where PACKAGE is the application's package name.
-    -->
-    <permission
-        android:name="com.kingwaytek.cpami.bykingTablet.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
-    <uses-permission android:name="com.kingwaytek.cpami.bykingTablet.permission.C2D_MESSAGE" />
-
-    <!-- This app has permission to register and receive data message. -->
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <!-- for 平板 -->
     <!--
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
     -->
-
 
     <!-- for 手機板簡訊 -->
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -291,7 +270,7 @@
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
         <activity
-            android:name=".app.OpreationSetting"
+            android:name=".app.OperationSetting"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
@@ -404,7 +383,7 @@
         </activity>
         <!-- 活動資訊 -->
         <activity
-            android:name=".app.Infomation.InfomationActivity"
+            android:name=".app.Infomation.InformationActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
@@ -454,54 +433,13 @@
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
 
-        <!-- GCM -->
-        <activity
-            android:name=".DemoActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-        <!--
-          BroadcastReceiver that will receive intents from GCM
-          services and handle them to the custom IntentService.
-
-          The com.google.android.c2dm.permission.SEND permission is necessary
-          so only GCM services can send data messages for the app.
-        -->
-        <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-
-                <!-- Receives the actual messages. -->
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <!-- Receives the registration id. -->
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="com.google.android.gcm.demo.app" />
-            </intent-filter>
-        </receiver>
-        <!--
-          Application-specific subclass of GCMBaseIntentService that will
-          handle received messages.
-
-          By default, it must be named .GCMIntentService, unless the
-          application uses a custom BroadcastReceiver that redefines its name.
-        -->
-        <service android:name=".GCMIntentService" />
-        <!-- 收到GCM跳出Dialog的service -->
-        <service android:name=".GCMDialogService" >
-            <intent-filter>
-                <action android:name="GCMDialog" />
-            </intent-filter>
-        </service>
         <!-- Facebook -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
 
-        <activity android:name="com.facebook.LoginActivity" >
-        </activity>
+        <activity android:name="com.facebook.LoginActivity" />
+
         <activity
             android:name="facebook.FacebookActivity"
             android:configChanges="orientation|screenSize"
@@ -509,6 +447,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="adjustResize" >
         </activity>
+
         <activity
             android:name="com.kingwaytek.cpmi.maptag.MapIconDescriptionActivity"
             android:configChanges="orientation|screenSize"

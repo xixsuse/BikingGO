@@ -6,25 +6,17 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
-import com.kingwaytek.cpami.bykingTablet.app.IsAllowedConnection;
 import com.kingwaytek.cpami.bykingTablet.app.MapDownloadActivity;
 import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
-import com.kingwaytek.cpami.bykingTablet.app.Infomation.InfomationActivity;
-import com.kingwaytek.cpami.bykingTablet.app.poi.POIListView;
-import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
 import com.kingwaytek.cpami.bykingTablet.sql.SQLiteBot;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
-import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.SearchMode;
 
 public class RentInfoActivity extends Activity {
 

@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -171,7 +169,7 @@ public class ShowPhoto extends Activity {
 					// } else {
 					setPointIntent.putExtra("Action", ContextMenuOptions.NAVIGATION);
 					flag = MapActivity.END_POINT;
-					MapActivity.setgoimmediately(true);
+					MapActivity.setGoImmediately(true);
 					SetPointAction(flag);
 					// }
 					break;

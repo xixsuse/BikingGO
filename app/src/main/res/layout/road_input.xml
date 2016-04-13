@@ -122,7 +122,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="隢??"
+            android:text="請選擇："
             android:textColor="#6fa71f"
             android:textSize="21sp" />
     </LinearLayout>

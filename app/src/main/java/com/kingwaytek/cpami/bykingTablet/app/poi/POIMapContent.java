@@ -319,7 +319,7 @@ public class POIMapContent extends Activity {
                     Log.i("POIMapContent.java", "gonow");
                     itenCaller.putExtra("POI_Action", POIMenu.NAVIGATION);
                     SetPointAction(flag);
-                    MapActivity.setgoimmediately(true);
+                    MapActivity.setGoImmediately(true);
                 } else if (naviOption == null || naviOption.equals("")) {
                     // itenCaller.putExtra("POI_Action", POIMenu.NAVIGATION);
                     HasPointSet(flag);

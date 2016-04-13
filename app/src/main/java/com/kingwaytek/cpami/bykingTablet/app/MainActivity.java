@@ -1,23 +1,8 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import static com.kingwaytek.cpami.bykingTabletPad.CommonUtilities.DISPLAY_MESSAGE_ACTION;
-import static com.kingwaytek.cpami.bykingTabletPad.CommonUtilities.EXTRA_MESSAGE;
-import static com.kingwaytek.cpami.bykingTabletPad.CommonUtilities.SENDER_ID;
-import static com.kingwaytek.cpami.bykingTabletPad.CommonUtilities.SERVER_URL;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,12 +14,10 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gcm.GCMRegistrar;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTabletPad.ServerUtilities;
 import com.kingwaytek.cpami.bykingTablet.TrafficCondition.RoadCondition;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
-import com.kingwaytek.cpami.bykingTablet.app.Infomation.InfomationActivity;
+import com.kingwaytek.cpami.bykingTablet.app.Infomation.InformationActivity;
 import com.kingwaytek.cpami.bykingTablet.app.address.CitySelection;
 import com.kingwaytek.cpami.bykingTablet.app.poi.POIMethodSelection;
 import com.kingwaytek.cpami.bykingTablet.app.poi.SpoiCatalog;
@@ -45,19 +28,23 @@ import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
 
 public class MainActivity extends CommunicationBaseActivity {
-	private GridView gridView;
-	private int[] image = { R.drawable.main_map_selector, R.drawable.main_address_selector,
+
+	private int[] image = {
+            R.drawable.main_map_selector, R.drawable.main_address_selector,
 			R.drawable.main_poi_selector, R.drawable.main_book_selector, R.drawable.main_photo_selector,
 			R.drawable.main_track_selector, R.drawable.main_favor_selector, R.drawable.main_trans_selector,
 			R.drawable.main_history_selector, R.drawable.main_condition_selector, R.drawable.main_info_selector,
-			R.drawable.main_rent_selector, R.drawable.main_set_selector };
-	private String[] imgText = { "導航", "地址查詢", "景點查詢", "景點書", "GPS相片", "單車軌跡", "我的最愛", "大眾運輸", "查詢紀錄", "車友通報", "活動資訊",
-			"租停車", "設定" };
-	private Intent itenCaller;
-	public static HashMap<String, Intent> intentsHashMap = new HashMap<String, Intent>();
-	private static String URL_GCM = "http://biking.cpami.gov.tw/Service/SetPushToken?";
+			R.drawable.main_rent_selector, R.drawable.main_set_selector
+    };
 
-	private AsyncTask<Void, Void, Void> mRegisterTask;
+	private String[] imgText = {
+            "導航", "地址查詢", "景點查詢", "景點書", "GPS相片", "單車軌跡", "我的最愛", "大眾運輸",
+            "查詢紀錄", "車友通報", "活動資訊", "租停車", "設定"
+    };
+
+	private Intent itenCaller;
+
+	//private static String URL_GCM = "http://biking.cpami.gov.tw/Service/SetPushToken?";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,19 +52,10 @@ public class MainActivity extends CommunicationBaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.biking_main);
 		itenCaller = getIntent();
-		GCM();
-
-		List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < image.length; i++) {
-			Map<String, Object> item = new HashMap<String, Object>();
-			item.put("image", image[i]);
-			item.put("text", imgText[i]);
-			items.add(item);
-		}
 
 		GridViewAdapter adapter = new GridViewAdapter(R.layout.cell_main_gridview, image, imgText);
 
-		gridView = (GridView) findViewById(R.id.main_gridView);
+		GridView gridView = (GridView) findViewById(R.id.main_gridView);
 		gridView.setNumColumns(3);
 		gridView.setAdapter(adapter);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
@@ -121,7 +99,7 @@ public class MainActivity extends CommunicationBaseActivity {
 					goTo(RoadCondition.class, false);
 					break;
 				case 10:
-					goTo(InfomationActivity.class, false);
+					goTo(InformationActivity.class, false);
 					break;
 				case 11:
 					goToForResult(RentInfoActivity.class, false, ActivityCaller.RENT.getValue());
@@ -131,14 +109,9 @@ public class MainActivity extends CommunicationBaseActivity {
 					goToForResult(PreferenceActivity.class, false, ActivityCaller.RENT.getValue());
 					// goTo(PreferenceActivity.class, false);
 					break;
-
-				default:
-					break;
 				}
 			}
-
 		});
-
 	}
 
 	public void goToForResult(Class<?> clazz, boolean clearTop, int requestCode) {
@@ -163,12 +136,9 @@ public class MainActivity extends CommunicationBaseActivity {
 
 	private class GridViewAdapter extends BaseAdapter {
 
-		// GridViewAdapter adapter = new GridViewAdapter(items,
-		// R.layout.cell_main_gridview, new String[] { "image",
 		private int[] image;
 		private String[] imgText;
 		private int layout;
-		private List<Map<String, Object>> items;
 		private DisplayMetrics metrics;
 
 		public GridViewAdapter(int layout, int[] image, String[] imgText) {
@@ -217,8 +187,6 @@ public class MainActivity extends CommunicationBaseActivity {
 
 			if (!convertView.isFocused()) {
 				viewHolder.img.setBackgroundResource(image[position]);
-			} else {
-
 			}
 			viewHolder.txv.setText(imgText[position]);
 
@@ -243,7 +211,6 @@ public class MainActivity extends CommunicationBaseActivity {
 					intent.putExtra("FINISH", 1);
 					setResult(-10, intent);
 					finish();
-					
 				}
 			};
 			uit.showDialog_route_plan_choice(getString(R.string.confirm_close_app), null, "確定", "取消");
@@ -266,94 +233,7 @@ public class MainActivity extends CommunicationBaseActivity {
 		if (resultCode == RESULT_OK) {
 			itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
 			setResult(RESULT_OK, itenCaller);
-			// if (requestCode == ActivityCaller.ADDRESS.getValue()) {
-			// ContextMenuOptions option = (ContextMenuOptions)
-			// data.getSerializableExtra("Action");
-			// String addressPart = data.getStringExtra("addressResult");
-			// double[] addressXY = data.getDoubleArrayExtra("addressLocation");
-			// itenCaller.putExtra("Action", option);
-			// itenCaller.putExtra("Name", addressPart);
-			// itenCaller.putExtra("Location", new GeoPoint(addressXY[1],
-			// addressXY[2]));
-			// setResult(RESULT_OK, itenCaller);
-			//
-			// } else if (requestCode == ActivityCaller.POI.getValue()) {
-			// itenCaller.putExtra("Action",
-			// data.getSerializableExtra("Action"));
-			// setResult(RESULT_OK, itenCaller);
-			//
-			// } else if (requestCode == ActivityCaller.SPOI.getValue()
-			// || requestCode == ActivityCaller.SPOI_CATALOG.getValue()) {
-			// itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
-			// setResult(RESULT_OK, itenCaller);
-			// } else if (requestCode == ActivityCaller.FAVORITE.getValue()) {
-			// itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
-			// setResult(RESULT_OK, itenCaller);
-			// } else if (requestCode == ActivityCaller.RENT.getValue()) {
-			// itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
-			// setResult(RESULT_OK, itenCaller);
-			// } else if (resultCode == RESULT_FIRST_USER) {
-			// setResult(RESULT_FIRST_USER);
-			// }
 			finish();
-		}
-	}
-
-	private void GCM() {
-		checkNotNull(SERVER_URL, "SERVER_URL");
-		checkNotNull(SENDER_ID, "SENDER_ID");
-		// Make sure the device has the proper dependencies.
-		GCMRegistrar.checkDevice(this);
-		// Make sure the manifest was properly set - comment out this line
-		// while developing the app, then uncomment it when it's ready.
-		GCMRegistrar.checkManifest(this);
-		// setContentView(R.layout.main);
-		// mDisplay = (TextView) findViewById(R.id.display);
-		registerReceiver(mHandleMessageReceiver, new IntentFilter(DISPLAY_MESSAGE_ACTION));
-		final String regId = GCMRegistrar.getRegistrationId(this);
-		if (regId != "") {
-
-		} else if (regId.equals("")) {
-			// Automatically registers application on startup.
-			// registerReceiver(mHandleMessageReceiver, new
-			// IntentFilter(DISPLAY_MESSAGE_ACTION));
-			GCMRegistrar.register(this, SENDER_ID);
-		}// Device is already registered on GCM, check server.
-		if (GCMRegistrar.isRegisteredOnServer(this)) {
-			// Skips registration.
-			// mDisplay.append(getString(R.string.already_registered) +
-			// "\n");
-		} else {
-			// Try to register again, but not in the UI thread.
-			// It's also necessary to cancel the thread onDestroy(),
-			// hence the use of AsyncTask instead of a raw thread.
-			final Context context = this;
-			mRegisterTask = new AsyncTask<Void, Void, Void>() {
-
-				@Override
-				protected Void doInBackground(Void... params) {
-					boolean registered = ServerUtilities.register(context, regId);
-					Log.i("DEBUG", "" + registered);
-
-					// At this point all attempts to register with the app
-					// server failed, so we need to unregister the device
-					// from GCM - the app will try to register again when
-					// it is restarted. Note that GCM will send an
-					// unregistered callback upon completion, but
-					// GCMIntentService.onUnregistered() will ignore it.
-					if (!registered) {
-						GCMRegistrar.unregister(context);
-					}
-					return null;
-				}
-
-				@Override
-				protected void onPostExecute(Void result) {
-					mRegisterTask = null;
-				}
-
-			};
-			mRegisterTask.execute(null, null, null);
 		}
 	}
 
@@ -362,26 +242,4 @@ public class MainActivity extends CommunicationBaseActivity {
 			throw new NullPointerException(getString(R.string.error_config, name));
 		}
 	}
-
-	private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
-			// mDisplay.append(newMessage + "\n");
-		}
-	};
-
-	@Override
-	protected void onDestroy() {
-
-		if (mRegisterTask != null) {
-			mRegisterTask.cancel(true);
-		}
-
-		unregisterReceiver(mHandleMessageReceiver);
-		GCMRegistrar.onDestroy(getApplicationContext());
-		finish();
-		super.onDestroy();
-	}
-	
 }

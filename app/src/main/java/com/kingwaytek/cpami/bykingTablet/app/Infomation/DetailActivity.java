@@ -220,7 +220,7 @@ public class DetailActivity extends Activity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (this.getIntent().getStringExtra("GCM") != null) {
                 Intent intent = new Intent();
-                intent.setClass(this, InfomationActivity.class);
+                intent.setClass(this, InformationActivity.class);
                 startActivity(intent);
                 finish();
             } else {

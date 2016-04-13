@@ -1,7 +1,5 @@
 package com.example.actionsheet;
 
-import com.kingwaytek.cpami.bykingTablet.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -12,11 +10,9 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SlidingDrawer;
+
+import com.kingwaytek.cpami.bykingTablet.R;
 
 public class ActionSheet extends LinearLayout {
 
@@ -46,8 +42,7 @@ public class ActionSheet extends LinearLayout {
 		init();
 	}
 
-	public void setOnActionSheetButtonClickListener(
-			ActionSheetButtonClickListener listener) {
+	public void setOnActionSheetButtonClickListener(ActionSheetButtonClickListener listener) {
 		this.aslistener = listener;
 	}
 
@@ -55,13 +50,13 @@ public class ActionSheet extends LinearLayout {
 		this.setBackgroundColor(0x7f000000);
 		// this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 		// LayoutParams.MATCH_PARENT));
-		LayoutInflater inflater = (LayoutInflater) this.context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layout = inflater.inflate(actionSheet_layout, null);
 		View sub;
+
 		int position;
 		for (int i = 0; i < sub_layout.length; i++) {
-			sub = (View) layout.findViewById(sub_layout[i][0]);
+			sub = layout.findViewById(sub_layout[i][0]);
 			sub.setTag(i);
 			if (sub_layout[i][1] == 1) {
 				sub.setVisibility(View.GONE);
@@ -70,8 +65,7 @@ public class ActionSheet extends LinearLayout {
 				@Override
 				public void onClick(View view) {
 					int index = Integer.valueOf(view.getTag().toString());
-					aslistener.onButtonClick(ActionSheet.this, index,
-							sub_layout[index][0]);
+					aslistener.onButtonClick(ActionSheet.this, index, sub_layout[index][0]);
 					hide();
 				}
 			});
@@ -167,7 +161,6 @@ public class ActionSheet extends LinearLayout {
 	}
 
 	public interface ActionSheetButtonClickListener {
-		public void onButtonClick(ActionSheet actionsheet, int index, int id);
-
+		void onButtonClick(ActionSheet actionsheet, int index, int id);
 	}
 }
