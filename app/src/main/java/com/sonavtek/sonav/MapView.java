@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -19,8 +18,8 @@ import android.view.ViewGroup;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
-import com.kingwaytek.cpami.bykingTablet.app.Util;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
 

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -36,7 +35,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
 import com.kingwaytek.cpami.bykingTablet.sql.Favorite;
 import com.kingwaytek.cpami.bykingTablet.sql.History;

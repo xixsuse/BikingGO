@@ -1,24 +1,19 @@
 package com.kingwaytek.cpami.bykingTablet.app.poi;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
-import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog;
-import com.kingwaytek.cpami.bykingTablet.app.Util;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
-import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil.ToggleSwitch;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog.DialogType;
 import com.kingwaytek.cpami.bykingTablet.sql.POI;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;

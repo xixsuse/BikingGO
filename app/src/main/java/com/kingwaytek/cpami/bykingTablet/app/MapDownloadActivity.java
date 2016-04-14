@@ -1,12 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -15,14 +8,20 @@ import android.os.StatFs;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.download.DownloadMapUIManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
-public class MapDownloadActivity extends Activity implements
-		OnItemClickListener{
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+
+public class MapDownloadActivity extends Activity implements OnItemClickListener{
 
 	/* DIRs */
 	public static final String DIR_TEMP = "BikingTemp";
@@ -30,8 +29,7 @@ public class MapDownloadActivity extends Activity implements
 	// private static final String DIR_DESTINATION = "BikingData";
 
 	/* Single selection list */
-	private static final String[] LIST_AREA = new String[] { "全區下載", "北區",
-			"中區", "離島" };
+	private static final String[] LIST_AREA = new String[] { "全區下載", "北區", "中區", "離島" };
 	private static final String[] LIST_AREA_CONTEXT = new String[] { "",
 			"臺北市、新北市、宜蘭縣、基隆市、桃園縣、新竹縣、新竹市、苗栗縣", "大臺中、彰化縣、南投縣、雲林縣", "金門" };
 
@@ -92,8 +90,7 @@ public class MapDownloadActivity extends Activity implements
 	private void initViews() {
 		listView = (ListView) this.findViewById(R.id.listView1);
 
-		adapter = new MapDownloadAdapter(this, LIST_AREA, LIST_AREA_CONTEXT,
-				area);
+		adapter = new MapDownloadAdapter(this, LIST_AREA, LIST_AREA_CONTEXT, area);
 
 		listView.setAdapter(adapter);
 
@@ -125,11 +122,9 @@ public class MapDownloadActivity extends Activity implements
 			View view = listView.getChildAt(i);
 
 			if (i == arg2) {
-				((ImageView) view.findViewById(R.id.cell_imageview))
-						.setVisibility(View.VISIBLE);
+				view.findViewById(R.id.cell_imageview).setVisibility(View.VISIBLE);
 			} else {
-				((ImageView) view.findViewById(R.id.cell_imageview))
-						.setVisibility(View.INVISIBLE);
+				view.findViewById(R.id.cell_imageview).setVisibility(View.INVISIBLE);
 			}
 		}
 	}

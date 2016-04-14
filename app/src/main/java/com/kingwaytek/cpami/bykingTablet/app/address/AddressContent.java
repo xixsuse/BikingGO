@@ -16,7 +16,7 @@ import com.example.actionsheet.ActionSheet.ActionSheetButtonClickListener;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;

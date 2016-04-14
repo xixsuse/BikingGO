@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
 import com.kingwaytek.cpami.bykingTablet.app.POI_SMS;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.sql.Favorite;
 import com.kingwaytek.cpami.bykingTablet.sql.History;

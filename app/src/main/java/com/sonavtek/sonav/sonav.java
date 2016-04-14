@@ -1,11 +1,12 @@
 package com.sonavtek.sonav;
 
-import android.R.integer;
-import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnEngineReadyCallBack;
 
 /**
  * This class provides native methods of native library provided by AnchorPoint.
@@ -178,6 +179,12 @@ public class sonav extends Handler {
 	private int count_getMapPixelColors;
 	private OnSonavEventListener mapEventListener;
 
+    /**
+     * 2016/04/14
+     * Add callBack interface by Vincent.
+     */
+    private OnEngineReadyCallBack engineCallBack;
+
 	/**
 	 * The instance should be only one. Other classes should call getInstance()
 	 * method to get the singleton.
@@ -226,20 +233,23 @@ public class sonav extends Handler {
 
 	/**
 	 * Initialize the engine.
+     *
+     * 2016/04/14
+     * Modified by Vincent.
 	 * 
-	 * @param activity
-	 *            The activity to get information about the device.
-	 * @param dataPath
-	 *            Path contains data for the engine.
+	 * @param context The context to get information about the device.
+	 * @param dataPath Path contains data for the engine.
+     * @param engineCallBack To get the state ready call back when engine was ready.
 	 */
-	public void init(Activity activity, String dataPath) {
+	public void init(Context context, String dataPath, OnEngineReadyCallBack engineCallBack) {
 		setDataPath(dataPath);
 
-		DisplayMetrics dm = new DisplayMetrics();
-		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
 		setMapSize(dm.widthPixels, dm.heightPixels, dm.widthPixels, dm.heightPixels);
 		// setMapSize(300, 300, 300, 300);
+
+        this.engineCallBack = engineCallBack;
+
 		init();
 	}
 
@@ -523,32 +533,42 @@ public class sonav extends Handler {
 	public void handleMessage(Message msg) {
 		super.handleMessage(msg);
 
-		switch (msg.what) {
-		case EngineEvent.AM_START: // 25577
-			state = STATE_INITIALIZING;
-			break;
-		case EngineEvent.AM_CREATE: // 25576
-			// The STATE_READY will be set in another place
-			// state = STATE_READY;
-			break;
-		case EngineEvent.AM_PAINT: // 25550
-			if (state != STATE_READY) {
-				setmapsize(this.mapWidth, this.mapHeight);
-				state = STATE_READY;
-				repaintmap();
-			}
-			break;
-		case EngineEvent.AM_PLAYSOUND: // 25583
-			String url = getsnd();
-			Log.d(getClass().toString(), "handleMessage: url=" + url);
-			if (url.length() > 2) {
-				soundPlayer.addNewSound(url);
-			}
-			break;
-		default: // unhandled messages
-			break;
-		}
-	}
+        switch (msg.what) {
+            case EngineEvent.AM_START: // 25577
+                state = STATE_INITIALIZING;
+                engineCallBack.onEngineInitializing();
+                break;
+
+            case EngineEvent.AM_CREATE: // 25576
+                // The STATE_READY will be set in another place
+                // state = STATE_READY;
+                break;
+
+            case EngineEvent.AM_PAINT: // 25550
+                if (state != STATE_READY) {
+                    setmapsize(this.mapWidth, this.mapHeight);
+                    state = STATE_READY;
+                    engineCallBack.onEngineReady();
+                    repaintmap();
+                }
+                break;
+
+            case EngineEvent.AM_PLAYSOUND: // 25583
+                String url = getsnd();
+                Log.d(getClass().toString(), "handleMessage: url=" + url);
+                if (url.length() > 2) {
+                    soundPlayer.addNewSound(url);
+                }
+                break;
+
+            default: // unhandled messages
+                break;
+        }
+    }
+
+    public void callOnEngineInitFailed() {
+        engineCallBack.onEngineInitFailed();
+    }
 
 	/*
 	 * bellow are native methods for using map.

@@ -1,6 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app.poi;
 
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -14,9 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
-import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil.ToggleSwitch;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog.DialogType;
 import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
 import com.kingwaytek.cpami.bykingTablet.sql.POI;

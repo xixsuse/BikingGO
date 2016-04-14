@@ -17,6 +17,9 @@ import com.sonavtek.sonav.sonav;
  * 使用者定位監聽器
  * 
  * @author Harvey Cheng(harvey@kingwaytek.com)
+ *
+ * 2016/04/14
+ * Modified by Vincent.
  */
 public class GPSListener implements LocationListener {
 
@@ -52,8 +55,7 @@ public class GPSListener implements LocationListener {
 		if (manager == null) {
 			synchronized (GPSListener.class) {
 				if (manager == null) {
-					manager = (LocationManager) ctx
-							.getSystemService(Context.LOCATION_SERVICE);
+					manager = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
 
 					provider = manager.getBestProvider(new Criteria(), true);
 				}
@@ -65,18 +67,22 @@ public class GPSListener implements LocationListener {
 		boolean identified = false;
 
 		if (loc != null) {
-			Log.d(getClass().toString(), "onLocationChanged=" + loc
-					+ ", extra=" + loc.getExtras());
+			Log.d(getClass().toString(), "onLocationChanged=" + loc + ", extra=" + loc.getExtras());
 
 			identified = true;
 			lon = loc.getLongitude();
 			lat = loc.getLatitude();
-			Log.i("GPSListener.java", "loc.getLongitude=" + lon + " , "
-					+ "loc.getLatitude()=" + lat);
-		} else {
+			Log.i("GPSListener.java", "loc.getLongitude=" + lon + " , " + "loc.getLatitude()=" + lat);
+		}
+        else {
 			Log.w(getClass().toString(), "getLastKnownLocation");
 
-			loc = manager.getLastKnownLocation(provider);
+            try {
+                loc = manager.getLastKnownLocation(provider);
+            }
+            catch (SecurityException e) {
+                e.printStackTrace();
+            }
 		}
 
 		if (loc != null) {
@@ -89,8 +95,7 @@ public class GPSListener implements LocationListener {
 			engine.setgpsvalue(toEngineData(loc, identified));
 
 			// 設定使用者的位置旗標
-			engine.setflagpoint(MapView.USER_LOCATION_POINT,
-					loc.getLongitude(), loc.getLatitude());
+			engine.setflagpoint(MapView.USER_LOCATION_POINT, loc.getLongitude(), loc.getLatitude());
 		}
 
 	}
@@ -122,17 +127,20 @@ public class GPSListener implements LocationListener {
 	/**
 	 * Enable/disable this listener.
 	 * 
-	 * @param enabled
-	 *            Set true if to enable or false to disable.
+	 * @param enabled Set true if to enable or false to disable.
 	 */
 	public synchronized void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 
-		if (enabled && provider != null) {
-			manager.requestLocationUpdates(provider, minTime, minDistance, this);
-		} else {
-			manager.removeUpdates(this);
-		}
+        try {
+            if (enabled && provider != null)
+                manager.requestLocationUpdates(provider, minTime, minDistance, this);
+            else
+                manager.removeUpdates(this);
+        }
+        catch (SecurityException e) {
+            e.printStackTrace();
+        }
 	}
 
 	public static LocationManager getManager() {

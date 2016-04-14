@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ListSimpleAdapter;
 
 import org.apache.http.Header;

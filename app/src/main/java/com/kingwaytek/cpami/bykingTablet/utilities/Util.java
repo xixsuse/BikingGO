@@ -1,14 +1,15 @@
-package com.kingwaytek.cpami.bykingTablet.app;
-
-import java.util.ArrayList;
+package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.kingwaytek.cpami.bykingTablet.app.CityObject;
 import com.kingwaytek.cpami.bykingTablet.data.ICity;
 import com.sonavtek.sonav.sonav;
+
+import java.util.ArrayList;
 
 public class Util {
 

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,8 +14,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 public class RoadCondition extends ListActivity {
 	// private Button gohome;

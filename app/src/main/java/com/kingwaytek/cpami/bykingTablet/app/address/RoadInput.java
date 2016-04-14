@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
 import com.kingwaytek.cpami.bykingTablet.R;

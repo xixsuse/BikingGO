@@ -1,0 +1,31 @@
+<resources>
+
+    <!--
+         Customize dimensions originally defined in res/values/dimens.xml (such as
+         screen margins) for sw600dp devices (e.g. 7" tablets) here.
+    -->
+    
+    <!-- Keyboard textSize -->
+    <dimen name="actionbar_item_height">@dimen/sw600dp_actionbar_item_height</dimen>
+    <dimen name="actionbar_height">@dimen/sw600dp_actionbar_height</dimen>
+    <dimen name="actionbar_height_little_higher">@dimen/sw600dp_actionbar_height_little_higher</dimen>
+    <dimen name="actionbar_height_more_higher">@dimen/sw600dp_actionbar_height_more_higher</dimen>
+    <dimen name="actionbar_height_higher">@dimen/sw600dp_actionbar_height_higher</dimen>
+
+	<dimen name="font_text_size_s">@dimen/sw600dp_font_size_s</dimen>
+	<dimen name="font_text_size_m">@dimen/sw600dp_font_size_m</dimen>
+	<dimen name="font_text_size_l">@dimen/sw600dp_font_size_l</dimen>
+	<dimen name="font_text_size_xl">@dimen/sw600dp_font_size_xl</dimen>
+	<dimen name="font_text_size_xxl">@dimen/sw600dp_font_size_xxl</dimen>
+	<dimen name="font_text_size_super">@dimen/sw600dp_font_size_super</dimen>
+
+	<dimen name="padding_size_s">@dimen/sw600dp_padding_size_s</dimen>
+	<dimen name="padding_size_m">@dimen/sw600dp_padding_size_m</dimen>
+	<dimen name="padding_size_l">@dimen/sw600dp_padding_size_l</dimen>
+	<dimen name="padding_size_xl">@dimen/sw600dp_padding_size_xl</dimen>
+	<dimen name="padding_size_xxl">@dimen/sw600dp_padding_size_xxl</dimen>
+	<dimen name="padding_size_super">@dimen/sw600dp_padding_size_super</dimen>
+
+    <dimen name="icon_common_size">@dimen/sw600dp_icon_common_size</dimen>
+
+</resources>

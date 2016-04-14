@@ -25,7 +25,7 @@ import android.widget.Toast;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransportList;
 
 import org.apache.http.HttpEntity;
@@ -387,7 +387,7 @@ public class Report extends Activity implements OnItemSelectedListener {
 
                     UtilDialog uit = new UtilDialog(Report.this);
                     uit.showDialog_route_plan_choice(
-                            getString(R.string.dialog_gps_message), null,
+                            getString(R.string.gps_unable_to_get_location), null,
                             getString(R.string.dialog_ok_button_text), null);
                 } else if (msg.what == GET_WEB_FAIL) {
                     Toast.makeText(Report.this, "上傳失敗", Toast.LENGTH_LONG).show();

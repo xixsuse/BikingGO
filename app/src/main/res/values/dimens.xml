@@ -1,6 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="dip10">10dip</dimen>
     <dimen name="dip5">5dip</dimen>
     <dimen name="dip3">3dip</dimen>
+
+    <!-- style theme -->
+    <dimen name="my_action_menu_text_size">14sp</dimen>
+    <dimen name="action_bar_title_margin_left">40dp</dimen>
+    <dimen name="rating_bar_style_minHeight">35dip</dimen>
+    <dimen name="rating_bar_style_maxHeight">35dip</dimen>
+
+    <dimen name="font_text_small_size">@dimen/font_text_size_s</dimen>
+    <dimen name="font_text_medium_size">@dimen/font_text_size_m</dimen>
+    <dimen name="font_text_large_size">@dimen/font_text_size_l</dimen>
+    <dimen name="font_text_xlarge_size">@dimen/font_text_size_xl</dimen>
+    <dimen name="font_text_xxlarge_size">@dimen/font_text_size_xxl</dimen>
+    <dimen name="font_text_super_size">@dimen/font_text_size_super</dimen>
+
+    <dimen name="icon_marker_common_size">@dimen/icon_common_size</dimen>
+
+    <dimen name="list_item_poi_icon_padding">5dp</dimen>
+    <dimen name="list_item_poi_name_padding">5dp</dimen>
+    <dimen name="div_line_padding">4dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="text_left_right_padding">20dp</dimen>
+    <dimen name="common_padding_value">20dp</dimen>
+    <dimen name="common_logo_top_padding_value">35dp</dimen>
+    <dimen name="common_little_padding_value">10dp</dimen>
+    <dimen name="editText_del_right_padding">8dp</dimen>
+    <dimen name="helper_slider_bottom_value">25dp</dimen>
+    <dimen name="review_text_padding">5dp</dimen>
+
+    <dimen name="home_background_padding_right">10dp</dimen>
+    <dimen name="home_background_padding_bottom">20dp</dimen>
+    <dimen name="entry_info_size">200dp</dimen>
+    <dimen name="poi_photo_size">100dp</dimen>
+    <!--  <dimen name="bottom_bar_height">50dp</dimen> -->
+    <dimen name="speed_digit_width">22dp</dimen>
+    <dimen name="speed_digit_height">35dp</dimen>
+    <dimen name="speed_unit_height">15dp</dimen>
+    <!-- <dimen name="speed_unit_text_height">13dp</dimen> -->
+    <dimen name="speed_panel_width">150dp</dimen>
+    <dimen name="speed_panel_height">80dp</dimen>
+    <dimen name="compass_size">70dp</dimen>
+    <dimen name="map_move_icon_size">50dp</dimen>
+    <dimen name="remain_dist_group_width">100dp</dimen>
+    <dimen name="remain_dist_group_height">50dp</dimen>
+    <dimen name="poi_button_margin">@dimen/common_little_padding_value</dimen>
+
+    <!-- new define -->
+    <dimen name="actionbar_height">@dimen/normal_actionbar_height</dimen>
+    <dimen name="actionbar_height_little_higher">@dimen/normal_actionbar_height_little_higher</dimen>
+    <dimen name="actionbar_height_more_higher">@dimen/normal_actionbar_height_more_higher</dimen>
+    <dimen name="actionbar_height_higher">@dimen/normal_actionbar_height_higher</dimen>
+
+    <dimen name="actionbar_item_height">@dimen/normal_actionbar_item_height</dimen>
+
+    <dimen name="font_text_size_s">@dimen/normal_font_size_s</dimen>
+    <dimen name="font_text_size_m">@dimen/normal_font_size_m</dimen>
+    <dimen name="font_text_size_l">@dimen/normal_font_size_l</dimen>
+    <dimen name="font_text_size_xl">@dimen/normal_font_size_xl</dimen>
+    <dimen name="font_text_size_xxl">@dimen/normal_font_size_xxl</dimen>
+    <dimen name="font_text_size_super">@dimen/normal_font_size_super</dimen>
+
+    <dimen name="icon_common_size">@dimen/normal_icon_common_size</dimen>
+
+    <dimen name="padding_size_s">@dimen/normal_padding_size_s</dimen>
+    <dimen name="padding_size_m">@dimen/normal_padding_size_m</dimen>
+    <dimen name="padding_size_l">@dimen/normal_padding_size_l</dimen>
+    <dimen name="padding_size_xl">@dimen/normal_padding_size_xl</dimen>
+    <dimen name="padding_size_xxl">@dimen/normal_padding_size_xxl</dimen>
+    <dimen name="padding_size_super">@dimen/normal_padding_size_super</dimen>
+
 </resources>

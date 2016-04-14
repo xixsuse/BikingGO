@@ -21,7 +21,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.POI_SMS;
 import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
 import com.kingwaytek.cpami.bykingTablet.sql.Favorite;
 import com.kingwaytek.cpami.bykingTablet.sql.History;

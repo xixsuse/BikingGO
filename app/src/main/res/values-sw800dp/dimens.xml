@@ -1,0 +1,28 @@
+<resources>
+    
+    <!-- Keyboard textSize -->
+    <dimen name="actionbar_item_height">@dimen/sw800dp_actionbar_item_height</dimen>
+    <dimen name="actionbar_height">@dimen/sw800dp_actionbar_height</dimen>
+    <dimen name="actionbar_height_little_higher">@dimen/sw800dp_actionbar_height_little_higher</dimen>
+    <dimen name="actionbar_height_more_higher">@dimen/sw800dp_actionbar_height_more_higher</dimen>
+    <dimen name="actionbar_height_higher">@dimen/sw800dp_actionbar_height_higher</dimen>
+
+	<dimen name="font_text_size_s">@dimen/sw800dp_font_size_s</dimen>
+	<dimen name="font_text_size_m">@dimen/sw800dp_font_size_m</dimen>
+	<dimen name="font_text_size_l">@dimen/sw800dp_font_size_l</dimen>
+	<dimen name="font_text_size_xl">@dimen/sw800dp_font_size_xl</dimen>
+	<dimen name="font_text_size_xxl">@dimen/sw800dp_font_size_xxl</dimen>
+	<dimen name="font_text_size_super">@dimen/sw800dp_font_size_super</dimen>
+
+	<dimen name="padding_size_s">@dimen/sw800dp_padding_size_s</dimen>
+	<dimen name="padding_size_m">@dimen/sw800dp_padding_size_m</dimen>
+	<dimen name="padding_size_l">@dimen/sw800dp_padding_size_l</dimen>
+	<dimen name="padding_size_xl">@dimen/sw800dp_padding_size_xl</dimen>
+	<dimen name="padding_size_xxl">@dimen/sw800dp_padding_size_xxl</dimen>
+	<dimen name="padding_size_super">@dimen/sw800dp_padding_size_super</dimen>
+
+    <dimen name="icon_common_size">@dimen/normal_icon_common_size</dimen>
+    <dimen name="kiosk_main_menu_width">@dimen/sw800dp_kiosk_main_menu_width</dimen>
+    <dimen name="kiosk_icon_common_size">@dimen/sw800dp_kiosk_icon_common_size</dimen>
+    
+</resources>

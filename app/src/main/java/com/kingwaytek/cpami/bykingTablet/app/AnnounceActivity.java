@@ -27,7 +27,7 @@ public class AnnounceActivity extends Activity {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-		if (PreferenceActivity.isAnnouncementEnabled(AnnounceActivity.this).equalsIgnoreCase("false")) {
+		if (PreferenceActivity.isAnnouncementEnabled(getApplicationContext()).equalsIgnoreCase("false")) {
 
 			this.setContentView(R.layout.activtiy_annonce);
 

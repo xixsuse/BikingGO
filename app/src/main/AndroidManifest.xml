@@ -31,6 +31,7 @@
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.BROADCAST_SMS" />
 
     <!-- for 平板 -->
     <!--
@@ -42,12 +43,35 @@
     <!-- for 手機板簡訊 -->
     <uses-permission android:name="android.permission.SEND_SMS" />
 
+    <!-- For Google Map v2 -->
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+    <permission
+        android:name="com.kingwaytek.cpami.bykingTablet.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <!-- If using OpenGL ES version 2 -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
     <application
+        android:name=".AppController"
+        android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
         android:theme="@style/main_theme" >
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/GoogleMapApiKey" />
+
         <activity
             android:name=".app.StartupActivity"
             android:configChanges="orientation|screenSize"
@@ -58,21 +82,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".app.AnnounceActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+
         <activity
             android:name=".app.MapActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
 
-        <!--
-        <activity android:name="com.kingwaytek.cpami.bykingTablet.app.MapActivity"
-		   android:theme="@style/map_theme" />
-        -->
         <!-- 主畫面 -->
         <activity
             android:name=".app.MainActivity"
@@ -80,12 +102,14 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.PreferenceActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.MapDownloadActivity"
             android:configChanges="orientation|screenSize"
@@ -120,30 +144,35 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.address.TownSelection"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.address.RoadInput"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.address.RoadSelection"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.address.AddressContent"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- POI活動 -->
         <activity
             android:name=".app.poi.POIListView"
@@ -151,30 +180,35 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.poi.POISelectionView"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.poi.POIMethodSelection"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.poi.KeywordInput"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.poi.CitySelection"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- <activity android:name=".app.poi.POIContent"></activity> -->
         <activity
             android:name=".app.poi.POIMapContent"
@@ -182,18 +216,21 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.poi.SpoiContent"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.poi.SpoiCatalog"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- 軌跡活動 -->
         <activity
             android:name=".app.track.TrackListView"
@@ -201,18 +238,21 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.track.TrackTypeSelectionActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.track.TrackRecord"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- <activity android:name=".app.track.TrackContent"></activity> -->
         <activity
             android:name=".app.track.TrackMapContent"
@@ -220,12 +260,14 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.track.TrackDownLoad"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- 共用活動 -->
         <activity
             android:name=".view.UserDataListView"
@@ -233,6 +275,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- 我的最愛 -->
         <activity
             android:name=".app.MyFavorite"
@@ -240,6 +283,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- 查詢記錄 -->
         <activity
             android:name=".app.MyHistory"
@@ -247,6 +291,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- 分享SMS -->
         <activity
             android:name=".app.POI_SMS"
@@ -254,12 +299,14 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.SMSMapContent"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/generalTitleBarStyle" >
         </activity>
+
         <!-- 快速測試用 -->
         <!-- activity android:name=".app.DbBench"></activity> -->
         <!-- 設定 -->
@@ -269,36 +316,42 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.OperationSetting"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.VersionUpdate.Update"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.VersionUpdate.ConnectWeb"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.NaviSetting"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.About"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- GPS相片 -->
         <activity
             android:name=".app.PhotoGallery"
@@ -306,12 +359,14 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.ShowPhoto"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.UICamera"
             android:configChanges="orientation|screenSize"
@@ -324,6 +379,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/generalTitleBarStyle" >
         </activity>
+
         <!-- 大眾運輸 -->
         <activity
             android:name=".bus.PublicTransport"
@@ -331,17 +387,20 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".bus.PublicTransportList"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".bus.PublicTransportTable"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
+
         <!-- 路徑規劃 -->
         <activity
             android:name=".app.RoadList"
@@ -349,6 +408,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+
         <!-- 沿途景點 -->
         <activity
             android:name=".app.AroundScenic"
@@ -363,24 +423,28 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".TrafficCondition.Report"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".TrafficCondition.TrafficUpdate"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".TrafficCondition.TrafficDetail"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+
         <!-- 活動資訊 -->
         <activity
             android:name=".app.Infomation.InformationActivity"
@@ -388,12 +452,14 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.Infomation.DetailActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- Ubike -->
         <activity
             android:name=".app.rentInfo.UbikeActivity"
@@ -401,6 +467,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <!-- 租車資訊 -->
         <activity
             android:name=".app.rentInfo.RentInfoActivity"
@@ -408,24 +475,28 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.rentInfo.RentStationActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.rentInfo.UbkieListActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.rentInfo.UbikeFavorAvtivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+
         <activity
             android:name=".app.rentInfo.ParkActivity"
             android:configChanges="orientation|screenSize"
@@ -455,9 +526,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

@@ -12,7 +12,7 @@ import android.widget.ListView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
 import com.kingwaytek.cpami.bykingTablet.app.IsAllowedConnection;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 import org.apache.http.Header;
 import org.json.JSONArray;

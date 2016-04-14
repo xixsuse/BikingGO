@@ -54,6 +54,8 @@
     <string name="gps_service_disable">目前無GPS服務</string>
     <string name="gps_no_last_location">查無上次定位記錄</string>
     <string name="gps_position_finish">GPS定位完成</string>
+    <string name="gps_unable_to_get_location">無法取得您目前的位置</string>
+    <string name="gps_is_not_enabled">您尚未開啟系統GPS功能,請先開啟。</string>
 
     <!-- AP Functions -->
     <string name="byking_function_address_search_title">地址查詢</string>
@@ -105,6 +107,7 @@
     <string name="data_empty_msg">沒有項目</string>
     <string name="data_delete_all_confirm_msg">確定刪除所有項目？</string>
     <string name="data_delete_selection_confirm_msg">確定刪除選擇項目？</string>
+    <string name="data_not_install_yet">尚未安裝圖資，是否前往下載?</string>
 
     <!-- POI Search -->
     <string name="poi_search_method_prompt">請選擇查詢方式</string>
@@ -149,7 +152,6 @@
     <string name="dialog_web_message">以下功能需使用網路,\n您可能需要支付網路費,\n是否要繼續?</string>
     <string name="dialog_web_message2">目前無網路連線</string>
     <string name="dialog_web_message3">下載失敗</string>
-    <string name="dialog_gps_message">無法取得您目前的位置</string>
     <string name="dialog_navi_message">已到達目的地</string>
 
     <!-- Context Menu Options -->
@@ -170,7 +172,7 @@
     <string name="cell_infomation_start">Sart</string>
     <string name="cell_infomation_end">End</string>
     <string name="cell_infomation_dash">" - "</string>
-    <string name="infomation_title">活動訊息</string>
+    <string name="information_title">活動訊息</string>
 
     <!-- 訊息詳細 -->
     <string name="infomation_detail_title">詳細內容</string>

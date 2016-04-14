@@ -85,21 +85,22 @@ public class PreferenceActivity extends Activity implements OnItemClickListener 
     /** User is female */
     public static final int FEMALE = 2;
 
-    /* Widgets */
-    private GridView gridView;
-
     private Class<?>[] destinationList = new Class<?>[] {
             OperationSetting.class, NaviSetting.class, HealthManager.class,
             Update.class, About.class, MapDownloadActivity.class };
 
-    /** Called when the activity is first created. */
+    /**
+     * 2016/04/14
+     *
+     * Modified by Vincent.
+     */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         setContentView(R.layout.preferencelist);
 
-        gridView = (GridView) this.findViewById(R.id.gridView1);
+        GridView gridView = (GridView) this.findViewById(R.id.gridView1);
 
         PreferenceAdapter adapter = new PreferenceAdapter(this);
 
@@ -141,13 +142,11 @@ public class PreferenceActivity extends Activity implements OnItemClickListener 
     /**
      * Get instance of {@link SharedPreferences} of the context.
      *
-     * @param ctx
-     *            The context.
+     * @param ctx The context.
      * @return instance of {@link SharedPreferences}.
      */
     public static SharedPreferences getSharedPreferences(Context ctx) {
-        return ctx.getSharedPreferences(
-                ctx.getString(R.string.preference_file), MODE_PRIVATE);
+        return ctx.getSharedPreferences(ctx.getString(R.string.preference_file), MODE_PRIVATE);
     }
 
     /**
@@ -157,10 +156,8 @@ public class PreferenceActivity extends Activity implements OnItemClickListener 
      *            The context.
      * @return instance of SharedPreferences.Editor .
      */
-    public static SharedPreferences.Editor getSharedPreferencesEditor(
-            Context ctx) {
-        return ctx.getSharedPreferences(
-                ctx.getString(R.string.preference_file), MODE_PRIVATE).edit();
+    public static SharedPreferences.Editor getSharedPreferencesEditor(Context ctx) {
+        return ctx.getSharedPreferences(ctx.getString(R.string.preference_file), MODE_PRIVATE).edit();
     }
 
     /**
@@ -202,8 +199,7 @@ public class PreferenceActivity extends Activity implements OnItemClickListener 
      * @return The path contains data for engine.
      */
     public static String getDataDirectory(Context ctx) {
-        return getSharedPreferences(ctx).getString(PREF_DATA_DIR,
-                ctx.getResources().getString(R.string.data_dir));
+        return getSharedPreferences(ctx).getString(PREF_DATA_DIR, ctx.getResources().getString(R.string.data_dir));
     }
 
     /**
@@ -226,8 +222,7 @@ public class PreferenceActivity extends Activity implements OnItemClickListener 
      * @return True if enabled, false if disabled or value not found.
      */
     public static String isMeteorolEnabled(Context ctx) {
-        return getSharedPreferences(ctx).getString(PREF_METEOROL_ENABLED,
-                ctx.getResources().getString(R.string.meteorol));
+        return getSharedPreferences(ctx).getString(PREF_METEOROL_ENABLED, ctx.getResources().getString(R.string.meteorol));
     }
 
     /**
@@ -274,8 +269,7 @@ public class PreferenceActivity extends Activity implements OnItemClickListener 
      * @return True if enabled, false if disabled or value not found.
      */
     public static String isTrackConfirmEnabled(Context ctx) {
-        return getSharedPreferences(ctx).getString(PREF_TRACK_CONFIRM_ENABLED,
-                ctx.getResources().getString(R.string.trackConfirmEnabled));
+        return getSharedPreferences(ctx).getString(PREF_TRACK_CONFIRM_ENABLED, ctx.getResources().getString(R.string.trackConfirmEnabled));
     }
 
     /**

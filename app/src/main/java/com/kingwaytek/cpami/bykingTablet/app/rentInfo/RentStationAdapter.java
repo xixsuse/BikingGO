@@ -4,18 +4,12 @@ import java.util.ArrayList;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.CityObject;
-import com.kingwaytek.cpami.bykingTablet.app.Util;
 
-import android.R.integer;
-import android.R.raw;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class RentStationAdapter extends BaseAdapter {

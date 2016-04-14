@@ -1,11 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.app.rentInfo;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,20 +9,17 @@ import android.widget.Button;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MapDownloadActivity;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
-import com.kingwaytek.cpami.bykingTablet.sql.SQLiteBot;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
+
+import java.io.IOException;
 
 public class RentInfoActivity extends Activity {
 
 	private Button stationButton;
 	private Button ubikeButton;
 	private Button parkButton;
-	private SQLiteBot sqliteDatabase;
-	private Cursor cursor;
-	private ActivityCaller listContent;
-	private ArrayList<String> cityStrings;
 	private int area;
 
 	@Override
@@ -63,19 +56,6 @@ public class RentInfoActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// Intent intent = new Intent();
-				// intent.putExtra("POI_Search", SearchMode.BY_SURROUNDING);
-				// intent.putExtra("POIList_Caller", ActivityCaller.POI);
-				// intent.putExtra("POI_Category", "POI_070401");
-				// Location loc =
-				// ApplicationGlobal.gpsListener.getLastLocation();
-				// if (loc != null) {
-				// intent.putExtra("Point_Lon", loc.getLongitude());
-				// intent.putExtra("Point_Lat", loc.getLatitude());
-				// }
-				// intent.setClass(RentInfoActivity.this, POIListView.class);
-				// startActivityForResult(intent,
-				// ActivityCaller.RENT.getValue());
 				Intent intent = new Intent();
 				intent.setClass(RentInfoActivity.this, ParkActivity.class);
 				startActivityForResult(intent, ActivityCaller.RENT.getValue());
@@ -102,13 +82,9 @@ public class RentInfoActivity extends Activity {
 						super.click_btn_2();
 					}
 				};
-				uit.showDialog_route_plan_choice(RentInfoActivity.this
-						.getResources().getString(R.string.dialog_web_message),
-						null, "????", "?謘?");
-				
+				uit.showDialog_route_plan_choice(getString(R.string.dialog_web_message), null, "確定", "取消");
 			}
 		});
-
 	}
 
 	@Override

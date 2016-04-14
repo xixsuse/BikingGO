@@ -38,7 +38,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.Unzip.AntZip;
 import com.kingwaytek.cpami.bykingTablet.Unzip.ZipCallBack;
 import com.kingwaytek.cpami.bykingTablet.app.Macro;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 /**
  * 下載UI Manager

@@ -23,7 +23,7 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

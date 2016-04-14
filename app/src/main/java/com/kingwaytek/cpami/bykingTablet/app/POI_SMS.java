@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

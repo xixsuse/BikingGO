@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
-import com.kingwaytek.cpami.bykingTablet.app.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.app.poi.POIListView;
 import com.kingwaytek.cpami.bykingTablet.sql.SQLiteBot;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.TableName;

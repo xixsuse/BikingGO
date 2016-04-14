@@ -19,7 +19,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
 import com.sonavtek.sonav.MapView;

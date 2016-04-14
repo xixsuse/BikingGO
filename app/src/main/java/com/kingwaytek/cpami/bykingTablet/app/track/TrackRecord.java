@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackEngine.TrackRecordingStatus;
 import com.kingwaytek.cpami.bykingTablet.hardware.BatteryNotifier;
 import com.kingwaytek.cpami.bykingTablet.sql.Track;

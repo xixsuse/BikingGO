@@ -3,7 +3,6 @@ package com.kingwaytek.cpami.bykingTablet.app.address;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog;
 import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ListViewAdapter;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;

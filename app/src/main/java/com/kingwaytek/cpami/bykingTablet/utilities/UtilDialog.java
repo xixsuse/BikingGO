@@ -1,4 +1,4 @@
-package com.kingwaytek.cpami.bykingTablet.app;
+package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.app.Dialog;
 import android.content.Context;

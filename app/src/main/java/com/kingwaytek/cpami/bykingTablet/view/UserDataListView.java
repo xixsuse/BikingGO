@@ -1,6 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.view;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,9 +26,8 @@ import com.example.actionsheet.ActionSheet;
 import com.example.actionsheet.ActionSheet.ActionSheetButtonClickListener;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.poi.POIMapContent;
-import com.kingwaytek.cpami.bykingTablet.app.track.TrackListView;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackMapContent;
 import com.kingwaytek.cpami.bykingTablet.sql.Favorite;
 import com.kingwaytek.cpami.bykingTablet.sql.History;

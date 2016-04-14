@@ -6,8 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,7 +15,9 @@ import android.view.WindowManager;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnEngineReadyCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.sonavtek.sonav.sonav;
 
 import java.io.File;
@@ -36,19 +36,10 @@ import java.io.OutputStream;
  *
  * Modified by Vincent on 2016/04/12.
  */
-public class StartupActivity extends CommunicationBaseActivity {
+public class StartupActivity extends CommunicationBaseActivity implements OnEngineReadyCallBack {
 
-    private static final int START_INIT = 1;
-
-    private static final int INIT_SUCCESS = 2;
-
-    private static final int INIT_FAILED = 3;
     private static final String DIR_DATA = "BikingData";
     private sonav engine;
-
-    private static Handler handler; // dealing with initialization events
-
-    private static Thread initializer; // Thread which doing initialization
 
     private LocationManager manager;
 
@@ -85,84 +76,6 @@ public class StartupActivity extends CommunicationBaseActivity {
 
         Intent startActivityIntent = StartupActivity.this.getIntent();
         Log.i("StartActivity.java", "startActivityIntent.getIntExtra(SMS,0)=" + startActivityIntent.getIntExtra("SMS", 0));
-
-        if (handler == null) {
-            handler = new Handler() {
-
-                @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-
-                    switch (msg.what) {
-                        case START_INIT:
-
-                            initializer = new Thread() {
-
-                                @Override
-                                public void run() {
-                                    initialize();
-
-                                    while (engine.getState() != sonav.STATE_READY) {
-                                        try {
-                                            Thread.sleep(500);
-                                        } catch (InterruptedException ex) {
-                                            Log.e(getClass().toString(), ex.getMessage(), ex);
-                                        }
-                                    }
-                                    try {
-                                        Thread.sleep(2000);
-                                    } catch (InterruptedException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-                                    handler.sendMessage(handler.obtainMessage(INIT_SUCCESS));
-                                }
-                            };
-
-                            initializer.start();
-
-                            break;
-
-                        case INIT_SUCCESS:
-                            engine.setpoiauto(0);
-                            engine.setpoivisible(pv6, pv4, pv2, 0);
-                            engine.setpoivisible(pv6, pv4, pv2, 1);
-                            engine.setpoivisible(pv6, pv4, pv2, 2);
-                            engine.setpoivisible(pv6, pv4, pv2, 3);
-                            engine.setpoivisible(pv6, pv4, pv2, 4);
-                            engine.setpoivisible(pv6, pv4, pv2, 5);
-
-                            /*** 清除marker ***/
-                            // engine.setflagpoint(0, -1, -1);
-                            engine.setflagpoint(1, -1, -1);
-                            engine.setflagpoint(2, -1, -1);
-                            engine.setflagpoint(3, -1, -1);
-                            engine.setflagpoint(5, -1, -1);
-                            /***************/
-
-                            Bundle params = getIntent().getExtras();
-                            Intent intent = new Intent(StartupActivity.this, AnnounceActivity.class);
-
-                            if (params != null) {
-                                intent.putExtra("SMSToMapActivity", 1);
-                                intent.putExtras(params);
-                            }
-                            startActivity(intent);
-                            finish();
-
-                            break;
-
-                        case INIT_FAILED:
-                            AlertDialogUtil.showMessage(StartupActivity.this, getString(R.string.msg_err), R.drawable.dialog_error);
-                            break;
-
-                        default:
-
-                            break;
-                    }
-                }
-            };
-        }
     }
 
     @Override
@@ -174,7 +87,6 @@ public class StartupActivity extends CommunicationBaseActivity {
         manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         // Check BikingData File
-        //File dir = new File("/sdcard/BikingData/");
         File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/" + DIR_DATA + "/");
 
         if (!dir.exists()) {
@@ -193,16 +105,15 @@ public class StartupActivity extends CommunicationBaseActivity {
                     android.os.Process.killProcess(android.os.Process.myPid());
                 }
             };
-            uit.showDialog_route_plan_choice("尚未安裝圖資，是否前往下載?", null, "確定", null);
+            uit.showDialog_route_plan_choice(getString(R.string.data_not_install_yet), null, getString(R.string.confirm), null);
             // Check GPS
         }
         else {
             if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 ApplicationGlobal.gpsListener.setEnabled(true);
-                handler.sendMessage(handler.obtainMessage(START_INIT));
+                engineInitialize();
             }
             else {
-//				if (isFirstIn) {
                 UtilDialog uit = new UtilDialog(StartupActivity.this) {
                     @Override
                     public void click_btn_1() {
@@ -214,19 +125,52 @@ public class StartupActivity extends CommunicationBaseActivity {
                     @Override
                     public void click_btn_2() {
                         super.click_btn_2();
-                        handler.sendMessage(handler.obtainMessage(START_INIT));
+                        engineInitialize();
                     }
                 };
-                uit.showDialog_route_plan_choice("您尚未開啟系統GPS功能,請先開啟。", null, "確定", "取消");
+                uit.showDialog_route_plan_choice(getString(R.string.gps_is_not_enabled), null,
+                        getString(R.string.confirm), getString(R.string.confirm_cancel));
             }
         }
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
+    public void onEngineInitializing() {
 
-        // anim.start();
+    }
+
+    @Override
+    public void onEngineReady() {
+        engine.setpoiauto(0);
+        engine.setpoivisible(pv6, pv4, pv2, 0);
+        engine.setpoivisible(pv6, pv4, pv2, 1);
+        engine.setpoivisible(pv6, pv4, pv2, 2);
+        engine.setpoivisible(pv6, pv4, pv2, 3);
+        engine.setpoivisible(pv6, pv4, pv2, 4);
+        engine.setpoivisible(pv6, pv4, pv2, 5);
+
+        /*** 清除marker ***/
+        // engine.setflagpoint(0, -1, -1);
+        engine.setflagpoint(1, -1, -1);
+        engine.setflagpoint(2, -1, -1);
+        engine.setflagpoint(3, -1, -1);
+        engine.setflagpoint(5, -1, -1);
+        /***************/
+
+        Bundle params = getIntent().getExtras();
+        Intent intent = new Intent(StartupActivity.this, AnnounceActivity.class);
+
+        if (params != null) {
+            intent.putExtra("SMSToMapActivity", 1);
+            intent.putExtras(params);
+        }
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onEngineInitFailed() {
+        AlertDialogUtil.showMessage(StartupActivity.this, getString(R.string.msg_err), R.drawable.dialog_error);
     }
 
     /**
@@ -237,16 +181,16 @@ public class StartupActivity extends CommunicationBaseActivity {
         return keyCode == KeyEvent.KEYCODE_MENU;
     }
 
-    private void initialize() {
+    private void engineInitialize() {
         try {
             // engine.setresizefont(3.5);//xxhdpi
             engine.setIconSize(1);
             engine.setresizefont(2);// xhdpis
-            engine.init(this, PreferenceActivity.getDataDirectory(this));
+            engine.init(getApplicationContext(), PreferenceActivity.getDataDirectory(this), this);
         }
         catch (Throwable t) {
             Log.e(getClass().toString(), t.getMessage(), t);
-            handler.sendMessage(handler.obtainMessage(INIT_FAILED));
+            engine.callOnEngineInitFailed();
         }
 
         DataVersion = getResources().getString(R.string.DataVersion);
@@ -259,6 +203,7 @@ public class StartupActivity extends CommunicationBaseActivity {
         String DATABASE_NAME = context.getString(R.string.SQLite_Usr_Database_Name);
         if (isInit)
             return;
+
         // 輸出路徑
         String outFileName = DATABASE_PATH + DATABASE_NAME;
 

@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.data.ITown;
 import com.kingwaytek.cpami.bykingTablet.view.ListViewAdapter;

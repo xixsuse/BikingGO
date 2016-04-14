@@ -1,8 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.track;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +9,7 @@ import android.widget.ImageButton;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.IsAllowedConnection;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 public class TrackTypeSelectionActivity extends Activity implements OnClickListener {
 

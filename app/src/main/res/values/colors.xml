@@ -20,4 +20,7 @@
     <color name="downloadlist_btn_color_pressed">#7baaaaaa</color>
     <color name="downloadlist_btn_color_normal">#7bcccccc</color>
 
+    <!-- ActionBar -->
+    <color name="actionbar_background_color">#53d769</color>
+
 </resources>

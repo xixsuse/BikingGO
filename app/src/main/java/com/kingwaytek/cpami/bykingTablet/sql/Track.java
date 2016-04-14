@@ -12,12 +12,10 @@ import android.database.SQLException;
 import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackEngine.TrackRecordingStatus;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.CursorColumn;
-import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.FavoriteColumn;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.TableName;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.TrackColumn;
 

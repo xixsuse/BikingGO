@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -18,13 +16,11 @@ import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
-import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
-import com.kingwaytek.cpami.bykingTablet.app.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil.ToggleSwitch;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog.DialogType;
 import com.kingwaytek.cpami.bykingTablet.view.ListViewAdapter;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
-import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.City;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.SearchMode;
 
 /**

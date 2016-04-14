@@ -40,6 +40,7 @@ import com.kingwaytek.cpami.bykingTablet.hardware.BatteryNotifier;
 import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
 import com.kingwaytek.cpami.bykingTablet.sql.Track;
 import com.kingwaytek.cpami.bykingTablet.sql.TrackPoint;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
 import com.kingwaytek.cpmi.maptag.MapIconDescriptionActivity;
@@ -648,7 +649,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                             }
                         };
                         uit.showDialog_route_plan_choice(
-                                getString(R.string.dialog_gps_message), null,
+                                getString(R.string.gps_unable_to_get_location), null,
                                 getString(R.string.dialog_ok_button_text), null);
                     }
                 }
@@ -1154,7 +1155,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                 }
                 else {
                     UtilDialog uit = new UtilDialog(MapActivity.this);
-                    uit.showDialog_route_plan_choice(getString(R.string.dialog_gps_message), null, "確定", null);
+                    uit.showDialog_route_plan_choice(getString(R.string.gps_unable_to_get_location), null, "確定", null);
                     return;
                 }
 
@@ -1626,7 +1627,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                 }
                 else if (msg.what == WEATHER_GPS_FAIL) {
                     UtilDialog uit = new UtilDialog(MapActivity.this);
-                    uit.showDialog_route_plan_choice(getString(R.string.dialog_gps_message), null, "確定", null);
+                    uit.showDialog_route_plan_choice(getString(R.string.gps_unable_to_get_location), null, "確定", null);
                 }
                 else if (msg.what == WEATHER_WEB_FAIL) {
                     UtilDialog uit = new UtilDialog(MapActivity.this);

@@ -3,6 +3,7 @@ package com.kingwaytek.cpami.bykingTablet.app;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.sonavtek.sonav.PathFinder;
 import com.sonavtek.sonav.ROADLISTDATA;
 import com.sonavtek.sonav.sonav;
@@ -10,19 +11,11 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.view.RoadlistAdapter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputFilter.LengthFilter;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RoadList extends Activity {
 	private String[] name;

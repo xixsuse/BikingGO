@@ -24,6 +24,7 @@ import com.kingwaytek.cpami.bykingTablet.app.poi.SpoiCatalog;
 import com.kingwaytek.cpami.bykingTablet.app.rentInfo.RentInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackListView;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransport;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
 

@@ -28,6 +28,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.jni.GPSTagNtvEngine;
 import com.kingwaytek.jni.PhotoAttribute;
 

@@ -17,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,7 +31,7 @@ import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
-import com.kingwaytek.cpami.bykingTablet.app.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransportList;
 
 public class TrafficUpdate extends ListActivity {
