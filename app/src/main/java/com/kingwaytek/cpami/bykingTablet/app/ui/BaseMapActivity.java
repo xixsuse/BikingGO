@@ -1,10 +1,12 @@
-package com.kingwaytek.cpami.bykingTablet.app;
+package com.kingwaytek.cpami.bykingTablet.app.ui;
 
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -22,14 +24,16 @@ import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 /**
- * Created by vincent.chang on 2016/4/14.
+ * 所有要使用 GoogleMap的地方都直接繼承這裡就好了！
+ *
+ * @author Vincent (2016/04/14)
  */
-public abstract class BaseMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public abstract class BaseMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    protected abstract void init();
     protected abstract String getActionBarTitle();
     protected abstract void findViews();
     protected abstract void setListener();
-    protected abstract void init();
 
     protected final String TAG = getClass().getSimpleName();
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -40,13 +44,13 @@ public abstract class BaseMapActivity extends FragmentActivity implements OnMapR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_base_map);
-
-        TextView title = (TextView) findViewById(R.id.actionBar_title);
-        title.setText(getActionBarTitle());
 
         findViews();
         getLocationManager();
+        setActionBar();
+
         buildMap();
     }
 
@@ -66,6 +70,23 @@ public abstract class BaseMapActivity extends FragmentActivity implements OnMapR
 
     private void getLocationManager() {
         locationManager = AppController.getInstance().getLocationManager();
+    }
+
+    private void setActionBar() {
+        ActionBar actionbar = getSupportActionBar();
+
+        if (notNull(actionbar)) {
+            actionbar.setDisplayShowTitleEnabled(false);
+            actionbar.setHomeButtonEnabled(false);
+            actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+            actionbar.setCustomView(R.layout.include_foolish_action_bar);
+            Toolbar toolbar = (Toolbar) actionbar.getCustomView().getParent();
+            toolbar.setContentInsetsAbsolute(0, 0);
+
+            TextView title = (TextView) actionbar.getCustomView().findViewById(R.id.actionBar_title);
+            title.setText(getActionBarTitle());
+        }
     }
 
     private void buildMap() {

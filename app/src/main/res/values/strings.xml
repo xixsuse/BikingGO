@@ -118,6 +118,7 @@
     <string name="poi_search_no_result">查無景點資料，請返回重新查詢</string>
     <string name="poi_search_result_options">定位完成，請選擇</string>
     <string name="poi_search_by_distance_no_result">無查詢結果。</string>
+    <string name="poi_search_location">地點查詢</string>
 
     <!-- Track Export Messages -->
     <string name="error_track_does_not_exist">軌跡不存在.</string>
@@ -277,5 +278,6 @@
     <string name="share_confirm_pressed">facebookShareConfirmPressed</string>
     <string name="map_tag_description">map_tag_description</string>
     <string name="meter">1000 公尺</string>
+    <string name="search_anywhere">Search Anywhere</string>
 
 </resources>

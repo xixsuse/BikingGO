@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,9 +28,6 @@ public class POIMethodSelection extends ListActivity {
 	private Intent itenCaller;
 	private ListViewAdapter listAdapter;
 
-	private TextView tvTitle;
-	private Button gohome;
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -39,7 +35,7 @@ public class POIMethodSelection extends ListActivity {
 
 		itenCaller = getIntent();
 		setContentView(R.layout.selection_listview_layout);
-		tvTitle = (TextView) findViewById(R.id.selection_listview_title);
+		TextView tvTitle = (TextView) findViewById(R.id.selection_listview_title);
 		tvTitle.setText(R.string.poi_search_method_prompt);
 		TextView titleBar = (TextView) findViewById(R.id.titlebar_text);
 		titleBar.setText(R.string.byking_function_poi_search_title);
@@ -59,7 +55,7 @@ public class POIMethodSelection extends ListActivity {
 	}
 
 	private List<String> fillMethodList() {
-		List<String> methodList = new ArrayList<String>(2);
+		List<String> methodList = new ArrayList<>(2);
 
 		methodList.add(SearchMode.BY_SURROUNDING.getTitle());
 		methodList.add(SearchMode.BY_KEYWORD.getTitle());

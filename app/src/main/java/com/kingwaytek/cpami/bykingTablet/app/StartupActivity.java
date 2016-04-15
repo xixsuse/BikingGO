@@ -16,7 +16,6 @@ import android.view.WindowManager;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnEngineReadyCallBack;
-import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.sonavtek.sonav.sonav;
 
@@ -66,11 +65,11 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
 
         userDatabaseInit(this);
         Log.i("StartActivity", "intScreenX = " + intScreenX + "  intScreenY = " + intScreenY);
-
+/*
         // enable GPS listener
         if (ApplicationGlobal.gpsListener == null)
             ApplicationGlobal.gpsListener = new GPSListener(this, 5000, 1);
-
+*/
         // create instance of engine
         engine = sonav.getInstance();
 
@@ -110,7 +109,7 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
         }
         else {
             if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                ApplicationGlobal.gpsListener.setEnabled(true);
+                //ApplicationGlobal.gpsListener.setEnabled(true);
                 engineInitialize();
             }
             else {

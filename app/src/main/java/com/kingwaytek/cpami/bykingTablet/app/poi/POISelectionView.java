@@ -29,6 +29,9 @@ import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.SearchMode;
  * POI Query POI Category List or SPOI Theme List
  *
  * @author Andy Chiao (andy.chiao@kingwaytek.com)
+ *
+ * 2016/04/15
+ * Modified by Vincent.
  */
 public class POISelectionView extends ListActivity {
 
@@ -42,7 +45,6 @@ public class POISelectionView extends ListActivity {
     //	private static Dialog mDialog = null;
     private UtilDialog progressDialog;
 
-    private Button gohome;
     // Add by yawhaw
     private String spoi_catalog;
 
@@ -54,25 +56,9 @@ public class POISelectionView extends ListActivity {
         super.onCreate(icicle);
 
         itenCaller = getIntent();
-        // requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        setContentView(R.layout.cursor_list_view);
-        // getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-        // R.layout.title_bar);
-        // setTitle(getString(R.string.title_default));
-        // gohome = (Button) findViewById(R.id.go_home);
-        // gohome.setOnClickListener(new OnClickListener() {
-        //
-        // @Override
-        // public void onClick(View v) {
-        // setResult(RESULT_FIRST_USER);
-        // finish();
-        // return;
-        //
-        // }
-        // });
 
-        // listType = (CursorListType) itenCaller
-        // .getSerializableExtra("whichType");
+        setContentView(R.layout.cursor_list_view);
+
         TextView titleBar = (TextView) findViewById(R.id.titlebar_text);
         titleBar.setText(R.string.byking_function_poi_search_title);
         progressDialog = new UtilDialog(this);

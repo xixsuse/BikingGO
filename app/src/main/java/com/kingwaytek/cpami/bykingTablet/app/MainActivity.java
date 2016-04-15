@@ -18,11 +18,11 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.TrafficCondition.RoadCondition;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.InformationActivity;
-import com.kingwaytek.cpami.bykingTablet.app.address.CitySelection;
 import com.kingwaytek.cpami.bykingTablet.app.poi.POIMethodSelection;
 import com.kingwaytek.cpami.bykingTablet.app.poi.SpoiCatalog;
 import com.kingwaytek.cpami.bykingTablet.app.rentInfo.RentInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackListView;
+import com.kingwaytek.cpami.bykingTablet.app.ui.UiPoiSearchMapActivity;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransport;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
@@ -67,7 +67,8 @@ public class MainActivity extends CommunicationBaseActivity {
 					finish();
 					break;
 				case 1:
-					goToForResult(CitySelection.class, false, ActivityCaller.ADDRESS.getValue());
+					//goToForResult(CitySelection.class, false, ActivityCaller.ADDRESS.getValue());
+                    goTo(UiPoiSearchMapActivity.class, false);
 					break;
 				case 2:
 					goToForResult(POIMethodSelection.class, true, ActivityCaller.POI.getValue());

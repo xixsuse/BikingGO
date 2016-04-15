@@ -40,8 +40,10 @@ public class AppController extends Application {
     }
 
     public MyLocationManager getLocationManager() {
-        if (locationManager == null)
-            return new MyLocationManager();
+        if (locationManager == null) {
+            locationManager = new MyLocationManager();
+            return locationManager;
+        }
         else
             return locationManager;
     }

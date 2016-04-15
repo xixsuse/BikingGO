@@ -5,16 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/map_header_layout"
-        layout="@layout/include_foolish_action_bar"/>
-
     <fragment
         android:id="@+id/googleMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/map_header_layout"
-        tools:context=".app.BaseMapActivity"
+        tools:context=".app.ui.BaseMapActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+    <AutoCompleteTextView
+        android:id="@+id/edit_searchText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_size_xxl"
+        android:layout_marginStart="@dimen/padding_size_xxl"
+        android:layout_marginRight="@dimen/padding_size_super"
+        android:layout_marginEnd="@dimen/padding_size_super"
+        android:layout_marginTop="@dimen/padding_size_l"
+        android:drawableLeft="@android:drawable/ic_menu_search"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="@dimen/padding_size_m"
+        android:hint="@string/search_anywhere"
+        android:textSize="@dimen/font_text_size_m"
+        android:imeOptions="actionSearch"
+        android:completionThreshold="1"
+        android:background="@drawable/background_search_text"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/img_bottom_background"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_background" />
 
 </RelativeLayout>

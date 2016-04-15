@@ -163,6 +163,7 @@ public class MyLocationManager implements LocationListener {
     public void onLocationChanged(Location location) {
 
 
+
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
             isProviderFromGps = true;
             Log.i(TAG, "ProviderFromGPS!!!");

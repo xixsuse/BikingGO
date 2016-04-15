@@ -1,8 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="selectorDialog" parent="@android:style/Theme.Dialog">
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <!--
+        <item name="actionBarStyle">@style/MyActionBarStyle</item>
+        <item name="android:textViewStyle">@style/MyTextViewStyle</item>
+        -->
+    </style>
 
+    <style name="MyActionBarStyle" parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:height">@dimen/actionbar_height</item>
+        <item name="android:displayOptions">showCustom</item>
+        <item name="android:customNavigationLayout">@layout/include_foolish_action_bar</item>
+        <item name="android:windowBackground">@color/actionbar_background_color</item>
+    </style>
+
+    <style name="MyTextViewStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/font_text_size_m</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <!-- 不需要 ActionBar 了,因為改用Toolbar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/actionbar_background_color</item>
+        <!-- 主要顏色
+        <item name="colorPrimary">@color/black</item>
+        -->
+        <!-- 狀態欄背景色
+        <item name="colorPrimaryDark">@color/home_bg_status_bar_color</item>
+        <item name="colorAccent">@color/color_accent</item>
+        -->
+        <!-- 其他可用項目
+        colorControlNormal, colorControlActivated, colorControlHighlight, colorSwitchThumbNormal
+        -->
+    </style>
+
+    <style name="selectorDialog" parent="@android:style/Theme.Dialog">
         <!-- 邊框 -->
         <item name="android:windowFrame">@null</item>
         <!-- 是否浮现在activity之上 -->
