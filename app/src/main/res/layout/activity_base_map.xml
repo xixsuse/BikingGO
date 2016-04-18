@@ -26,7 +26,8 @@
         android:drawablePadding="@dimen/padding_size_m"
         android:hint="@string/search_anywhere"
         android:textSize="@dimen/font_text_size_m"
-        android:imeOptions="actionSearch"
+        android:inputType="textAutoComplete|textAutoCorrect"
+        android:imeOptions="actionDone"
         android:completionThreshold="1"
         android:background="@drawable/background_search_text"/>
 

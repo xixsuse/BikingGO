@@ -1,13 +1,17 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -16,42 +20,53 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.LocationSearchHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
+
+import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  * 所有要使用 GoogleMap的地方都直接繼承這裡就好了！
  *
  * @author Vincent (2016/04/14)
  */
-public abstract class BaseMapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public abstract class BaseMapActivity extends BaseActivity implements OnMapReadyCallback,
+        GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
 
-    protected abstract void init();
-    protected abstract String getActionBarTitle();
-    protected abstract void findViews();
-    protected abstract void setListener();
-
-    protected final String TAG = getClass().getSimpleName();
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     protected MyLocationManager locationManager;
     protected GoogleMap map;
 
+    protected AutoCompleteTextView searchText;
+    private Marker searchMarker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.AppTheme);
-        setContentView(R.layout.activity_base_map);
 
-        findViews();
         getLocationManager();
-        setActionBar();
-
         buildMap();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_base_map;
+    }
+
+    @Override
+    protected void findViews() {
+        searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
     }
 
     @Override
@@ -72,22 +87,6 @@ public abstract class BaseMapActivity extends AppCompatActivity implements OnMap
         locationManager = AppController.getInstance().getLocationManager();
     }
 
-    private void setActionBar() {
-        ActionBar actionbar = getSupportActionBar();
-
-        if (notNull(actionbar)) {
-            actionbar.setDisplayShowTitleEnabled(false);
-            actionbar.setHomeButtonEnabled(false);
-            actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-
-            actionbar.setCustomView(R.layout.include_foolish_action_bar);
-            Toolbar toolbar = (Toolbar) actionbar.getCustomView().getParent();
-            toolbar.setContentInsetsAbsolute(0, 0);
-
-            TextView title = (TextView) actionbar.getCustomView().findViewById(R.id.actionBar_title);
-            title.setText(getActionBarTitle());
-        }
-    }
 
     private void buildMap() {
         if (checkPlayServices()) {
@@ -100,6 +99,7 @@ public abstract class BaseMapActivity extends AppCompatActivity implements OnMap
     public void onMapReady(GoogleMap map) {
         this.map = map;
         initMapState();
+        turnOnSearchKeyListener(true);
         setListener();
         init();
     }
@@ -132,10 +132,32 @@ public abstract class BaseMapActivity extends AppCompatActivity implements OnMap
                         return false;
                 }
             });
+
+            map.setInfoWindowAdapter(this);
+            map.setOnInfoWindowClickListener(this);
         }
         catch (SecurityException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        View view = LayoutInflater.from(this).inflate(R.layout.inflate_marker_search_result_window, null);
+        TextView title = (TextView) view.findViewById(R.id.marker_title);
+        title.setText(marker.getTitle());
+
+        return view;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
     }
 
     private void moveCameraToDefaultLocation() {
@@ -144,6 +166,14 @@ public abstract class BaseMapActivity extends AppCompatActivity implements OnMap
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
         else
             Utility.toastShort(getString(R.string.gps_unable_to_get_location));
+    }
+
+    public void moveCamera(LatLng latLng) {
+        map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
+    public void moveCameraAndZoom(LatLng latLng, int zoomLevel) {
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
     }
 
     private boolean checkPlayServices() {
@@ -164,12 +194,74 @@ public abstract class BaseMapActivity extends AppCompatActivity implements OnMap
         return true;
     }
 
-    public static boolean notNull(Object anyObject) {
-        return anyObject != null;
+    private void turnOnSearchKeyListener(boolean isOn) {
+        if (isOn) {
+            searchText.setOnKeyListener(getOnKeyListener());
+            searchText.setText("");
+            searchText.setSingleLine();
+            searchText.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        }
+        else {
+            searchText.setOnKeyListener(null);
+            searchText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        }
+    }
+
+    private EditText.OnKeyListener getOnKeyListener() {
+        return new EditText.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
+                    searchLocation();
+                    clearSearchText();
+                    hideKeyboard(v, true);
+                    return true;
+                }
+                return false;
+            }
+        };
+    }
+
+    private void searchLocation() {
+        String input = searchText.getText().toString();
+
+        LocationSearchHelper.searchLocation(input, new LocationSearchHelper.OnLocationFoundCallBack() {
+            @Override
+            public void onLocationFound(ArrayList<ItemsSearchResult> searchResults, ArrayList<String> nameList, boolean isSearchByGeocoder) {
+                if (notNull(searchResults.get(0)))
+                    putSearchMarkerOnMap(nameList.get(0), new LatLng(searchResults.get(0).LAT, searchResults.get(0).LNG));
+            }
+            @Override
+            public void onNothingFound() {
+                Utility.toastLong(getString(R.string.location_search_found_nothing));
+            }
+        });
+    }
+
+    private void putSearchMarkerOnMap(String title, LatLng latLng) {
+        if (notNull(searchMarker))
+            searchMarker.remove();
+
+        MarkerOptions marker = new MarkerOptions();
+        marker.position(latLng);
+        marker.title(title);
+        InputStream is = getResources().openRawResource(+ R.drawable.ic_end);
+        marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+
+        searchMarker = map.addMarker(marker);
+        searchMarker.showInfoWindow();
+        moveCameraAndZoom(latLng, 16);
+
+        closeInputStream(is);
+    }
+
+    protected void clearSearchText() {
+        searchText.setText("");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        turnOnSearchKeyListener(false);
     }
 }

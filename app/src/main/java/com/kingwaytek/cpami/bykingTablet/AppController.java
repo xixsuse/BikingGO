@@ -8,20 +8,26 @@ import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.Tracker;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.BitmapCache;
 
 /**
- * Created by vincent.chang on 2016/4/14.
+ * The global controller for application level.
+ *
+ * @author Vincent (2016/4/14)
  */
 public class AppController extends Application {
 
     private static AppController appInstance;
     private MyLocationManager locationManager;
 
-    //private RequestQueue mQueue;
-    //ImageLoader imageLoader;
+    private RequestQueue mQueue;
+    private ImageLoader imageLoader;
 
     @Override
     public void onCreate() {
@@ -48,7 +54,7 @@ public class AppController extends Application {
             return locationManager;
     }
 
-/*
+
     public RequestQueue getRequestQueue() {
         if (mQueue == null)
             mQueue = Volley.newRequestQueue(getApplicationContext());
@@ -60,7 +66,7 @@ public class AppController extends Application {
             imageLoader = new ImageLoader(getRequestQueue(), new BitmapCache());
         return imageLoader;
     }
-*/
+
 
     private Thread.UncaughtExceptionHandler getExceptionHandler(Tracker tracker) {
         MyExceptionHandler myExceptionHandler = new MyExceptionHandler(Thread.getDefaultUncaughtExceptionHandler());

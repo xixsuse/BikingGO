@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
+import com.google.android.gms.maps.model.Marker;
 import com.kingwaytek.cpami.bykingTablet.R;
 
 /**
@@ -20,12 +21,12 @@ public class UiPoiSearchMapActivity extends BaseMapActivity {
     }
 
     @Override
-    protected void findViews() {
+    protected void setListener() {
 
     }
 
     @Override
-    protected void setListener() {
+    public void onInfoWindowClick(Marker marker) {
 
     }
 }

@@ -7,13 +7,11 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog.DialogType;
 import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
 import com.kingwaytek.cpami.bykingTablet.sql.POI;
@@ -21,6 +19,7 @@ import com.kingwaytek.cpami.bykingTablet.sql.Spoi;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.CursorColumn;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.POIKindColumn;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.SpoiColumn;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ListViewAdapter;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.SearchMode;
@@ -61,9 +60,10 @@ public class POISelectionView extends ListActivity {
 
         TextView titleBar = (TextView) findViewById(R.id.titlebar_text);
         titleBar.setText(R.string.byking_function_poi_search_title);
+
         progressDialog = new UtilDialog(this);
         listContent = (ActivityCaller) itenCaller.getSerializableExtra("Atv_Caller");
-        listAdapter = null;
+
         // Add by yawhaw
         spoi_catalog = itenCaller.getStringExtra("Spoi_Catalog");
 
@@ -112,9 +112,8 @@ public class POISelectionView extends ListActivity {
      */
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Log.i("POISelectionView",
-                "position = " + position + ", _id = " + id + ", item : "
-                        + ((Object[]) listAdapter.getItem(position)).length);
+        Log.i("POISelectionView", "position = " + position + ", _id = " + id + ", item : "
+                + ((Object[]) listAdapter.getItem(position)).length);
 
         listItem_Click(position);
 
@@ -128,18 +127,14 @@ public class POISelectionView extends ListActivity {
         // TODO put GPS location, category or theme
         Intent itenContent = new Intent(this, POIListView.class);
         itenContent.putExtra("POIList_Caller", listContent);
-        // itenContent.putExtra("Point_Lon", 121.522069004011);
-        // itenContent.putExtra("Point_Lat", 25.0270332995188);
         itenContent.putExtra("Point_Lon", GPSListener.lon);
         itenContent.putExtra("Point_Lat", GPSListener.lat);
         itenContent.putExtra("POI_Search", SearchMode.BY_SURROUNDING);
 
-        String str = "";
+        String str;
 
         switch (listContent) {
             case POI:
-                // itenContent.putExtra("POI_Category", POICategory.get(str)
-                // .toString());
                 str = ((Object[]) listAdapter.getItem(args))[1].toString();
                 Log.i("POISelectionView", "str:" + str);
                 itenContent.putExtra("POI_Category", str);
@@ -237,15 +232,15 @@ public class POISelectionView extends ListActivity {
                 break;
         }
         Log.i("POISelectionView", "list item count = " + curListData.getCount());
-        if (listContent == ActivityCaller.POI) {// 周邊查詢
+        if (listContent == ActivityCaller.POI) {    // 周邊查詢
             listAdapter = new ListViewAdapter(this, R.layout.cursor_list_row_search, curListData, from, to);
-        } else {
+        }
+        else {
             listAdapter = new ListViewAdapter(this, R.layout.cursor_list_row, curListData, from, to);
         }
         curListData.close();
 
         listAdapter.getDataVisibilityStates().put(R.id.cursor_row_ref, false);
         setListAdapter(listAdapter);
-
     }
 }

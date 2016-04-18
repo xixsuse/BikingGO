@@ -73,7 +73,7 @@
                 android:text="cursor_row_foot"
                 android:textColor="#6fa71f"
                 android:textSize="15dip"
-                android:visibility="gone" /> <!-- ?牢ode閮剖?spoi_content?ext_color -->
+                android:visibility="gone" /> <!-- 用code設定spoi_content的text_color -->
         </LinearLayout>
 
         <TextView

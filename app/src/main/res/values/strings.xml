@@ -279,5 +279,9 @@
     <string name="map_tag_description">map_tag_description</string>
     <string name="meter">1000 公尺</string>
     <string name="search_anywhere">Search Anywhere</string>
+    <string name="search_any_location">請輸入關鍵字搜尋任意地點</string>
+    <string name="network_unstable">Network Unstable! Retrying..%d</string>
+    <string name="load_failed">載入失敗，請回上頁後再重新進入一次！</string>
+    <string name="location_search_found_nothing">無搜尋結果</string>
 
 </resources>

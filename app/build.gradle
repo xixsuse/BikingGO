@@ -25,4 +25,5 @@ dependencies {
     compile project(':facebookSDK')
     compile project(':naviKingApi')
     compile files('libs/apache-ant-zip-1.8.0.jar')
+    compile 'com.mcxiaoke.volley:library:1.0.19'
 }
