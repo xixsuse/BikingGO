@@ -42,6 +42,9 @@ public class RoadInput extends Activity implements OnClickListener {
 		super.onCreate(icicle);
 
 		itenCaller = getIntent();
+
+        Log.i("RoadInput", "itenCaller: setpoint - " + itenCaller.getStringExtra("setpoint"));
+
 		setContentView(R.layout.road_input);
 		progressDialog = new UtilDialog(this);
 

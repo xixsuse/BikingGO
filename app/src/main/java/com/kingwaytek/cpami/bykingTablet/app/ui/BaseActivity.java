@@ -31,6 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void findViews();
     protected abstract void setListener();
 
+    private ActionBar actionbar;
     private static View actionbarView;
 
     @Override
@@ -53,7 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void setActionBar() {
-        ActionBar actionbar = getSupportActionBar();
+        actionbar = getSupportActionBar();
 
         if (notNull(actionbar)) {
             actionbar.setDisplayShowTitleEnabled(false);
@@ -75,6 +76,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (notNull(actionbarView))
             return actionbarView;
         return null;
+    }
+
+    public void showActionbar(boolean isShow) {
+        if (isShow)
+            actionbar.show();
+        else
+            actionbar.hide();
     }
 
     public static boolean notNull(Object anyObject) {

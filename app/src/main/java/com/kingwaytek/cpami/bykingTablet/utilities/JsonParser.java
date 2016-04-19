@@ -21,7 +21,7 @@ public class JsonParser {
     static JSONArray JA;
 
     public interface JSONParseResult {
-        void onItemGet();
+        void onParseFinished();
         void onParseFail(String errorMessage);
     }
 
@@ -60,7 +60,7 @@ public class JsonParser {
                 DataArray.list_searchResult.clear();
             DataArray.list_searchResult = new SoftReference<>(resultList);
 
-            parseResult.onItemGet();
+            parseResult.onParseFinished();
         }
         catch (JSONException e) {
             e.printStackTrace();

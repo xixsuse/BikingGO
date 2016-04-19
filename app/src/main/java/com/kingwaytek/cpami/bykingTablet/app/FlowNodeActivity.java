@@ -287,14 +287,12 @@ public abstract class FlowNodeActivity extends Activity {
     /**
      * Override this method to receive click event on menu item.
      */
-    public void onMenuItemClick(
-            AdapterView<?> parent, View view, int position, long id) {
+    public void onMenuItemClick(AdapterView<?> parent, View view, int position, long id) {
         ((ViewGroup) menu.getParent()).removeView(menu);
         menu = null;
     }
 
-	public void onCreateContextMenu(ContextMenu contextMenu, View view,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenuInfo menuInfo) {
 			super.onCreateContextMenu(contextMenu, view, menuInfo);
 		
 	}

@@ -71,8 +71,7 @@ public class ActionSheet extends LinearLayout {
 			});
 
 		}
-		layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				LayoutParams.MATCH_PARENT));
+		layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		// layout.setBackgroundColor(0x7f000000);
 		layout.setPadding(20, 20, 20, 20);
 		this.addView(layout);
@@ -82,8 +81,7 @@ public class ActionSheet extends LinearLayout {
 	public void show() {
 
 		this.setVisibility(View.VISIBLE);
-		Animation animIn = AnimationUtils.loadAnimation(this.context,
-				R.anim.push_up_in);
+		Animation animIn = AnimationUtils.loadAnimation(this.context, R.anim.push_up_in);
 		animIn.setDuration(300);
 		animIn.setAnimationListener(new AnimationListener() {
 
@@ -132,13 +130,12 @@ public class ActionSheet extends LinearLayout {
 	public void hide() {
 		View sub;
 		for (int i = 0; i < sub_layout.length; i++) {
-			sub = (View) layout.findViewById(sub_layout[i][0]);
+			sub = layout.findViewById(sub_layout[i][0]);
 			sub.setClickable(false);
 			isShowfinish = false;
 		}
 
-		Animation animOut = AnimationUtils.loadAnimation(this.context,
-				R.anim.push_down_out);
+		Animation animOut = AnimationUtils.loadAnimation(this.context, R.anim.push_down_out);
 		animOut.setDuration(300);
 		animOut.setAnimationListener(new AnimationListener() {
 

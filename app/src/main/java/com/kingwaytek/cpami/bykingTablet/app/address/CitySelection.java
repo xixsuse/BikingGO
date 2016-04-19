@@ -37,6 +37,9 @@ public class CitySelection extends ListActivity {
         super.onCreate(icicle);
 
         itenCaller = getIntent();
+
+        Log.i("CitySelection", "itenCaller: setpoint - " + itenCaller.getStringExtra("setpoint"));
+
         setContentView(R.layout.selection_listview_layout);
         TextView titleBar = (TextView) findViewById(R.id.titlebar_text);
         titleBar.setText(R.string.address_search_city_prompt);

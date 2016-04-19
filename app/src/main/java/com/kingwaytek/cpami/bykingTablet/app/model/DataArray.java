@@ -36,7 +36,7 @@ public class DataArray implements ApiUrls {
             public void onResultSucceed(String response) {
                 JsonParser.parseGoogleGeocodeThenAddToList(response, new JsonParser.JSONParseResult() {
                     @Override
-                    public void onItemGet() {
+                    public void onParseFinished() {
                         dataGet.onDataGet();
                     }
 

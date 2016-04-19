@@ -567,7 +567,8 @@ public class sonav extends Handler {
     }
 
     public void callOnEngineInitFailed() {
-        engineCallBack.onEngineInitFailed();
+        if (engineCallBack != null)
+            engineCallBack.onEngineInitFailed();
     }
 
 	/*

@@ -43,9 +43,6 @@ public class BatteryNotifier extends BroadcastReceiver {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param context
-	 *            context that this notifier resides on.
 	 */
 	private BatteryNotifier() {
 		// TODO Auto-generated constructor stub
@@ -82,29 +79,17 @@ public class BatteryNotifier extends BroadcastReceiver {
 	private void onBatteryChanged(final Context context) {
 		if (batteryLevel <= 15 && batteryLevel >= 10) {
 			TrackEngine tengine = TrackEngine.getInstance();
-			if (!tengine.getRecordingStatus().equals(
-					TrackRecordingStatus.STOPED)) {
-				Toast
-						.makeText(
-								context,
-								context
-										.getString(R.string.track_record_battery_low_warnning_text),
-								Toast.LENGTH_LONG).show();
+			if (!tengine.getRecordingStatus().equals(TrackRecordingStatus.STOPED)) {
+				Toast.makeText(context, context.getString(R.string.track_record_battery_low_warnning_text), Toast.LENGTH_LONG).show();
 			}
 		}
 		if (batteryLevel < 10) {
 
 			// handles when a track is recording.
 			TrackEngine tengine = TrackEngine.getInstance();
-			if (!tengine.getRecordingStatus().equals(
-					TrackRecordingStatus.STOPED)) {
+			if (!tengine.getRecordingStatus().equals(TrackRecordingStatus.STOPED)) {
 				tengine.Stop();
-				Toast
-						.makeText(
-								context,
-								context
-										.getString(R.string.track_record_battery_low_auto_stop_text),
-								Toast.LENGTH_LONG).show();
+				Toast.makeText(context, context.getString(R.string.track_record_battery_low_auto_stop_text), Toast.LENGTH_LONG).show();
 			}
 		}
 	}

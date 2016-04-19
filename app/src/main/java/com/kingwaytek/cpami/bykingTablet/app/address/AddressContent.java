@@ -59,6 +59,9 @@ public class AddressContent extends Activity {
         setContentView(R.layout.map);
 
         naviOption = itenCaller.getStringExtra("setpoint");
+
+        Log.i("AddressContent", "itenCaller: setpoint - " + naviOption);
+
         addressRest = itenCaller.getStringExtra("addressResult");
         double[] addrPnt = itenCaller.getDoubleArrayExtra("addressLocation");
 

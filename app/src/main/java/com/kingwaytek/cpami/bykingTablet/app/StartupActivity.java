@@ -17,6 +17,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnEngineReadyCallBack;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.sonavtek.sonav.sonav;
 
 import java.io.File;
@@ -101,7 +102,7 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
                 @Override
                 public void click_btn_2() {
                     super.click_btn_2();
-                    android.os.Process.killProcess(android.os.Process.myPid());
+                    Utility.forceCloseTask();
                 }
             };
             uit.showDialog_route_plan_choice(getString(R.string.data_not_install_yet), null, getString(R.string.confirm), null);

@@ -388,7 +388,6 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
 
     @Override
     protected void onResume() {
-        // getIntentFromMainActivity();
         initialNavigationEventHandler(engine);
 
         // checkWeatherState();
@@ -1100,24 +1099,19 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                 startActivityForResult(AddressIntent, ActivityCaller.ADDRESS.getValue());
                 break;
             case 4:
-                Intent POIIntent = new Intent(MapActivity.this,
-                        POIMethodSelection.class);
+                Intent POIIntent = new Intent(MapActivity.this, POIMethodSelection.class);
                 POIIntent.putExtra("setpoint", getWitchButton[whichButtonSrc]);
                 startActivityForResult(POIIntent, ActivityCaller.POI.getValue());
                 break;
             case 6:
                 Intent POIViewIntent = new Intent(MapActivity.this, MyHistory.class);
                 POIViewIntent.putExtra("setpoint", getWitchButton[whichButtonSrc]);
-                startActivityForResult(POIViewIntent,
-                        ActivityCaller.HISTORY.getValue());
+                startActivityForResult(POIViewIntent, ActivityCaller.HISTORY.getValue());
                 break;
             case 5:
-                Intent FavoriteViewIntent = new Intent(MapActivity.this,
-                        MyFavorite.class);
-                FavoriteViewIntent.putExtra("setpoint",
-                        getWitchButton[whichButtonSrc]);
-                startActivityForResult(FavoriteViewIntent,
-                        ActivityCaller.FAVORITE.getValue());
+                Intent FavoriteViewIntent = new Intent(MapActivity.this, MyFavorite.class);
+                FavoriteViewIntent.putExtra("setpoint", getWitchButton[whichButtonSrc]);
+                startActivityForResult(FavoriteViewIntent, ActivityCaller.FAVORITE.getValue());
                 break;
 
             case 1:// 目前的位置
@@ -1969,8 +1963,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         Log.i("MapActivity_setPosition", "setto:" + flag);
     }
 
-    public static void setPosition(String name, GeoPoint position, int flag,
-                                   String address) {
+    public static void setPosition(String name, GeoPoint position, int flag, String address) {
 
         cur_GeoPoint = position;
 

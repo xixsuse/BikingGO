@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.sonavtek.sonav.sonav;
 
 public class AnnounceActivity extends Activity {
@@ -43,81 +44,55 @@ public class AnnounceActivity extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					engine.setpoiauto(0);
-					engine.setpoivisible(pv6, pv4, pv2, 0);
-					engine.setpoivisible(pv6, pv4, pv2, 1);
-					engine.setpoivisible(pv6, pv4, pv2, 2);
-					engine.setpoivisible(pv6, pv4, pv2, 3);
-					engine.setpoivisible(pv6, pv4, pv2, 4);
-					engine.setpoivisible(pv6, pv4, pv2, 5);
-
-					/*** 清除marker ***/
-					engine.setflagpoint(0, -1, -1);
-					engine.setflagpoint(1, -1, -1);
-					engine.setflagpoint(2, -1, -1);
-					engine.setflagpoint(3, -1, -1);
-					engine.setflagpoint(5, -1, -1);
-					/***************/
-
 					PreferenceActivity.setAnnouncementEnabled(AnnounceActivity.this, checkbox.isChecked());
-					Bundle params = getIntent().getExtras();
-
-					Intent intent = new Intent(AnnounceActivity.this, MapActivity.class);
-
-					if (params != null) {
-						intent.putExtra("SMSToMapActivity", 1);
-						intent.putExtras(params);
-					}
-					startActivity(intent);
-					finish();
+					goToMapActivity();
 				}
 			});
 		}
-        else {
-			engine.setpoiauto(0);
-			engine.setpoivisible(pv6, pv4, pv2, 0);
-			engine.setpoivisible(pv6, pv4, pv2, 1);
-			engine.setpoivisible(pv6, pv4, pv2, 2);
-			engine.setpoivisible(pv6, pv4, pv2, 3);
-			engine.setpoivisible(pv6, pv4, pv2, 4);
-			engine.setpoivisible(pv6, pv4, pv2, 5);
-
-			/*** 清除marker ***/
-			engine.setflagpoint(0, -1, -1);
-			engine.setflagpoint(1, -1, -1);
-			engine.setflagpoint(2, -1, -1);
-			engine.setflagpoint(3, -1, -1);
-			engine.setflagpoint(5, -1, -1);
-			/***************/
-
-			Bundle params = getIntent().getExtras();
-			Intent intent = new Intent(AnnounceActivity.this, MapActivity.class);
-
-			if (params != null) {
-				intent.putExtra("SMSToMapActivity", 1);
-				intent.putExtras(params);
-			}
-			startActivity(intent);
-			finish();
-		}
+        else
+			goToMapActivity();
 	}
+
+    private void goToMapActivity() {
+        engine.setpoiauto(0);
+        engine.setpoivisible(pv6, pv4, pv2, 0);
+        engine.setpoivisible(pv6, pv4, pv2, 1);
+        engine.setpoivisible(pv6, pv4, pv2, 2);
+        engine.setpoivisible(pv6, pv4, pv2, 3);
+        engine.setpoivisible(pv6, pv4, pv2, 4);
+        engine.setpoivisible(pv6, pv4, pv2, 5);
+
+        /*** 清除marker ***/
+        engine.setflagpoint(0, -1, -1);
+        engine.setflagpoint(1, -1, -1);
+        engine.setflagpoint(2, -1, -1);
+        engine.setflagpoint(3, -1, -1);
+        engine.setflagpoint(5, -1, -1);
+        /***************/
+
+        Bundle params = getIntent().getExtras();
+        Intent intent = new Intent(AnnounceActivity.this, MapActivity.class);
+
+        if (params != null) {
+            intent.putExtra("SMSToMapActivity", 1);
+            intent.putExtras(params);
+        }
+        startActivity(intent);
+        finish();
+    }
 
 	public void onPause() {
 		super.onPause();
-		Log.v("TAG", "onPause");
 		finish();
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		Log.i("MapActivity.java", "onKeyDown");
-
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			android.os.Process.killProcess(android.os.Process.myPid());
-			finish();
-
+            Utility.forceCloseTask();
 			return false;
-		} else {
+		}
+        else {
 			Log.i("MapAvtivity.java", "super.onKeyDown(keyCode, event);");
 			return super.onKeyDown(keyCode, event);
 		}
