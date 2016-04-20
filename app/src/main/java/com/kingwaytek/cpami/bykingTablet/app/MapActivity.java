@@ -344,6 +344,8 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         Intent mapActivityIntent = this.getIntent();
         Bundle params = mapActivityIntent.getExtras();
 
+        Log.i("MapActivity", "SMSToMapActivity: " + mapActivityIntent.getIntExtra("SMSToMapActivity", 0));
+
         // SMS觸發,將畫面轉到SMSMapContent
         if (mapActivityIntent.getIntExtra("SMSToMapActivity", 0) == 1) {
             Log.i("MapActivity.java", "SMS mapActivityIntent.getDoubleExtra(Lon,0.0)=" + mapActivityIntent.getDoubleExtra("Lon", 0.0));

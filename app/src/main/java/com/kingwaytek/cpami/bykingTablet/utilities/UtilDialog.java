@@ -16,8 +16,6 @@ public class UtilDialog {
 	private String rename;
 
 	public UtilDialog(Context context) {
-		// if (dialog.isShowing())
-		// dialog.dismiss();
 		dialog = new Dialog(context, R.style.selectorDialog);
 		dialog.setCancelable(false);
 	}

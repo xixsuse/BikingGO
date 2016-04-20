@@ -63,38 +63,39 @@ public class SMS extends Activity
     //("SMS_Action",1) 從主頁面menu來的查詢朋友的位置
     //("SMS_Action",2) 從GPS相片來的位置分享
     //("SMS_Action",3) 回覆查詢的分享目前位置
-    intent=this.getIntent();
-    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-    
-    if(intent.getIntExtra("SMS_Action",9)==1){       
-       setContentView(R.layout.sms_location_request); 
-       getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);    
-       
-       name = (TextView) findViewById(R.id.sms_name);
-       //關鍵字:查詢
+      intent = this.getIntent();
+      requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
+      if (intent.getIntExtra("SMS_Action", 9) == 1) {
+
+          setContentView(R.layout.sms_location_request);
+          getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
+
+          name = (TextView) findViewById(R.id.sms_name);
+          //關鍵字:查詢
 //       message = "我請求查詢你的位置"+"\n"+"給你的訊息 "+"\n"
 //       +"Lon: "+"121.522232"+" ,lat: "+"25.026799";
-     //關鍵字:GC,01:代表一般位置分享
-       message = "GC02";
-     }else if(intent.getIntExtra("SMS_Action",9)==0
-    		 		|| intent.getIntExtra("SMS_Action",9)==2
-    		        || intent.getIntExtra("SMS_Action",9)==3){
-       setContentView(R.layout.sms);
-       getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
+          //關鍵字:GC,01:代表一般位置分享
+          message = "GC02";
+      }
+      else if (intent.getIntExtra("SMS_Action", 9) == 0 || intent.getIntExtra("SMS_Action", 9) == 2
+              || intent.getIntExtra("SMS_Action", 9) == 3) {
+          setContentView(R.layout.sms);
+          getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
 
-       Lon = intent.getDoubleExtra("Photo_Lon", 121.522232);
-       Lat = intent.getDoubleExtra("Photo_Lat", 25.026799);
-       name = (TextView) findViewById(R.id.sms_name);
-       lon = (TextView) findViewById(R.id.sms_lon); 
-       lat = (TextView) findViewById(R.id.sms_lat);     
-       lon.setText(String.valueOf(Lon));
-       lat.setText(String.valueOf(Lat));
-     //關鍵字:朋友
+          Lon = intent.getDoubleExtra("Photo_Lon", 121.522232);
+          Lat = intent.getDoubleExtra("Photo_Lat", 25.026799);
+          name = (TextView) findViewById(R.id.sms_name);
+          lon = (TextView) findViewById(R.id.sms_lon);
+          lat = (TextView) findViewById(R.id.sms_lat);
+          lon.setText(String.valueOf(Lon));
+          lat.setText(String.valueOf(Lat));
+          //關鍵字:朋友
 //       message = "你朋友"+name.getText().toString()+"\n"+"給你的訊息 "+name.getText().toString()+"\n"
 //          +"Lon: "+lon.getText().toString()+" ,lat: "+lat.getText().toString();
-       //關鍵字:GC,01:代表一般位置分享
-       message = "GC08;"+lat.getText().toString()+";"+lon.getText().toString();
-     }
+          //關鍵字:GC,01:代表一般位置分享
+          message = "GC08;" + lat.getText().toString() + ";" + lon.getText().toString();
+      }
     
     /*透過findViewById建構子來建構EditText1,EditText2與Button物件*/ 
     phoneText = (EditText) findViewById(R.id.Phone_text); 

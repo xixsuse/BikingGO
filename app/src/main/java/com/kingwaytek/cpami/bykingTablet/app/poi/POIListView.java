@@ -307,11 +307,9 @@ public class POIListView extends ListActivity implements OnClickListener {
                     .getColumnIndex("destsqr")) : -1);
             i = cursor.getColumnIndex(POIColumn.SUB_BRANCH.getName());
             subBranch = (i == -1) ? "" : cursor.getString(i);
-            subBranch = (subBranch.trim().length() == 0) ? "" : "(" + subBranch
-                    + ")";
+            subBranch = (subBranch.trim().length() == 0) ? "" : "(" + subBranch + ")";
 
-            titleData[cursor.getPosition()] = cursor.getString(cursor
-                    .getColumnIndex(POIColumn.NAME.getName())) + subBranch;
+            titleData[cursor.getPosition()] = cursor.getString(cursor.getColumnIndex(POIColumn.NAME.getName())) + subBranch;
             String tempString;
 
             Location loc = null;
@@ -328,11 +326,8 @@ public class POIListView extends ListActivity implements OnClickListener {
                         + "KM";
             }
             extData[cursor.getPosition()] = tempString;
-            footData[cursor.getPosition()] = cursor.getString(cursor
-                    .getColumnIndex(POIColumn.ADDRESS.getName()));
-            referData[cursor.getPosition()] = String.valueOf(cursor
-                    .getInt(cursor.getColumnIndex(CursorColumn.ID.get())));
-
+            footData[cursor.getPosition()] = cursor.getString(cursor.getColumnIndex(POIColumn.ADDRESS.getName()));
+            referData[cursor.getPosition()] = String.valueOf(cursor.getInt(cursor.getColumnIndex(CursorColumn.ID.get())));
         }
 
         listData.put(R.id.cursor_row_text, titleData);
@@ -357,18 +352,16 @@ public class POIListView extends ListActivity implements OnClickListener {
                     case POI:
 
                         if (getIntent().getStringExtra("RentStation") != null
-                                && getIntent().getStringExtra("RentStation").contains(
-                                "Y")) {
+                                && getIntent().getStringExtra("RentStation").contains("Y"))
+                        {
                             String city = getIntent().getStringExtra("RentCity");
-                            Cursor temp = null;
+                            Cursor temp;
                             SQLiteBot sqliteDatabase;
 
                             sqliteDatabase = new SQLiteBot(
                                     this.getString(R.string.SQLite_App_Database_Name),
                                     this.getString(R.string.SQLite_App_Database_Path),
                                     TableName.POI);
-                            // String sqlCommand =
-                            // "SELECT * FROM poi WHERE  p_kind = 'POI_071008'  AND p_towncode like '%A%'";
 
                             GeoPoint point;
                             String sqlCommand;
@@ -378,8 +371,7 @@ public class POIListView extends ListActivity implements OnClickListener {
                             }
 
                             if (loc != null) {
-                                point = new GeoPoint(loc.getLongitude(),
-                                        loc.getLatitude());
+                                point = new GeoPoint(loc.getLongitude(), loc.getLatitude());
                                 sqlCommand = "select " + POIColumn.ID.getName() + " "
                                         + CursorColumn.ID.get() + ","
                                         + POIColumn.NAME.getName() + ","
@@ -400,8 +392,7 @@ public class POIListView extends ListActivity implements OnClickListener {
                                         + " like 'POI_071008%' AND p_towncode like '%"
                                         + city + "%' order by destsqr";
                             } else {
-                                Toast.makeText(this, "無法取得當前位置", Toast.LENGTH_SHORT)
-                                        .show();
+                                Toast.makeText(this, "無法取得當前位置", Toast.LENGTH_SHORT).show();
                                 sqlCommand = "select " + POIColumn.ID.getName() + " "
                                         + CursorColumn.ID.get() + ","
                                         + POIColumn.NAME.getName() + ","
@@ -416,29 +407,20 @@ public class POIListView extends ListActivity implements OnClickListener {
                                         + city + "%' order by destsqr";
                             }
 
-                            // select p_id
-                            // _id,p_name,p_address,p_colx,p_coly,(abs(302708.53493973904-p_colx)*abs(302708.53493973904-p_colx))
-                            // +
-                            // (abs(2768867.2980233775-p_coly)*abs(2768867.2980233775-p_coly))
-                            // destsqr , p_subbranch from poi where p_kind like
-                            // 'POI_071008%' AND p_towncode like '%A%' order by destsqr
-
                             sqliteDatabase.setSQLCommand(sqlCommand);
                             temp = sqliteDatabase.QueryWithCommand();
                             curListData = temp;
-                            // POI.Search(POIListView.this, new GeoPoint(lon,
-                            // lat), catString);
 
                         } else if (getIntent().getStringExtra("ParkStation") != null
-                                && getIntent().getStringExtra("ParkStation").contains(
-                                "Y")) {
+                                && getIntent().getStringExtra("ParkStation").contains("Y"))
+                        {
                             String city = getIntent().getStringExtra("ParkCity");
-                            Cursor temp = null;
+                            Cursor temp;
                             SQLiteBot sqliteDatabase;
 
                             sqliteDatabase = new SQLiteBot(
-                                    this.getString(R.string.SQLite_App_Database_Name),
-                                    this.getString(R.string.SQLite_App_Database_Path),
+                                    getString(R.string.SQLite_App_Database_Name),
+                                    getString(R.string.SQLite_App_Database_Path),
                                     TableName.POI);
                             // String sqlCommand =
                             // "SELECT * FROM poi WHERE  p_kind = 'POI_071008'  AND p_towncode like '%A%'";
@@ -446,8 +428,7 @@ public class POIListView extends ListActivity implements OnClickListener {
                             GeoPoint point;
                             String sqlCommand;
                             if (ApplicationGlobal.gpsListener != null) {
-                                Location loc = ApplicationGlobal.gpsListener
-                                        .getLastLocation();
+                                Location loc = ApplicationGlobal.gpsListener.getLastLocation();
                             }
                             if (loc != null) {
                                 point = new GeoPoint(loc.getLongitude(),
@@ -472,8 +453,7 @@ public class POIListView extends ListActivity implements OnClickListener {
                                         + " like 'POI_070401%' AND p_towncode like '%"
                                         + city + "%' order by destsqr";
                             } else {
-                                Toast.makeText(this, "無法取得當前位置", Toast.LENGTH_SHORT)
-                                        .show();
+                                Toast.makeText(this, "無法取得當前位置", Toast.LENGTH_SHORT).show();
                                 sqlCommand = "select " + POIColumn.ID.getName() + " "
                                         + CursorColumn.ID.get() + ","
                                         + POIColumn.NAME.getName() + ","
@@ -529,7 +509,6 @@ public class POIListView extends ListActivity implements OnClickListener {
         listData = ListDataFactory(curListData);
 
         curListData.close();
-        return;
     }
 
     private void ShowLists() {

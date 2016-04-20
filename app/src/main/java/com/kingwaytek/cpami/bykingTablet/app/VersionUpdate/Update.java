@@ -1,12 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app.VersionUpdate;
 
-import java.util.Date;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -16,10 +9,17 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
-import com.kingwaytek.cpami.bykingTablet.app.StartupActivity;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 
 public class Update extends CommunicationBaseActivity {
 
@@ -204,7 +204,7 @@ public class Update extends CommunicationBaseActivity {
 
 			String version = object.getString("version");
 
-			String DataVerOnPackage = StartupActivity.DataVersion;
+			String DataVerOnPackage = AppController.getInstance().getDataVersion();
 
 			// Check map version
 			if (version.equals(DataVerOnPackage)) {

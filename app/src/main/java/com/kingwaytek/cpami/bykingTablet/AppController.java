@@ -54,6 +54,9 @@ public class AppController extends Application {
             return locationManager;
     }
 
+    public String getDataVersion() {
+        return getString(R.string.DataVersion);
+    }
 
     public RequestQueue getRequestQueue() {
         if (mQueue == null)

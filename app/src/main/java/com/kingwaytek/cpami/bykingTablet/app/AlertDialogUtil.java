@@ -36,8 +36,7 @@ public class AlertDialogUtil {
 	 */
 	@SuppressLint("NewApi")
 	public static void showMessage(Context ctx, CharSequence text, int iconId) {
-		new AlertDialog.Builder(ctx, R.style.selectorDialog).setIcon(iconId).setMessage(text)
-				.setCancelable(true).show();
+		new AlertDialog.Builder(ctx, R.style.selectorDialog).setIcon(iconId).setMessage(text).setCancelable(true).show();
 	}
 
 	/**

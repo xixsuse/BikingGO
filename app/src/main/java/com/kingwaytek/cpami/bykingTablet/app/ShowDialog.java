@@ -1,20 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import java.lang.annotation.Target;
-import java.util.regex.Pattern;
-
-import com.sonavtek.sonav.EngineEventHandler;
-import com.sonavtek.sonav.MapView;
-import com.sonavtek.sonav.sonav;
-import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
-
-
-
-
-
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.kingwaytek.cpami.bykingTablet.R;
+import com.sonavtek.sonav.MapView;
+import com.sonavtek.sonav.sonav;
 
 public class ShowDialog extends Activity
 
@@ -88,21 +78,14 @@ public class ShowDialog extends Activity
 		if (enginState==0) {
 			
 			// 軟體還未開啟
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					ShowDialog.this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(ShowDialog.this);
 			// builder.setMessage("Do you want to open? ");
 			builder.setMessage(str);
 			builder.setCancelable(false);
-			builder.setPositiveButton("Yes",
-					new DialogInterface.OnClickListener() {
+			builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 
-							// Intent DialogIntent = new Intent(ShowDialog.this,
-							// StartupActivity.class);
-							
-							Intent intent = new Intent(ShowDialog.this,
-									StartupActivity.class);
-							
+                            Intent intent = new Intent(ShowDialog.this, StartupActivity.class);
 
 							if (SaveMessage.length > 0) {
 								/* 重新封裝參數（SMS訊息）回傳 */
@@ -110,7 +93,8 @@ public class ShowDialog extends Activity
 								// );
 								if (mBundle01.getInt("request_location") == 1) {
 									intent.putExtra("SMS_Action", 3);
-									}else{
+                                }
+                                else {
 //								intent.putExtra("SMS", 1);
 //								intent.putExtra("Phone", SaveMessage[0]);
 //								intent.putExtra("name", SaveMessage[4]
@@ -177,27 +161,22 @@ public class ShowDialog extends Activity
 										SaveMessage[0] = "0" + SaveMessage[0].substring(4);
 									
 									intent.putExtra("Phone", SaveMessage[0]);
-//									intent.putExtra("name", SaveMessage[4]
-//											.toString().trim());
 									
 								   if (mBundle01.getInt("request_location") != 1) {
-									  intent.putExtra("Lon", Double
-											.parseDouble(SaveSplitMessage[2]));
-									  intent.putExtra("Lat", Double
-											.parseDouble(SaveSplitMessage[1]));
-									  if(SaveSplitMessage.length > 3){
-									      intent.putExtra("name", SaveSplitMessage[3]
-																.toString().trim());
-									   }
-											
+									  intent.putExtra("Lon", Double.parseDouble(SaveSplitMessage[2]));
+									  intent.putExtra("Lat", Double.parseDouble(SaveSplitMessage[1]));
+
+									  if (SaveSplitMessage.length > 3)
+									      intent.putExtra("name", SaveSplitMessage[3].trim());
 									}
 
 								}
 								if (mBundle01.getInt("request_location") == 1) {
 									intent.putExtra("SMS_Action", 3);
-									intent.setClass(ShowDialog.this,SMS.class);						
-								} else if (mBundle01.getInt("share_location") == 1) {
-									intent.setClass(ShowDialog.this,SMSMapContent.class);	
+									intent.setClass(ShowDialog.this, SMS.class);
+								}
+                                else if (mBundle01.getInt("share_location") == 1) {
+									intent.setClass(ShowDialog.this, SMSMapContent.class);
 								}								
 								startActivity(intent);
 								finish();

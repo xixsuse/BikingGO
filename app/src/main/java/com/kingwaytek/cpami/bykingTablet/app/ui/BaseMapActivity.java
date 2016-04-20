@@ -120,8 +120,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                             @Override
                             public void click_btn_1() {
                                 super.click_btn_1();
-                                final Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(i);
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent);
                             }
                         };
                         uit.showDialog_route_plan_choice(getString(R.string.gps_is_not_enabled), null,

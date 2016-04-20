@@ -43,7 +43,6 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
 
     private LocationManager manager;
 
-    public static String DataVersion;
     public String pv6 = "010601,010701,070401,071008,071415,080401";
     public String pv4 = "";
     public String pv2 = "01,02,03,04,05,06,07,08,09,10,11,12,13,14";
@@ -106,9 +105,9 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
                 }
             };
             uit.showDialog_route_plan_choice(getString(R.string.data_not_install_yet), null, getString(R.string.confirm), null);
-            // Check GPS
         }
         else {
+            // Check GPS
             if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 //ApplicationGlobal.gpsListener.setEnabled(true);
                 engineInitialize();
@@ -157,7 +156,7 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
         engine.setflagpoint(5, -1, -1);
         /***************/
 
-        Bundle params = getIntent().getExtras();
+        Bundle params = getIntent().getExtras();    //這裡 always是 NULL!!!
         Intent intent = new Intent(StartupActivity.this, AnnounceActivity.class);
 
         if (params != null) {
@@ -192,8 +191,6 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
             Log.e(getClass().toString(), t.getMessage(), t);
             engine.callOnEngineInitFailed();
         }
-
-        DataVersion = getResources().getString(R.string.DataVersion);
     }
 
     private boolean isInit = false;

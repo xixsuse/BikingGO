@@ -70,7 +70,7 @@ public class AnnounceActivity extends Activity {
         engine.setflagpoint(5, -1, -1);
         /***************/
 
-        Bundle params = getIntent().getExtras();
+        Bundle params = getIntent().getExtras();    //這裡 always是 NULL!!!
         Intent intent = new Intent(AnnounceActivity.this, MapActivity.class);
 
         if (params != null) {
