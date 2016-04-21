@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.sonavtek.sonav.sonav;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
@@ -51,26 +52,30 @@ public class PublicTransportList extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         intent = this.getIntent();
         String TrackPoint = intent.getStringExtra("TrackPointString");
         Log.i("PublicTransportList.java", "TrackPoint=" + TrackPoint);
         int plan = intent.getIntExtra("whichPlan", 0);
         Log.i("PublicTransportList.java", "plan=" + plan);
+
         setContentView(R.layout.public_transport_list);
+
         layout_2 = (RelativeLayout) findViewById(R.id.param_layout_2);
         roadListView = (ListView) findViewById(R.id.RoadlistItem);
         layout_2.setVisibility(layout_2.GONE);
         param1a = (TextView) findViewById(R.id.param1a);
         param1b = (TextView) findViewById(R.id.param1b);
         engine = sonav.getInstance();
-        int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-        if (mapstyle < 6) {
-            engine.setmapstyle(0, mapstyle, 1);
-        }else{
-            mapstyle-=5;
-            engine.setmapstyle(1, 0, mapstyle);
+
+        int mapStyle = SettingManager.getMapStyle();
+
+        if (mapStyle < 6)
+            engine.setmapstyle(0, mapStyle, 1);
+        else {
+            mapStyle-=5;
+            engine.setmapstyle(1, 0, mapStyle);
         }
         engine.savenaviparameter();
         doTransportPlan(TrackPoint, plan);

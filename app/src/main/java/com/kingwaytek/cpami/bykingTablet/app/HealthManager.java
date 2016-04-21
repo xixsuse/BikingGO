@@ -10,6 +10,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 
 public class HealthManager extends Activity {
 	private HealthManager instance = this;
@@ -43,27 +44,27 @@ public class HealthManager extends Activity {
 		heightText = (TextView) findViewById(R.id.height_dipalyText);
 		weightText = (TextView) findViewById(R.id.weight_dipalyText);
 
-		int age = Integer.parseInt(PreferenceActivity.getUserAge(instance));
-		int height = Integer.parseInt(PreferenceActivity
-				.getUserHeight(instance));
-		int weight = Integer.parseInt(PreferenceActivity
-				.getUserWeight(instance));
+		int age = SettingManager.getUserAge();
+		int height = SettingManager.getUserHeight();
+		int weight = SettingManager.getUserWeight();
+
 		SeekBar_age.setProgress(age);
 		SeekBar_height.setProgress(height);
 		SeekBar_weight.setProgress(weight);
 		ageText.setText(age + "歲");
 		weightText.setText(weight + "公斤");
 		heightText.setText(height + "公分");
-		switch (Integer.parseInt(PreferenceActivity.getUserSex(instance))) {
-		case 1:
-			Health_Radio_boy.setChecked(true);
-			break;
-		case 2:
-			Health_Radio_girl.setChecked(true);
-			break;
-		default:
-			break;
-		}
+
+        switch (SettingManager.getUserSex()) {
+            case 1:
+                Health_Radio_boy.setChecked(true);
+                break;
+            case 2:
+                Health_Radio_girl.setChecked(true);
+                break;
+            default:
+                break;
+        }
 
 		/*****************************************************************************************/
 		SeekBar_age.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
@@ -85,23 +86,18 @@ public class HealthManager extends Activity {
 			}
 
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				PreferenceActivity.setUserAge(instance, IntAge);
-				Log.i("HealthManager.java", "on_Stop_TrackingTouch_AGE="
-						+ PreferenceActivity.getUserAge(instance));
+                SettingManager.setUserAge(IntAge);
 			}
 
 		});
 		/*****************************************************************************************/
-		SeekBar_weight
-				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+		SeekBar_weight.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					int IntWeight = 0;
 
-					public void onProgressChanged(SeekBar seekBar,
-							int progress, boolean fromTouch) {
-						if (progress < SeekBar_weight_min_vaule) {
-							SeekBar_weight
-									.setProgress(SeekBar_weight_min_vaule);
-						} else {
+					public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+						if (progress < SeekBar_weight_min_vaule)
+							SeekBar_weight.setProgress(SeekBar_weight_min_vaule);
+                        else {
 							weightText.setText(progress + "公斤");
 							IntWeight = progress;
 						}
@@ -112,26 +108,17 @@ public class HealthManager extends Activity {
 					}
 
 					public void onStopTrackingTouch(SeekBar seekBar) {
-						PreferenceActivity.setUserWeight(instance, IntWeight);
-						Log.i("HealthManager.java",
-								"on_Stop_TrackingTouch_weight="
-										+ PreferenceActivity
-												.getUserWeight(instance));
-
+                        SettingManager.setUserWeight(IntWeight);
 					}
-
 				});
 		/*****************************************************************************************/
-		SeekBar_height
-				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+		SeekBar_height.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					int IntHeight = 0;
 
-					public void onProgressChanged(SeekBar seekBar,
-							int progress, boolean fromTouch) {
-						if (progress < SeekBar_height_min_vaule) {
-							SeekBar_height
-									.setProgress(SeekBar_height_min_vaule);
-						} else {
+					public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+						if (progress < SeekBar_height_min_vaule)
+							SeekBar_height.setProgress(SeekBar_height_min_vaule);
+                        else {
 							heightText.setText(progress + "公分");
 							IntHeight = progress;
 						}
@@ -143,30 +130,19 @@ public class HealthManager extends Activity {
 					}
 
 					public void onStopTrackingTouch(SeekBar seekBar) {
-						PreferenceActivity.setUserHeight(instance, IntHeight);
-						Log.i("HealthManager.java",
-								"on_Stop_TrackingTouch_height="
-										+ PreferenceActivity
-												.getUserHeight(instance));
+                        SettingManager.setUserHeight(IntHeight);
 					}
-
 				});
 
-		Radio_sex
-				.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+		Radio_sex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 					@Override
 					public void onCheckedChanged(RadioGroup group, int checkedId) {
 						// TODO Auto-generated method stub
 						if (checkedId == Health_Radio_boy.getId()) {
-
-							PreferenceActivity.setUserSex(instance, 1);
-							Log.i("healthmanager.java",
-									PreferenceActivity.getUserSex(instance));
-						} else if (checkedId == Health_Radio_girl.getId()) {
-
-							PreferenceActivity.setUserSex(instance, 2);
-							Log.i("healthmanager.java",
-									PreferenceActivity.getUserSex(instance));
+                            SettingManager.setUserSex(1);
+						}
+                        else if (checkedId == Health_Radio_girl.getId()) {
+                            SettingManager.setUserSex(2);
 						}
 					}
 				});

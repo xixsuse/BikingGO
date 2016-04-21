@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.IsAllowedConnection;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 public class TrackTypeSelectionActivity extends Activity implements OnClickListener {
@@ -48,7 +48,7 @@ public class TrackTypeSelectionActivity extends Activity implements OnClickListe
 
 	private void goToNextActivityWithCatagory(final String type) {
 
-		if (IsAllowedConnection.checkConnectionPermission(this)) {
+		if (SettingManager.isInternetConfirmEnabled()) {
 
 			UtilDialog uit = new UtilDialog(TrackTypeSelectionActivity.this) {
 				@Override

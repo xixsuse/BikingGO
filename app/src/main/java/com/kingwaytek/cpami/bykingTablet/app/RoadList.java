@@ -1,21 +1,22 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
-import com.sonavtek.sonav.PathFinder;
-import com.sonavtek.sonav.ROADLISTDATA;
-import com.sonavtek.sonav.sonav;
-import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.view.RoadlistAdapter;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.view.RoadlistAdapter;
+import com.sonavtek.sonav.PathFinder;
+import com.sonavtek.sonav.ROADLISTDATA;
+import com.sonavtek.sonav.sonav;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RoadList extends Activity {
 	private String[] name;
@@ -62,12 +63,12 @@ public class RoadList extends Activity {
 		// }
 		// });
 		engine = sonav.getInstance();
-		int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-		if (mapstyle < 6) {
-			engine.setmapstyle(0, mapstyle, 1);
+		int mapStyle = SettingManager.getMapStyle();
+		if (mapStyle < 6) {
+			engine.setmapstyle(0, mapStyle, 1);
 		} else {
-			mapstyle -= 5;
-			engine.setmapstyle(1, 0, mapstyle);
+			mapStyle -= 5;
+			engine.setmapstyle(1, 0, mapStyle);
 		}
 		engine.savenaviparameter();
 		LengthCount = 0;

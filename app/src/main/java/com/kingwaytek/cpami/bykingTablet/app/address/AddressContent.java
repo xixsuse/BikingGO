@@ -15,10 +15,10 @@ import com.example.actionsheet.ActionSheet;
 import com.example.actionsheet.ActionSheet.ActionSheetButtonClickListener;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
-import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.NaviSetupAction;
 import com.sonavtek.sonav.MapView;
@@ -256,7 +256,7 @@ public class AddressContent extends Activity {
         rlMapZoom.setVisibility(RelativeLayout.GONE);
 
         engine = sonav.getInstance();
-        int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
+        int mapstyle = SettingManager.getMapStyle();
 
         if (mapstyle < 6)
             engine.setmapstyle(0, mapstyle, 1);

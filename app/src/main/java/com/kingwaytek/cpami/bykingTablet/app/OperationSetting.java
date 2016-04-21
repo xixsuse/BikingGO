@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ListSimpleAdapter;
 
@@ -29,7 +30,8 @@ public class OperationSetting extends CommunicationBaseActivity {
 	private ListSimpleAdapter listItemAdapter;
 	private SeekBar AroundDistance;
 	private TextView distance;
-	private String[] preferenceState = { "", "", "", "", "", "" };
+	private boolean[] preferenceState = new boolean[6];
+
 	private int SeekBar_POI_min_value = 1000; // 設定POI_SeekBar之最小值
 	private ListView list;
 	//private static String URL_GCM = "http://biking.cpami.gov.tw/Service/SetPushToken?";
@@ -41,20 +43,21 @@ public class OperationSetting extends CommunicationBaseActivity {
 		setContentView(R.layout.operation);
 
 		this.initialFooterView();
-		int range = Integer.parseInt(PreferenceActivity.getSurroundRange(OperationSetting.this));
+		int range = SettingManager.getSurroundRange();
 		Log.i("OperationSetting.java", "range=" + range);
 
 		AroundDistance.setProgress(range);
 		distance.setText(range + "公尺");
-		preferenceState[0] = PreferenceActivity.isMeteorolEnabled(this);
-		preferenceState[1] = PreferenceActivity.isInternetConfirmEnabled(this);
-		preferenceState[2] = PreferenceActivity.isTrackConfirmEnabled(this);
-		preferenceState[3] = PreferenceActivity.isAnnouncementEnabled(this);
-		preferenceState[5] = PreferenceActivity.isPOIEnabled(this);
-		preferenceState[4] = PreferenceActivity.isGCMEnabled(this);
+
+        preferenceState[0] = SettingManager.isMeteorologyEnabled();
+		preferenceState[1] = SettingManager.isInternetConfirmEnabled();
+		preferenceState[2] = SettingManager.isTrackConfirmEnabled();
+		preferenceState[3] = SettingManager.isAnnouncementEnabled();
+		preferenceState[5] = SettingManager.isPOIEnabled();
+		preferenceState[4] = SettingManager.isGCMEnabled();
 
 		for (int i = 0; i < preferenceState.length; i++) {
-			if (preferenceState[i].equals("true")) {
+			if (preferenceState[i]) {
 				Log.i("OperationSetting.java", "true");
 				savePreferenceSate[i] = true;
 			}
@@ -83,8 +86,6 @@ public class OperationSetting extends CommunicationBaseActivity {
                 new int[] {R.id.topTextView, R.id.bottomTextView });
 
 		for (int i = 0; i < savePreferenceSate.length; i++) {
-			// Log.i("","PreferenceState["+i+"]="+preferenceState[i]);
-			// Log.i("","savePreferenceState["+i+"]="+String.valueOf(savePreferenceSate[i]));
 			listItemAdapter.getCheckBoxData().put(i, savePreferenceSate[i]);
 		}
 
@@ -100,7 +101,7 @@ public class OperationSetting extends CommunicationBaseActivity {
 				mCheckBox1.toggle();
 				final Boolean is_checked = mCheckBox1.isChecked();
 
-				writeIntoPreferance(position, is_checked);
+				writeIntoPreferences(position, is_checked);
 				listItemAdapter.getCheckBoxData().put(position, is_checked);
 
 				// 是否顯示POI周邊查詢距離的seekbar
@@ -134,8 +135,6 @@ public class OperationSetting extends CommunicationBaseActivity {
 					};
 					uit.showDialog_route_plan_choice("推播功能需使用網路,\n您可能需要支付網路費,\n是否要繼續?", null, "確定", "取消");
 				}
-
-				Log.i("ListActivity Item Clicked.", "checkbox valid = " + (mCheckBox1 != null));
 			}
 		});
 		Log.i("OperationSetting.java", "onCreate---end");
@@ -166,32 +165,30 @@ public class OperationSetting extends CommunicationBaseActivity {
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                PreferenceActivity.setSurroundRange(OperationSetting.this, Intdistance);
-                Log.i("OperationSetting.java", "on_Stop_TrackingTouch_SurroundRange="
-                                + PreferenceActivity.getSurroundRange(OperationSetting.this));
+                SettingManager.setSurroundRange(Intdistance);
             }
         });
     }
 
-	public void writeIntoPreferance(int i, Boolean ischeck) {
+	private void writeIntoPreferences(int i, Boolean isCheck) {
 		switch (i) {
 		case 0:
-			PreferenceActivity.setMeteorolEnabled(this, ischeck);
+			SettingManager.setMeteorologyEnabled(isCheck);
 			break;
 		case 1:
-			PreferenceActivity.setInternetConfirmEnabled(this, ischeck);
+			SettingManager.setInternetConfirmEnabled(isCheck);
 			break;
 		case 2:
-			PreferenceActivity.setTrackConfirmEnabled(this, ischeck);
+			SettingManager.setTrackConfirmEnabled(isCheck);
 			break;
 		case 3:
-			PreferenceActivity.setAnnouncementEnabled(this, ischeck);
+			SettingManager.setAnnouncementEnabled(isCheck);
 			break;
 		case 5:
-			PreferenceActivity.setPOIEnabled(this, ischeck);
+			SettingManager.setPOIEnabled(isCheck);
 			break;
 		case 4:
-			PreferenceActivity.setGCMEnabled(this, ischeck);
+			SettingManager.setGCMEnabled(isCheck);
 			break;
 		default:
 			break;
@@ -199,7 +196,7 @@ public class OperationSetting extends CommunicationBaseActivity {
 	}
 
 	private void showPOIAroundDistanceSeekBar() {
-		if (preferenceState[5].equalsIgnoreCase("true")) {
+		if (preferenceState[5]) {
 			distance.setVisibility(View.VISIBLE);
 			AroundDistance.setVisibility(View.VISIBLE);
 			setSeekBarListener();

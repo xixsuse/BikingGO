@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog;
 import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ListViewAdapter;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
@@ -48,12 +49,12 @@ public class RoadSelection extends ListActivity {
 		setContentView(R.layout.selection_listview_layout);
 		progressDialog = new UtilDialog(this);
 		engine = sonav.getInstance();
-		int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-		if (mapstyle < 6) {
-			engine.setmapstyle(0, mapstyle, 1);
+		int mapStyle = SettingManager.getMapStyle();
+		if (mapStyle < 6) {
+			engine.setmapstyle(0, mapStyle, 1);
 		} else {
-			mapstyle -= 5;
-			engine.setmapstyle(1, 0, mapstyle);
+			mapStyle -= 5;
+			engine.setmapstyle(1, 0, mapStyle);
 		}
 		engine.savenaviparameter();
 		TextView titleBar = (TextView) findViewById(R.id.titlebar_text);

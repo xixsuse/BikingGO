@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
-import com.kingwaytek.cpami.bykingTablet.app.IsAllowedConnection;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 import org.apache.http.Header;
@@ -48,11 +48,10 @@ public class InformationActivity extends CommunicationBaseActivity implements On
 
 		final String requestCommand = this.constructRequestCommand();
 
-		if (!IsAllowedConnection.checkConnectionPermission(this)) {
-
+		if (!SettingManager.isInternetConfirmEnabled()) {
 			this.startHttpGet(requestCommand, true, "資料讀取中", "請稍候", null, null);
-
-		} else {
+        }
+        else {
 
 			UtilDialog uit = new UtilDialog(InformationActivity.this) {
 				@Override

@@ -1,16 +1,10 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import java.io.File;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -18,10 +12,8 @@ import android.widget.TextView;
 import com.example.actionsheet.ActionSheet;
 import com.example.actionsheet.ActionSheet.ActionSheetButtonClickListener;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.sonavtek.sonav.sonav;
-
-import facebook.FacebookActivity;
 
 public class NaviSetting extends Activity {
 
@@ -49,12 +41,8 @@ public class NaviSetting extends Activity {
 		instanceEeego = sonav.getInstance();
 
 		mapstyle_text = (TextView) findViewById(R.id.mapstyle_text);
-		int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-		mapstyle_text.setText(style[mapstyle]);
-		// mTextView1 = (TextView) findViewById(R.id.myTextView);
-		// TextView1 = (TextView) findViewById(R.id.TextPath);
-		// TextView2 = (TextView) findViewById(R.id.TextMap);
-		// TextView3 = (TextView) findViewById(R.id.TextVoice);
+		int mapStyle = SettingManager.getMapStyle();
+		mapstyle_text.setText(style[mapStyle]);
 
 		mRadioGroup1 = (RadioGroup) findViewById(R.id.road_plan);
 		mRadio1 = (RadioButton) findViewById(R.id.best_road);
@@ -69,10 +57,10 @@ public class NaviSetting extends Activity {
 		m3Radio2 = (RadioButton) findViewById(R.id.local_chiness);
 		m3Radio3 = (RadioButton) findViewById(R.id.dialect);
 
-		mapStyle_layout = (View) findViewById(R.id.mapstyle_layout);
+		mapStyle_layout = findViewById(R.id.mapstyle_layout);
 		setActionSheet();
-		mapStyle_layout.setOnClickListener(new OnClickListener() {
 
+		mapStyle_layout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				actionSheet.show();
@@ -86,9 +74,10 @@ public class NaviSetting extends Activity {
 
 		// TextView3.setText("PreferenceActivity.getString="+PreferenceActivity.getString(
 		// instance,PreferenceActivity.PREF_SOUND_TYPE,"1"));
-		String RoutingMethod = PreferenceActivity.getRoutingMethod(instance);
-		String MapViewType = PreferenceActivity.getMapViewType(instance);
-		String SoundType = PreferenceActivity.getSoundType(instance);
+        int RoutingMethod = SettingManager.getRoutingMethod();
+        int MapViewType = SettingManager.getMapViewType();
+		int SoundType = SettingManager.getSoundType();
+
 		displayCurrentState(RoutingMethod, MapViewType, SoundType);
 
 		// TextView1.setText("getRoutingMethod="+RoutingMethod);
@@ -128,8 +117,7 @@ public class NaviSetting extends Activity {
 						} else {
 
 							// cuber
-							PreferenceActivity.setMapStyle(NaviSetting.this,
-									index);
+                            SettingManager.setMapStyle(index);
 							int mapstyle = index;
 							if (mapstyle < 6) {
 								instanceEeego.setmapstyle(0, mapstyle, 1);
@@ -160,12 +148,15 @@ public class NaviSetting extends Activity {
 				/* 把mRadio1的內容傳到mTextView1 */
 				// mTextView1.setText(mRadio1.getText());
 				Log.i("navisetting.java", mRadio1.getText().toString());
-				PreferenceActivity.setRoutingMethod(instance, 1);
-			} else if (checkedId == mRadio2.getId()) {
+
+                SettingManager.setRoutingMethod(1);
+			}
+            else if (checkedId == mRadio2.getId()) {
 				/* 把mRadio2的內容傳到mTextView1 */
 				// mTextView1.setText(mRadio2.getText());
 				Log.i("navisetting.java", mRadio2.getText().toString());
-				PreferenceActivity.setRoutingMethod(instance, 2);
+
+                SettingManager.setRoutingMethod(2);
 			}
 		}
 	};
@@ -178,12 +169,15 @@ public class NaviSetting extends Activity {
 				/* 把mRadio1的內容傳到mTextView1 */
 				// mTextView1.setText(m2Radio1.getText());
 				Log.i("navisetting.java", m2Radio1.getText().toString());
-				PreferenceActivity.setMapViewType(instance, 1);
-			} else if (checkedId == m2Radio2.getId()) {
+
+                SettingManager.setMapViewType(1);
+			}
+            else if (checkedId == m2Radio2.getId()) {
 				/* 把mRadio2的內容傳到mTextView1 */
 				// mTextView1.setText(m2Radio2.getText());
 				Log.i("navisetting.java", m2Radio2.getText().toString());
-				PreferenceActivity.setMapViewType(instance, 2);
+
+                SettingManager.setMapViewType(2);
 			}
 		}
 	};
@@ -198,63 +192,64 @@ public class NaviSetting extends Activity {
 				Log.i("navisetting.java", m3Radio1.getText().toString());
 				// PreferenceActivity.setString( instance,
 				// PreferenceActivity.PREF_SOUND_TYPE,m3Radio1.getText().toString());
-				PreferenceActivity.setSoundType(instance, 1);
-			} else if (checkedId == m3Radio2.getId()) {
+                SettingManager.setSoundType(1);
+			}
+            else if (checkedId == m3Radio2.getId()) {
 				/* 把mRadio2的內容傳到mTextView1 */
 				// mTextView1.setText(m3Radio2.getText());
 				Log.i("navisetting.java", m3Radio2.getText().toString());
 				// PreferenceActivity.setString( instance,
 				// PreferenceActivity.PREF_SOUND_TYPE,m3Radio2.getText().toString());
-				PreferenceActivity.setSoundType(instance, 2);
-			} else if (checkedId == m3Radio3.getId()) {
+                SettingManager.setSoundType(2);
+			}
+            else if (checkedId == m3Radio3.getId()) {
 				/* 把mRadio2的內容傳到mTextView1 */
 				// mTextView1.setText(m3Radio3.getText());
 				Log.i("navisetting.java", m3Radio3.getText().toString());
 				// PreferenceActivity.setString( instance,
 				// PreferenceActivity.PREF_SOUND_TYPE,m3Radio3.getText().toString());
-				PreferenceActivity.setSoundType(instance, 3);
+                SettingManager.setSoundType(3);
 			}
-			instanceEeego.setlangvoice(Integer.parseInt(PreferenceActivity
-					.getSoundType(instance)));
+			instanceEeego.setlangvoice(SettingManager.getSoundType());
 		}
 
 	};
 
-	public void displayCurrentState(String Routing, String ViewType,
-			String SoundType) {
-		switch (Integer.parseInt(Routing)) {
-		case 1:
-			mRadio1.setChecked(true);
-			break;
-		case 2:
-			mRadio2.setChecked(true);
-			break;
-		default:
-			break;
-		}
-		switch (Integer.parseInt(ViewType)) {
-		case 1:
-			m2Radio1.setChecked(true);
-			break;
-		case 2:
-			m2Radio2.setChecked(true);
-			break;
-		default:
-			break;
-		}
-		switch (Integer.parseInt(SoundType)) {
-		case 1:
-			m3Radio1.setChecked(true);
-			break;
-		case 2:
-			m3Radio2.setChecked(true);
-			break;
-		case 3:
-			m3Radio3.setChecked(true);
-			break;
-		default:
-			break;
-		}
-	}
+    public void displayCurrentState(int Routing, int ViewType, int SoundType) {
+        switch (Routing) {
+            case 1:
+                mRadio1.setChecked(true);
+                break;
+            case 2:
+                mRadio2.setChecked(true);
+                break;
+            default:
+                break;
+        }
 
+        switch (ViewType) {
+            case 1:
+                m2Radio1.setChecked(true);
+                break;
+            case 2:
+                m2Radio2.setChecked(true);
+                break;
+            default:
+                break;
+        }
+
+        switch (SoundType) {
+            case 1:
+                m3Radio1.setChecked(true);
+                break;
+            case 2:
+                m3Radio2.setChecked(true);
+                break;
+            case 3:
+                m3Radio3.setChecked(true);
+                break;
+            default:
+                break;
+        }
+    }
 }

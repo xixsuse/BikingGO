@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.sonavtek.sonav.sonav;
 
@@ -28,7 +29,7 @@ public class AnnounceActivity extends Activity {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-		if (PreferenceActivity.isAnnouncementEnabled(getApplicationContext()).equalsIgnoreCase("false")) {
+		if (!SettingManager.isAnnouncementEnabled()) {
 
 			this.setContentView(R.layout.activtiy_annonce);
 
@@ -44,7 +45,7 @@ public class AnnounceActivity extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					PreferenceActivity.setAnnouncementEnabled(AnnounceActivity.this, checkbox.isChecked());
+					SettingManager.setAnnouncementEnabled(checkbox.isChecked());
 					goToMapActivity();
 				}
 			});

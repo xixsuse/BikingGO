@@ -5,12 +5,12 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.CursorColumn;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.POIColumn;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.POIKindColumn;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.TableName;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 
 public class POI extends SQLiteBot {
 
@@ -252,10 +252,6 @@ public class POI extends SQLiteBot {
 
     /**
      * search pois around given point by category
-     *
-     * @param gpPoi
-     * @param category
-     * @return
      */
     public static Cursor Search(Context context, GeoPoint point, String category) {
         SQLiteBot sqliteDatabase = new SQLiteBot(context
@@ -264,10 +260,7 @@ public class POI extends SQLiteBot {
 
         // TODO radius should get from sharedpreference Geopoint shoudl get from
         // GPS and converted to tm97
-        Log.i("POI.java", "PreferenceActivity.getSurroundRange(context)="
-                + PreferenceActivity.getSurroundRange(context));
-        double radius = Double.parseDouble(PreferenceActivity
-                .getSurroundRange(context));// 500;
+        double radius = (double) SettingManager.getSurroundRange(); // 500;
         double eNorth = point.getTmY() + radius;
         double eEast = point.getTmX() + radius;
         double eSouth = point.getTmY() - radius;
@@ -276,7 +269,7 @@ public class POI extends SQLiteBot {
 
 
         String sqlCommand="";
-        if(PreferenceActivity.isPOIEnabled(context).equalsIgnoreCase("true")){
+        if(SettingManager.isPOIEnabled()){
             // TODO 如果要界定範圍，使用下列
             sqlCommand = "select " + POIColumn.ID.getName() + " "
                     + CursorColumn.ID.get() + "," + POIColumn.NAME.getName() + ","

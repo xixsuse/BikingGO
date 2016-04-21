@@ -40,6 +40,7 @@ import com.kingwaytek.cpami.bykingTablet.hardware.BatteryNotifier;
 import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
 import com.kingwaytek.cpami.bykingTablet.sql.Track;
 import com.kingwaytek.cpami.bykingTablet.sql.TrackPoint;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
@@ -297,11 +298,11 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         mapView.setMapActivity(MapActivity.this);
         // initialization for map
         engine = sonav.getInstance();
-        mapView.setViewType(Integer.parseInt(PreferenceActivity.getMapViewType(this)));
+        mapView.setViewType(SettingManager.getMapViewType());
 
         engine.setvoiceself(0);
 
-        engine.setlangvoice(Integer.parseInt(PreferenceActivity.getSoundType(this)));
+        engine.setlangvoice(SettingManager.getSoundType());
 
         engine.setoutwayroute(2, 5, 50);
         // engine.seticonsize(30, 30);
@@ -311,13 +312,13 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         engine.setresizefont(1);
 
         // getMapStyle();
-        int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
+        int mapStyle = SettingManager.getMapStyle();
 
-        if (mapstyle < 6)
-            engine.setmapstyle(0, mapstyle, 1);
+        if (mapStyle < 6)
+            engine.setmapstyle(0, mapStyle, 1);
         else {
-            mapstyle -= 5;
-            engine.setmapstyle(1, 0, mapstyle);
+            mapStyle -= 5;
+            engine.setmapstyle(1, 0, mapStyle);
         }
 
         engine.savenaviparameter();
@@ -345,7 +346,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         Bundle params = mapActivityIntent.getExtras();
 
         Log.i("MapActivity", "SMSToMapActivity: " + mapActivityIntent.getIntExtra("SMSToMapActivity", 0));
-
+/*
         // SMS觸發,將畫面轉到SMSMapContent
         if (mapActivityIntent.getIntExtra("SMSToMapActivity", 0) == 1) {
             Log.i("MapActivity.java", "SMS mapActivityIntent.getDoubleExtra(Lon,0.0)=" + mapActivityIntent.getDoubleExtra("Lon", 0.0));
@@ -363,7 +364,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
             intent.putExtras(params);
             startActivity(intent);
         }
-
+*/
         geoPoint = new GeoPoint();
 
         View view = this.getLayoutInflater().inflate(R.layout.traffic_conditon_popupwindow, null);
@@ -778,9 +779,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         imWeather.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("MapActivity.java", "isInternetConfirmEnabl=" + PreferenceActivity.isInternetConfirmEnabled(MapActivity.this));
-
-                if (PreferenceActivity.isInternetConfirmEnabled(MapActivity.this).equalsIgnoreCase("true")) {
+                if (SettingManager.isInternetConfirmEnabled()) {
                     UtilDialog uit = new UtilDialog(MapActivity.this) {
                         @Override
                         public void click_btn_1() {
@@ -1054,16 +1053,14 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                         UtilDialog uit = new UtilDialog(MapActivity.this) {
                             @Override
                             public void click_btn_1() {
-                                PreferenceActivity.setRoutingMethod(
-                                        MapActivity.this, 1);
+                                SettingManager.setRoutingMethod(1);
                                 startNavi();
                                 super.click_btn_1();
                             }
 
                             @Override
                             public void click_btn_2() {
-                                PreferenceActivity.setRoutingMethod(
-                                        MapActivity.this, 2);
+                                SettingManager.setRoutingMethod(2);
                                 startNavi();
                                 super.click_btn_2();
                             }
@@ -1272,24 +1269,22 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                 try {
                     // engine.addnavivoice("誰說下雨天要來騎腳踏車的");
                     PathFinder pathFinder = PathFinder.getInstance();
-                    if (Integer.parseInt(PreferenceActivity
-                            .getRoutingMethod(MapActivity.this)) == 1) {
+                    if (SettingManager.getRoutingMethod() == 1) {
                         pathFinder.setMethod(PathFinder.BICYCLE);
-                    } else if (Integer.parseInt(PreferenceActivity
-                            .getRoutingMethod(MapActivity.this)) == 2) {
+                    }
+                    else if (SettingManager.getRoutingMethod() == 2) {
                         pathFinder.setMethod(PathFinder.WALKING);
                     }
 
-                    pathFinder.setOrigin(new GeoPoint(StartPointArray[0],
-                            StartPointArray[1]));
+                    pathFinder.setOrigin(new GeoPoint(StartPointArray[0], StartPointArray[1]));
+
                     if (Ess1PointArray[0] != 0.0)
-                        pathFinder.setViaOne(new GeoPoint(Ess1PointArray[0],
-                                Ess1PointArray[1]));
+                        pathFinder.setViaOne(new GeoPoint(Ess1PointArray[0], Ess1PointArray[1]));
+
                     if (Ess2PointArray[0] != 0.0)
-                        pathFinder.setViaTwo(new GeoPoint(Ess2PointArray[0],
-                                Ess2PointArray[1]));
-                    pathFinder.setDestin(new GeoPoint(EndPointArray[0],
-                            EndPointArray[1]));
+                        pathFinder.setViaTwo(new GeoPoint(Ess2PointArray[0], Ess2PointArray[1]));
+
+                    pathFinder.setDestin(new GeoPoint(EndPointArray[0], EndPointArray[1]));
 					/*
 					 * pathFinder.setOrigin(new GeoPoint(121.534538,
 					 * 25.038016)); pathFinder.setViaOne(new
@@ -1712,13 +1707,13 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
             doRoutingPlan();
             StopNavigationFlag = false;
         }
-        if (Integer.parseInt(PreferenceActivity.getMapViewType(this)) == 1) {
+        if (SettingManager.getMapViewType() == 1) {
             mapView.setViewType(MapView.VIEW_2D);
         }
-        else if (Integer.parseInt(PreferenceActivity.getMapViewType(this)) == 2) {
+        else if (SettingManager.getMapViewType() == 2) {
             mapView.setViewType(MapView.VIEW_2D_FIX_DIRECTION);
         }
-        else if (Integer.parseInt(PreferenceActivity.getMapViewType(this)) == 2) {
+        else if (SettingManager.getMapViewType() == 2) {
             mapView.setViewType(MapView.VIEW_3D);
         }
         else {
@@ -1775,9 +1770,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
 
             @Override
             public void onClick(View v) {
-                Log.i("MapActivity.java", "isInternetConfirmEnabl=" + PreferenceActivity.isInternetConfirmEnabled(MapActivity.this));
-
-                if (PreferenceActivity.isInternetConfirmEnabled(MapActivity.this).equalsIgnoreCase("true")) {
+                if (SettingManager.isInternetConfirmEnabled()) {
                     UtilDialog uit = new UtilDialog(MapActivity.this) {
                         @Override
                         public void click_btn_1() {
@@ -2292,12 +2285,12 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     // 計算卡路里
     public int cal(int time) {
         double basic = 0;
-        double dtime = time;
-        int sex = Integer.parseInt(PreferenceActivity.getUserSex(this));
-        ;
-        int age = Integer.parseInt(PreferenceActivity.getUserAge(this));
-        int height = Integer.parseInt(PreferenceActivity.getUserHeight(this));
-        int weight = Integer.parseInt(PreferenceActivity.getUserWeight(this));
+
+        int sex = SettingManager.getUserSex();
+        int age = SettingManager.getUserAge();
+        int height = SettingManager.getUserHeight();
+        int weight = SettingManager.getUserWeight();
+
         double manBasic = ((13.75 * weight) + (5 * height) - (6.76 * age) + 66) / 24;// 男:
         double womanBasic = ((9.56 * weight) + (1.85 * height) - (4.68 * age) + 65) / 24;// 女:
 
@@ -2306,7 +2299,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         else if (sex == 2)
             basic = womanBasic;
 
-        int cal = (int) ((3 * basic) * (dtime / 3600));
+        int cal = (int) ((3 * basic) * (time / 3600));
         return cal;
     }
 
@@ -2650,10 +2643,8 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     }
 
     private void startNavi() {
-        if (!isDoEemulationNavi && (PreferenceActivity.isTrackConfirmEnabled(MapActivity.this)
-                .equalsIgnoreCase("true") || TrackEngine.getInstance()
-                .getRecordingStatus()
-                .equals(TrackRecordingStatus.RECORDING))) {
+        if (!isDoEemulationNavi && (SettingManager.isTrackConfirmEnabled() ||
+                TrackEngine.getInstance().getRecordingStatus().equals(TrackRecordingStatus.RECORDING))) {
 
             UtilDialog uit = new UtilDialog(MapActivity.this) {
                 @Override

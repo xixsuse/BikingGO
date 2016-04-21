@@ -15,6 +15,7 @@ import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.Tracker;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapCache;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 
 /**
  * The global controller for application level.
@@ -33,7 +34,7 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         appInstance = this;
-        //SettingManager.initPreferences();
+        SettingManager.initPreferences();
         //SettingManager.SystemSetting.initSettingPreference();
     }
 

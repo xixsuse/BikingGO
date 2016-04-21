@@ -35,6 +35,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
 import com.kingwaytek.cpami.bykingTablet.sql.Favorite;
@@ -625,12 +626,12 @@ public class TrackMapContent extends Activity implements OnClickListener {
         });
 
         engine = sonav.getInstance();
-        int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-        if (mapstyle < 6) {
-            engine.setmapstyle(0, mapstyle, 1);
+        int mapStyle = SettingManager.getMapStyle();
+        if (mapStyle < 6) {
+            engine.setmapstyle(0, mapStyle, 1);
         } else {
-            mapstyle -= 5;
-            engine.setmapstyle(1, 0, mapstyle);
+            mapStyle -= 5;
+            engine.setmapstyle(1, 0, mapStyle);
         }
         engine.savenaviparameter();
         final View emptyView = new View(this);

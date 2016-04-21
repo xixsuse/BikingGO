@@ -9,53 +9,53 @@
     <string name="data_dir">/sdcard/BikingData/</string>
 
     <!-- 是否顯示氣象資訊 -->
-    <string name="meteorol">false</string>
+    <bool name="meteorol">false</bool>
 
     <!-- 是否開啟連線提示 -->
-    <string name="inetConfirmEnabled">true</string>
+    <bool name="inetConfirmEnabled">true</bool>
 
     <!-- 是否於導航開始前詢問使用者是否進行軌跡錄製 -->
-    <string name="trackConfirmEnabled">true</string>
+    <bool name="trackConfirmEnabled">true</bool>
 
     <!-- 是否開啟使用聲明提示 -->
-    <string name="announceEnabled">false</string>
+    <bool name="announceEnabled">false</bool>
 
     <!-- POI查詢的距離範圍(In meter) -->
-    <string name="surroundRange">1000</string>
+    <integer name="surroundRange">1000</integer>
 
     <!-- 是否開啟POI -->
-    <string name="poiEnabled">false</string>
+    <bool name="poiEnabled">false</bool>
 
     <!-- 是否開啟GCN -->
-    <string name="gcmEnabled">true</string>
+    <bool name="gcmEnabled">true</bool>
 
     <!-- 是否開啟GPS -->
     <bool name="gpsEnabled">true</bool>
 
     <!-- 路徑規畫方式(PathFinder.BICYCLE) -->
-    <string name="routingMethod">1</string>
+    <integer name="routingMethod">1</integer>
 
     <!-- 地圖顯示方式(MapView.2D) -->
-    <string name="mapViewType">2</string>
+    <integer name="mapStyle">2</integer>
     
     <!-- 地圖STYLE -->
-    <string name="mapStyle">0</string>
+    <integer name="mapViewType">0</integer>
 
     <!-- 語音類型(eeego.SOUND_CHINESE) -->
-    <string name="soundType">1</string>
+    <integer name="soundType">1</integer>
 
     <!-- 使用者年齡(0 for unknown) -->
-    <string name="userAge">25</string>
+    <integer name="userAge">25</integer>
 
     <!-- 使用者性別(0 for unknown) -->
-    <string name="userSex">1</string>
+    <integer name="userSex">1</integer>
 
     <!-- 使用者身高(0 for unknown) -->
-    <string name="userHeight">170</string>
+    <integer name="userHeight">170</integer>
 
     <!-- 使用者體重(0 for unknown) -->
-    <string name="userWeight">60</string>
+    <integer name="userWeight">60</integer>
 
     <!-- 使用者體重(0 for unknown) -->
-    <string name="mapDownloadArea">1</string>
+    <integer name="mapDownloadArea">1</integer>
 </resources>

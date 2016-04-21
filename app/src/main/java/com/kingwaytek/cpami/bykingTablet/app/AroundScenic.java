@@ -1,30 +1,24 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
+import com.kingwaytek.cpami.bykingTablet.view.AroundSceniclistAdapter;
+import com.sonavtek.sonav.PPDATA;
+import com.sonavtek.sonav.sonav;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.StringTokenizer;
-
-import com.sonavtek.sonav.PPDATA;
-import com.sonavtek.sonav.sonav;
-import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.bus.RLineInfo;
-import com.kingwaytek.cpami.bykingTablet.bus.RPointInfo;
-import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
-import com.kingwaytek.cpami.bykingTablet.view.AroundSceniclistAdapter;
-import com.kingwaytek.cpami.bykingTablet.view.RoadlistAdapter;
-
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 
 public class AroundScenic extends Activity {
        private sonav engine ;
@@ -52,12 +46,12 @@ public class AroundScenic extends Activity {
     		
             
           	engine = sonav.getInstance();
-          	int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-    		if (mapstyle < 6) {
-    			engine.setmapstyle(0, mapstyle, 1);
+          	int mapStyle = SettingManager.getMapStyle();
+    		if (mapStyle < 6) {
+    			engine.setmapstyle(0, mapStyle, 1);
     		}else{
-    			mapstyle-=5;
-    			engine.setmapstyle(1, 0, mapstyle);
+    			mapStyle-=5;
+    			engine.setmapstyle(1, 0, mapStyle);
     		}
     		engine.savenaviparameter();
           	setScenicSpotsEngine();

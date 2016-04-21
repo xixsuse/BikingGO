@@ -18,10 +18,10 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
-import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.sonavtek.sonav.MapView;
 import com.sonavtek.sonav.UBikeMapEventHandler;
 import com.sonavtek.sonav.UBikeMapEventListen;
@@ -242,7 +242,7 @@ public class UbikeActivity extends CommunicationBaseActivity implements Location
         } else {
             point = new GeoPoint(121.522069004011, 25.0270332995188);
         }
-        mapView.setViewType(Integer.parseInt(PreferenceActivity.getMapViewType(this)));
+        mapView.setViewType(SettingManager.getMapViewType());
         mapView.setCenter(point);
 
         rlMapZoom = (RelativeLayout) findViewById(R.id.Ubike_menu);
@@ -250,12 +250,12 @@ public class UbikeActivity extends CommunicationBaseActivity implements Location
         rlMapZoom.setVisibility(RelativeLayout.VISIBLE);
 
         engine = sonav.getInstance();
-        int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-        if (mapstyle < 6) {
-            engine.setmapstyle(0, mapstyle, 1);
+        int mapStyle = SettingManager.getMapStyle();
+        if (mapStyle < 6) {
+            engine.setmapstyle(0, mapStyle, 1);
         } else {
-            mapstyle -= 5;
-            engine.setmapstyle(1, 0, mapstyle);
+            mapStyle -= 5;
+            engine.setmapstyle(1, 0, mapStyle);
         }
 
         engine.savenaviparameter();

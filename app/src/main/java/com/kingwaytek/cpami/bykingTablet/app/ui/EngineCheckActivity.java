@@ -9,11 +9,10 @@ import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
-import com.kingwaytek.cpami.bykingTablet.app.AnnounceActivity;
 import com.kingwaytek.cpami.bykingTablet.app.MapDownloadActivity;
-import com.kingwaytek.cpami.bykingTablet.app.PreferenceActivity;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnEngineReadyCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.sonavtek.sonav.sonav;
 
@@ -154,7 +153,7 @@ public abstract class EngineCheckActivity extends Activity implements OnEngineRe
             engine = sonav.getInstance();
             engine.setIconSize(1);
             engine.setresizefont(2);// xhdpis
-            engine.init(getApplicationContext(), PreferenceActivity.getDataDirectory(this), this);
+            engine.init(getApplicationContext(), SettingManager.getDataDirectory(), this);
         }
         catch (Throwable t) {
             Log.e(getClass().toString(), t.getMessage(), t);
@@ -189,15 +188,7 @@ public abstract class EngineCheckActivity extends Activity implements OnEngineRe
         engine.setflagpoint(5, -1, -1);
         /***************/
 
-        Bundle params = getIntent().getExtras();
-        Intent intent = new Intent(this, AnnounceActivity.class);
-
-        if (params != null) {
-            intent.putExtra("SMSToMapActivity", 1);
-            intent.putExtras(params);
-        }
-        startActivity(intent);
-        finish();
+        onCheckAllDone();
     }
 
     @Override

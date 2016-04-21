@@ -1,11 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import com.sonavtek.sonav.MapView;
-import com.sonavtek.sonav.sonav;
-import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
-import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +7,18 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
+import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
+import com.sonavtek.sonav.MapView;
+import com.sonavtek.sonav.sonav;
 
 public class SMSMapContent extends Activity {
 	private sonav engine;
@@ -79,12 +80,12 @@ public class SMSMapContent extends Activity {
 
 		engine = sonav.getInstance();
 		
-		int mapstyle = Integer.valueOf(PreferenceActivity.getMapStyle(this));
-		if (mapstyle < 6) {
-			engine.setmapstyle(0, mapstyle, 1);
+		int mapStyle = SettingManager.getMapStyle();
+		if (mapStyle < 6) {
+			engine.setmapstyle(0, mapStyle, 1);
 		}else{
-			mapstyle-=5;
-			engine.setmapstyle(1, 0, mapstyle);
+			mapStyle-=5;
+			engine.setmapstyle(1, 0, mapStyle);
 		}
 		engine.savenaviparameter();
 		engine.savenaviparameter();
