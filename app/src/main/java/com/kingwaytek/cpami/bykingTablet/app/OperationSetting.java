@@ -52,7 +52,7 @@ public class OperationSetting extends CommunicationBaseActivity {
         preferenceState[0] = SettingManager.isMeteorologyEnabled();
 		preferenceState[1] = SettingManager.isInternetConfirmEnabled();
 		preferenceState[2] = SettingManager.isTrackConfirmEnabled();
-		preferenceState[3] = SettingManager.isAnnouncementEnabled();
+		preferenceState[3] = SettingManager.isAnnouncementNecessary();
 		preferenceState[5] = SettingManager.isPOIEnabled();
 		preferenceState[4] = SettingManager.isGCMEnabled();
 
@@ -182,7 +182,7 @@ public class OperationSetting extends CommunicationBaseActivity {
 			SettingManager.setTrackConfirmEnabled(isCheck);
 			break;
 		case 3:
-			SettingManager.setAnnouncementEnabled(isCheck);
+			SettingManager.setAnnouncementNecessary(isCheck);
 			break;
 		case 5:
 			SettingManager.setPOIEnabled(isCheck);

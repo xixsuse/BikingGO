@@ -30,7 +30,7 @@ public class RentStationActivity extends Activity {
 
 		setContentView(R.layout.rent_station);
 		if (Util.city_sort == null) {
-			Util.getSortPOICity(this);
+			Util.getSortPOICity();
 		}
 		listView = (ListView) findViewById(R.id.rentStation_listView);
 		adapter = new RentStationAdapter(R.layout.rent_station_cell, this, Util.city_sort);

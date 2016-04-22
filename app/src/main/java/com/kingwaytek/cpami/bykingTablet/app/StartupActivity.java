@@ -1,33 +1,27 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
-import android.util.DisplayMetrics;
-import android.util.Log;
+import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
-import com.kingwaytek.cpami.bykingTablet.callbacks.OnEngineReadyCallBack;
-import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
-import com.sonavtek.sonav.sonav;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * This is the first activity for launching. Shows splash screen and do
@@ -36,142 +30,73 @@ import java.io.OutputStream;
  * @author Harvey Cheng(harvey@kingwaytek.com)
  *
  *
- * Modified by Vincent on 2016/04/12.
+ * 2016/04/12:
+ * 已重寫，現在看起來乾淨多了 (ˊ_>ˋ)
+ *
+ * @author Vincent
  */
-public class StartupActivity extends CommunicationBaseActivity implements OnEngineReadyCallBack {
+public class StartupActivity extends Activity {
 
-    private static final String DIR_DATA = "BikingData";
-    private sonav engine;
-
-    private LocationManager manager;
-
-    public String pv6 = "010601,010701,070401,071008,071415,080401";
-    public String pv4 = "";
-    public String pv2 = "01,02,03,04,05,06,07,08,09,10,11,12,13,14";
+    private static final long SPLASH_SCREEN_DURATION = 1500;
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        setWindowFeatures();
+        setContentView(R.layout.activity_announce);
 
+        showAnnouncementIfNecessary();
+    }
+
+    private void setWindowFeatures() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // set views
-        setContentView(R.layout.startup);
-
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-        int intScreenX = dm.widthPixels;
-        int intScreenY = dm.heightPixels;
-
-        userDatabaseInit(this);
-        Log.i("StartActivity", "intScreenX = " + intScreenX + "  intScreenY = " + intScreenY);
-
-        // enable GPS listener
-        if (ApplicationGlobal.gpsListener == null)
-            ApplicationGlobal.gpsListener = new GPSListener(this, 5000, 1);
-
-        // create instance of engine
-        engine = sonav.getInstance();
-
-        Intent startActivityIntent = StartupActivity.this.getIntent();
-        Log.i("StartActivity.java", "startActivityIntent.getIntExtra(SMS,0)=" + startActivityIntent.getIntExtra("SMS", 0));
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        deleteBikingDataDir();
-
-        // check GPS
-        manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-        // Check BikingData File
-        File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/" + DIR_DATA + "/");
-
-        if (!dir.exists()) {
-            UtilDialog uit = new UtilDialog(StartupActivity.this) {
-                @Override
-                public void click_btn_1() {
-                    final Intent i = new Intent(StartupActivity.this, MapDownloadActivity.class);
-                    super.click_btn_1();
-                    startActivity(i);
-                    finish();
-                }
-
-                @Override
-                public void click_btn_2() {
-                    super.click_btn_2();
-                    Utility.forceCloseTask();
-                }
-            };
-            uit.showDialog_route_plan_choice(getString(R.string.data_not_install_yet), null, getString(R.string.confirm), null);
-        }
-        else {
-            // Check GPS
-            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                //ApplicationGlobal.gpsListener.setEnabled(true);
-                engineInitialize();
+    private void showAnnouncementIfNecessary() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (SettingManager.isAnnouncementNecessary())
+                    showAnnouncement();
+                else
+                    goToMain();
             }
-            else {
-                UtilDialog uit = new UtilDialog(StartupActivity.this) {
-                    @Override
-                    public void click_btn_1() {
-                        final Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        super.click_btn_1();
-                        startActivity(i);
-                    }
+        }, SPLASH_SCREEN_DURATION);
+    }
 
-                    @Override
-                    public void click_btn_2() {
-                        super.click_btn_2();
-                        engineInitialize();
-                    }
-                };
-                uit.showDialog_route_plan_choice(getString(R.string.gps_is_not_enabled), null,
-                        getString(R.string.confirm), getString(R.string.confirm_cancel));
+    private void showAnnouncement() {
+        View transparentView = findViewById(R.id.transparentView);
+        LinearLayout announceLayout = (LinearLayout) findViewById(R.id.announceLayout);
+
+        Button confirmButton = (Button) findViewById(R.id.startup_terms_of_use_summit);
+        final CheckBox checkbox = (CheckBox) findViewById(R.id.checkbox_terms_of_use_summit);
+
+        transparentView.setVisibility(View.VISIBLE);
+        announceLayout.setVisibility(View.VISIBLE);
+
+        final float scale = this.getResources().getDisplayMetrics().density;
+
+        checkbox.setPadding(
+                checkbox.getPaddingLeft() + (int) (10.0f * scale + 0.5f),
+                checkbox.getPaddingTop(),
+                checkbox.getPaddingRight(),
+                checkbox.getPaddingBottom()
+        );
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingManager.setAnnouncementNecessary(!checkbox.isChecked());
+                goToMain();
             }
-        }
+        });
     }
 
-    @Override
-    public void onEngineInitializing() {
-
-    }
-
-    @Override
-    public void onEngineReady() {
-        engine.setpoiauto(0);
-        engine.setpoivisible(pv6, pv4, pv2, 0);
-        engine.setpoivisible(pv6, pv4, pv2, 1);
-        engine.setpoivisible(pv6, pv4, pv2, 2);
-        engine.setpoivisible(pv6, pv4, pv2, 3);
-        engine.setpoivisible(pv6, pv4, pv2, 4);
-        engine.setpoivisible(pv6, pv4, pv2, 5);
-
-        /*** 清除marker ***/
-        // engine.setflagpoint(0, -1, -1);
-        engine.setflagpoint(1, -1, -1);
-        engine.setflagpoint(2, -1, -1);
-        engine.setflagpoint(3, -1, -1);
-        engine.setflagpoint(5, -1, -1);
-        /***************/
-
-        Bundle params = getIntent().getExtras();    //這裡 always是 NULL!!!
-        Intent intent = new Intent(StartupActivity.this, AnnounceActivity.class);
-
-        if (params != null) {
-            intent.putExtra("SMSToMapActivity", 1);
-            intent.putExtras(params);
-        }
-        startActivity(intent);
+    private void goToMain() {
+        startActivity(new Intent(this, MainActivity.class));
         finish();
-    }
-
-    @Override
-    public void onEngineInitFailed() {
-        AlertDialogUtil.showMessage(StartupActivity.this, getString(R.string.msg_err), R.drawable.dialog_error);
     }
 
     /**
@@ -179,93 +104,26 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return keyCode == KeyEvent.KEYCODE_MENU;
-    }
-
-    private void engineInitialize() {
-        try {
-            // engine.setresizefont(3.5);//xxhdpi
-            engine.setIconSize(1);
-            engine.setresizefont(2);// xhdpis
-            engine.init(getApplicationContext(), SettingManager.getDataDirectory(), this);
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Utility.forceCloseTask();
+            return false;
         }
-        catch (Throwable t) {
-            Log.e(getClass().toString(), t.getMessage(), t);
-            engine.callOnEngineInitFailed();
-        }
-    }
-
-    private boolean isInit = false;
-
-    synchronized private void userDatabaseInit(Context context) {
-        String DATABASE_PATH = context.getString(R.string.SQLite_Usr_Database_Path);
-        String DATABASE_NAME = context.getString(R.string.SQLite_Usr_Database_Name);
-        if (isInit)
-            return;
-
-        // 輸出路徑
-        String outFileName = DATABASE_PATH + DATABASE_NAME;
-
-        // 檢測是否已經創建
-        File dir = new File(outFileName);
-        if (dir.exists())
-            return;
-
-        // 檢測/創建數據庫的文件夾
-        dir = new File(DATABASE_PATH);
-        if (!dir.isDirectory()) {
-            if (!dir.mkdirs())
-                return;
-        }
-
-        InputStream input;
-        OutputStream output = null;
-
-        // 從資源中讀取數據庫流
-        input = context.getResources().openRawResource(R.raw.biking_data);
-
-        try {
-            output = new FileOutputStream(outFileName);
-
-            // 拷貝到輸出流
-            byte[] buffer = new byte[2048];
-            int length;
-            while ((length = input.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            // 關閉輸出&輸入流
-            try {
-                if (output != null) {
-                    output.flush();
-                    output.close();
-                    input.close();
-                }
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        isInit = true;
+        else
+            return keyCode == KeyEvent.KEYCODE_MENU;
     }
 
     /**
      * 每次啟動時把myloc檔裡的內容清空
      */
     private void clear_myloc() {
+        final String DIR_DATA = "/BikingData/myloc";
 
-        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + DIR_DATA + "/myloc");
+        File file = new File(Environment.getExternalStorageDirectory().getPath() + DIR_DATA);
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(file, false);
-
-        } catch (FileNotFoundException e) {
-
+        }
+        catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -277,39 +135,5 @@ public class StartupActivity extends CommunicationBaseActivity implements OnEngi
             e.printStackTrace();
         }
 
-    }
-
-    private boolean checkIsGPSOpen() {
-        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            ApplicationGlobal.gpsListener.setEnabled(true);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean deleteBikingDataDir() {
-
-        File dir = Environment.getExternalStoragePublicDirectory(DIR_DATA + "_1");
-
-        if (!dir.exists()) {
-            return dir.exists();
-        }
-
-        deleteDirectory(dir);
-        return dir.exists();
-    }
-
-    private void deleteDirectory(File dir) {
-        for (File file : dir.listFiles()) {
-            if (file.isDirectory()) {
-                deleteDirectory(file);
-            }
-            else {
-                System.out.println("file delete:" + file.getName());
-                file.delete();
-            }
-        }
-        System.out.println("dir delete:" + dir.getName());
-        dir.delete();
     }
 }

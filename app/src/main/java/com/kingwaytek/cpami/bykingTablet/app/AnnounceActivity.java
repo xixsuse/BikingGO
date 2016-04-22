@@ -29,9 +29,9 @@ public class AnnounceActivity extends Activity {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-		if (!SettingManager.isAnnouncementEnabled()) {
+		if (SettingManager.isAnnouncementNecessary()) {
 
-			this.setContentView(R.layout.activtiy_annonce);
+			this.setContentView(R.layout.activity_announce);
 
 			Button button = (Button) findViewById(R.id.startup_terms_of_use_summit);
 			final CheckBox checkbox = (CheckBox) findViewById(R.id.checkbox_terms_of_use_summit);
@@ -45,7 +45,7 @@ public class AnnounceActivity extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					SettingManager.setAnnouncementEnabled(checkbox.isChecked());
+					SettingManager.setAnnouncementNecessary(!checkbox.isChecked());
 					goToMapActivity();
 				}
 			});
@@ -72,7 +72,7 @@ public class AnnounceActivity extends Activity {
         /***************/
 
         Bundle params = getIntent().getExtras();    //這裡 always是 NULL!!!
-        Intent intent = new Intent(AnnounceActivity.this, MapActivity.class);
+        Intent intent = new Intent(this, MapActivity.class);
 
         if (params != null) {
             intent.putExtra("SMSToMapActivity", 1);
@@ -81,11 +81,6 @@ public class AnnounceActivity extends Activity {
         startActivity(intent);
         finish();
     }
-
-	public void onPause() {
-		super.onPause();
-		finish();
-	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

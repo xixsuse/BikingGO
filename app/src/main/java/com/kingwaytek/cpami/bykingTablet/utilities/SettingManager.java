@@ -163,8 +163,8 @@ public class SettingManager {
      *
      * @return True if enabled, false if disabled or value not found.
      */
-    public static boolean isAnnouncementEnabled() {
-        return prefs.getBoolean(PREF_ANNOUNCE_ENABLED, appContext().getResources().getBoolean(R.bool.announceEnabled));
+    public static boolean isAnnouncementNecessary() {
+        return prefs.getBoolean(PREF_ANNOUNCE_ENABLED, appContext().getResources().getBoolean(R.bool.isAnnounceNecessary));
     }
 
     /**
@@ -172,7 +172,7 @@ public class SettingManager {
      *
      * @param enabled Set true for enabled or false for disabled.
      */
-    public static void setAnnouncementEnabled(boolean enabled) {
+    public static void setAnnouncementNecessary(boolean enabled) {
         editor.putBoolean(PREF_ANNOUNCE_ENABLED, enabled).apply();
     }
 

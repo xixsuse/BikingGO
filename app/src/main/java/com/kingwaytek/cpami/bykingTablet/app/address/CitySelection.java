@@ -47,7 +47,7 @@ public class CitySelection extends ListActivity {
         tvTitle.setText(R.string.address_search_city_prompt);
 
         if (Util.city_sort == null) {
-            Util.getSortPOICity(this);
+            Util.getSortPOICity();
         }
         ShowList();
     }

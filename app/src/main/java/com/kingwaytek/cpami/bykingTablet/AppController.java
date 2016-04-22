@@ -16,6 +16,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapCache;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 
 /**
  * The global controller for application level.
@@ -35,7 +36,7 @@ public class AppController extends Application {
         super.onCreate();
         appInstance = this;
         SettingManager.initPreferences();
-        //SettingManager.SystemSetting.initSettingPreference();
+        Util.initUserDatabase();
     }
 
     public static synchronized AppController getInstance() {
@@ -89,7 +90,7 @@ public class AppController extends Application {
         }, delayTime);
     }
 
-    private void restartAppImmediately() {
+    public void restartAppImmediately() {
         PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, new Intent(getIntent()), PendingIntent.FLAG_ONE_SHOT);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         am.set(AlarmManager.RTC, System.currentTimeMillis(), pendingIntent);

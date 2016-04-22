@@ -64,8 +64,9 @@ public class MainActivity extends CommunicationBaseActivity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				switch (position) {
 				case 0:
-					finish();
-					break;
+					//finish();
+                    goTo(MapActivity.class, false);
+                    break;
 				case 1:
 					//goToForResult(CitySelection.class, false, ActivityCaller.ADDRESS.getValue());
                     goTo(UiPoiSearchMapActivity.class, false);
@@ -236,12 +237,6 @@ public class MainActivity extends CommunicationBaseActivity {
 			itenCaller.putExtra("Action", ContextMenuOptions.NAVIGATION);
 			setResult(RESULT_OK, itenCaller);
 			finish();
-		}
-	}
-
-	private void checkNotNull(Object reference, String name) {
-		if (reference == null) {
-			throw new NullPointerException(getString(R.string.error_config, name));
 		}
 	}
 }

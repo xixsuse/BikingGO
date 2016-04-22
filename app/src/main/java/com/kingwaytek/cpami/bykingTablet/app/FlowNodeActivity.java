@@ -1,6 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -18,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.ui.EngineCheckActivity;
 import com.kingwaytek.cpami.bykingTablet.view.IconListView;
 
 /**
@@ -37,7 +37,7 @@ import com.kingwaytek.cpami.bykingTablet.view.IconListView;
  * 
  * @author Harvey Cheng(harvey@kingwaytek.com)
  */
-public abstract class FlowNodeActivity extends Activity {
+public abstract class FlowNodeActivity extends EngineCheckActivity {
 
     /** Result key of specified activity for backing to directly */
     public static final String RESULT_EXTRA_BACK_TO = "RESULT_EXTRA_BACK_TO";
@@ -50,12 +50,6 @@ public abstract class FlowNodeActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // set customized title bar
-//        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-//        setContentView(R.layout.title_bar);
-//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
-
-//        setTitle(getString(R.string.title_default));
         super.onCreate(savedInstanceState);
     }
 

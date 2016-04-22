@@ -149,7 +149,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="#53d769" >
+        android:background="#53d769"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/button1"

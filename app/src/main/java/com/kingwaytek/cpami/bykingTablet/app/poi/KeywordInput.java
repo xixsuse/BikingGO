@@ -1,7 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.poi;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,10 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog.DialogType;
 import com.kingwaytek.cpami.bykingTablet.sql.POI;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 
 /**
@@ -131,7 +130,7 @@ public class KeywordInput extends Activity implements OnClickListener {
 		Log.i("poi_KeywordInput", "keyword = " + poiKeyword);
 
 		if (Util.city_sort == null) {
-			Util.getSortPOICity(this);
+			Util.getSortPOICity();
 		}
 		int[] poiCount = null;
 		if (Util.city_sort != null) {
@@ -150,14 +149,6 @@ public class KeywordInput extends Activity implements OnClickListener {
 	}
 
 	private void DialogHandler(DialogType type) {
-		Log.i("POI_KeywordInput_dialog_handler", "whichDialog:" + whichDialog);
-		DialogInterface.OnCancelListener dlgCancelListener = new DialogInterface.OnCancelListener() {
-
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				whichDialog = DialogType.NULL;
-			}
-		};
 
 		whichDialog = type;
 		switch (type) {

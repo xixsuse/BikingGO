@@ -18,7 +18,7 @@
     <bool name="trackConfirmEnabled">true</bool>
 
     <!-- 是否開啟使用聲明提示 -->
-    <bool name="announceEnabled">false</bool>
+    <bool name="isAnnounceNecessary">true</bool>
 
     <!-- POI查詢的距離範圍(In meter) -->
     <integer name="surroundRange">1000</integer>

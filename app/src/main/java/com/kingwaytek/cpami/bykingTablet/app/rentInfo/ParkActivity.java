@@ -1,16 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app.rentInfo;
 
-import java.util.ArrayList;
-
-import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
-import com.kingwaytek.cpami.bykingTablet.app.poi.POIListView;
-import com.kingwaytek.cpami.bykingTablet.sql.SQLiteBot;
-import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.TableName;
-import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
-import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.SearchMode;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,8 +7,19 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
+import com.kingwaytek.cpami.bykingTablet.app.poi.POIListView;
+import com.kingwaytek.cpami.bykingTablet.sql.SQLiteBot;
+import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.TableName;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
+import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.SearchMode;
+
+import java.util.ArrayList;
 
 public class ParkActivity extends Activity {
 	private ListView listView;
@@ -34,7 +34,7 @@ public class ParkActivity extends Activity {
 
 		setContentView(R.layout.park_station);
 		if (Util.city_sort == null) {
-			Util.getSortPOICity(this);
+			Util.getSortPOICity();
 		}
 		listView = (ListView) findViewById(R.id.rentStation_listView);
 		adapter = new RentStationAdapter(R.layout.rent_station_cell, this, Util.city_sort);

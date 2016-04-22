@@ -1,7 +1,5 @@
 package com.sonavtek.sonav;
 
-import java.util.concurrent.Semaphore;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -18,10 +16,12 @@ import android.view.ViewGroup;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
+
+import java.util.concurrent.Semaphore;
 
 /**
  * This is the view that shows the map.
@@ -187,7 +187,7 @@ public class MapView extends SurfaceView implements IMapView, OnSonavEventListen
 		public int getValue() {
 			return value;
 		}
-	};
+	}
 
 	public MapView(Context ctx, AttributeSet attrs) {
 		super(ctx, attrs);

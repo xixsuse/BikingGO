@@ -1,13 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.download;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -34,11 +26,20 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.Unzip.AntZip;
 import com.kingwaytek.cpami.bykingTablet.Unzip.ZipCallBack;
 import com.kingwaytek.cpami.bykingTablet.app.Macro;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 下載UI Manager
@@ -93,7 +94,7 @@ public class DownloadMapUIManager implements ZipCallBack {
 
 	private static UtilDialog zipCompeleteDailog;
 	
-	private static float scale = 0.8f;
+	private static final float scale = 0.8f;
 
 	/**
 	 * 更新機制
@@ -106,8 +107,7 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * @param fileName
 	 *            下載檔名
 	 */
-	public DownloadMapUIManager(final Activity mActivity, Context mContext,
-			String mapVersion, String urlPath, String fileName) {
+	public DownloadMapUIManager(final Activity mActivity, Context mContext, String mapVersion, String urlPath, String fileName) {
 
 		DownloadMapUIManager.mContext = mContext;
 		DownloadMapUIManager.mapVersion = mapVersion;
@@ -189,8 +189,7 @@ public class DownloadMapUIManager implements ZipCallBack {
 				NumberFormat nf = NumberFormat.getInstance();
 				nf.setMaximumFractionDigits(2);// 小數後兩位
 				nf.setMinimumFractionDigits(2);
-				protext.setText(nf.format(valueMB) + " MB / "
-						+ nf.format(maxValueMB) + " MB");
+				protext.setText(nf.format(valueMB) + " MB / " + nf.format(maxValueMB) + " MB");
 				break;
 			case FINISH: // 下載完成
 				sp.edit().putBoolean(mapDownloadFinish, true).commit();
@@ -248,44 +247,44 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * */
 	private static Handler unzipHandler = new Handler() {
 		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			switch (msg.what) {
-			case 0:// 進度更新
-				UnZipBean uzb = (UnZipBean) msg.obj;
-				View unZipView = alertMapUnZip.getWindow().getDecorView();
-				TextView unzip_per = (TextView) unZipView
-						.findViewById(R.id.unzip_per);
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:// 進度更新
+                    UnZipBean uzb = (UnZipBean) msg.obj;
+                    View unZipView = alertMapUnZip.getWindow().getDecorView();
+                    TextView unzip_per = (TextView) unZipView.findViewById(R.id.unzip_per);
 
-				TextView unzip_filesize = (TextView) unZipView
-						.findViewById(R.id.unzip_filesize);
+                    TextView unzip_filesize = (TextView) unZipView.findViewById(R.id.unzip_filesize);
 
-				unzip_filesize
-						.setText(uzb.fileSize + " / " + uzb.totalFileSize);
-				ProgressBar unzip_process = (ProgressBar) unZipView
-						.findViewById(R.id.unzip_process);
-				NumberFormat nf = NumberFormat.getInstance();
-				nf.setMaximumFractionDigits(2);// 小數後兩位
-				nf.setMinimumFractionDigits(2);
-				unzip_per.setText(String.valueOf(nf
-						.format((float) uzb.finishSize / (float) uzb.maxSize
-								* 100))
-						+ " %");
-				unzip_process.setMax((int) uzb.maxSize);
-				unzip_process.setProgress((int) uzb.finishSize);
-				break;
-			case 1:// 解壓縮完成
-				if (alertMapUnZip != null && alertMapUnZip.isShowing())
-					alertMapUnZip.dismiss();
-				install_btn.setEnabled(true);
-				// sp.edit().putBoolean(mapUnzipFinish, true).commit();
-				sp.edit().putBoolean(mapDownloadFinish, false).commit();
-				sp.edit().putBoolean(mapUnzipFinish, false).commit();
+                    unzip_filesize.setText(uzb.fileSize + " / " + uzb.totalFileSize);
+                    ProgressBar unzip_process = (ProgressBar) unZipView.findViewById(R.id.unzip_process);
+                    NumberFormat nf = NumberFormat.getInstance();
+                    nf.setMaximumFractionDigits(2);// 小數後兩位
+                    nf.setMinimumFractionDigits(2);
+                    unzip_per.setText(String.valueOf(nf.format((float) uzb.finishSize / (float) uzb.maxSize * 100)) + " %");
+                    unzip_process.setMax((int) uzb.maxSize);
+                    unzip_process.setProgress((int) uzb.finishSize);
+                    break;
 
-				zipCompeleteDailog.showDialog_route_plan_choice("圖資",
-						"下載完成！請重新開始程式", "確定", null);
-				break;
-			}
+                case 1:// 解壓縮完成
+                    if (alertMapUnZip != null && alertMapUnZip.isShowing())
+                        alertMapUnZip.dismiss();
+                    install_btn.setEnabled(true);
+                    // sp.edit().putBoolean(mapUnzipFinish, true).commit();
+                    sp.edit().putBoolean(mapDownloadFinish, false).commit();
+                    sp.edit().putBoolean(mapUnzipFinish, false).commit();
+
+                    zipCompeleteDailog = new UtilDialog(mContext) {
+                      @Override
+                      public void click_btn_1() {
+                          super.click_btn_1();
+                          AppController.getInstance().restartAppImmediately();
+                      }
+                    };
+                    zipCompeleteDailog.showDialog_route_plan_choice("圖資", "下載完成！請重新開始程式", "確定", null);
+                    break;
+            }
 		}
 	};
 
@@ -441,9 +440,9 @@ public class DownloadMapUIManager implements ZipCallBack {
 
 		// set width, height by density and gravity
 
-		params.width = (int) ((getWidth(mContext)*scale));
-		params.height = (int) ((getHeight(mContext)*scale));
-		params.gravity = Gravity.CENTER;
+        params.width = (int) ((getWidth(mContext) * scale));
+        params.height = (int) ((getHeight(mContext) * scale));
+        params.gravity = Gravity.CENTER;
 
 		window.setAttributes(params);
 	}

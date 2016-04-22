@@ -69,6 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             title.setText(getActionBarTitle());
 
             actionbarView = actionbar.getCustomView();
+            showActionbar(true);
         }
     }
 

@@ -1,8 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
@@ -17,112 +15,63 @@ import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.sonavtek.sonav.sonav;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Created by vincent.chang on 2016/4/19.
  */
-public abstract class EngineCheckActivity extends Activity implements OnEngineReadyCallBack {
+public abstract class EngineCheckActivity extends BaseActivity implements OnEngineReadyCallBack {
 
     protected abstract void onCheckAllDone();
 
     private static final String DIR_DATA = "BikingData";
 
-    private static boolean isInit;
+    protected boolean hasNotInit = true;
     private sonav engine;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected int getLayoutId() {
+        return R.layout.startup;
+    }
 
+    @Override
+    protected void init() {
+        showActionbar(false);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-    }
-
-    synchronized private void userDatabaseInit() {
-        String DATABASE_PATH = getString(R.string.SQLite_Usr_Database_Path);
-        String DATABASE_NAME = getString(R.string.SQLite_Usr_Database_Name);
-
-        // 輸出路徑
-        String outFileName = DATABASE_PATH + DATABASE_NAME;
-
-        // 檢測是否已經創建
-        File dir = new File(outFileName);
-        if (dir.exists())
-            return;
-
-        // 檢測/創建數據庫的文件夾
-        dir = new File(DATABASE_PATH);
-        if (!dir.isDirectory()) {
-            if (!dir.mkdirs())
-                return;
-        }
-        // 從資源中讀取數據庫流
-        InputStream input = getResources().openRawResource(R.raw.biking_data);
-
-        OutputStream output = null;
-
-        try {
-            output = new FileOutputStream(outFileName);
-
-            // 拷貝到輸出流
-            byte[] buffer = new byte[2048];
-            int length;
-            while ((length = input.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            // 關閉輸出&輸入流
-            try {
-                if (output != null) {
-                    output.flush();
-                    output.close();
-                    input.close();
-                }
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        checkMapData();
     }
 
     private void checkMapData() {
-        deleteBikingDataDir();
+        if (hasNotInit) {
+            deleteBikingDataDir();
 
-        // Check BikingData File
-        File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/" + DIR_DATA + "/");
+            // Check BikingData File
+            File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/" + DIR_DATA + "/");
 
-        if (!dir.exists()) {
-            UtilDialog uit = new UtilDialog(this) {
-                @Override
-                public void click_btn_1() {
-                    super.click_btn_1();
-                    final Intent i = new Intent(EngineCheckActivity.this, MapDownloadActivity.class);
-                    startActivity(i);
-                    finish();
-                }
+            if (!dir.exists()) {
+                UtilDialog uit = new UtilDialog(this) {
+                    @Override
+                    public void click_btn_1() {
+                        super.click_btn_1();
+                        final Intent i = new Intent(EngineCheckActivity.this, MapDownloadActivity.class);
+                        startActivity(i);
+                        finish();
+                    }
 
-                @Override
-                public void click_btn_2() {
-                    super.click_btn_2();
-                    finish();
-                }
-            };
-            uit.showDialog_route_plan_choice(getString(R.string.data_not_install_yet), null, getString(R.string.confirm), null);
+                    @Override
+                    public void click_btn_2() {
+                        super.click_btn_2();
+                        finish();
+                    }
+                };
+                uit.showDialog_route_plan_choice(getString(R.string.data_not_install_yet), null, getString(R.string.confirm), null);
+            }
+            else
+                checkGps();
         }
-        else
-            checkGps();
     }
 
     private void checkGps() {
@@ -149,16 +98,20 @@ public abstract class EngineCheckActivity extends Activity implements OnEngineRe
     }
 
     private void engineInitialize() {
-        try {
-            engine = sonav.getInstance();
-            engine.setIconSize(1);
-            engine.setresizefont(2);// xhdpis
-            engine.init(getApplicationContext(), SettingManager.getDataDirectory(), this);
+        if (hasNotInit) {
+            try {
+                engine = sonav.getInstance();
+                engine.setIconSize(1);
+                engine.setresizefont(2);// xhdpis
+                engine.init(getApplicationContext(), SettingManager.getDataDirectory(), this);
+            }
+            catch (Throwable t) {
+                Log.e(getClass().toString(), t.getMessage(), t);
+                engine.callOnEngineInitFailed();
+            }
         }
-        catch (Throwable t) {
-            Log.e(getClass().toString(), t.getMessage(), t);
-            engine.callOnEngineInitFailed();
-        }
+        else
+            doneOfCheck();
     }
 
     @Override
@@ -188,12 +141,22 @@ public abstract class EngineCheckActivity extends Activity implements OnEngineRe
         engine.setflagpoint(5, -1, -1);
         /***************/
 
-        onCheckAllDone();
+        doneOfCheck();
+        hasNotInit = false;
     }
 
     @Override
     public void onEngineInitFailed() {
         AlertDialogUtil.showMessage(this, getString(R.string.msg_err), R.drawable.dialog_error);
+        finish();
+    }
+
+    private void doneOfCheck() {
+        setContentView(getLayoutId());
+        findViews();
+        setListener();
+        onCheckAllDone();
+        init();
     }
 
     private void deleteBikingDataDir() {

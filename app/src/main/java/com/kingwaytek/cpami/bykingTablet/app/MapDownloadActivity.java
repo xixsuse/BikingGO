@@ -49,14 +49,7 @@ public class MapDownloadActivity extends Activity implements OnItemClickListener
 
 	private static int selectPosition;
 
-
-	/* Widgets */
-	private ProgressDialog progressDialog;
-
 	private ListView listView;
-
-	/* Adapter */
-	private MapDownloadAdapter adapter;
 
 
 	private int area;
@@ -80,7 +73,7 @@ public class MapDownloadActivity extends Activity implements OnItemClickListener
 	}
 
 	private void initData() {
-		MAP_FILE_LIST = new HashMap<String, Double>();
+		MAP_FILE_LIST = new HashMap<>();
 
 		for (int i = 0; i < LIST_DOWNLOAD_URL.length; i++) {
 			MAP_FILE_LIST.put(LIST_DOWNLOAD_URL[i], LIST_DOWNLOAD_SIZE[i]);
@@ -90,13 +83,13 @@ public class MapDownloadActivity extends Activity implements OnItemClickListener
 	private void initViews() {
 		listView = (ListView) this.findViewById(R.id.listView1);
 
-		adapter = new MapDownloadAdapter(this, LIST_AREA, LIST_AREA_CONTEXT, area);
+		MapDownloadAdapter adapter = new MapDownloadAdapter(this, LIST_AREA, LIST_AREA_CONTEXT, area);
 
 		listView.setAdapter(adapter);
 
 		listView.setOnItemClickListener(this);
 
-		progressDialog = new ProgressDialog(this);
+		ProgressDialog progressDialog = new ProgressDialog(this);
 		progressDialog.setCancelable(false);
 
 	}
@@ -108,7 +101,6 @@ public class MapDownloadActivity extends Activity implements OnItemClickListener
 		}
 		FileInputStream fis = new FileInputStream(file);
 		BufferedReader bfr = new BufferedReader(new InputStreamReader(fis));
-		String line = "";
 		int temp;
 		temp = Integer.valueOf(bfr.readLine());
 		return temp;
