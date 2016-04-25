@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
@@ -34,6 +35,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ActionBar actionbar;
     private static View actionbarView;
 
+    private ImageButton actionbar_lisBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutId());
 
         setActionBar();
+        findActionbarWidgetViewAndSetListener();
 
         findViews();
         setListener();
@@ -84,6 +88,27 @@ public abstract class BaseActivity extends AppCompatActivity {
             actionbar.show();
         else
             actionbar.hide();
+    }
+
+    public void showListButton(boolean isShow) {
+        if (isShow)
+            actionbar_lisBtn.setVisibility(View.VISIBLE);
+        else
+            actionbar_lisBtn.setVisibility(View.GONE);
+    }
+
+    private void findActionbarWidgetViewAndSetListener() {
+        actionbar_lisBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_listButton);
+        actionbar_lisBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onListButtonClick();
+            }
+        });
+    }
+
+    protected void onListButtonClick() {
+
     }
 
     public static boolean notNull(Object anyObject) {

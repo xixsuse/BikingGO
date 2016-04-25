@@ -37,4 +37,32 @@
     <color name="transparent_crystal_light">#4F33BEE5</color>
     <color name="transparent_crystal">#3F0092f4</color>
 
+    <!-- From TYEZgo2.0 -->
+    <color name="common_background_color">#F3F3F3</color>
+    <color name="common_text_color">#0E0E0E</color>
+    <color name="common_title_color">#7E7E80</color>
+    <color name="common_subtitle_color">#747479</color>
+    <color name="poi_toolbar_color">#136A6F</color>
+    <color name="transit_toolbar_color">#F4A929</color>
+    <color name="transit_train_info_background">#AA9A8B</color>
+    <color name="parking_common_color">#074E7E</color>
+    <color name="switch_tab_off">#757472</color>
+    <color name="switch_tab_on">#F4A929</color>
+    <color name="airport_terminal_1">#F0D6B0</color>
+    <color name="airport_terminal_2">#ECE3D5</color>
+    <color name="route_toolbar_color">#8B1D64</color>
+    <color name="route_button_off">#8B1D64</color>
+    <color name="route_button_on">#66174E</color>
+    <color name="bus_common_color">#724B22</color>
+    <color name="bus_upcoming_time">#C7383C</color>
+    <color name="bus_button_on">#5B391B</color>
+    <color name="taxi_common_color">#D0611E</color>
+    <color name="ebike_toolbar_color">#B74622</color>
+    <color name="tab_layout_toolbar_color">#00324D</color>
+    <color name="road_speed_name_bar">#349DA0</color>
+    <color name="traffic_status_good">#00FF00</color>
+    <color name="traffic_status_medium">#FFFF00</color>
+    <color name="traffic_status_slow">#FF9933</color>
+    <color name="traffic_status_jam">#FF0000</color>
+
 </resources>

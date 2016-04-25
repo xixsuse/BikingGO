@@ -250,9 +250,6 @@
     <!-- 車友 -->
     <string name="report_detail">詳細內容</string>
 
-    <!-- API KEYs -->
-    <string name="GoogleMapApiKey">AIzaSyC8GOjYAXr5v7ifZz_4mVplHWw7q9O1iaE</string>
-
     <string-array name="main_item">
         <item>導航</item>
         <item>地址查詢</item>
@@ -269,6 +266,12 @@
         <item>設定</item>
     </string-array>
 
+
+    <!-- ↓↓↓ Added since Vincent took over ↓↓↓ -->
+
+    <!-- API KEYs -->
+    <string name="GoogleMapApiKey">AIzaSyC8GOjYAXr5v7ifZz_4mVplHWw7q9O1iaE</string>
+
     <string name="keyword_search">請輸入關鍵字</string>
     <string name="share_facebook">Facebook Sharing</string>
     <string name="share_hint">想補充些什麼嗎</string>
@@ -283,5 +286,9 @@
     <string name="network_unstable">Network Unstable! Retrying..%d</string>
     <string name="load_failed">載入失敗，請回上頁後再重新進入一次！</string>
     <string name="location_search_found_nothing">無搜尋結果</string>
+    <string name="location_permission_rationale_title">允許裝置存取目前位置</string>
+    <string name="location_permission_rationale_content">允許存取目前位置以獲得完整的服務，如附近景點之類的。</string>
+    <string name="location_permission_denied">定位功能未啟用！</string>
+    <string name="google_api_places_unavailable">The Google Places API was UNAVAILABLE!!</string>
 
 </resources>

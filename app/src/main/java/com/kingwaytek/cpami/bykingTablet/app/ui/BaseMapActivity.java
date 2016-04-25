@@ -1,10 +1,13 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,7 +46,12 @@ import java.util.ArrayList;
 public abstract class BaseMapActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
 
+    protected abstract void onLocateMyPosition(Location location);
+
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    private static final int LOCATION_UPDATE_REQUEST_CODE = 100;
+    private boolean permissionChecked;
 
     protected MyLocationManager locationManager;
     protected GoogleMap map;
@@ -55,7 +63,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getLocationManager();
+        checkLocationPermissions(LOCATION_UPDATE_REQUEST_CODE);
         buildMap();
     }
 
@@ -72,21 +80,57 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     @Override
     protected void onResume() {
         super.onResume();
-        if (notNull(locationManager))
-            locationManager.getProvidersAndUpdate(MyLocationManager.getLocationManager());
+        requestLocationUpdate();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (notNull(locationManager))
+        removeLocationUpdate();
+    }
+
+    private void requestLocationUpdate() {
+        if (permissionChecked) {
+            if (locationManager == null)
+                locationManager = AppController.getInstance().getLocationManager();
+            else
+                locationManager.getProvidersAndUpdate(MyLocationManager.getLocationManager());
+        }
+    }
+
+    private void removeLocationUpdate() {
+        if (permissionChecked && notNull(locationManager))
             locationManager.removeUpdate();
     }
 
-    private void getLocationManager() {
-        locationManager = AppController.getInstance().getLocationManager();
+    private void checkLocationPermissions(final int requestCode) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                UtilDialog dialog = new UtilDialog(this) {
+                  @Override
+                  public void click_btn_1() {
+                      super.click_btn_1();
+                      requestLocationPermission(requestCode);
+                  }
+                };
+                dialog.showDialog_route_plan_choice(
+                        getString(R.string.location_permission_rationale_title),
+                        getString(R.string.location_permission_rationale_content),
+                        getString(R.string.confirm),
+                        null);
+            }
+            else
+                requestLocationPermission(requestCode);
+        }
+        else
+            permissionChecked = true;
     }
 
+    private void requestLocationPermission(int requestCode) {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, requestCode);
+    }
 
     private void buildMap() {
         if (checkPlayServices()) {
@@ -128,8 +172,10 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                                 getString(R.string.confirm), getString(R.string.confirm_cancel));
                         return true;
                     }
-                    else
+                    else {
+                        onLocateMyPosition(MyLocationManager.getLastLocation());
                         return false;
+                    }
                 }
             });
 
@@ -245,7 +291,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         MarkerOptions marker = new MarkerOptions();
         marker.position(latLng);
         marker.title(title);
-        InputStream is = getResources().openRawResource(+ R.drawable.ic_end);
+        InputStream is = getResources().openRawResource(+ R.drawable.ic_start);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
 
         searchMarker = map.addMarker(marker);
@@ -257,6 +303,23 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     protected void clearSearchText() {
         searchText.setText("");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == LOCATION_UPDATE_REQUEST_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+            {
+                permissionChecked = true;
+                requestLocationUpdate();
+            }
+            else {
+                Utility.toastShort(getString(R.string.location_permission_denied));
+                permissionChecked = false;
+            }
+        }
     }
 
     @Override
