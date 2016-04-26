@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -258,9 +259,9 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
-                    searchLocation();
+                    searchLocation(searchText.getText().toString());
                     clearSearchText();
-                    hideKeyboard(v, true);
+                    hideKeyboard(true);
                     return true;
                 }
                 return false;
@@ -268,10 +269,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         };
     }
 
-    private void searchLocation() {
-        String input = searchText.getText().toString();
-
-        LocationSearchHelper.searchLocation(input, new LocationSearchHelper.OnLocationFoundCallBack() {
+    protected void searchLocation(String query) {
+        LocationSearchHelper.searchLocation(query, new LocationSearchHelper.OnLocationFoundCallBack() {
             @Override
             public void onLocationFound(ArrayList<ItemsSearchResult> searchResults, ArrayList<String> nameList, boolean isSearchByGeocoder) {
                 if (notNull(searchResults.get(0)))
@@ -303,6 +302,10 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     protected void clearSearchText() {
         searchText.setText("");
+    }
+
+    protected ArrayAdapter<String> getSimpleAdapter(ArrayList<String> nameList) {
+        return new ArrayAdapter<>(this, R.layout.listview_simple_layout_with_right_arrow, nameList);
     }
 
     @Override

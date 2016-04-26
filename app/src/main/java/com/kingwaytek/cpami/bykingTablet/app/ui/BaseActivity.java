@@ -115,10 +115,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         return anyObject != null;
     }
 
-    public void hideKeyboard(View view, boolean isHide) {
+    public void hideKeyboard(boolean isHide) {
+        View rootView = getWindow().getDecorView().getRootView();
+
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (isHide)
-            imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            imm.hideSoftInputFromWindow(rootView.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         else
             imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }

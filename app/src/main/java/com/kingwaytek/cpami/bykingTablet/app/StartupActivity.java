@@ -37,7 +37,7 @@ import java.io.IOException;
  */
 public class StartupActivity extends Activity {
 
-    private static final long SPLASH_SCREEN_DURATION = 1500;
+    private static final long SPLASH_SCREEN_DURATION = 1000;
 
     @Override
     public void onCreate(Bundle icicle) {

@@ -4,31 +4,38 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  * Created by vincent.chang on 2016/4/15.
  */
-public class UiPoiSearchMapActivity extends BaseGoogleApiActivity {
+public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher {
 
     private static final int PLACE_PICKER_REQUEST = 1;
 
@@ -46,7 +53,21 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity {
 
     @Override
     protected void setListener() {
+        searchText.addTextChangedListener(this);
+        searchText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                searchLocation((String)parent.getItemAtPosition(position));
+                clearSearchText();
+                hideKeyboard(true);
+            }
+        });
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        searchText.removeTextChangedListener(this);
     }
 
     @Override
@@ -138,5 +159,53 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity {
         catch (SecurityException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+    @Override
+    public void afterTextChanged(final Editable s) {
+        if (s.length() > 0) {
+            LatLngBounds latLngBounds = map.getProjection().getVisibleRegion().latLngBounds;
+            PendingResult<AutocompletePredictionBuffer> results = Places.GeoDataApi.getAutocompletePredictions(
+                    googleApiClient, s.toString(), latLngBounds, null);
+
+            final ArrayList<String> nameList = new ArrayList<>();
+
+            results.setResultCallback(new ResultCallback<AutocompletePredictionBuffer>() {
+                @Override
+                public void onResult(@NonNull AutocompletePredictionBuffer autocompletePredictions) {
+                    for (AutocompletePrediction prediction : autocompletePredictions) {
+                        Log.i(TAG, String.format("PlaceId: '%s', PrimaryText: '%s', SecondaryText: '%s', Type: '%s'",
+                                prediction.getPlaceId(),
+                                prediction.getPrimaryText(null),
+                                prediction.getSecondaryText(null),
+                                prediction.getPlaceTypes()));
+
+                        nameList.add(prediction.getPrimaryText(null).toString());
+                    }
+                    autocompletePredictions.release();
+                    setAutoCompleteText(nameList);
+
+                    Log.i(TAG, "TextChanged: " + s.length());
+                }
+            });
+        }
+        else {
+            searchText.setAdapter(null);
+            searchText.dismissDropDown();
+            Log.i(TAG, "TextChanged: empty!");
+        }
+    }
+
+    private void setAutoCompleteText(ArrayList<String> nameList) {
+        searchText.setAdapter(getSimpleAdapter(nameList));
+        searchText.setDropDownBackgroundResource(R.drawable.background_search_adapter);
+        if (searchText.getText().length() > 0)
+            searchText.showDropDown();
     }
 }

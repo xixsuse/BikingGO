@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * GPSListener was SUCKS!!!
+ * GPSListener is SUCKS!!!
  * This one is BETTER!
  *
  * @author Vincent (vincent.chang@kingwaytek.com)
@@ -138,7 +138,7 @@ public class MyLocationManager implements LocationListener {
         criteria.setAltitudeRequired(false);
         criteria.setBearingRequired(false);
         criteria.setSpeedRequired(false);
-        return criteria ;
+        return criteria;
     }
 
     public void removeUpdate() {
