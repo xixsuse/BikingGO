@@ -1,6 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -75,7 +73,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Timer;
 import java.util.TimerTask;
 
 /**
@@ -122,9 +119,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     private Handler uiHandler; // UI handler for this activity
     private Handler speedHandler;
     private Handler CalHandler;
-    private Timer timer; // timer for this activity
     private TimerTask naviTimeUpdator; // task for update time when navigation
-    private TimerTask gpsStatusUpdator; // task for update GPS status
     private static MapView mapView;
     private int turnIconId; // for saving to be restored
     private int speedDisplayIconId; // for saving to be restored
@@ -164,7 +159,6 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     private static String TextEndName = "";
 
     private sonav engine;
-    private GeoPoint geoPoint;
 
     private ImageView speed_digit3;
     private ImageView speed_digit2;
@@ -173,15 +167,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     private TextView caltext;
     private ImageView NaviMenu;
 
-    // // Map Option Image Buttons
-    // private final ImageButton ibUserLocation;
-    // private final ImageButton ibFavorite;
-    // private final ImageButton ibNavigation;
-    // private final ImageButton ibTrackRecord;
-    // private final ImageButton ibPOI;
-    // private final ImageButton ibZoomIn;
-    // private final ImageButton ibZoomOut;
-    // private final ImageButton ibChangeMapView;
+    private boolean isResumable;
 
     /*
 	 * set to true if the activity is going to be destroyed because
@@ -194,7 +180,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     public static boolean isSetStEnPointState;
 
     private int ButtonSrc;
-    private boolean isDoEemulationNavi = true;
+    private boolean isDoEmulationNavi = true;
     private boolean StopNavigationFlag;
 
     public static boolean pointOnMapMode = false;
@@ -240,7 +226,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
 
     private Handler breakHandler;
 
-    private TextView breaktext;
+    private TextView breakText;
 
     private PopupWindow pop;
 
@@ -250,10 +236,10 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     private static int PopupWindow_landscape_Y_ForTablet = 200;
     private static int PopupWindow_portrait_Y_ForTablet = 340;
 
-    private Handler updataTrafficConditionHandler = null;
+    private Handler updateTrafficConditionHandler = null;
 
     private String result = "";
-    private StringBuffer titelstr = new StringBuffer();
+    private StringBuffer titleStr = new StringBuffer();
     private StringBuffer titleForPop = new StringBuffer();
 
     private String[] Title;
@@ -267,7 +253,6 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     private RelativeLayout weatherLayout;// 平板才有
 
     private boolean isMapState = true;// 平板才有
-    private static boolean firstIn = true;
     private boolean isnaing = false;
 
     private ActionSheet actionSheet;
@@ -283,11 +268,13 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         setMapViewAndEngine();
         initHandlers();
         setWidgets();
+        isResumable = true;
+        resumeInit();
     }
 
     @Override
     protected void init() {
-        resumeInit();
+
     }
 
     @Override
@@ -355,8 +342,8 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         View view = this.getLayoutInflater().inflate(R.layout.traffic_conditon_popupwindow, null);
         pop = new PopupWindow(view, 136, 25);
 
-        breaktext = (TextView) view.findViewById(R.id.text_break_content);
-        breaktext.setOnClickListener(new OnClickListener() {
+        breakText = (TextView) view.findViewById(R.id.text_break_content);
+        breakText.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -366,13 +353,15 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                         super.click_btn_1();
                     }
                 };
-                uit.showDialog_route_plan_choice(titelstr.toString(), null, "確定", null);
+                uit.showDialog_route_plan_choice(titleStr.toString(), null, "確定", null);
             }
         });
     }
 
     private void resumeInit() {
-        if (!hasNotInit) {
+        if (isResumable) {
+            if (engine == null)
+                setMapViewAndEngine();
             initialNavigationEventHandler(engine);
 
             // checkWeatherState();
@@ -389,91 +378,6 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         }
     }
 
-
-    public void onOldCreate(Bundle icicle) {
-        Log.i("MapActivity.java", "onCreate()");
-
-        super.onCreate(icicle);
-
-        setContentView(R.layout.map);
-
-        progressDialog = new UtilDialog(this);
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "BWL");
-
-        mapView = (MapView) findViewById(R.id.mapView);
-
-        mapView.setMapActivity(MapActivity.this);
-        // initialization for map
-        engine = sonav.getInstance();
-        mapView.setViewType(SettingManager.getMapViewType());
-
-        engine.setvoiceself(0);
-
-        engine.setlangvoice(SettingManager.getSoundType());
-
-        engine.setoutwayroute(2, 5, 50);
-        // engine.seticonsize(30, 30);
-        // engine.setcolorrgb(255, 255, 255);
-        // engine.setalpha(0);
-        // engine.setbkcolorrgb(255, 255, 255);
-        engine.setresizefont(1);
-
-        // getMapStyle();
-        int mapStyle = SettingManager.getMapStyle();
-
-        if (mapStyle < 6)
-            engine.setmapstyle(0, mapStyle, 1);
-        else {
-            mapStyle -= 5;
-            engine.setmapstyle(1, 0, mapStyle);
-        }
-
-        engine.savenaviparameter();
-        // create handler for events of navigation
-        initialNavigationEventHandler(engine);
-
-        // create UI handler
-        initialUIHandler();
-        initialSpeedHandler();
-        initialCalHandler();
-        initialWeatherHandler();
-
-        // create timer for this activity
-        timer = new Timer();
-
-        // startService(new Intent(this, TrackRecordService.class));
-
-        // init map option buttons
-        setMapButtonListener();
-
-        // register battery notifier
-        BatteryNotifier.Register(this);
-
-        geoPoint = new GeoPoint();
-
-        View view = this.getLayoutInflater().inflate(R.layout.traffic_conditon_popupwindow, null);
-        pop = new PopupWindow(view, 136, 25);
-
-        breaktext = (TextView) view.findViewById(R.id.text_break_content);
-        breaktext.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                UtilDialog uit = new UtilDialog(MapActivity.this) {
-                    @Override
-                    public void click_btn_1() {
-                        super.click_btn_1();
-                    }
-                };
-                uit.showDialog_route_plan_choice(titelstr.toString(), null, "確定", null);
-            }
-        });
-
-        initialTrafficHandler();
-        initialBrokeHandler();
-    }
-
     @Override
     protected void onResume() {
         resumeInit();
@@ -483,8 +387,6 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
 
     @Override
     protected void onDestroy() {
-        //timer.cancel();
-
         // stop navigation or emulator if the activity is going to be destroyed and won't be resumed.
         if (!isConfigChanged) {
             int mapMode = mapView.getControlMode();
@@ -963,31 +865,31 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                                 break;
                             case 1:// 目前位置
                                 selectSetPositionWay(index, which_button);
-                                // isDoEemulationNavi = false;
+                                // isDoEmulationNavi = false;
                                 break;
                             case 2:// 地圖上的點
-                                // isDoEemulationNavi = true;
+                                // isDoEmulationNavi = true;
                                 selectSetPositionWay(index, which_button);
                                 break;
                             case 3:// 地址查詢
                                 selectSetPositionWay(index, which_button);
-                                // isDoEemulationNavi = true;
+                                // isDoEmulationNavi = true;
                                 break;
                             case 4:// 景點查詢
                                 selectSetPositionWay(index, which_button);
-                                // isDoEemulationNavi = true;
+                                // isDoEmulationNavi = true;
                                 break;
                             case 5:// 我的最愛
                                 selectSetPositionWay(index, which_button);
-                                // isDoEemulationNavi = true;
+                                // isDoEmulationNavi = true;
                                 break;
                             case 6:// 查詢紀錄
                                 selectSetPositionWay(index, which_button);
-                                // isDoEemulationNavi = true;
+                                // isDoEmulationNavi = true;
                                 break;
                             case 7:// 刪除紀錄
                                 selectSetPositionWay(index, which_button);
-                                // isDoEemulationNavi = true;
+                                // isDoEmulationNavi = true;
                                 break;
                             case 8:
                                 break;
@@ -1070,9 +972,9 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
             public void onClick(View v) {
 
                 if (TextStartPoint.getText().toString().contains("目前位置"))
-                    isDoEemulationNavi = false;
+                    isDoEmulationNavi = false;
                 else
-                    isDoEemulationNavi = true;
+                    isDoEmulationNavi = true;
 
                 String strMsg = "";
                 if (checkPointSetting() != 0) {// 檢查起點終點是否都有設定
@@ -1538,7 +1440,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                             @Override
                             public void click_btn_1() {
 
-                                if (isDoEemulationNavi) {
+                                if (isDoEmulationNavi) {
                                     mapView.setNaviEmulatorSpeed(1);
                                     mapView.playNaviEmulator(false);
                                     mapView.setControlMode(MapView.STATE_EMU);
@@ -1621,8 +1523,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                         loc = ApplicationGlobal.gpsListener.getLastLocation();
                     }
                     if (loc != null) {
-                        int speed = (int) (ApplicationGlobal.gpsListener
-                                .getLastLocation().getSpeed() * 3.6);
+                        int speed = (int) (ApplicationGlobal.gpsListener.getLastLocation().getSpeed() * 3.6);
 
                         String speedString = String.valueOf(speed);
 
@@ -1687,7 +1588,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     }
 
     private void initialTrafficHandler() {
-        updataTrafficConditionHandler = new Handler() {
+        updateTrafficConditionHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 if (msg.what == GET_WEATHER_FINISH) {
@@ -1793,7 +1694,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         ibZoomOutPortrait.setVisibility(ImageView.VISIBLE);
         ibZoomInPortrait.setVisibility(ImageView.VISIBLE);
 
-        if (isDoEemulationNavi) {
+        if (isDoEmulationNavi) {
             ZoomLayoutPortrait.setVisibility(ImageView.GONE);
             ZoomLayoutPortrait.setVisibility(ImageView.GONE);
             ibZoomOutPortrait.setVisibility(ImageView.GONE);
@@ -1911,7 +1812,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                         uiHandler.sendMessage(uiHandler.obtainMessage(UPDATE_NAVI_TIME, toTimer(timeCounter)));
                         naviStartTime = timeCounter;
                         // 真實導航時才有速度and卡路里
-                        if (!isDoEemulationNavi) {
+                        if (!isDoEmulationNavi) {
                             // 速度
                             speedHandler.sendMessage(uiHandler.obtainMessage(UPDATE_GPS_STATUS, null));
                             // 卡路里
@@ -1936,8 +1837,8 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
      * Switch to normal map mode.
      */
     private void stopNavigation() {
-        if (!isDoEemulationNavi)
-            isDoEemulationNavi = true;
+        if (!isDoEmulationNavi)
+            isDoEmulationNavi = true;
 
         naviStartTime = 0;
 
@@ -2084,7 +1985,8 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                     if (loc != null) {
                         Lon = loc.getLongitude();
                         Lat = loc.getLatitude();
-                    } else {
+                    }
+                    else {
                         if (progressDialog != null) {
                             // WeatherDialog.dismiss();
                             progressDialog.dismiss();
@@ -2407,16 +2309,16 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                                 "TrafficAlertUpload result is null");
                     }
                     // WaitDialog.dismiss();
-                    updataTrafficConditionHandler
-                            .sendMessage(updataTrafficConditionHandler
+                    updateTrafficConditionHandler
+                            .sendMessage(updateTrafficConditionHandler
                                     .obtainMessage(GET_WEATHER_FINISH,
                                             String.valueOf(0)));
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.i("MapActivity.java", "traffic fail");
                     // WaitDialog.dismiss();
-                    updataTrafficConditionHandler
-                            .sendMessage(updataTrafficConditionHandler
+                    updateTrafficConditionHandler
+                            .sendMessage(updateTrafficConditionHandler
                                     .obtainMessage(WEATHER_WEB_FAIL, "路況更新失敗"));
                     return;
                 }
@@ -2521,14 +2423,14 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                     }
                     // sortPoint function把在範圍內的路況依照離使用者最近的距離由小到大做排序
                     List<Map.Entry<String, Double>> list = sortPoint(mapForDistance);
-                    titelstr.setLength(0);
+                    titleStr.setLength(0);
 
                     if (list.size() <= 3) {
                         int j = 1;
                         for (Entry<String, Double> b : list) {
                             titleForPop.append((j) + "."
                                     + b.getKey().toString() + ";");
-                            titelstr.append((j)
+                            titleStr.append((j)
                                     + "."
                                     + b.getKey().toString()
                                     + "\n"
@@ -2539,7 +2441,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                     else {
                         for (int i = 0; i < 3; i++) {
                             titleForPop.append((i + 1) + "." + list.get(i).getKey().toString() + " ");
-                            titelstr.append((i + 1)
+                            titleStr.append((i + 1)
                                     + "."
                                     + list.get(i).getKey().toString()
                                     + "\n"
@@ -2566,12 +2468,11 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     private List<Entry<String, Double>> sortPoint(Map<String, Double> map) {
         List<Map.Entry<String, Double>> list_data = new ArrayList<>(map.entrySet());
 
-        Collections.sort(list_data,
-                new Comparator<Map.Entry<String, Double>>() {
-                    public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
-                        return (int) ((o2.getValue() - o1.getValue()) * 1000.0);
-                    }
-                });
+        Collections.sort(list_data, new Comparator<Map.Entry<String, Double>>() {
+            public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
+                return (int) ((o2.getValue() - o1.getValue()) * 1000.0);
+            }
+        });
         return list_data;
     }
 
@@ -2620,7 +2521,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                                     PopupWindow_X,
                                     PopupWindow_landscape_Y_ForTablet);
                         }
-                        breaktext.setText((String) msg.obj);
+                        breakText.setText((String) msg.obj);
                     }
                     else if (MapActivity.this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         if (sdkVersion < 11) {
@@ -2636,7 +2537,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                                     PopupWindow_X,
                                     PopupWindow_portrait_Y_ForTablet);
                         }
-                        breaktext.setText((String) msg.obj);
+                        breakText.setText((String) msg.obj);
                     }
                 }
                 else if (msg.what == GET_NOTHING) { // 沒有再偵測到路況就關掉路況PopWindow
@@ -2672,7 +2573,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     }
 
     private void startNavi() {
-        if (!isDoEemulationNavi && (SettingManager.isTrackConfirmEnabled() ||
+        if (!isDoEmulationNavi && (SettingManager.isTrackConfirmEnabled() ||
                 TrackEngine.getInstance().getRecordingStatus().equals(TrackRecordingStatus.RECORDING))) {
 
             UtilDialog uit = new UtilDialog(MapActivity.this) {

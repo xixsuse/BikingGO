@@ -522,12 +522,9 @@ public class sonav extends Handler {
 	/**
 	 * Handles events or status received from native library.
 	 * 
-	 * The native library will call {@link #proc(int, int, int)} method to pass
-	 * events or status.
+	 * The native library will call {@link #proc(int, int, int)} method to pass events or status.
 	 * 
-	 * @param msg
-	 *            instance of Message which contains information about the
-	 *            events or status.
+	 * @param msg instance of Message which contains information about the events or status.
 	 */
 	@Override
 	public void handleMessage(Message msg) {
@@ -566,9 +563,10 @@ public class sonav extends Handler {
         }
     }
 
-    public void callOnEngineInitFailed() {
-        if (engineCallBack != null)
-            engineCallBack.onEngineInitFailed();
+    public void callOnEngineInitFailed(OnEngineReadyCallBack engineCallBack) {
+        if (this.engineCallBack == null)
+            this.engineCallBack = engineCallBack;
+        this.engineCallBack.onEngineInitFailed();
     }
 
 	/*

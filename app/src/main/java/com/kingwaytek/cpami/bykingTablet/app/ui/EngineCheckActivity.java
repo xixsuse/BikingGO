@@ -17,7 +17,9 @@ import com.sonavtek.sonav.sonav;
 import java.io.File;
 
 /**
- * Created by vincent.chang on 2016/4/19.
+ * 任何有使用到 sonav engine的 Activity都要繼承這裡！
+ *
+ * @author Vincent (2016/4/19).
  */
 public abstract class EngineCheckActivity extends BaseActivity implements OnEngineReadyCallBack {
 
@@ -25,7 +27,7 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
 
     private static final String DIR_DATA = "BikingData";
 
-    protected boolean hasNotInit = true;
+    protected static boolean isInit;
     private sonav engine;
 
     @Override
@@ -45,7 +47,7 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
     }
 
     private void checkMapData() {
-        if (hasNotInit) {
+        if (!isInit) {
             deleteBikingDataDir();
 
             // Check BikingData File
@@ -72,6 +74,8 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
             else
                 checkGps();
         }
+        else
+            checkGps();
     }
 
     private void checkGps() {
@@ -98,7 +102,7 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
     }
 
     private void engineInitialize() {
-        if (hasNotInit) {
+        if (!isInit) {
             try {
                 engine = sonav.getInstance();
                 engine.setIconSize(1);
@@ -107,7 +111,7 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
             }
             catch (Throwable t) {
                 Log.e(getClass().toString(), t.getMessage(), t);
-                engine.callOnEngineInitFailed();
+                engine.callOnEngineInitFailed(this);
             }
         }
         else
@@ -142,7 +146,7 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
         /***************/
 
         doneOfCheck();
-        hasNotInit = false;
+        isInit = true;
     }
 
     @Override

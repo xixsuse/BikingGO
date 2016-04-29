@@ -33,7 +33,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
- * Created by vincent.chang on 2016/4/15.
+ * 地址查詢、關鍵字查詢、周邊景點 and blah blah blah~<br>
+ * 都可以在這裡做！
+ *
+ * @author Vincent (2016/4/15).
  */
 public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher {
 

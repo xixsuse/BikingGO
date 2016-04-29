@@ -10,6 +10,9 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
+import com.sonavtek.sonav.GPSDATA;
+import com.sonavtek.sonav.MapView;
+import com.sonavtek.sonav.sonav;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -125,7 +128,7 @@ public class MyLocationManager implements LocationListener {
         return location;
     }
 
-    static Criteria getCriteria() {
+    private static Criteria getCriteria() {
         Criteria criteria = new Criteria();
 
         if (isProviderFromGps)
@@ -162,7 +165,8 @@ public class MyLocationManager implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-
+        sonav.getInstance().setgpsvalue(getEngineData(location));
+        sonav.getInstance().setflagpoint(MapView.USER_LOCATION_POINT, location.getLongitude(), location.getLatitude());
 
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
             isProviderFromGps = true;
@@ -187,5 +191,25 @@ public class MyLocationManager implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    /**
+     * Transform the location to the data for engine.
+     *
+     * @param loc The location.
+     * @return The data for engine.
+     */
+    private GPSDATA getEngineData(Location loc) {
+        GPSDATA gpsData = new GPSDATA();
+
+        gpsData.setSatelliteNumber(3);
+        gpsData.setLongitude(loc.getLongitude());
+        gpsData.setLatitude(loc.getLatitude());
+        gpsData.setSpeed(loc.getSpeed() == 0 ? 1 : loc.getSpeed() * 3.6);
+        gpsData.setAltitude(loc.getAltitude());
+        gpsData.setBearing((int) loc.getBearing());
+        gpsData.setTime(loc.getTime());
+
+        return gpsData;
     }
 }

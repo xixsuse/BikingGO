@@ -49,7 +49,7 @@ import java.util.concurrent.Executors;
  */
 public class DownloadMapUIManager implements ZipCallBack {
 	private static final String TAG = "DownloadMapUIManager";
-	private static Context mContext;
+	private static Activity mActivity;
 	private static Resources res;
 	/* 下載網址 */
 	private static String urlPath;
@@ -107,15 +107,15 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * @param fileName
 	 *            下載檔名
 	 */
-	public DownloadMapUIManager(final Activity mActivity, Context mContext, String mapVersion, String urlPath, String fileName) {
+	public DownloadMapUIManager(final Activity mActivity, String mapVersion, String urlPath, String fileName) {
 
-		DownloadMapUIManager.mContext = mContext;
+		DownloadMapUIManager.mActivity = mActivity;
 		DownloadMapUIManager.mapVersion = mapVersion;
 		DownloadMapUIManager.fileName = fileName;
 		// 下載檔案不使用Call api 方式,因為斷點續傳需要,改變連結
 		DownloadMapUIManager.urlPath = urlPath;
 
-		zipCompeleteDailog = new UtilDialog(mContext) {
+		zipCompeleteDailog = new UtilDialog(mActivity) {
 			@Override
 			public void click_btn_1() {
 				Intent intent = new Intent();
@@ -123,7 +123,6 @@ public class DownloadMapUIManager implements ZipCallBack {
 				mActivity.setResult(-10, intent);
 				super.click_btn_1();
 				mActivity.finish();
-
 			}
 
 			@Override
@@ -132,26 +131,25 @@ public class DownloadMapUIManager implements ZipCallBack {
 				super.click_btn_2();
 			}
 		};
-		zCB = this;
-		res = mContext.getResources();
-		// 取得紀錄狀態
-		sp = mContext.getSharedPreferences(mapDownload, Context.MODE_PRIVATE);
-		downloadMap(fileName);
 
+		zCB = this;
+		res = DownloadMapUIManager.mActivity.getResources();
+		// 取得紀錄狀態
+		sp = DownloadMapUIManager.mActivity.getSharedPreferences(mapDownload, Context.MODE_PRIVATE);
+		downloadMap(fileName);
 	}
 
 	/**
 	 * 更新機制
 	 * 
 	 * @author eden
-	 * @param mapVersion
-	 *            圖資版本
+	 * @param mapVersion 圖資版本
 	 */
-	public DownloadMapUIManager(Context mContext, String mapVersion) {
+	public DownloadMapUIManager(Activity mActivity, String mapVersion) {
 		// 已是最新版本
-		DownloadMapUIManager.mContext = mContext;
+		DownloadMapUIManager.mActivity = mActivity;
 		DownloadMapUIManager.mapVersion = mapVersion;
-		res = mContext.getResources();
+		res = mActivity.getResources();
 		showMapIsNewDialog();
 	}
 
@@ -165,7 +163,7 @@ public class DownloadMapUIManager implements ZipCallBack {
 			switch (msg.what) {
 			case STARTDOWNLOAD:
 				// 建立下載程序
-				task = new DownloadTask(mContext, (File) msg.obj, this);
+				task = new DownloadTask(mActivity, (File) msg.obj, this);
 				// Set download url path
 				DownloadTask.urlPath = urlPath;
 				// Set download filename
@@ -197,7 +195,7 @@ public class DownloadMapUIManager implements ZipCallBack {
 				break;
 			case FAILURE:// 下載失敗
 				isConnection = false;
-				// Toast.makeText(mContext, "失敗 ", Toast.LENGTH_LONG).show();
+				// Toast.makeText(mActivity, "失敗 ", Toast.LENGTH_LONG).show();
 				// if (alertProcess != null && alertProcess.isShowing()) {
 				// alertProcess.dismiss();
 				// }
@@ -275,11 +273,12 @@ public class DownloadMapUIManager implements ZipCallBack {
                     sp.edit().putBoolean(mapDownloadFinish, false).commit();
                     sp.edit().putBoolean(mapUnzipFinish, false).commit();
 
-                    zipCompeleteDailog = new UtilDialog(mContext) {
+                    zipCompeleteDailog = new UtilDialog(mActivity) {
                       @Override
                       public void click_btn_1() {
                           super.click_btn_1();
                           AppController.getInstance().restartAppImmediately();
+                          mActivity.finish();
                       }
                     };
                     zipCompeleteDailog.showDialog_route_plan_choice("圖資", "下載完成！請重新開始程式", "確定", null);
@@ -324,12 +323,12 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * Show下載進度 Dialog
 	 */
 	private static void showProcessDialog() {
-		Dialog builder = new Dialog(mContext, R.style.selectorDialog2);
+		Dialog builder = new Dialog(mActivity, R.style.selectorDialog2);
 		// set window params
 
 		
 
-		LayoutInflater lif = LayoutInflater.from(mContext);
+		LayoutInflater lif = LayoutInflater.from(mActivity);
 		View updateView = lif.inflate(R.layout.updateprocess_dialog, null);
 		builder.setContentView(updateView);
 		final LinearLayout content_ll = (LinearLayout) updateView
@@ -399,7 +398,7 @@ public class DownloadMapUIManager implements ZipCallBack {
 
 					cachedThreadPool.execute(task);
 				} else {
-					task = new DownloadTask(mContext, new File(
+					task = new DownloadTask(mActivity, new File(
 							Macro.MAP_DOWNLOAD_FOLDER), handler);
 					// Set download url path
 					DownloadTask.urlPath = urlPath;
@@ -440,8 +439,8 @@ public class DownloadMapUIManager implements ZipCallBack {
 
 		// set width, height by density and gravity
 
-        params.width = (int) ((getWidth(mContext) * scale));
-        params.height = (int) ((getHeight(mContext) * scale));
+        params.width = (int) ((getWidth(mActivity) * scale));
+        params.height = (int) ((getHeight(mActivity) * scale));
         params.gravity = Gravity.CENTER;
 
 		window.setAttributes(params);
@@ -451,9 +450,9 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * 顯示圖資更新提醒
 	 */
 	private static void showMapDialog() {
-		Dialog builder = new Dialog(mContext, R.style.selectorDialog2);
+		Dialog builder = new Dialog(mActivity, R.style.selectorDialog2);
 
-		View updateView = LayoutInflater.from(mContext).inflate(
+		View updateView = LayoutInflater.from(mActivity).inflate(
 				R.layout.update_dialog, null);
 		builder.setContentView(updateView);
 		TextView title = (TextView) updateView.findViewById(R.id.title);
@@ -524,9 +523,9 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * 顯示錯誤提醒
 	 */
 	private static void showErrorDialog() {
-		Dialog builder = new Dialog(mContext, R.style.selectorDialog2);
+		Dialog builder = new Dialog(mActivity, R.style.selectorDialog2);
 
-		View updateView = LayoutInflater.from(mContext).inflate(
+		View updateView = LayoutInflater.from(mActivity).inflate(
 				R.layout.update_dialog, null);
 		builder.setContentView(updateView);
 		TextView title = (TextView) updateView.findViewById(R.id.title);
@@ -577,9 +576,9 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * 顯示圖資已是最新版本提醒
 	 */
 	private static void showMapIsNewDialog() {
-		Dialog builder = new Dialog(mContext, R.style.selectorDialog2);
+		Dialog builder = new Dialog(mActivity, R.style.selectorDialog2);
 
-		View updateView = LayoutInflater.from(mContext).inflate(
+		View updateView = LayoutInflater.from(mActivity).inflate(
 				R.layout.update_dialog, null);
 		builder.setContentView(updateView);
 		TextView title = (TextView) updateView.findViewById(R.id.title);
@@ -626,9 +625,9 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * 顯示圖資解壓縮進度
 	 */
 	private static void showMapUnZipDialog() {
-		Dialog builder = new Dialog(mContext, R.style.selectorDialog2);
+		Dialog builder = new Dialog(mActivity, R.style.selectorDialog2);
 
-		View unzipView = LayoutInflater.from(mContext).inflate(
+		View unzipView = LayoutInflater.from(mActivity).inflate(
 				R.layout.unzip_dialog, null);
 		builder.setContentView(unzipView);
 		builder.setTitle("解壓縮中...");
@@ -654,9 +653,9 @@ public class DownloadMapUIManager implements ZipCallBack {
 	 * 顯示下載空間不足提醒
 	 */
 	private static void showSpaceDialog(float remainingSpace) {
-		Dialog builder = new Dialog(mContext, R.style.selectorDialog2);
+		Dialog builder = new Dialog(mActivity, R.style.selectorDialog2);
 
-		View updateView = LayoutInflater.from(mContext).inflate(
+		View updateView = LayoutInflater.from(mActivity).inflate(
 				R.layout.update_dialog, null);
 		builder.setContentView(updateView);
 		TextView title = (TextView) updateView.findViewById(R.id.title);
@@ -673,7 +672,7 @@ public class DownloadMapUIManager implements ZipCallBack {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(String
-				.format(mContext
+				.format(mActivity
 						.getResources()
 						.getString(
 								R.string.version_update_check_msg_available_space_not_enough2),

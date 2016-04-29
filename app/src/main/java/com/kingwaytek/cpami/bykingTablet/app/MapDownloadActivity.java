@@ -138,14 +138,10 @@ public class MapDownloadActivity extends Activity implements OnItemClickListener
 			String fileName = dir[dir.length - 1];
 			String urlPath = url.replace(fileName, "");
 
-			new DownloadMapUIManager(MapDownloadActivity.this,MapDownloadActivity.this,
-					GetNaviKingVersion.GetMapDBVersion(),
-					urlPath,
-					fileName);
-
-		} else {
-			this.showAlert("警告!", "SD 卡空間不足！");
+			new DownloadMapUIManager(MapDownloadActivity.this, GetNaviKingVersion.GetMapDBVersion(), urlPath, fileName);
 		}
+        else
+			this.showAlert("警告!", "SD 卡空間不足！");
 	}
 
 	/* Check Free Space in SD card */
