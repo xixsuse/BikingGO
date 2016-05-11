@@ -27,7 +27,7 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
 
     private static final String DIR_DATA = "BikingData";
 
-    protected static boolean isInit;
+    private boolean isInit;
     private sonav engine;
 
     @Override
@@ -37,6 +37,7 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
 
     @Override
     protected void init() {
+        Log.i(TAG, "engineCheck Init!");
         showActionbar(false);
     }
 
@@ -159,8 +160,8 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
         setContentView(getLayoutId());
         findViews();
         setListener();
+        showActionbar(true);
         onCheckAllDone();
-        init();
     }
 
     private void deleteBikingDataDir() {

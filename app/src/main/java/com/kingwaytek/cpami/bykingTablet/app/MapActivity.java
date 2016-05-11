@@ -208,15 +208,10 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
     private static int saveImageResource;
 
     private ImageButton ibZoomOutPortrait;
-
     private ImageButton ibZoomInPortrait;
-
     private ImageButton ibZoomOutlandscape;
-
     private ImageButton ibZoomInlandscape;
-
     private RelativeLayout ZoomLayoutPortrait;
-
     private RelativeLayout ZoomLayoutLandscape;
 
     private static TextView MapRecordText;
@@ -270,11 +265,6 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         setWidgets();
         isResumable = true;
         resumeInit();
-    }
-
-    @Override
-    protected void init() {
-
     }
 
     @Override

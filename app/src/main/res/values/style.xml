@@ -11,6 +11,11 @@
         -->
     </style>
 
+    <style name="MyNavigationDrawerStyle">
+        <item name="android:textSize">@dimen/font_text_size_m</item><!-- text size in menu-->
+        <item name="android:listPreferredItemHeightSmall">@dimen/actionbar_item_height</item><!-- item size in menu-->
+    </style>
+
     <style name="MyActionBarStyle" parent="Widget.AppCompat.Light.ActionBar.Solid">
         <item name="android:height">@dimen/actionbar_height</item>
         <item name="android:windowBackground">@color/actionbar_background_color</item>

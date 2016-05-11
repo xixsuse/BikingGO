@@ -291,4 +291,16 @@
     <string name="location_permission_denied">定位功能未啟用！</string>
     <string name="google_api_places_unavailable">The Google Places API was UNAVAILABLE!!</string>
 
+    <!-- Menu Options -->
+    <string name="menu_home">首頁</string>
+    <string name="menu_bike_track">單車軌跡</string>
+    <string name="menu_poi_share">景點分享</string>
+    <string name="menu_poi_book">景點書</string>
+    <string name="menu_report">車友通報</string>
+    <string name="menu_favorite">我的最愛</string>
+    <string name="menu_settings">設定</string>
+
+    <string name="drawer_open">Open Drawer</string>
+    <string name="drawer_close">Close Drawer</string>
+
 </resources>

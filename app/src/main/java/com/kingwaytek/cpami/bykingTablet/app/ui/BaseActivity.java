@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.app.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -35,7 +36,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ActionBar actionbar;
     private static View actionbarView;
 
-    private ImageButton actionbar_lisBtn;
+    private ImageButton actionbar_menuBtn;
+    private ImageButton actionbar_switchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         if (notNull(actionbar)) {
             actionbar.setDisplayShowTitleEnabled(false);
-            actionbar.setHomeButtonEnabled(false);
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeButtonEnabled(true);
             actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
             actionbar.setCustomView(R.layout.include_foolish_action_bar);
@@ -90,25 +93,42 @@ public abstract class BaseActivity extends AppCompatActivity {
             actionbar.hide();
     }
 
-    public void showListButton(boolean isShow) {
+    public void showSwitchButton(boolean isShow) {
         if (isShow)
-            actionbar_lisBtn.setVisibility(View.VISIBLE);
+            actionbar_switchBtn.setVisibility(View.VISIBLE);
         else
-            actionbar_lisBtn.setVisibility(View.GONE);
+            actionbar_switchBtn.setVisibility(View.GONE);
     }
 
     private void findActionbarWidgetViewAndSetListener() {
-        actionbar_lisBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_listButton);
-        actionbar_lisBtn.setOnClickListener(new View.OnClickListener() {
+        actionbar_menuBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_menuButton);
+        actionbar_switchBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_switchButton);
+
+        actionbar_menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onListButtonClick();
+                onMenuButtonClick();
+            }
+        });
+
+        actionbar_switchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSwitchButtonClick();
             }
         });
     }
 
-    protected void onListButtonClick() {
+    protected void onMenuButtonClick() {
 
+    }
+
+    protected void onSwitchButtonClick() {
+
+    }
+
+    protected void setMenuButtonIcon(int iconRes) {
+        actionbar_menuBtn.setImageDrawable(ContextCompat.getDrawable(this, iconRes));
     }
 
     public static boolean notNull(Object anyObject) {

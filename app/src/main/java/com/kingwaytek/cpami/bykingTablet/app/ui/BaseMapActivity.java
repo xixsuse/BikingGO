@@ -7,10 +7,14 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -60,12 +64,17 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected AutoCompleteTextView searchText;
     private Marker searchMarker;
 
+    private DrawerLayout drawer;
+    private NavigationView drawerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         checkLocationPermissions(LOCATION_UPDATE_REQUEST_CODE);
         buildMap();
+
+        initDrawer();
     }
 
     @Override
@@ -76,6 +85,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     @Override
     protected void findViews() {
         searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerView = (NavigationView) findViewById(R.id.navigation_view);
     }
 
     @Override
@@ -323,6 +334,44 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                 permissionChecked = false;
             }
         }
+    }
+
+    private void initDrawer() {
+        setDrawerWidth();
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        drawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                item.setChecked(true);
+                Utility.toastShort(item.getTitle().toString());
+                drawer.closeDrawers();
+
+                return true;
+            }
+        });
+    }
+
+    private void setDrawerWidth() {
+        int width = (int) (Utility.getScreenWidth() / 1.8);
+
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawerView.getLayoutParams();
+        params.width = width;
+
+        drawerView.setLayoutParams(params);
     }
 
     @Override

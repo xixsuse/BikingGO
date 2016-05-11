@@ -46,7 +46,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     @Override
     protected void onApiReady() {
-        showListButton(true);
+        showSwitchButton(true);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     }
 
     @Override
-    protected void onListButtonClick() {
+    protected void onSwitchButtonClick() {
         try {
             PlacePicker.IntentBuilder pickerBuilder = new PlacePicker.IntentBuilder();
             startActivityForResult(pickerBuilder.build(this), PLACE_PICKER_REQUEST);
