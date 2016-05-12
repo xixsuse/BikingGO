@@ -1,6 +1,8 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -22,14 +24,14 @@ public class PopWindowHelper {
         return AppController.getInstance().getAppContext();
     }
 
-    public static View getLoadingPopView() {
+    public static void showLoadingWindow() {
         LayoutInflater inflater = LayoutInflater.from(appContext());
         View view = inflater.inflate(R.layout.popup_loading_window, null);
 
         double popWidth = Utility.getScreenWidth() / 2;
         double popHeight = Utility.getScreenHeight() / 4;
 
-        popWindow = new PopupWindow(view, (int)popWidth, (int)popHeight);
+        popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
         popWindow.setFocusable(true);
         popWindow.setOutsideTouchable(false);
@@ -39,6 +41,24 @@ public class PopWindowHelper {
 
         if (BaseActivity.getActionbarView() != null)
             popWindow.showAsDropDown(BaseActivity.getActionbarView(), (int) xPos, (int) yPos);
+    }
+
+    public static View getPoiEditWindowView() {
+        LayoutInflater inflater = LayoutInflater.from(appContext());
+        View view = inflater.inflate(R.layout.popup_poi_edit_window, null);
+
+        double popWidth = Utility.getScreenWidth() / 1.1;
+        double popHeight = Utility.getScreenHeight() / 1.2;
+
+        popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
+
+        popWindow.setFocusable(true);
+        popWindow.setOutsideTouchable(true);
+        popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
+
+        popWindow.showAsDropDown(BaseActivity.getActionbarView(), (int) xPos, 0);
 
         return view;
     }

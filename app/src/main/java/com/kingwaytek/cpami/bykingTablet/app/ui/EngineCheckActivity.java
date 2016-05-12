@@ -38,7 +38,6 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
     @Override
     protected void init() {
         Log.i(TAG, "engineCheck Init!");
-        showActionbar(false);
     }
 
     @Override
@@ -160,7 +159,6 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
         setContentView(getLayoutId());
         findViews();
         setListener();
-        showActionbar(true);
         onCheckAllDone();
     }
 

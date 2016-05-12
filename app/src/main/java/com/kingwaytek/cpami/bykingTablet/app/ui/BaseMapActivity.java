@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.LocationSearchHelper;
@@ -65,6 +67,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     private Marker searchMarker;
 
     private DrawerLayout drawer;
+    private ActionBarDrawerToggle drawerToggle;
     private NavigationView drawerView;
 
     @Override
@@ -93,6 +96,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected void onResume() {
         super.onResume();
         requestLocationUpdate();
+        unCheckAllMenuItem();
     }
 
     @Override
@@ -339,15 +343,17 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     private void initDrawer() {
         setDrawerWidth();
 
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close) {
+        drawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                setMenuButtonIcon(R.drawable.selector_toolbar_back_arrow);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+                setMenuButtonIcon(R.drawable.selector_toolbar_list);
             }
         };
         drawer.addDrawerListener(drawerToggle);
@@ -357,7 +363,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 item.setChecked(true);
-                Utility.toastShort(item.getTitle().toString());
+                onMenuItemClick(item);
                 drawer.closeDrawers();
 
                 return true;
@@ -374,9 +380,56 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         drawerView.setLayoutParams(params);
     }
 
+    private void onMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menu_home:
+                goTo(MainActivity.class, false);
+                break;
+
+            case R.id.menu_bike_track:
+
+                break;
+
+            case R.id.menu_poi_share:
+
+                break;
+
+            case R.id.menu_poi_book:
+
+                break;
+
+            case R.id.menu_report:
+
+                break;
+
+            case R.id.menu_favorite:
+
+                break;
+
+            case R.id.menu_settings:
+
+                break;
+        }
+    }
+
+    @Override
+    public void onMenuButtonClick() {
+        if (drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawers();
+        else
+            drawer.openDrawer(GravityCompat.START);
+    }
+
+    private void unCheckAllMenuItem() {
+        for (int i = 0; i < drawerView.getMenu().size(); i++) {
+            drawerView.getMenu().getItem(i).setChecked(false);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         turnOnSearchKeyListener(false);
+        drawer.removeDrawerListener(drawerToggle);
     }
 }

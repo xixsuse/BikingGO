@@ -40,7 +40,7 @@ public class LocationSearchHelper {
             Utility.toastShort(AppController.getInstance().getAppContext().getString(R.string.search_any_location));
             return;
         }
-        PopWindowHelper.getLoadingPopView();
+        PopWindowHelper.showLoadingWindow();
 
         Geocoder geocoder = new Geocoder(AppController.getInstance().getAppContext());
 

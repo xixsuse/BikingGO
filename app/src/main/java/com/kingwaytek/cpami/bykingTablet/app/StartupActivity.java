@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.ui.UiPoiSearchMapActivity;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -95,7 +96,7 @@ public class StartupActivity extends Activity {
     }
 
     private void goToMain() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, UiPoiSearchMapActivity.class));
         finish();
     }
 

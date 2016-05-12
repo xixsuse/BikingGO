@@ -1,6 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -36,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ActionBar actionbar;
     private static View actionbarView;
 
-    private ImageButton actionbar_menuBtn;
+    protected ImageButton actionbar_menuBtn;
     private ImageButton actionbar_switchBtn;
 
     @Override
@@ -129,6 +130,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void setMenuButtonIcon(int iconRes) {
         actionbar_menuBtn.setImageDrawable(ContextCompat.getDrawable(this, iconRes));
+    }
+
+    public void goTo(Class<?> clazz, boolean clearTop) {
+        Intent intent = new Intent(this, clazz);
+
+        if (clearTop)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        startActivity(intent);
     }
 
     public static boolean notNull(Object anyObject) {

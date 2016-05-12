@@ -3,7 +3,6 @@ package com.kingwaytek.cpami.bykingTablet.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import com.kingwaytek.cpami.bykingTablet.app.rentInfo.RentInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackListView;
 import com.kingwaytek.cpami.bykingTablet.app.ui.UiPoiSearchMapActivity;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransport;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
 
@@ -201,7 +199,7 @@ public class MainActivity extends CommunicationBaseActivity {
 			TextView txv;
 		}
 	}
-
+/*
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -211,16 +209,16 @@ public class MainActivity extends CommunicationBaseActivity {
 				public void click_btn_1() {
 					super.click_btn_1();
 					Intent intent = new Intent();
-					intent.putExtra("FINISH", 1);
-					setResult(-10, intent);
-					finish();
+                    intent.putExtra("FINISH", 1);
+                    setResult(-10, intent);
+                    finish();
 				}
 			};
 			uit.showDialog_route_plan_choice(getString(R.string.confirm_close_app), null, "確定", "取消");
 		}
 		return false;
 	}
-
+*/
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub

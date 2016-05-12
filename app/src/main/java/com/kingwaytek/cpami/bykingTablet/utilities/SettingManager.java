@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
@@ -16,6 +17,8 @@ import com.sonavtek.sonav.PathFinder;
  * @author Vincent (2016/04/14)
  */
 public class SettingManager {
+
+    private static final String TAG = "SettingManager";
 
     /** Preference name for the directory contains data for engine. */
     private static final String PREF_DATA_DIR = "dataDir";
@@ -79,6 +82,9 @@ public class SettingManager {
     /** User is female */
     private static final int FEMALE = 2;
 
+    private static final String PREFS_FAVORITE = "FavoriteAndPOI";
+    private static final String PREFS_MY_POI = "MyPoi";
+
     private static SharedPreferences prefs;
     private static SharedPreferences.Editor editor;
 
@@ -86,12 +92,12 @@ public class SettingManager {
         return AppController.getInstance().getAppContext();
     }
 
-    private static SharedPreferences getPreferences() {
-        return appContext().getSharedPreferences(appContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
+    private static SharedPreferences getPreferences(String name) {
+        return appContext().getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
     public static void initPreferences() {
-        prefs = getPreferences();
+        prefs = getPreferences(appContext().getString(R.string.preference_file));
         editor = prefs.edit();
     }
 
@@ -372,5 +378,28 @@ public class SettingManager {
      */
     public static void setUserWeight(int weight) {
         editor.putInt(PREF_USER_WEIGHT, weight).apply();
+    }
+
+    public static class Favorite {
+
+        private static SharedPreferences prefs;
+        private static SharedPreferences.Editor editor;
+
+        public static void initFavoritePreference() {
+            if (prefs == null || editor == null) {
+                prefs = getPreferences(PREFS_FAVORITE);
+                editor = prefs.edit();
+            }
+            else
+                Log.i(TAG, "FavoritePreference has already init!");
+        }
+
+        public static void setMyPoi(String poiJsonString) {
+            editor.putString(PREFS_MY_POI, poiJsonString).apply();
+        }
+
+        public static String getMyPoi() {
+            return prefs.getString(PREFS_MY_POI, null);
+        }
     }
 }

@@ -22,11 +22,14 @@ import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.InputStream;
@@ -38,7 +41,7 @@ import java.util.ArrayList;
  *
  * @author Vincent (2016/4/15).
  */
-public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher {
+public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener {
 
     private static final int PLACE_PICKER_REQUEST = 1;
 
@@ -47,6 +50,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     @Override
     protected void onApiReady() {
         showSwitchButton(true);
+        map.setOnMapLongClickListener(this);
     }
 
     @Override
@@ -92,7 +96,16 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     @Override
     public void onInfoWindowClick(Marker marker) {
+        if (notNull(marker.getSnippet())) {
+            View view = PopWindowHelper.getPoiEditWindowView();
 
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //PopWindowHelper.dismissPopWindow();
+                }
+            });
+        }
     }
 
     @Override
@@ -210,5 +223,26 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         searchText.setDropDownBackgroundResource(R.drawable.background_search_adapter);
         if (searchText.getText().length() > 0)
             searchText.showDropDown();
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        putMarker(latLng);
+    }
+
+    private void putMarker(LatLng latLng) {
+        MarkerOptions marker = new MarkerOptions();
+        marker.position(latLng);
+        marker.title("選擇點位：");
+        marker.snippet(String.valueOf(latLng.latitude + "\n" + latLng.longitude));
+
+        InputStream is = getResources().openRawResource(+R.drawable.ic_end);
+
+        marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+
+        map.addMarker(marker).showInfoWindow();
+        moveCameraAndZoom(latLng, 16);
+
+        closeInputStream(is);
     }
 }
