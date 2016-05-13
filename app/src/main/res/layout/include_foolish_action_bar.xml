@@ -44,6 +44,6 @@
         android:padding="@dimen/padding_size_s"
         android:src="@drawable/selector_toolbar_switch"
         android:scaleType="centerCrop"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
 </RelativeLayout>

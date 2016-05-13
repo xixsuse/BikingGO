@@ -9,6 +9,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -47,10 +50,13 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     private Marker lastMarker;
 
+    private boolean isActivityReady = false;
+
     @Override
     protected void onApiReady() {
         showSwitchButton(true);
         map.setOnMapLongClickListener(this);
+        isActivityReady = true;
     }
 
     @Override
@@ -96,15 +102,9 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (notNull(marker.getSnippet())) {
-            View view = PopWindowHelper.getPoiEditWindowView();
+        if (isActivityReady && notNull(marker.getSnippet())) {
+            editMyPoi(marker.getPosition());
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //PopWindowHelper.dismissPopWindow();
-                }
-            });
         }
     }
 
@@ -244,5 +244,33 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         moveCameraAndZoom(latLng, 16);
 
         closeInputStream(is);
+    }
+
+    private void editMyPoi(LatLng latLng) {
+        View view = PopWindowHelper.getPoiEditWindowView(this);
+
+        EditText poiTitle = (EditText) view.findViewById(R.id.edit_poiTitle);
+        EditText poiContent = (EditText) view.findViewById(R.id.edit_poiContent);
+        ImageView poiPhoto = (ImageView) view.findViewById(R.id.image_poiPhoto);
+        TextView poiLatLng = (TextView) view.findViewById(R.id.text_poiLatLng);
+        Button poiBtnSave = (Button) view.findViewById(R.id.btn_poiSave);
+        Button poiBtnCancel = (Button) view.findViewById(R.id.btn_poiCancel);
+
+        String poiLocation = String.valueOf(latLng.latitude + ", " + latLng.longitude);
+        poiLatLng.setText(getString(R.string.poi_lat_lng, poiLocation));
+
+        poiBtnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        poiBtnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopWindowHelper.dismissPopWindow();
+            }
+        });
     }
 }

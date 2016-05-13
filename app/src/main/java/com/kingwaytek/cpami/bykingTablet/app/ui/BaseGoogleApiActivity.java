@@ -25,7 +25,7 @@ public abstract class BaseGoogleApiActivity extends BaseMapActivity implements
 
     @Override
     protected void init() {
-        Log.i(TAG, "init!!!");
+        Log.i(TAG, "BaseGoogleApiActivity Init!!!");
     }
 
     @Override

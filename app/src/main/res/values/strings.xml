@@ -303,4 +303,13 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
 
+    <!-- My POI -->
+    <string name="poi_add_a_new_one">新增我的景點</string>
+    <string name="poi_edit_a_exist_one">編輯我的景點</string>
+    <string name="poi_title">景點名稱：</string>
+    <string name="poi_description">景點描述：</string>
+    <string name="poi_lat_lng">位置：%s</string>
+    <string name="poi_save">儲存</string>
+    <string name="poi_require_title">景點名稱不得為空白</string>
+
 </resources>

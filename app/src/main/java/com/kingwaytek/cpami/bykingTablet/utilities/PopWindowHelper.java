@@ -1,8 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -43,8 +41,8 @@ public class PopWindowHelper {
             popWindow.showAsDropDown(BaseActivity.getActionbarView(), (int) xPos, (int) yPos);
     }
 
-    public static View getPoiEditWindowView() {
-        LayoutInflater inflater = LayoutInflater.from(appContext());
+    public static View getPoiEditWindowView(Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.popup_poi_edit_window, null);
 
         double popWidth = Utility.getScreenWidth() / 1.1;
@@ -53,8 +51,7 @@ public class PopWindowHelper {
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
         popWindow.setFocusable(true);
-        popWindow.setOutsideTouchable(true);
-        popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popWindow.setOutsideTouchable(false);
 
         double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
 

@@ -76,4 +76,6 @@
     <dimen name="padding_size_xxl">@dimen/normal_padding_size_xxl</dimen>
     <dimen name="padding_size_super">@dimen/normal_padding_size_super</dimen>
 
+    <dimen name="poi_photo_edit_view">@dimen/normal_poi_photo_edit_view</dimen>
+
 </resources>

@@ -24,5 +24,7 @@
     <dimen name="icon_common_size">@dimen/normal_icon_common_size</dimen>
     <dimen name="kiosk_main_menu_width">@dimen/sw800dp_kiosk_main_menu_width</dimen>
     <dimen name="kiosk_icon_common_size">@dimen/sw800dp_kiosk_icon_common_size</dimen>
+
+    <dimen name="poi_photo_edit_view">@dimen/sw800dp_poi_photo_edit_view</dimen>
     
 </resources>
