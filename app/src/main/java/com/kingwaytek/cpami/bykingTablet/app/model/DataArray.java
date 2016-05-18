@@ -53,4 +53,8 @@ public class DataArray implements ApiUrls {
             }
         });
     }
+
+    public static ArrayList<ItemsMyPOI> getMyPOI() {
+        return JsonParser.parseMyPoiAndGetList();
+    }
 }

@@ -2,6 +2,8 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.util.Log;
 
+import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,15 +22,17 @@ public class FavoriteHelper {
 
     private static JSONArray JA_POI;
 
-    private static final String POI_TITLE = "title";
-    private static final String POI_DESCRIPTION = "description";
-    private static final String POI_LAT = "lat";
-    private static final String POI_LNG = "lng";
-    private static final String POI_PHOTO_PATH = "photoPath";
+    public static final String POI_TITLE = "title";
+    public static final String POI_DESCRIPTION = "description";
+    public static final String POI_LAT = "lat";
+    public static final String POI_LNG = "lng";
+    public static final String POI_PHOTO_PATH = "photoPath";
 
     private static int POI_INDEX;
 
     public static void initFavorite() {
+        SettingManager.Favorite.initFavoritePreference();
+
         try {
             if (SettingManager.Favorite.getMyPoi() == null) {
                 JA_POI = new JSONArray();
@@ -77,6 +81,22 @@ public class FavoriteHelper {
         }
     }
 
+    public static ItemsMyPOI getMyPoiItem() {
+        try {
+            String title = JA_POI.getJSONObject(POI_INDEX).getString(POI_TITLE);
+            String desc = JA_POI.getJSONObject(POI_INDEX).getString(POI_DESCRIPTION);
+            double lat = JA_POI.getJSONObject(POI_INDEX).getDouble(POI_LAT);
+            double lng = JA_POI.getJSONObject(POI_INDEX).getDouble(POI_LNG);
+            String photoPath = JA_POI.getJSONObject(POI_INDEX).getString(POI_PHOTO_PATH);
+
+            return new ItemsMyPOI(title, desc, lat, lng, photoPath);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static void addMyPoi(String title, String desc, double lat, double lng, String photoPath) {
         checkIsFavInit();
 
@@ -120,13 +140,15 @@ public class FavoriteHelper {
                 SettingManager.Favorite.setMyPoi(JA_POI.toString());
                 Log.i(TAG, "PoiRemoved: " + JA_POI.toString());
             }
+            else
+                Log.i(TAG, "This POI doesn't exist!");
         }
         catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public static void editMyPoi(String title, String desc, String photoPath) {
+    public static void updateMyPoi(String title, String desc, String photoPath) {
         try {
             JA_POI.getJSONObject(POI_INDEX).put(POI_TITLE, title);
             JA_POI.getJSONObject(POI_INDEX).put(POI_DESCRIPTION, desc);

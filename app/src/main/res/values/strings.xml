@@ -310,6 +310,8 @@
     <string name="poi_description">景點描述：</string>
     <string name="poi_lat_lng">位置：%s</string>
     <string name="poi_save">儲存</string>
-    <string name="poi_require_title">景點名稱不得為空白</string>
+    <string name="poi_require_title">景點名稱不得為空值</string>
+    <string name="poi_save_done">景點新增成功</string>
+    <string name="poi_update_done">景點更新成功</string>
 
 </resources>

@@ -15,6 +15,7 @@ import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.Tracker;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapCache;
+import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 
@@ -37,6 +38,7 @@ public class AppController extends Application {
         appInstance = this;
         SettingManager.initPreferences();
         Util.initUserDatabase();
+        FavoriteHelper.initFavorite();
     }
 
     public static synchronized AppController getInstance() {

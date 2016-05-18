@@ -1,8 +1,14 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,6 +38,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -46,17 +54,19 @@ import java.util.ArrayList;
  */
 public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener {
 
-    private static final int PLACE_PICKER_REQUEST = 1;
+    private static final int REQUEST_PLACE_PICKER = 1;
+    private static final int REQUEST_POI_PHOTO = 10;
+    private static final int REQUEST_POI_PHOTO_M = 11;
 
     private Marker lastMarker;
 
-    private boolean isActivityReady = false;
+    private ImageView poiImageView;
+    private String photoPath;
 
     @Override
     protected void onApiReady() {
         showSwitchButton(true);
         map.setOnMapLongClickListener(this);
-        isActivityReady = true;
     }
 
     @Override
@@ -102,7 +112,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (isActivityReady && notNull(marker.getSnippet())) {
+        if (notNull(marker.getSnippet())) {
             editMyPoi(marker.getPosition());
 
         }
@@ -112,7 +122,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     protected void onSwitchButtonClick() {
         try {
             PlacePicker.IntentBuilder pickerBuilder = new PlacePicker.IntentBuilder();
-            startActivityForResult(pickerBuilder.build(this), PLACE_PICKER_REQUEST);
+            startActivityForResult(pickerBuilder.build(this), REQUEST_PLACE_PICKER);
         }
         catch (GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
             e.printStackTrace();
@@ -123,9 +133,14 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case PLACE_PICKER_REQUEST:
+                case REQUEST_PLACE_PICKER:
                     Place place = PlacePicker.getPlace(this, data);
                     putMarkerAndMoveCamera(place);
+                    break;
+
+                case REQUEST_POI_PHOTO:
+                case REQUEST_POI_PHOTO_M:
+                    getPhotoPathAndSetImageView(requestCode, data);
                     break;
             }
         }
@@ -246,23 +261,44 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         closeInputStream(is);
     }
 
-    private void editMyPoi(LatLng latLng) {
+    private void editMyPoi(final LatLng latLng) {
         View view = PopWindowHelper.getPoiEditWindowView(this);
 
-        EditText poiTitle = (EditText) view.findViewById(R.id.edit_poiTitle);
-        EditText poiContent = (EditText) view.findViewById(R.id.edit_poiContent);
-        ImageView poiPhoto = (ImageView) view.findViewById(R.id.image_poiPhoto);
+        final EditText poiTitle = (EditText) view.findViewById(R.id.edit_poiTitle);
+        final EditText poiContent = (EditText) view.findViewById(R.id.edit_poiContent);
+        poiImageView = (ImageView) view.findViewById(R.id.image_poiPhoto);
         TextView poiLatLng = (TextView) view.findViewById(R.id.text_poiLatLng);
         Button poiBtnSave = (Button) view.findViewById(R.id.btn_poiSave);
         Button poiBtnCancel = (Button) view.findViewById(R.id.btn_poiCancel);
 
-        String poiLocation = String.valueOf(latLng.latitude + ", " + latLng.longitude);
+        String poiLocation = String.valueOf("\n" + latLng.latitude + ",\n" + latLng.longitude);
         poiLatLng.setText(getString(R.string.poi_lat_lng, poiLocation));
+
+        poiImageView.setOnClickListener(getClickListener());
+
+        photoPath = "";
+        final boolean isPoiExisted = FavoriteHelper.isPoiExisted(latLng.latitude, latLng.longitude);
 
         poiBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String title = poiTitle.getText().toString();
+                String content = poiContent.getText().toString();
 
+                if (!title.isEmpty()) {
+                    if (isPoiExisted) {
+                        FavoriteHelper.updateMyPoi(title, content, photoPath);
+                        Utility.toastShort(getString(R.string.poi_update_done));
+                        PopWindowHelper.dismissPopWindow();
+                    }
+                    else {
+                        FavoriteHelper.addMyPoi(title, content, latLng.latitude, latLng.longitude, photoPath);
+                        Utility.toastShort(getString(R.string.poi_save_done));
+                        PopWindowHelper.dismissPopWindow();
+                    }
+                }
+                else
+                    Utility.toastShort(getString(R.string.poi_require_title));
             }
         });
 
@@ -272,5 +308,107 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
                 PopWindowHelper.dismissPopWindow();
             }
         });
+
+        if (isPoiExisted) {
+            ItemsMyPOI poiItem = FavoriteHelper.getMyPoiItem();
+            if (notNull(poiItem)) {
+                poiTitle.setText(poiItem.TITLE);
+                poiContent.setText(poiItem.DESCRIPTION);
+
+                Log.i(TAG, "PhotoPathFromFavorite: " + poiItem.PHOTO_PATH);
+
+                if (!poiItem.PHOTO_PATH.isEmpty())
+                    setPoiImageView(poiItem.PHOTO_PATH);
+            }
+        }
+    }
+
+    private View.OnClickListener getClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT < 19) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, REQUEST_POI_PHOTO);
+                }
+                else {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, REQUEST_POI_PHOTO_M);
+                }
+            }
+        };
+    }
+
+    @SuppressWarnings("WrongConstant")
+    @SuppressLint("NewApi")
+    private void getPhotoPathAndSetImageView(int requestCode, Intent data) {
+        Uri uri = data.getData();
+
+        photoPath = uri.toString();
+        Log.i(TAG, "ImageContentPath: " + photoPath);
+
+        switch (requestCode) {
+            case REQUEST_POI_PHOTO:
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+
+                if (notNull(cursor)) {
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    photoPath = cursor.getString(columnIndex);
+
+                    Log.i(TAG, "ImageFilePath: " + photoPath);
+                    cursor.close();
+                }
+                else {
+                    photoPath = uri.getPath();
+                    Log.i(TAG, "CursorNull ImagePath: " + photoPath);
+                }
+
+                setPoiImageView(photoPath);
+
+                break;
+
+            case REQUEST_POI_PHOTO_M:
+                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(uri, takeFlags);
+
+                Log.i(TAG, "UriLastPathSegment: " + uri.getLastPathSegment());
+                final String id = uri.getLastPathSegment().split(":")[1];
+                final String[] imageColumns = {MediaStore.Images.Media.DATA};
+                final String imageOrderBy = null;
+
+                Uri storageUri = getStorageUri();
+
+                Cursor imageCursor = getContentResolver().query(storageUri, imageColumns, MediaStore.Images.Media._ID + "="+id, null, imageOrderBy);
+
+                if (notNull(imageCursor) && imageCursor.moveToFirst()) {
+                    photoPath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                    Log.i(TAG, "ImageFilePath: " + photoPath);
+
+                    setPoiImageView(photoPath);
+
+                    imageCursor.close();
+                }
+
+                break;
+        }
+    }
+
+    private Uri getStorageUri() {
+        String state = Environment.getExternalStorageState();
+
+        if (state.equalsIgnoreCase(Environment.MEDIA_MOUNTED))
+            return MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        else
+            return MediaStore.Images.Media.INTERNAL_CONTENT_URI;
+    }
+
+    private void setPoiImageView(String photoPath) {
+        int reqSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
+        poiImageView.setImageBitmap(Utility.getDecodedBitmap(photoPath, reqSize, reqSize));
     }
 }

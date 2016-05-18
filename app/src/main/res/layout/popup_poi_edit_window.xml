@@ -64,6 +64,7 @@
                     android:layout_height="@dimen/poi_photo_edit_view"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
+                    android:clickable="true"
                     android:background="@drawable/background_poi_photo"
                     android:src="@android:drawable/ic_menu_add"
                     android:scaleType="centerCrop"/>

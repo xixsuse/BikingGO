@@ -1,6 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
+import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsSearchResult;
 
 import org.json.JSONArray;
@@ -11,7 +12,9 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 
 /**
- * Created by vincent.chang on 2016/4/18.
+ * Parse JSON 並建立 Items，搭配 DataArray使用！
+ *
+ * @author Vincent (2016/4/18)
  */
 public class JsonParser {
 
@@ -67,5 +70,37 @@ public class JsonParser {
             parseResult.onParseFail(e.getMessage());
         }
         releaseObjects();
+    }
+
+    public static ArrayList<ItemsMyPOI> parseMyPoiAndGetList() {
+        try {
+            ArrayList<ItemsMyPOI> myPoiList = new ArrayList<>();
+
+            JA = new JSONArray(SettingManager.Favorite.getMyPoi());
+
+            String title;
+            String desc;
+            String lat;
+            String lng;
+            String photoPath;
+
+            JSONObject jo;
+
+            for (int i = 0; i < JA.length(); i++) {
+                jo = JA.getJSONObject(i);
+                title = jo.getString(FavoriteHelper.POI_TITLE);
+                desc = jo.getString(FavoriteHelper.POI_DESCRIPTION);
+                lat = jo.getString(FavoriteHelper.POI_LAT);
+                lng = jo.getString(FavoriteHelper.POI_LNG);
+                photoPath = jo.getString(FavoriteHelper.POI_PHOTO_PATH);
+
+                myPoiList.add(new ItemsMyPOI(title, desc, Double.parseDouble(lat), Double.parseDouble(lng), photoPath));
+            }
+            return myPoiList;
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
