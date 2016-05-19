@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
@@ -38,7 +39,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ActionBar actionbar;
     private static View actionbarView;
 
+    private ProgressBar loadingCircle;
+
     protected ImageButton actionbar_menuBtn;
+    private ImageButton actionbar_aroundBtn;
     private ImageButton actionbar_switchBtn;
 
     @Override
@@ -96,21 +100,34 @@ public abstract class BaseActivity extends AppCompatActivity {
             actionbar.hide();
     }
 
-    public void showSwitchButton(boolean isShow) {
-        if (isShow)
+    public void showRightButtons(boolean isShow) {
+        if (isShow) {
+            actionbar_aroundBtn.setVisibility(View.VISIBLE);
             actionbar_switchBtn.setVisibility(View.VISIBLE);
-        else
+        }
+        else {
+            actionbar_aroundBtn.setVisibility(View.GONE);
             actionbar_switchBtn.setVisibility(View.GONE);
+        }
     }
 
     private void findActionbarWidgetViewAndSetListener() {
+        loadingCircle = (ProgressBar) actionbarView.findViewById(R.id.loadingCircle);
         actionbar_menuBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_menuButton);
+        actionbar_aroundBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_aroundButton);
         actionbar_switchBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_switchButton);
 
         actionbar_menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onMenuButtonClick();
+            }
+        });
+
+        actionbar_aroundBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAroundButtonClick();
             }
         });
 
@@ -126,12 +143,23 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
+    protected void onAroundButtonClick() {
+
+    }
+
     protected void onSwitchButtonClick() {
 
     }
 
     protected void setMenuButtonIcon(int iconRes) {
         actionbar_menuBtn.setImageDrawable(ContextCompat.getDrawable(this, iconRes));
+    }
+
+    protected void showLoadingCircle(boolean isShow) {
+        if (isShow)
+            loadingCircle.setVisibility(View.VISIBLE);
+        else
+            loadingCircle.setVisibility(View.GONE);
     }
 
     public void goTo(Class<?> clazz, boolean clearTop) {

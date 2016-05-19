@@ -53,6 +53,7 @@ public abstract class BaseGoogleApiActivity extends BaseMapActivity implements
     @Override
     public void onStop() {
         googleApiClient.disconnect();
+        Log.i(TAG, "GoogleApi: disconnect!");
         super.onStop();
     }
 

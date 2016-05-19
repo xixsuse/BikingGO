@@ -85,7 +85,9 @@ public class SettingManager {
     private static final String PREFS_FAVORITE = "FavoriteAndPOI";
     private static final String PREFS_MY_POI = "MyPoi";
 
-    private static SharedPreferences prefs;
+    public static final String PREFS_MARKER_MY_POI = "MyPoiMarker";
+
+    public static SharedPreferences prefs;
     private static SharedPreferences.Editor editor;
 
     private static Context appContext() {
@@ -378,6 +380,17 @@ public class SettingManager {
      */
     public static void setUserWeight(int weight) {
         editor.putInt(PREF_USER_WEIGHT, weight).apply();
+    }
+
+    public static class MarkerFlag {
+
+        public static void setMyPoiFlag(boolean isChecked) {
+            editor.putBoolean(PREFS_MARKER_MY_POI, isChecked).apply();
+        }
+
+        public static boolean getMyPoiFlag() {
+            return prefs.getBoolean(PREFS_MARKER_MY_POI, true);
+        }
     }
 
     public static class Favorite {

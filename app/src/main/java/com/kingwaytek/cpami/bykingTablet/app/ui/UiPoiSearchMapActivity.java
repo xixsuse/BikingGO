@@ -2,10 +2,12 @@ package com.kingwaytek.cpami.bykingTablet.app.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -16,8 +18,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -32,19 +36,23 @@ import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * 地址查詢、關鍵字查詢、周邊景點 and blah blah blah~<br>
@@ -58,15 +66,20 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     private static final int REQUEST_POI_PHOTO = 10;
     private static final int REQUEST_POI_PHOTO_M = 11;
 
+    private boolean isFirstTimeLaunch = true;
+
     private Marker lastMarker;
+    private HashMap<LatLng, Integer> markerTypeMap;
+    private ArrayList<Marker> myPoiMarkerList;
 
     private ImageView poiImageView;
     private String photoPath;
 
     @Override
     protected void onApiReady() {
-        showSwitchButton(true);
-        map.setOnMapLongClickListener(this);
+        showRightButtons(true);
+        putMarkersAndSetListener();
+        Log.i(TAG, "onApiReady!!!");
     }
 
     @Override
@@ -88,9 +101,34 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        unRegisterPreferenceChangedListener();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         searchText.removeTextChangedListener(this);
+        map.setOnMapLongClickListener(null);
+    }
+
+    private void putMarkersAndSetListener() {
+        map.setOnMapLongClickListener(this);
+
+        if (isFirstTimeLaunch) {
+            registerPreferenceChangedListener();
+            markerTypeMap = new HashMap<>();
+
+            if (SettingManager.MarkerFlag.getMyPoiFlag())
+                new PutAllMyPoiMarkers().execute();
+
+            isFirstTimeLaunch = false;
+        }
+    }
+
+    private void setMarkerTypeMap(double lat, double lng, int iconResId) {
+
     }
 
     @Override
@@ -112,14 +150,33 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (notNull(marker.getSnippet())) {
-            editMyPoi(marker.getPosition());
-
+        if (markerTypeMap.containsKey(marker.getPosition())) {
+            switch (markerTypeMap.get(marker.getPosition())) {
+                case R.drawable.ic_my_poi:
+                    editMyPoi(marker.getPosition());
+                    break;
+            }
         }
     }
 
     @Override
     protected void onSwitchButtonClick() {
+        View view = PopWindowHelper.getMarkerSwitchWindowView(mapLayout);
+
+        Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
+
+        switch_myPoi.setChecked(SettingManager.MarkerFlag.getMyPoiFlag());
+
+        switch_myPoi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SettingManager.MarkerFlag.setMyPoiFlag(isChecked);
+            }
+        });
+    }
+
+    @Override
+    protected void onAroundButtonClick() {
         try {
             PlacePicker.IntentBuilder pickerBuilder = new PlacePicker.IntentBuilder();
             startActivityForResult(pickerBuilder.build(this), REQUEST_PLACE_PICKER);
@@ -159,8 +216,10 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         marker.title(place.getName().toString());
         marker.snippet(place.getAddress().toString());
 
-        InputStream is = getResources().openRawResource(+R.drawable.ic_end);
+        InputStream is = getResources().openRawResource(+R.drawable.ic_around_poi);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+
+        markerTypeMap.put(place.getLatLng(), R.drawable.ic_around_poi);
 
         lastMarker = map.addMarker(marker);
 
@@ -251,9 +310,10 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         marker.title("選擇點位：");
         marker.snippet(String.valueOf(latLng.latitude + "\n" + latLng.longitude));
 
-        InputStream is = getResources().openRawResource(+R.drawable.ic_end);
-
+        InputStream is = getResources().openRawResource(+R.drawable.ic_my_poi);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+
+        markerTypeMap.put(latLng, R.drawable.ic_my_poi);
 
         map.addMarker(marker).showInfoWindow();
         moveCameraAndZoom(latLng, 16);
@@ -262,7 +322,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     }
 
     private void editMyPoi(final LatLng latLng) {
-        View view = PopWindowHelper.getPoiEditWindowView(this);
+        View view = PopWindowHelper.getPoiEditWindowView(this, mapLayout);
 
         final EditText poiTitle = (EditText) view.findViewById(R.id.edit_poiTitle);
         final EditText poiContent = (EditText) view.findViewById(R.id.edit_poiContent);
@@ -410,5 +470,73 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     private void setPoiImageView(String photoPath) {
         int reqSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
         poiImageView.setImageBitmap(Utility.getDecodedBitmap(photoPath, reqSize, reqSize));
+    }
+
+    private class PutAllMyPoiMarkers extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            showLoadingCircle(true);
+            removeAllMyPoiMarkers();
+            myPoiMarkerList = new ArrayList<>();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ArrayList<ItemsMyPOI> myPoiList = DataArray.getMyPOI();
+
+            if (notNull(myPoiList)) {
+                InputStream is = getResources().openRawResource(+R.drawable.ic_my_poi);
+                BitmapDescriptor iconBitmap = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is));
+
+                for (ItemsMyPOI poiItem : myPoiList) {
+                    final MarkerOptions marker = new MarkerOptions();
+
+                    marker.position(new LatLng(poiItem.LAT, poiItem.LNG));
+                    marker.title(poiItem.TITLE);
+                    marker.snippet(poiItem.DESCRIPTION);
+                    marker.icon(iconBitmap);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            myPoiMarkerList.add(map.addMarker(marker));
+                        }
+                    });
+                }
+            }
+            else
+                Utility.showToastOnNewThread(getString(R.string.poi_empty));
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            showLoadingCircle(false);
+        }
+    }
+
+    private void removeAllMyPoiMarkers() {
+        showLoadingCircle(true);
+
+        if (notNull(myPoiMarkerList) && !myPoiMarkerList.isEmpty()) {
+            for (Marker marker : myPoiMarkerList) {
+                marker.remove();
+            }
+        }
+        showLoadingCircle(false);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        switch (key) {
+            case SettingManager.PREFS_MARKER_MY_POI:
+                if (SettingManager.MarkerFlag.getMyPoiFlag())
+                    new PutAllMyPoiMarkers().execute();
+                else
+                    removeAllMyPoiMarkers();
+                break;
+        }
     }
 }

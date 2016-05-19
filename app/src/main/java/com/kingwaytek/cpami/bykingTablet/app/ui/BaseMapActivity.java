@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.app.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -21,6 +22,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,6 +41,7 @@ import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.LocationSearchHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -51,7 +54,8 @@ import java.util.ArrayList;
  * @author Vincent (2016/04/14)
  */
 public abstract class BaseMapActivity extends BaseActivity implements OnMapReadyCallback,
-        GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
+        GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     protected abstract void onLocateMyPosition(Location location);
 
@@ -62,6 +66,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     protected MyLocationManager locationManager;
     protected GoogleMap map;
+
+    protected RelativeLayout mapLayout;
 
     protected AutoCompleteTextView searchText;
     private Marker searchMarker;
@@ -87,6 +93,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     @Override
     protected void findViews() {
+        mapLayout = (RelativeLayout) findViewById(R.id.mapLayout);
         searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerView = (NavigationView) findViewById(R.id.navigation_view);
@@ -256,6 +263,14 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         return true;
     }
 
+    protected void registerPreferenceChangedListener() {
+        SettingManager.prefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    protected void unRegisterPreferenceChangedListener() {
+        SettingManager.prefs.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     private void turnOnSearchKeyListener(boolean isOn) {
         if (isOn) {
             searchText.setOnKeyListener(getOnKeyListener());
@@ -305,7 +320,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         MarkerOptions marker = new MarkerOptions();
         marker.position(latLng);
         marker.title(title);
-        InputStream is = getResources().openRawResource(+ R.drawable.ic_start);
+        InputStream is = getResources().openRawResource(+ R.drawable.ic_search_result);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
 
         searchMarker = map.addMarker(marker);

@@ -32,7 +32,7 @@
         android:visibility="visible"/>
 
     <ImageButton
-        android:id="@+id/actionBar_switchButton"
+        android:id="@+id/actionBar_aroundButton"
         android:layout_width="@dimen/icon_common_size"
         android:layout_height="@dimen/icon_common_size"
         android:layout_alignParentRight="true"
@@ -41,9 +41,34 @@
         android:layout_marginRight="@dimen/padding_size_m"
         android:layout_marginEnd="@dimen/padding_size_m"
         android:background="@null"
+        android:src="@drawable/selector_toolbar_around"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+
+    <ImageButton
+        android:id="@+id/actionBar_switchButton"
+        android:layout_width="@dimen/icon_common_size"
+        android:layout_height="@dimen/icon_common_size"
+        android:layout_toLeftOf="@+id/actionBar_aroundButton"
+        android:layout_toStartOf="@+id/actionBar_aroundButton"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/padding_size_s"
+        android:layout_marginEnd="@dimen/padding_size_s"
+        android:background="@null"
         android:padding="@dimen/padding_size_s"
         android:src="@drawable/selector_toolbar_switch"
         android:scaleType="centerCrop"
         android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/loadingCircle"
+        android:layout_width="@dimen/icon_common_size"
+        android:layout_height="@dimen/icon_common_size"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/actionBar_menuButton"
+        android:layout_toEndOf="@+id/actionBar_menuButton"
+        android:layout_marginLeft="@dimen/padding_size_m"
+        android:layout_marginStart="@dimen/padding_size_m"
+        android:visibility="gone" />
 
 </RelativeLayout>

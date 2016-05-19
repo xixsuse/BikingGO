@@ -21,7 +21,6 @@ import android.view.Display;
 import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.AppController;
-import com.kingwaytek.cpami.bykingTablet.R;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -119,24 +118,26 @@ public class Utility {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, res.getDisplayMetrics());
     }
 
-    /**
-     * FragmentHeight = ScreenHeight - height of (TabLayout + Toolbar + StatusBar)
-     */
-    public static int getFragmentHeight() {
+
+    public static int getActionbarHeight() {
         Context mContext = AppController.getInstance().getAppContext();
 
-        int designWidgetHeight = mContext.getResources().getDimensionPixelSize(R.dimen.actionbar_height_more_higher) +
-                mContext.getResources().getDimensionPixelSize(R.dimen.actionbar_height);
+        TypedValue tv = new TypedValue();
 
+        int actionBarHeight = 0;
         int statusBarHeight = 0;
+
+        if (mContext.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, mContext.getResources().getDisplayMetrics());
+
         int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
 
         if (resourceId > 0)
             statusBarHeight = mContext.getResources().getDimensionPixelSize(resourceId);
 
-        Log.i("StatusBarHeight", "" + statusBarHeight);
+        Log.i("ActionBarHeight", "ActionBarHeight: " + actionBarHeight + " StatusBarHeight: " + statusBarHeight);
 
-        return getScreenHeight() - (designWidgetHeight + statusBarHeight);
+        return statusBarHeight;
     }
 
     public static BitmapFactory.Options getBitmapOptions(int scale) {
