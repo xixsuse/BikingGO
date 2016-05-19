@@ -50,7 +50,7 @@ public class PopWindowHelper {
         View view = inflater.inflate(R.layout.popup_poi_edit_window, null);
 
         double popWidth = Utility.getScreenWidth() / 1.1;
-        double popHeight = Utility.getScreenHeight() / 1.2;
+        double popHeight = Utility.getScreenHeight() / 1.3;
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 

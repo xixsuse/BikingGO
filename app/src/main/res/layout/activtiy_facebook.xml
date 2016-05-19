@@ -98,7 +98,7 @@
                     android:background="@drawable/announce_background"
                     android:gravity="center"
                     android:onClick="@string/share_cancel_pressed"
-                    android:text="@string/share_cancle"
+                    android:text="@string/share_cancel"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="#1571fb" />
 
