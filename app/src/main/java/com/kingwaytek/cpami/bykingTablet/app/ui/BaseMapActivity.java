@@ -8,15 +8,10 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -37,7 +32,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.LocationSearchHelper;
@@ -47,6 +41,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * 所有要使用 GoogleMap的地方都直接繼承這裡就好了！
@@ -72,9 +67,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected AutoCompleteTextView searchText;
     private Marker searchMarker;
 
-    private DrawerLayout drawer;
-    private ActionBarDrawerToggle drawerToggle;
-    private NavigationView drawerView;
+    protected HashMap<String, Integer> markerTypeMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +88,6 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected void findViews() {
         mapLayout = (RelativeLayout) findViewById(R.id.mapLayout);
         searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerView = (NavigationView) findViewById(R.id.navigation_view);
     }
 
     @Override
@@ -210,6 +201,20 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         }
     }
 
+    /**
+     * 放入 key: lat + lng & value: Marker icon resource ID
+     *
+     * markerTypeMap用來在 onInfoWindowClick時判斷要觸發什麼事件
+     */
+    protected void setMarkerTypeMap(double lat, double lng, int iconResId) {
+        if (markerTypeMap == null)
+            markerTypeMap = new HashMap<>();
+
+        String key = String.valueOf(lat) + String.valueOf(lng);
+
+        markerTypeMap.put(key, iconResId);
+    }
+
     @Override
     public View getInfoWindow(Marker marker) {
         View view = LayoutInflater.from(this).inflate(R.layout.inflate_marker_search_result_window, null);
@@ -256,7 +261,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             else {
                 Utility.toastShort("This device is not supported PlayServices.");
                 Log.i(TAG, "This device is not supported.");
-                //finish();
+                finish();
             }
             return false;
         }
@@ -323,6 +328,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         InputStream is = getResources().openRawResource(+ R.drawable.ic_search_result);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
 
+        setMarkerTypeMap(latLng.latitude, latLng.longitude, R.drawable.ic_search_result);
+
         searchMarker = map.addMarker(marker);
         searchMarker.showInfoWindow();
         moveCameraAndZoom(latLng, 16);
@@ -352,92 +359,6 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                 Utility.toastShort(getString(R.string.location_permission_denied));
                 permissionChecked = false;
             }
-        }
-    }
-
-    private void initDrawer() {
-        setDrawerWidth();
-
-        drawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                setMenuButtonIcon(R.drawable.selector_toolbar_back_arrow);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                setMenuButtonIcon(R.drawable.selector_toolbar_list);
-            }
-        };
-        drawer.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
-
-        drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                item.setChecked(true);
-                onMenuItemClick(item);
-                drawer.closeDrawers();
-
-                return true;
-            }
-        });
-    }
-
-    private void setDrawerWidth() {
-        int width = (int) (Utility.getScreenWidth() / 1.8);
-
-        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawerView.getLayoutParams();
-        params.width = width;
-
-        drawerView.setLayoutParams(params);
-    }
-
-    private void onMenuItemClick(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.menu_home:
-                goTo(MainActivity.class, false);
-                break;
-
-            case R.id.menu_bike_track:
-
-                break;
-
-            case R.id.menu_poi_share:
-
-                break;
-
-            case R.id.menu_poi_book:
-
-                break;
-
-            case R.id.menu_report:
-
-                break;
-
-            case R.id.menu_favorite:
-
-                break;
-
-            case R.id.menu_settings:
-
-                break;
-        }
-    }
-
-    @Override
-    public void onMenuButtonClick() {
-        if (drawer.isDrawerOpen(GravityCompat.START))
-            drawer.closeDrawers();
-        else
-            drawer.openDrawer(GravityCompat.START);
-    }
-
-    private void unCheckAllMenuItem() {
-        for (int i = 0; i < drawerView.getMenu().size(); i++) {
-            drawerView.getMenu().getItem(i).setChecked(false);
         }
     }
 

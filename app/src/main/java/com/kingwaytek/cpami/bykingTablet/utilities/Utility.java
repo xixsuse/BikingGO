@@ -249,6 +249,8 @@ public class Utility {
     }
 
     public static Bitmap  getDecodedBitmap(String imgPath, int reqWidth, int reqHeight) {
+        Log.i("DecodeBitmap", "reqWidth: " + reqWidth + " reqHeight: " + reqHeight);
+
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;			// inJustDecodeBounds = true 時，就可以直接抓出圖片屬性，而不用整張都載入
 
@@ -285,12 +287,15 @@ public class Utility {
 
     private static Bitmap createScaleBitmap(Bitmap image, int dstWidth, int dstHeight, int inSampleSize) {
         Bitmap scaledImg = Bitmap.createScaledBitmap(image, dstWidth, dstHeight, false);
+        Log.i("DecodedImage", "Width: " + scaledImg.getWidth() + " Height: " + scaledImg.getHeight());
         if (image != scaledImg) {
             image.recycle();
+            Log.i("DecodedImage", "ScaledWidth: " + scaledImg.getWidth() + " ScaledHeight: " + scaledImg.getHeight());
             return scaledImg;
         }
         else {
             scaledImg.recycle();
+            Log.i("DecodedImage", "Width: " + scaledImg.getWidth() + " Height: " + scaledImg.getHeight());
             return image;
         }
     }

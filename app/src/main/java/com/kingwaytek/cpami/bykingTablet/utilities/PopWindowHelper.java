@@ -60,7 +60,7 @@ public class PopWindowHelper {
         //double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
         int yPos = Utility.getActionbarHeight();
 
-        popWindow.showAtLocation(anchorView,Gravity.CENTER_HORIZONTAL, 0, yPos);
+        popWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
 
         return view;
     }

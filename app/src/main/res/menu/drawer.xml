@@ -14,9 +14,9 @@
             android:title="@string/menu_bike_track"/>
 
         <item
-            android:id="@+id/menu_poi_share"
+            android:id="@+id/menu_my_poi"
             android:icon="@drawable/main_search"
-            android:title="@string/menu_poi_share"/>
+            android:title="@string/menu_my_poi"/>
 
         <item
             android:id="@+id/menu_poi_book"

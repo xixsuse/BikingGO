@@ -3,19 +3,31 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/actionbar_background_color"
                 android:animateLayoutChanges="true">
+
+    <ProgressBar
+        android:id="@+id/loadingCircle"
+        android:layout_width="@dimen/icon_common_size"
+        android:layout_height="@dimen/icon_common_size"
+        android:layout_toRightOf="@+id/actionBar_title"
+        android:layout_toEndOf="@+id/actionBar_title"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/padding_size_m"
+        android:layout_marginStart="@dimen/padding_size_m"
+        android:background="@xml/progress_circle"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/actionBar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
         android:text="@string/information_title"
         android:textColor="@color/md_grey_50"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:typeface="sans" />
 
+<!--
     <ImageButton
         android:id="@+id/actionBar_menuButton"
         android:layout_width="@dimen/icon_common_size"
@@ -29,7 +41,7 @@
         android:padding="@dimen/padding_size_s"
         android:src="@drawable/selector_toolbar_list"
         android:scaleType="centerCrop"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <ImageButton
         android:id="@+id/actionBar_aroundButton"
@@ -59,16 +71,6 @@
         android:src="@drawable/selector_toolbar_switch"
         android:scaleType="centerCrop"
         android:visibility="gone"/>
-
-    <ProgressBar
-        android:id="@+id/loadingCircle"
-        android:layout_width="@dimen/icon_common_size"
-        android:layout_height="@dimen/icon_common_size"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/actionBar_menuButton"
-        android:layout_toEndOf="@+id/actionBar_menuButton"
-        android:layout_marginLeft="@dimen/padding_size_m"
-        android:layout_marginStart="@dimen/padding_size_m"
-        android:visibility="gone" />
+-->
 
 </RelativeLayout>
