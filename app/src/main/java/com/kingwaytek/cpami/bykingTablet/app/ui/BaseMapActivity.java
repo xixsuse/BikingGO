@@ -17,7 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -62,7 +62,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected MyLocationManager locationManager;
     protected GoogleMap map;
 
-    protected RelativeLayout mapLayout;
+    //protected RelativeLayout mapLayout;
+    protected FrameLayout searchTextLayout;
 
     protected AutoCompleteTextView searchText;
     private Marker searchMarker;
@@ -86,7 +87,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     @Override
     protected void findViews() {
-        mapLayout = (RelativeLayout) findViewById(R.id.mapLayout);
+        //mapLayout = (RelativeLayout) findViewById(R.id.mapLayout);
+        searchTextLayout = (FrameLayout) findViewById(R.id.searchTextLayout);
         searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
     }
 

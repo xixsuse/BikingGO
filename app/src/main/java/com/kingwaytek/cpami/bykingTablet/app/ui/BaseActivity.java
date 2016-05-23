@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.model.ActionbarMenu;
+import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
@@ -37,7 +38,7 @@ import java.io.InputStream;
  *
  * @author Vincent (2016/04/18)
  */
-public abstract class BaseActivity extends AppCompatActivity implements ActionbarMenu {
+public abstract class BaseActivity extends AppCompatActivity implements ActionbarMenu, CommonBundle {
 
     protected final String TAG = getClass().getSimpleName();
 

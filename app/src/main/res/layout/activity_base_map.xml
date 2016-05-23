@@ -19,24 +19,31 @@
             tools:context=".app.ui.BaseMapActivity"
             android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-        <AutoCompleteTextView
-            android:id="@+id/edit_searchText"
+        <FrameLayout
+            android:id="@+id/searchTextLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_size_xxl"
-            android:layout_marginStart="@dimen/padding_size_xxl"
-            android:layout_marginRight="@dimen/padding_size_super"
-            android:layout_marginEnd="@dimen/padding_size_super"
-            android:layout_marginTop="@dimen/padding_size_l"
-            android:drawableLeft="@android:drawable/ic_menu_search"
-            android:drawableStart="@android:drawable/ic_menu_search"
-            android:drawablePadding="@dimen/padding_size_m"
-            android:hint="@string/search_anywhere"
-            android:textSize="@dimen/font_text_size_m"
-            android:inputType="textAutoComplete|textAutoCorrect"
-            android:imeOptions="actionDone"
-            android:completionThreshold="1"
-            android:background="@drawable/background_search_text"/>
+            android:paddingLeft="@dimen/padding_size_xxl"
+            android:paddingStart="@dimen/padding_size_xxl"
+            android:paddingRight="@dimen/padding_size_super"
+            android:paddingEnd="@dimen/padding_size_super"
+            android:paddingTop="@dimen/padding_size_l">
+
+            <AutoCompleteTextView
+                android:id="@+id/edit_searchText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@android:drawable/ic_menu_search"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawablePadding="@dimen/padding_size_m"
+                android:hint="@string/search_anywhere"
+                android:textSize="@dimen/font_text_size_m"
+                android:inputType="textAutoComplete|textAutoCorrect"
+                android:imeOptions="actionDone"
+                android:completionThreshold="1"
+                android:background="@drawable/background_search_text"/>
+
+        </FrameLayout>
 
         <ImageView
             android:layout_width="match_parent"

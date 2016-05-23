@@ -1,9 +1,11 @@
 package com.kingwaytek.cpami.bykingTablet.app.model;
 
+import java.io.Serializable;
+
 /**
  * Created by vincent.chang on 2016/5/18.
  */
-public class ItemsMyPOI {
+public class ItemsMyPOI implements Serializable {
 
     public String TITLE;
     public String DESCRIPTION;

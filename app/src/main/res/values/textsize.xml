@@ -25,6 +25,7 @@
     <dimen name="normal_padding_size_s">3dp</dimen>
 
     <dimen name="normal_icon_common_size">36dp</dimen>
+    <dimen name="normal_icon_common_size_xl">54dp</dimen>
 
     <dimen name="normal_poi_photo_edit_view">120dp</dimen>
 
@@ -51,6 +52,7 @@
     <dimen name="sw600dp_padding_size_s">5dp</dimen>
 
     <dimen name="sw600dp_icon_common_size">48dp</dimen>
+    <dimen name="sw600dp_icon_common_size_xl">72dp</dimen>
 
     <dimen name="sw600dp_poi_photo_edit_view">180dp</dimen>
 
@@ -76,6 +78,7 @@
     <dimen name="sw800dp_padding_size_s">7dp</dimen>
 
     <dimen name="sw800dp_icon_common_size">60dp</dimen>
+    <dimen name="sw800dp_icon_common_size_xl">90dp</dimen>
 
     <dimen name="sw800dp_kiosk_main_menu_width">180dp</dimen>
     <dimen name="sw800dp_kiosk_icon_common_size">80dp</dimen>

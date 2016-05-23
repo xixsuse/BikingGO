@@ -27,6 +27,7 @@
 	<dimen name="padding_size_super">@dimen/sw600dp_padding_size_super</dimen>
 
     <dimen name="icon_common_size">@dimen/sw600dp_icon_common_size</dimen>
+    <dimen name="icon_common_size_xl">@dimen/sw600dp_icon_common_size_xl</dimen>
 
     <dimen name="poi_photo_edit_view">@dimen/sw600dp_poi_photo_edit_view</dimen>
 

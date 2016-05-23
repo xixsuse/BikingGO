@@ -68,6 +68,7 @@
     <dimen name="font_text_size_super">@dimen/normal_font_size_super</dimen>
 
     <dimen name="icon_common_size">@dimen/normal_icon_common_size</dimen>
+    <dimen name="icon_common_size_xl">@dimen/normal_icon_common_size_xl</dimen>
 
     <dimen name="padding_size_s">@dimen/normal_padding_size_s</dimen>
     <dimen name="padding_size_m">@dimen/normal_padding_size_m</dimen>

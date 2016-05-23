@@ -137,7 +137,7 @@ public class Utility {
 
         Log.i("ActionBarHeight", "ActionBarHeight: " + actionBarHeight + " StatusBarHeight: " + statusBarHeight);
 
-        return statusBarHeight;
+        return actionBarHeight + statusBarHeight;
     }
 
     public static BitmapFactory.Options getBitmapOptions(int scale) {
@@ -265,7 +265,10 @@ public class Utility {
 
         options.inJustDecodeBounds = false;	//屬性抓完了，就可以把 inJustDecodeBounds 給關掉了~
         Bitmap imageInSampleSize = BitmapFactory.decodeFile(imgPath, options);	//這時後 options 中的數值是已經被重新指定過了喔！
-        return createScaleBitmap(imageInSampleSize, reqWidth, reqHeight, options.inSampleSize);
+
+        Log.i("DecodedImage", "SampleSize: " + options.inSampleSize);
+
+        return createScaleBitmap(imageInSampleSize, reqWidth, reqHeight);
     }
 
     private static int getInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -285,9 +288,8 @@ public class Utility {
         return inSampleSize;
     }
 
-    private static Bitmap createScaleBitmap(Bitmap image, int dstWidth, int dstHeight, int inSampleSize) {
+    private static Bitmap createScaleBitmap(Bitmap image, int dstWidth, int dstHeight) {
         Bitmap scaledImg = Bitmap.createScaledBitmap(image, dstWidth, dstHeight, false);
-        Log.i("DecodedImage", "Width: " + scaledImg.getWidth() + " Height: " + scaledImg.getHeight());
         if (image != scaledImg) {
             image.recycle();
             Log.i("DecodedImage", "ScaledWidth: " + scaledImg.getWidth() + " ScaledHeight: " + scaledImg.getHeight());

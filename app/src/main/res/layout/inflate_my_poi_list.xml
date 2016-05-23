@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingLeft="@dimen/padding_size_m"
+              android:paddingStart="@dimen/padding_size_m"
+              android:paddingRight="@dimen/padding_size_m"
+              android:paddingEnd="@dimen/padding_size_m"
+              android:paddingTop="@dimen/padding_size_s"
+              android:paddingBottom="@dimen/padding_size_s"
+              android:gravity="center_vertical" >
+
+    <ImageView
+        android:id="@+id/image_poiThumbnail"
+        android:layout_width="@dimen/icon_common_size_xl"
+        android:layout_height="@dimen/icon_common_size_xl"
+        android:src="@drawable/application_icon"/>
+
+    <TextView
+        android:id="@+id/text_poiTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/padding_size_xxl"
+        android:layout_marginStart="@dimen/padding_size_xxl"
+        android:layout_marginRight="@dimen/padding_size_m"
+        android:layout_marginEnd="@dimen/padding_size_m"
+        android:textSize="@dimen/font_text_size_l"
+        android:textColor="@color/md_grey_800"/>
+
+    <ImageButton
+        android:id="@+id/btn_poiInfo"
+        android:layout_width="@dimen/icon_common_size"
+        android:layout_height="@dimen/icon_common_size"
+        android:layout_weight="0"
+        android:src="@drawable/ic_info"
+        android:scaleType="fitCenter"
+        android:background="@drawable/selector_simple_background"/>
+
+</LinearLayout>

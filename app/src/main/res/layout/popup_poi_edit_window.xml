@@ -8,7 +8,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:isScrollContainer="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                     android:layout_toStartOf="@+id/image_poiPhoto"
                     android:text="@string/poi_title"
                     android:textSize="@dimen/font_text_size_l"
-                    android:textColor="@color/md_grey_900"/>
+                    android:textColor="@color/md_grey_700"/>
 
                 <EditText
                     android:id="@+id/edit_poiTitle"
@@ -66,8 +67,8 @@
                     android:layout_alignParentEnd="true"
                     android:clickable="true"
                     android:background="@drawable/background_poi_photo"
-                    android:src="@android:drawable/ic_menu_add"
-                    android:scaleType="centerCrop"/>
+                    android:src="@drawable/selector_add_photo"
+                    android:scaleType="center"/>
 
                 <TextView
                     android:id="@+id/text_poiDescIs"
@@ -79,7 +80,7 @@
                     android:layout_below="@+id/edit_poiTitle"
                     android:text="@string/poi_description"
                     android:textSize="@dimen/font_text_size_l"
-                    android:textColor="@color/md_grey_900"/>
+                    android:textColor="@color/md_grey_700"/>
 
             </RelativeLayout>
 

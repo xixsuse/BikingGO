@@ -67,10 +67,6 @@ import java.util.ArrayList;
  */
 public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener {
 
-    private static final int REQUEST_PLACE_PICKER = 1;
-    private static final int REQUEST_POI_PHOTO = 10;
-    private static final int REQUEST_POI_PHOTO_M = 11;
-
     private boolean isFirstTimeLaunch = true;
 
     private Marker lastAroundPoiMarker;
@@ -110,13 +106,13 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     public void onStop() {
         super.onStop();
         unRegisterPreferenceChangedListener();
-        map.setOnMapLongClickListener(null);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         searchText.removeTextChangedListener(this);
+        map.setOnMapLongClickListener(null);
     }
 
     private void putMarkersAndSetListener() {
@@ -171,7 +167,6 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        showLoadingCircle(true);
 
         switch (item.getItemId()) {
             case ACTION_SWITCH:
@@ -187,7 +182,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     }
 
     private void showSwitchPopView() {
-        View view = PopWindowHelper.getMarkerSwitchWindowView(mapLayout);
+        View view = PopWindowHelper.getMarkerSwitchWindowView(searchTextLayout);
 
         Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
 
@@ -211,7 +206,6 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
                 PlacePicker.IntentBuilder pickerBuilder = new PlacePicker.IntentBuilder();
                 startActivityForResult(pickerBuilder.build(this), REQUEST_PLACE_PICKER);
             }
-
         }
         catch (GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
             e.printStackTrace();
@@ -355,7 +349,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     }
 
     private void editMyPoi(final LatLng latLng, @Nullable String title) {
-        View view = PopWindowHelper.getPoiEditWindowView(this, mapLayout);
+        View view = PopWindowHelper.getPoiEditWindowView(this, searchTextLayout);
 
         final EditText poiTitle = (EditText) view.findViewById(R.id.edit_poiTitle);
         final EditText poiContent = (EditText) view.findViewById(R.id.edit_poiContent);

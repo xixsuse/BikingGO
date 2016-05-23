@@ -35,8 +35,7 @@ public class PopWindowHelper {
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
-        popWindow.setFocusable(true);
-        popWindow.setOutsideTouchable(false);
+        setPopWindowCancelable(false);
 
         double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
         double yPos = Utility.getScreenHeight() / 2 - popWidth;
@@ -50,17 +49,16 @@ public class PopWindowHelper {
         View view = inflater.inflate(R.layout.popup_poi_edit_window, null);
 
         double popWidth = Utility.getScreenWidth() / 1.1;
-        double popHeight = Utility.getScreenHeight() / 1.3;
+        double popHeight = Utility.getScreenHeight() / 1.5;
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
-        popWindow.setFocusable(true);
-        popWindow.setOutsideTouchable(false);
+        setPopWindowCancelable(false);
 
-        //double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
-        int yPos = Utility.getActionbarHeight();
+        double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
+        int yPos = appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xl);
 
-        popWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
+        popWindow.showAsDropDown(anchorView, (int) xPos, yPos);
 
         return view;
     }
@@ -74,16 +72,42 @@ public class PopWindowHelper {
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
-        popWindow.setFocusable(true);
-        popWindow.setOutsideTouchable(true);
-        popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        setPopWindowCancelable(true);
 
-        int yPos = appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xxl) +
-                appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xl);
+        double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
+        int yPos = appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xl);
 
-        popWindow.showAtLocation(anchorView, Gravity.CENTER, 0, yPos);
+        popWindow.showAsDropDown(anchorView, (int) xPos, yPos);
 
         return view;
+    }
+
+    public static View getFullScreenPoiEditView(View anchorView) {
+        inflater = LayoutInflater.from(appContext());
+        View view = inflater.inflate(R.layout.popup_poi_edit_window, null);
+
+        double popWidth = Utility.getScreenWidth();
+        double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
+
+        popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
+
+        setPopWindowCancelable(true);
+
+        popWindow.showAtLocation(anchorView, Gravity.BOTTOM, 0, 0);
+
+        return view;
+    }
+
+    private static void setPopWindowCancelable(boolean isCancelable) {
+        if (isCancelable) {
+            popWindow.setFocusable(true);
+            popWindow.setOutsideTouchable(true);
+            popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        else {
+            popWindow.setFocusable(true);
+            popWindow.setOutsideTouchable(false);
+        }
     }
 
     public static void dismissPopWindow() {
