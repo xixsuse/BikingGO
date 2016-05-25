@@ -297,9 +297,10 @@
     <string name="menu_home">首頁</string>
     <string name="menu_bike_track">單車軌跡</string>
     <string name="menu_my_poi">我的景點</string>
-    <string name="menu_poi_book">景點書</string>
+    <string name="menu_planning">行程規劃</string>
+    <string name="menu_poi_book">景點書(需下載)</string>
+    <string name="menu_events">活動訊息</string>
     <string name="menu_report">車友通報</string>
-    <string name="menu_favorite">我的最愛</string>
     <string name="menu_settings">設定</string>
 
     <string name="drawer_open">Open Drawer</string>
@@ -323,7 +324,17 @@
     <string name="poi_empty">尚未新增任何景點！</string>
     <string name="poi_confirm_to_delete">是否確認刪除「%s」?</string>
 
+    <string name="dialog_menu_photo_from_camera">相機</string>
+    <string name="dialog_menu_photo_from_gallery">從相簿選擇</string>
+    <string name="dialog_menu_photo_remove">移除照片</string>
+
     <!-- Marker switch window -->
     <string name="marker_my_poi">我的景點</string>
+
+    <string-array name="dialog_photo_menu">
+        <item>@string/dialog_menu_photo_from_camera</item>
+        <item>@string/dialog_menu_photo_from_gallery</item>
+        <item>@string/dialog_menu_photo_remove</item>
+    </string-array>
 
 </resources>

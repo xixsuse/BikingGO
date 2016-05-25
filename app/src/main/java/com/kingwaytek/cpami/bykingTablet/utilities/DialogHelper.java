@@ -14,6 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 
@@ -38,7 +40,7 @@ public class DialogHelper {
         dialogBuilder.create().show();
     }
 
-    public static void showImageViewDialog(final Context context, final String photoPath) {
+    public static void showImageViewDialog(final Context context, final String title, final String photoPath) {
         if (photoPath.isEmpty())
             return;
 
@@ -49,8 +51,8 @@ public class DialogHelper {
 
         View view = LayoutInflater.from(context).inflate(R.layout.inflate_dialog_image_view, null);
 
-        //LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.WRAP_CONTENT);
-        //view.setLayoutParams(params);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
+        view.setLayoutParams(params);
 
         dialogBuilder.setView(view);
 
@@ -66,7 +68,11 @@ public class DialogHelper {
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
 
+        TextView poiTitle = (TextView) view.findViewById(R.id.dialogPoiTitle);
         ImageButton closeBtn = (ImageButton) view.findViewById(R.id.dialogCloseBtn);
+
+        poiTitle.setText(title);
+
         final ImageView image = (ImageView) view.findViewById(R.id.dialogImageView);
 
         final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
@@ -96,5 +102,15 @@ public class DialogHelper {
                 bitmap.recycle();
             }
         });
+    }
+
+    public static void showDialogPhotoMenu(Context context, DialogInterface.OnClickListener onClickListener) {
+        String[] items = context.getResources().getStringArray(R.array.dialog_photo_menu);
+
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        dialogBuilder.setItems(items, onClickListener);
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.create().show();
     }
 }

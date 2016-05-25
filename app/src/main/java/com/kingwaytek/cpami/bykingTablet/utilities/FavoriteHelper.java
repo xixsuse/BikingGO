@@ -162,4 +162,27 @@ public class FavoriteHelper {
             e.printStackTrace();
         }
     }
+
+    public static void checkAndReplaceAllPhotoPathIfNotExists() {
+        checkIsFavInit();
+
+        try {
+            JSONObject jo;
+            String photoPath;
+
+            for (int i = 0; i < JA_POI.length(); i++) {
+                jo = JA_POI.getJSONObject(i);
+                photoPath = jo.getString(POI_PHOTO_PATH);
+
+                if (Utility.isFileNotExists(photoPath)) {
+                    jo.put(POI_PHOTO_PATH, "");
+                    Log.i(TAG, "PhotoPath Replaced: " + photoPath);
+                }
+            }
+            SettingManager.Favorite.setMyPoi(JA_POI.toString());
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

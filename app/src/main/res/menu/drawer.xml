@@ -19,19 +19,24 @@
             android:title="@string/menu_my_poi"/>
 
         <item
+            android:id="@+id/menu_planning"
+            android:icon="@drawable/main_search"
+            android:title="@string/menu_planning"/>
+
+        <item
             android:id="@+id/menu_poi_book"
             android:icon="@drawable/main_catalog"
             android:title="@string/menu_poi_book"/>
 
         <item
+            android:id="@+id/menu_events"
+            android:icon="@drawable/main_favor"
+            android:title="@string/menu_events"/>
+
+        <item
             android:id="@+id/menu_report"
             android:icon="@drawable/main_condition"
             android:title="@string/menu_report"/>
-
-        <item
-            android:id="@+id/menu_favorite"
-            android:icon="@drawable/main_favor"
-            android:title="@string/menu_favorite"/>
 
         <item
             android:id="@+id/menu_settings"

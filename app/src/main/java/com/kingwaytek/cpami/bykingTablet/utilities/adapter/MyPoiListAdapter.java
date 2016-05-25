@@ -95,7 +95,7 @@ public class MyPoiListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.showImageViewDialog(context, poiList.get(position).PHOTO_PATH);
+                DialogHelper.showImageViewDialog(context, poiList.get(position).TITLE, poiList.get(position).PHOTO_PATH);
             }
         };
     }
@@ -107,7 +107,7 @@ public class MyPoiListAdapter extends BaseAdapter {
                 Intent intent = new Intent(context, UiMyPoiInfoActivity.class);
                 Bundle bundle = new Bundle();
 
-                bundle.putSerializable(CommonBundle.MY_POI_INFO, poiList.get(position));
+                bundle.putSerializable(CommonBundle.BUNDLE_MY_POI_INFO, poiList.get(position));
                 intent.putExtras(bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

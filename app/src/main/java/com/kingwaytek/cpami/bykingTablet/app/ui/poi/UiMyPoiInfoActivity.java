@@ -1,13 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.poi;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,8 +14,10 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -30,7 +26,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
  *
  * @author Vincent (2016/5/23)
  */
-public class UiMyPoiInfoActivity extends BaseActivity {
+public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedCallBack{
 
     private ItemsMyPOI poiItem;
 
@@ -41,7 +37,6 @@ public class UiMyPoiInfoActivity extends BaseActivity {
     private ImageView poiPhoto;
     private TextView poiLatLng;
 
-    private ImageButton btn_poiUpload;
     private ImageButton btn_poiEdit;
     private ImageButton btn_poiDelete;
     private ImageButton btn_fbShare;
@@ -50,6 +45,7 @@ public class UiMyPoiInfoActivity extends BaseActivity {
     private String photoPath;
 
     private boolean isPoiExisted;
+    private boolean isFromMap;
 
     @Override
     protected void init() {
@@ -74,7 +70,6 @@ public class UiMyPoiInfoActivity extends BaseActivity {
         poiContent = (TextView) findViewById(R.id.text_poiContent);
         poiPhoto = (ImageView) findViewById(R.id.image_poiPhoto);
         poiLatLng = (TextView) findViewById(R.id.text_poiLatLng);
-        btn_poiUpload = (ImageButton) findViewById(R.id.btn_poiUpload);
         btn_poiEdit = (ImageButton) findViewById(R.id.btn_poiEdit);
         btn_poiDelete = (ImageButton) findViewById(R.id.btn_poiDelete);
         btn_fbShare = (ImageButton) findViewById(R.id.btn_facebookShare);
@@ -85,7 +80,7 @@ public class UiMyPoiInfoActivity extends BaseActivity {
         poiPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.showImageViewDialog(UiMyPoiInfoActivity.this, poiItem.PHOTO_PATH);
+                DialogHelper.showImageViewDialog(UiMyPoiInfoActivity.this, poiItem.TITLE, poiItem.PHOTO_PATH);
             }
         });
 
@@ -106,9 +101,10 @@ public class UiMyPoiInfoActivity extends BaseActivity {
 
     private void getPoiItem() {
         Intent intent = getIntent();
-        poiItem = (ItemsMyPOI) intent.getSerializableExtra(MY_POI_INFO);
+        poiItem = (ItemsMyPOI) intent.getSerializableExtra(BUNDLE_MY_POI_INFO);
 
         isPoiExisted = FavoriteHelper.isPoiExisted(poiItem.LAT, poiItem.LNG);
+        isFromMap = intent.getBooleanExtra(BUNDLE_MAP_TO_POI_INFO, false);
     }
 
     private void setPoiInfo() {
@@ -122,6 +118,8 @@ public class UiMyPoiInfoActivity extends BaseActivity {
 
         if (!poiItem.PHOTO_PATH.isEmpty())
             poiPhoto.setImageBitmap(Utility.getDecodedBitmap(poiItem.PHOTO_PATH, imageSize, imageSize));
+        else
+            poiPhoto.setImageResource(R.drawable.selector_add_photo);
     }
 
     private void editMyPoi() {
@@ -150,7 +148,7 @@ public class UiMyPoiInfoActivity extends BaseActivity {
         if (!poiItem.PHOTO_PATH.isEmpty())
             setPoiImageView(poiItem.PHOTO_PATH);
 
-        poiImageView.setOnClickListener(getImageClickListener());
+        poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, this));
 
         poiBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,94 +183,29 @@ public class UiMyPoiInfoActivity extends BaseActivity {
         poiImageView.setImageBitmap(Utility.getDecodedBitmap(photoPath, reqSize, reqSize));
     }
 
-    private View.OnClickListener getImageClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT < 19) {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(intent, REQUEST_POI_PHOTO);
-                }
-                else {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, REQUEST_POI_PHOTO_M);
-                }
-            }
-        };
+    @Override
+    public void onPhotoRemoved() {
+        photoPath = "";
+        poiImageView.setImageResource(R.drawable.selector_add_photo);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "onActivityResult: " + requestCode + " " + resultCode);
+
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_POI_PHOTO:
-                case REQUEST_POI_PHOTO_M:
+                case REQUEST_PHOTO_FROM_GALLERY:
+                case REQUEST_PHOTO_FROM_CAMERA:
                     getPhotoPathAndSetImageView(requestCode, data);
                     break;
             }
         }
     }
 
-    @SuppressWarnings("WrongConstant")
-    @SuppressLint("NewApi")
     private void getPhotoPathAndSetImageView(int requestCode, Intent data) {
-        Uri uri = data.getData();
-
-        photoPath = uri.toString();
-
-        switch (requestCode) {
-            case REQUEST_POI_PHOTO:
-                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-
-                if (notNull(cursor)) {
-                    cursor.moveToFirst();
-                    int columnIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    photoPath = cursor.getString(columnIndex);
-
-                    Log.i(TAG, "ImageFilePath: " + photoPath);
-                    cursor.close();
-                }
-                else
-                    photoPath = uri.getPath();
-
-                setPoiImageView(photoPath);
-                break;
-
-            case REQUEST_POI_PHOTO_M:
-                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uri, takeFlags);
-
-                final String id = uri.getLastPathSegment().split(":")[1];
-                final String[] imageColumns = {MediaStore.Images.Media.DATA};
-                final String imageOrderBy = null;
-
-                Uri storageUri = getStorageUri();
-
-                Cursor imageCursor = getContentResolver().query(storageUri, imageColumns, MediaStore.Images.Media._ID + "="+id, null, imageOrderBy);
-
-                if (notNull(imageCursor) && imageCursor.moveToFirst()) {
-                    photoPath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                    Log.i(TAG, "ImageFilePath_M: " + photoPath);
-
-                    setPoiImageView(photoPath);
-
-                    imageCursor.close();
-                }
-                break;
-        }
-    }
-
-    private Uri getStorageUri() {
-        String state = Environment.getExternalStorageState();
-
-        if (state.equalsIgnoreCase(Environment.MEDIA_MOUNTED))
-            return MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        else
-            return MediaStore.Images.Media.INTERNAL_CONTENT_URI;
+        photoPath = ImageSelectHelper.getPhotoPath(this, requestCode, data);
+        setPoiImageView(photoPath);
     }
 
     private void resetPoiInfo() {
@@ -290,5 +223,12 @@ public class UiMyPoiInfoActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (isFromMap)
+            setResult(RESULT_OK);
     }
 }

@@ -18,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -62,13 +64,17 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected MyLocationManager locationManager;
     protected GoogleMap map;
 
-    //protected RelativeLayout mapLayout;
     protected FrameLayout searchTextLayout;
+    protected LinearLayout markerBtnLayout;
 
     protected AutoCompleteTextView searchText;
     private Marker searchMarker;
 
     protected HashMap<String, Integer> markerTypeMap;
+
+    protected ImageButton markerBtn_edit;
+    protected ImageButton markerBtn_direction;
+    protected ImageButton markerBtn_navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +93,12 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     @Override
     protected void findViews() {
-        //mapLayout = (RelativeLayout) findViewById(R.id.mapLayout);
         searchTextLayout = (FrameLayout) findViewById(R.id.searchTextLayout);
         searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
+        markerBtnLayout = (LinearLayout) findViewById(R.id.markerBtnLayout);
+        markerBtn_edit = (ImageButton) findViewById(R.id.markerBtn_edit);
+        markerBtn_direction = (ImageButton) findViewById(R.id.markerBtn_routePath);
+        markerBtn_navigation = (ImageButton) findViewById(R.id.markerBtn_navigation);
     }
 
     @Override
@@ -192,6 +201,13 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                         onLocateMyPosition(MyLocationManager.getLastLocation());
                         return false;
                     }
+                }
+            });
+
+            map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    showMarkerButtonLayout(false, false);
                 }
             });
 
@@ -341,6 +357,60 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     protected void clearSearchText() {
         searchText.setText("");
+    }
+
+    protected void showMarkerButtonLayout(boolean isShow, boolean showEditBtn) {
+        if (isShow) {
+            markerBtnLayout.setVisibility(View.VISIBLE);
+
+            if (showEditBtn) {
+                markerBtn_edit.setVisibility(View.VISIBLE);
+                markerBtn_edit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onMarkerEditButtonClick();
+                    }
+                });
+            }
+            else
+                markerBtn_edit.setVisibility(View.GONE);
+
+            markerBtn_direction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onMarkerDirectionButtonClick();
+                }
+            });
+
+            markerBtn_navigation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onMarkerNavigationButtonClick();
+                }
+            });
+        }
+        else {
+            markerBtnLayout.setVisibility(View.GONE);
+            markerBtn_edit.setOnClickListener(null);
+            markerBtn_direction.setOnClickListener(null);
+            markerBtn_navigation.setOnClickListener(null);
+        }
+    }
+
+    /**
+     * 3顆在地圖上出現的 MarkerButton，
+     * 以 Override的方法使用！
+     */
+    protected void onMarkerEditButtonClick() {
+
+    }
+
+    protected void onMarkerDirectionButtonClick() {
+
+    }
+
+    protected void onMarkerNavigationButtonClick() {
+
     }
 
     protected ArrayAdapter<String> getSimpleAdapter(ArrayList<String> nameList) {

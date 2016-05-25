@@ -7,9 +7,11 @@ public interface CommonBundle {
 
     // Request Codes
     int REQUEST_PLACE_PICKER = 1;
-    int REQUEST_POI_PHOTO = 10;
-    int REQUEST_POI_PHOTO_M = 11;
+    int REQUEST_PHOTO_FROM_GALLERY = 10;
+    int REQUEST_PHOTO_FROM_CAMERA = 20;
 
-    String MY_POI_INFO = "MyPoiInfo";
+    int REQUEST_RELOAD_MARKER = 30;
 
+    String BUNDLE_MY_POI_INFO = "MyPoiInfo";
+    String BUNDLE_MAP_TO_POI_INFO = "MapToPoiInfo";
 }

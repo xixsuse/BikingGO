@@ -27,6 +27,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.ActionbarMenu;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
+import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.IOException;
@@ -73,6 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
         findViews();
         setListener();
+        FavoriteHelper.checkAndReplaceAllPhotoPathIfNotExists();
         init();
     }
 
@@ -216,7 +218,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     }
 
     protected void setDrawerWidth() {
-        int width = (int) (Utility.getScreenWidth() / 1.8);
+        int width = (int) (Utility.getScreenWidth() / 1.6);
 
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawerView.getLayoutParams();
         params.width = width;
@@ -244,15 +246,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                 goTo(UiMyPoiListActivity.class, false);
                 break;
 
+            case R.id.menu_planning:
+
+                break;
+
             case R.id.menu_poi_book:
 
                 break;
 
-            case R.id.menu_report:
+            case R.id.menu_events:
 
                 break;
 
-            case R.id.menu_favorite:
+            case R.id.menu_report:
 
                 break;
 
@@ -297,6 +303,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i(TAG, "onDestroy!!!");
         WebAgent.stopRetryThread();
     }
 }

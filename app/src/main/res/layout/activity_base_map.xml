@@ -8,9 +8,9 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/mapLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
         <fragment
             android:id="@+id/googleMapFragment"
@@ -44,6 +44,51 @@
                 android:background="@drawable/background_search_text"/>
 
         </FrameLayout>
+        
+        <LinearLayout
+            android:id="@+id/markerBtnLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="@dimen/padding_size_xxl"
+            android:layout_marginBottom="@dimen/padding_size_super"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/markerBtn_edit"
+                android:layout_width="@dimen/icon_common_size_xl"
+                android:layout_height="@dimen/icon_common_size_xl"
+                android:layout_marginRight="@dimen/padding_size_l"
+                android:layout_marginEnd="@dimen/padding_size_l"
+                android:background="@drawable/background_marker_button"
+                android:padding="@dimen/padding_size_s"
+                android:src="@drawable/ic_edit_off"
+                android:scaleType="centerCrop"
+                android:visibility="visible"/>
+
+            <ImageButton
+                android:id="@+id/markerBtn_routePath"
+                android:layout_width="@dimen/icon_common_size_xl"
+                android:layout_height="@dimen/icon_common_size_xl"
+                android:background="@drawable/background_marker_button"
+                android:padding="@dimen/padding_size_s"
+                android:src="@drawable/ic_directions_off"
+                android:scaleType="centerCrop"/>
+
+            <ImageButton
+                android:id="@+id/markerBtn_navigation"
+                android:layout_width="@dimen/icon_common_size_xl"
+                android:layout_height="@dimen/icon_common_size_xl"
+                android:layout_marginLeft="@dimen/padding_size_l"
+                android:layout_marginStart="@dimen/padding_size_l"
+                android:background="@drawable/background_marker_button"
+                android:padding="@dimen/padding_size_s"
+                android:src="@drawable/ic_navigation_off"
+                android:scaleType="centerCrop"/>
+            
+        </LinearLayout>
 
         <ImageView
             android:layout_width="match_parent"

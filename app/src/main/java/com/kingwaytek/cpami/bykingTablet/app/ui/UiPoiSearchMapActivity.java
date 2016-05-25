@@ -1,18 +1,14 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -50,8 +46,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
@@ -65,9 +64,10 @@ import java.util.ArrayList;
  *
  * @author Vincent (2016/4/15).
  */
-public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener {
+public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
+        OnPhotoRemovedCallBack {
 
-    private boolean isFirstTimeLaunch = true;
+    private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
     private Marker lastAroundPoiMarker;
     private Marker selectedMarker;
@@ -81,6 +81,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
     protected void onApiReady() {
         //showRightButtons(true);
         putMarkersAndSetListener();
+        registerPreferenceChangedListener();
         Log.i(TAG, "onApiReady!!!");
     }
 
@@ -117,20 +118,47 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     private void putMarkersAndSetListener() {
         map.setOnMapLongClickListener(this);
-        registerPreferenceChangedListener();
+        map.setOnMarkerClickListener(this);
 
-        if (isFirstTimeLaunch) {
+        if (isFirstTimeRun) {
             if (SettingManager.MarkerFlag.getMyPoiFlag())
                 new PutAllMyPoiMarkers().execute();
 
-            isFirstTimeLaunch = false;
+            isFirstTimeRun = false;
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        selectedMarker = marker;
+
+        if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude))
+            showMarkerButtonLayout(true, true);
+        else
+            showMarkerButtonLayout(true, false);
+
+        return false;
     }
 
     @Override
     public View getInfoWindow(Marker marker) {
         if (notNull(marker.getSnippet())) {
-            View view = getLayoutInflater().inflate(R.layout.inflate_marker_poi_info_window, null);
+            String key = String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude);
+            View view;
+
+            if (markerTypeMap.containsKey(key)) {
+                switch (markerTypeMap.get(key)) {
+                    case R.drawable.ic_my_poi:
+                        view = getPoiInfoWindowView(marker.getPosition());
+                        break;
+
+                    default:
+                        view = getDefaultInfoWindowView();
+                        break;
+                }
+            }
+            else
+                view = getDefaultInfoWindowView();
 
             TextView markerTitle = (TextView) view.findViewById(R.id.marker_title);
             TextView markerSnippet = (TextView) view.findViewById(R.id.marker_snippet);
@@ -152,8 +180,22 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         if (markerTypeMap.containsKey(key)) {
             switch (markerTypeMap.get(key)) {
                 case R.drawable.ic_end:
-                case R.drawable.ic_my_poi:
                     editMyPoi(marker.getPosition(), null);
+                    break;
+
+                case R.drawable.ic_my_poi:
+                    if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude)) {
+                        Intent intent = new Intent(this, UiMyPoiInfoActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(BUNDLE_MY_POI_INFO, FavoriteHelper.getMyPoiItem());
+
+                        intent.putExtras(bundle);
+                        intent.putExtra(BUNDLE_MAP_TO_POI_INFO, true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        startActivityForResult(intent, REQUEST_RELOAD_MARKER);
+                    }
+
                     break;
 
                 case R.drawable.ic_search_result:
@@ -162,6 +204,30 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
                     break;
             }
         }
+    }
+
+    private View getDefaultInfoWindowView() {
+        return getLayoutInflater().inflate(R.layout.inflate_marker_poi_info_window, null);
+    }
+
+    private View getPoiInfoWindowView(LatLng latLng) {
+        View view = getLayoutInflater().inflate(R.layout.inflate_marker_my_poi_wndow, null);
+
+        ImageView markerPoiPhoto = (ImageView) view.findViewById(R.id.marker_poiPhoto);
+
+        String photoPath = "";
+
+        if (FavoriteHelper.isPoiExisted(latLng.latitude, latLng.longitude))
+            photoPath = FavoriteHelper.getMyPoiItem().PHOTO_PATH;
+
+        if (notNull(photoPath) && !photoPath.isEmpty()) {
+            int imgSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
+            markerPoiPhoto.setImageBitmap(Utility.getDecodedBitmap(photoPath, imgSize, imgSize));
+        }
+        else
+            view = getDefaultInfoWindowView();
+
+        return view;
     }
 
     @Override
@@ -214,22 +280,32 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "onActivityResult: " + requestCode + " " + resultCode);
+
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_PLACE_PICKER:
                     Place place = PlacePicker.getPlace(this, data);
-                    putMarkerAndMoveCamera(place);
+                    putMarkerAndMoveCameraByPlace(place);
                     break;
 
-                case REQUEST_POI_PHOTO:
-                case REQUEST_POI_PHOTO_M:
+                case REQUEST_PHOTO_FROM_GALLERY:
+                case REQUEST_PHOTO_FROM_CAMERA:
                     getPhotoPathAndSetImageView(requestCode, data);
+                    break;
+
+                case REQUEST_RELOAD_MARKER:
+                    if (FavoriteHelper.isPoiExisted(selectedMarker.getPosition().latitude, selectedMarker.getPosition().longitude)) {
+                        ItemsMyPOI poiItem = FavoriteHelper.getMyPoiItem();
+                        if (notNull(poiItem))
+                            reloadMarker(poiItem.TITLE, poiItem.DESCRIPTION, false);
+                    }
                     break;
             }
         }
     }
 
-    private void putMarkerAndMoveCamera(Place place) {
+    private void putMarkerAndMoveCameraByPlace(Place place) {
         Utility.toastShort(place.getName().toString());
         moveCameraAndZoom(place.getLatLng(), 17);
 
@@ -328,10 +404,10 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-        putMarker(latLng);
+        putNewMarker(latLng);
     }
 
-    private void putMarker(LatLng latLng) {
+    private void putNewMarker(LatLng latLng) {
         MarkerOptions marker = new MarkerOptions();
         marker.position(latLng);
         marker.title("選擇點位：");
@@ -342,8 +418,15 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
         setMarkerTypeMap(latLng.latitude, latLng.longitude, R.drawable.ic_end);
 
-        map.addMarker(marker).showInfoWindow();
-        moveCameraAndZoom(latLng, 16);
+        Marker newMarker = map.addMarker(marker);
+        newMarker.showInfoWindow();
+
+        if (map.getCameraPosition().zoom < 16)
+            moveCameraAndZoom(latLng, 16);
+        else
+            moveCamera(latLng);
+
+        onMarkerClick(newMarker);
 
         closeInputStream(is);
     }
@@ -366,7 +449,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         String poiLocation = String.valueOf("\n" + latLng.latitude + ",\n" + latLng.longitude);
         poiLatLng.setText(getString(R.string.poi_lat_lng, poiLocation));
 
-        poiImageView.setOnClickListener(getImageClickListener());
+        poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, this));
 
         photoPath = "";
         final boolean isPoiExisted = FavoriteHelper.isPoiExisted(latLng.latitude, latLng.longitude);
@@ -465,11 +548,13 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
             selectedMarker.setTitle(title);
             selectedMarker.setSnippet(snippet);
 
-            InputStream is = getResources().openRawResource(+R.drawable.ic_my_poi);
+            InputStream is = this.getResources().openRawResource(+R.drawable.ic_my_poi);
             Bitmap bitmap = BitmapFactory.decodeStream(is);
 
             selectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
             closeInputStream(is);
+
+            setMarkerTypeMap(selectedMarker.getPosition().latitude, selectedMarker.getPosition().longitude, R.drawable.ic_my_poi);
 
             selectedMarker.showInfoWindow();
 
@@ -480,93 +565,25 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         }
     }
 
-    private View.OnClickListener getImageClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT < 19) {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(intent, REQUEST_POI_PHOTO);
-                }
-                else {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, REQUEST_POI_PHOTO_M);
-                }
-            }
-        };
-    }
-
-    @SuppressWarnings("WrongConstant")
-    @SuppressLint("NewApi")
     private void getPhotoPathAndSetImageView(int requestCode, Intent data) {
-        Uri uri = data.getData();
-
-        photoPath = uri.toString();
-        Log.i(TAG, "ImageContentPath: " + photoPath);
-
-        switch (requestCode) {
-            case REQUEST_POI_PHOTO:
-                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-
-                if (notNull(cursor)) {
-                    cursor.moveToFirst();
-                    int columnIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    photoPath = cursor.getString(columnIndex);
-
-                    Log.i(TAG, "ImageFilePath: " + photoPath);
-                    cursor.close();
-                }
-                else {
-                    photoPath = uri.getPath();
-                    Log.i(TAG, "CursorNull ImagePath: " + photoPath);
-                }
-
-                setPoiImageView(photoPath);
-
-                break;
-
-            case REQUEST_POI_PHOTO_M:
-                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uri, takeFlags);
-
-                Log.i(TAG, "UriLastPathSegment: " + uri.getLastPathSegment());
-                final String id = uri.getLastPathSegment().split(":")[1];
-                final String[] imageColumns = {MediaStore.Images.Media.DATA};
-                final String imageOrderBy = null;
-
-                Uri storageUri = getStorageUri();
-
-                Cursor imageCursor = getContentResolver().query(storageUri, imageColumns, MediaStore.Images.Media._ID + "="+id, null, imageOrderBy);
-
-                if (notNull(imageCursor) && imageCursor.moveToFirst()) {
-                    photoPath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                    Log.i(TAG, "ImageFilePath: " + photoPath);
-
-                    setPoiImageView(photoPath);
-
-                    imageCursor.close();
-                }
-
-                break;
-        }
-    }
-
-    private Uri getStorageUri() {
-        String state = Environment.getExternalStorageState();
-
-        if (state.equalsIgnoreCase(Environment.MEDIA_MOUNTED))
-            return MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        else
-            return MediaStore.Images.Media.INTERNAL_CONTENT_URI;
+        photoPath = ImageSelectHelper.getPhotoPath(this, requestCode, data);
+        setPoiImageView(photoPath);
     }
 
     private void setPoiImageView(String photoPath) {
         int reqSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
         poiImageView.setImageBitmap(Utility.getDecodedBitmap(photoPath, reqSize, reqSize));
+    }
+
+    @Override
+    public void onPhotoRemoved() {
+        photoPath = "";
+        poiImageView.setImageResource(R.drawable.selector_add_photo);
+    }
+
+    @Override
+    protected void onMarkerEditButtonClick() {
+        editMyPoi(selectedMarker.getPosition(), null);
     }
 
     private class PutAllMyPoiMarkers extends AsyncTask<Void, Void, Void> {
@@ -576,10 +593,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
             showLoadingCircle(true);
             removeAllMyPoiMarkers();
 
-            if (notNull(myPoiMarkerList))
-                myPoiMarkerList.clear();
-            else
-                myPoiMarkerList = new ArrayList<>();
+            myPoiMarkerList = new ArrayList<>();
         }
 
         @Override
@@ -618,6 +632,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         @Override
         protected void onPostExecute(Void aVoid) {
             showLoadingCircle(false);
+            checkIntentAndDoActions();
         }
     }
 
@@ -642,6 +657,28 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
                 else
                     removeAllMyPoiMarkers();
                 break;
+        }
+    }
+
+    private void checkIntentAndDoActions() {
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(BUNDLE_MY_POI_INFO)) {
+            ItemsMyPOI poiItem = (ItemsMyPOI) intent.getSerializableExtra(BUNDLE_MY_POI_INFO);
+            moveCameraByPoiItem(poiItem);
+
+            intent.removeExtra(BUNDLE_MY_POI_INFO);
+        }
+    }
+
+    private void moveCameraByPoiItem(ItemsMyPOI poiItem) {
+        for (Marker marker : myPoiMarkerList) {
+            if (marker.getPosition().latitude == poiItem.LAT && marker.getPosition().longitude == poiItem.LNG) {
+                moveCameraAndZoom(marker.getPosition(), 16);
+                marker.showInfoWindow();
+                onMarkerClick(marker);
+                break;
+            }
         }
     }
 }

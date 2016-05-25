@@ -1,0 +1,139 @@
+package com.kingwaytek.cpami.bykingTablet.utilities;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.View;
+
+import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
+
+/**
+ * Intent Actions for selecting images & <br>
+ * Methods of getting photo's file path from URI...
+ *
+ * 以上那些有點雜亂，所以都集中在這裡做！
+ *
+ * @author Vincent (2016/5/24)
+ */
+public class ImageSelectHelper implements CommonBundle {
+
+    private static final String TAG = "ImageSelectHelper";
+
+    private static final int SELECT_PHOTO_BY_CAMERA = 0;
+    private static final int SELECT_PHOTO_BY_GALLERY = 1;
+    private static final int SELECT_PHOTO_REMOVE = 2;
+
+    public static View.OnClickListener getImageClick(final Activity activity, final OnPhotoRemovedCallBack photoRemovedCallBack) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogHelper.showDialogPhotoMenu(activity, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent;
+
+                        switch (which) {
+                            case SELECT_PHOTO_BY_CAMERA:
+                                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                activity.startActivityForResult(intent, REQUEST_PHOTO_FROM_CAMERA);
+
+                                break;
+
+                            case SELECT_PHOTO_BY_GALLERY:
+                                if (Build.VERSION.SDK_INT < 19) {
+                                    intent = new Intent();
+                                    intent.setType("image/*");
+                                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                                }
+                                else {
+                                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                                    intent.setType("image/*");
+                                }
+                                activity.startActivityForResult(intent, REQUEST_PHOTO_FROM_GALLERY);
+
+                                break;
+
+                            case SELECT_PHOTO_REMOVE:
+                                photoRemovedCallBack.onPhotoRemoved();
+                                break;
+                        }
+                    }
+                });
+            }
+        };
+    }
+
+
+    @SuppressWarnings("WrongConstant")
+    @SuppressLint("NewApi")
+    public static String getPhotoPath(Context context, int requestCode, Intent data) {
+        Uri uri = data.getData();
+        Log.i(TAG, "ImageContentPath: " + uri.toString());
+
+        String photoPath = "";
+
+        switch (requestCode) {
+            case REQUEST_PHOTO_FROM_GALLERY:
+            case REQUEST_PHOTO_FROM_CAMERA:
+
+                if (Build.VERSION.SDK_INT < 19 || requestCode == REQUEST_PHOTO_FROM_CAMERA) {
+                    String[] projection = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                        photoPath = cursor.getString(columnIndex);
+
+                        Log.i(TAG, "ImageFilePath: " + photoPath);
+                        cursor.close();
+                    }
+                    if (cursor == null || photoPath == null) {
+                        photoPath = uri.getPath();
+                        Log.i(TAG, "CursorNull ImagePath: " + photoPath);
+                    }
+                }
+                else {
+                    final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    context.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+
+                    Log.i(TAG, "UriLastPathSegment: " + uri.getLastPathSegment());
+                    final String id = uri.getLastPathSegment().split(":")[1];
+                    final String[] imageColumns = {MediaStore.Images.Media.DATA};
+                    final String imageOrderBy = null;
+
+                    Uri storageUri = getStorageUri();
+
+                    Cursor imageCursor = context.getContentResolver().query(storageUri, imageColumns, MediaStore.Images.Media._ID + "="+id, null, imageOrderBy);
+
+                    if (imageCursor != null && imageCursor.moveToFirst()) {
+                        photoPath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                        Log.i(TAG, "ImageFilePath: " + photoPath);
+
+                        imageCursor.close();
+                    }
+                }
+                break;
+        }
+        return photoPath;
+    }
+
+    private static Uri getStorageUri() {
+        String state = Environment.getExternalStorageState();
+
+        if (state.equalsIgnoreCase(Environment.MEDIA_MOUNTED))
+            return MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        else
+            return MediaStore.Images.Media.INTERNAL_CONTENT_URI;
+    }
+}

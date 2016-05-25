@@ -1,10 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +26,11 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.hardware.GPSListener;
 import com.kingwaytek.jni.GPSTagNtvEngine;
 import com.kingwaytek.jni.LocationInfo;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class UICamera extends Activity implements SurfaceHolder.Callback {
 
@@ -115,7 +115,7 @@ public class UICamera extends Activity implements SurfaceHolder.Callback {
 		mBtnCapture.setOnClickListener(onBtnCapture);
 		if (!bEnoughSpace) {
 			mBtnCapture.setTextColor(android.graphics.Color.RED);
-			mBtnCapture.setText("?硃?????????");
+			mBtnCapture.setText("空間不足無法拍照");
 			mBtnCapture.setClickable(false);
 		}
 	}

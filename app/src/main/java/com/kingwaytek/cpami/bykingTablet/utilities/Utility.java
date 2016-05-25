@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.AppController;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -248,8 +249,17 @@ public class Utility {
         }
     }
 
+    public static boolean isFileNotExists(String filePath) {
+        File file = new File(filePath);
+        return !file.exists();
+    }
+
+    // TODO LruCache
     public static Bitmap  getDecodedBitmap(String imgPath, int reqWidth, int reqHeight) {
         Log.i("DecodeBitmap", "reqWidth: " + reqWidth + " reqHeight: " + reqHeight);
+
+        if (isFileNotExists(imgPath))
+            return null;
 
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;			// inJustDecodeBounds = true 時，就可以直接抓出圖片屬性，而不用整張都載入
