@@ -3,8 +3,6 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -141,14 +139,6 @@ public class Utility {
         return actionBarHeight + statusBarHeight;
     }
 
-    public static BitmapFactory.Options getBitmapOptions(int scale) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPurgeable = true;
-        options.inInputShareable = true;
-        options.inSampleSize = scale;
-        return options;
-    }
-
     public static String getShorterHardwareID() {
         String hardwareId;
 
@@ -252,63 +242,5 @@ public class Utility {
     public static boolean isFileNotExists(String filePath) {
         File file = new File(filePath);
         return !file.exists();
-    }
-
-    // TODO LruCache
-    public static Bitmap  getDecodedBitmap(String imgPath, int reqWidth, int reqHeight) {
-        Log.i("DecodeBitmap", "reqWidth: " + reqWidth + " reqHeight: " + reqHeight);
-
-        if (isFileNotExists(imgPath))
-            return null;
-
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;			// inJustDecodeBounds = true 時，就可以直接抓出圖片屬性，而不用整張都載入
-
-        BitmapFactory.decodeFile(imgPath, options);
-
-        options.inSampleSize = getInSampleSize(options, reqWidth, reqHeight);	//藉由 getInSampleSize，指定 inSampleSize 的數值
-
-        int imgWidth = options.outWidth;		//獲得來源 Image 的寬度 長度 & Type
-        int imgHeight = options.outHeight;
-        String imgType = options.outMimeType;	//這一段只是為了把資訊Log出來，其實可以不用寫~
-        Log.i("ImageInfo", imgType + " " + imgWidth + " x " + imgHeight);
-
-        options.inJustDecodeBounds = false;	//屬性抓完了，就可以把 inJustDecodeBounds 給關掉了~
-        Bitmap imageInSampleSize = BitmapFactory.decodeFile(imgPath, options);	//這時後 options 中的數值是已經被重新指定過了喔！
-
-        Log.i("DecodedImage", "SampleSize: " + options.inSampleSize);
-
-        return createScaleBitmap(imageInSampleSize, reqWidth, reqHeight);
-    }
-
-    private static int getInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int width = options.outWidth;			//來源 Image 的寬度&高度~
-        final int height = options.outHeight;
-        int inSampleSize = 1;
-
-        if (width > reqWidth || height > reqHeight)	//如果來源的長寬 大於 Require 的話...
-        {
-            final int halfWidth = width / 2;		//就除一半阿~
-            final int halfHeight = height / 2;
-
-            while ((halfWidth / inSampleSize) > reqWidth && (halfHeight / inSampleSize) > reqHeight) {
-                inSampleSize *= 2;
-            }
-        }
-        return inSampleSize;
-    }
-
-    private static Bitmap createScaleBitmap(Bitmap image, int dstWidth, int dstHeight) {
-        Bitmap scaledImg = Bitmap.createScaledBitmap(image, dstWidth, dstHeight, false);
-        if (image != scaledImg) {
-            image.recycle();
-            Log.i("DecodedImage", "ScaledWidth: " + scaledImg.getWidth() + " ScaledHeight: " + scaledImg.getHeight());
-            return scaledImg;
-        }
-        else {
-            scaledImg.recycle();
-            Log.i("DecodedImage", "Width: " + scaledImg.getWidth() + " Height: " + scaledImg.getHeight());
-            return image;
-        }
     }
 }

@@ -105,9 +105,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:theme="@style/MyNavigationDrawerStyle"
         app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/drawer"
-        app:theme="@style/MyNavigationDrawerStyle" />
+        app:menu="@menu/drawer" />
 
 
 </android.support.v4.widget.DrawerLayout>

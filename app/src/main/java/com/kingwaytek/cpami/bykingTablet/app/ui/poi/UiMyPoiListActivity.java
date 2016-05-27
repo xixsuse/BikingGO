@@ -10,7 +10,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
-import com.kingwaytek.cpami.bykingTablet.app.ui.UiPoiSearchMapActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.MyPoiListAdapter;
 
@@ -57,7 +57,7 @@ public class UiMyPoiListActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ItemsMyPOI poiItem = (ItemsMyPOI) parent.getItemAtPosition(position);
 
-                Intent intent = new Intent(UiMyPoiListActivity.this, UiPoiSearchMapActivity.class);
+                Intent intent = new Intent(UiMyPoiListActivity.this, UiMainMapActivity.class);
                 Bundle bundle = new Bundle();
 
                 bundle.putSerializable(BUNDLE_MY_POI_INFO, poiItem);

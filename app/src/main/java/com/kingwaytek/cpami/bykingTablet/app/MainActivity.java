@@ -21,7 +21,7 @@ import com.kingwaytek.cpami.bykingTablet.app.poi.POIMethodSelection;
 import com.kingwaytek.cpami.bykingTablet.app.poi.SpoiCatalog;
 import com.kingwaytek.cpami.bykingTablet.app.rentInfo.RentInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackListView;
-import com.kingwaytek.cpami.bykingTablet.app.ui.UiPoiSearchMapActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransport;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
@@ -67,7 +67,7 @@ public class MainActivity extends CommunicationBaseActivity {
                     break;
 				case 1:
 					//goToForResult(CitySelection.class, false, ActivityCaller.ADDRESS.getValue());
-                    goTo(UiPoiSearchMapActivity.class, false);
+                    goTo(UiMainMapActivity.class, false);
 					break;
 				case 2:
 					goToForResult(POIMethodSelection.class, true, ActivityCaller.POI.getValue());

@@ -31,7 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_size_m"
             android:textColor="@color/common_title_color"
-            android:textSize="@dimen/font_text_size_m" />
+            android:textSize="@dimen/font_text_size_m"
+            android:maxLength="100" />
 
     </LinearLayout>
 

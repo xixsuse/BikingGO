@@ -10,91 +10,77 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingTop="@dimen/padding_size_super"
-        android:paddingBottom="@dimen/padding_size_s"
-        android:paddingLeft="@dimen/padding_size_l"
-        android:paddingStart="@dimen/padding_size_l"
-        android:paddingRight="@dimen/padding_size_l"
-        android:paddingEnd="@dimen/padding_size_l" >
+        android:paddingTop="@dimen/padding_size_xxl"
+        android:paddingBottom="@dimen/padding_size_s">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_size_m">
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:paddingLeft="@dimen/padding_size_xxl"
+                android:paddingStart="@dimen/padding_size_xxl"
+                android:paddingRight="@dimen/padding_size_xxl"
+                android:paddingEnd="@dimen/padding_size_xxl"
+                android:layout_marginBottom="@dimen/padding_size_l">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_common_size_xl"
+                    android:layout_height="@dimen/icon_common_size_xl"
+                    android:src="@drawable/ic_my_poi"/>
 
                 <LinearLayout
                     android:id="@+id/poiTitleLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/image_poiPhoto"
-                    android:layout_toStartOf="@+id/image_poiPhoto"
-                    android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/padding_size_l"
+                    android:layout_marginStart="@dimen/padding_size_l"
+                    android:orientation="vertical"
                     android:gravity="center_vertical" >
-
-                    <ImageView
-                        android:layout_width="@dimen/icon_common_size_xl"
-                        android:layout_height="@dimen/icon_common_size_xl"
-                        android:src="@drawable/ic_my_poi"/>
 
                     <TextView
                         android:id="@+id/text_poiTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/padding_size_m"
-                        android:layout_marginStart="@dimen/padding_size_m"
-                        android:layout_marginRight="@dimen/padding_size_m"
-                        android:layout_marginEnd="@dimen/padding_size_m"
                         android:textSize="@dimen/font_text_size_l"
                         android:textColor="@color/md_grey_900"/>
 
+                    <TextView
+                        android:id="@+id/text_poiLatLng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/padding_size_m"
+                        android:textSize="@dimen/font_text_size_m"
+                        android:textColor="@color/md_grey_700"
+                        android:text="@string/poi_lat_lng"/>
+
                 </LinearLayout>
 
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/text_poiLatLng"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/poiTitleLayout"
-                    android:layout_toLeftOf="@+id/image_poiPhoto"
-                    android:layout_toStartOf="@+id/image_poiPhoto"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="@dimen/padding_size_xl"
-                    android:paddingLeft="@dimen/padding_size_m"
-                    android:paddingStart="@dimen/padding_size_m"
-                    android:paddingRight="@dimen/padding_size_m"
-                    android:paddingEnd="@dimen/padding_size_m"
-                    android:textSize="@dimen/font_text_size_m"
-                    android:textColor="@color/md_grey_700"
-                    android:text="@string/poi_lat_lng"/>
-
-                <ImageView
-                    android:id="@+id/image_poiPhoto"
-                    android:layout_width="@dimen/poi_photo_edit_view"
-                    android:layout_height="@dimen/poi_photo_edit_view"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:clickable="true"
-                    android:background="@drawable/background_poi_photo"
-                    android:src="@drawable/selector_add_photo"
-                    android:scaleType="center"/>
-
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/image_poiPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/poi_photo_edit_view_xl"
+                android:clickable="true"
+                android:background="@drawable/background_poi_photo"
+                android:src="@drawable/selector_add_photo"
+                android:scaleType="center"/>
 
             <TextView
                 android:id="@+id/text_poiContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/padding_size_m"
-                android:paddingLeft="@dimen/padding_size_l"
-                android:paddingStart="@dimen/padding_size_l"
-                android:paddingRight="@dimen/padding_size_l"
-                android:paddingEnd="@dimen/padding_size_l"
+                android:layout_marginTop="@dimen/padding_size_xl"
+                android:paddingLeft="@dimen/padding_size_xxl"
+                android:paddingStart="@dimen/padding_size_xxl"
+                android:paddingRight="@dimen/padding_size_xxl"
+                android:paddingEnd="@dimen/padding_size_xxl"
                 android:textSize="@dimen/font_text_size_l"
                 android:textColor="@color/md_grey_900"/>
 
@@ -108,8 +94,8 @@
         android:layout_height="match_parent"
         android:layout_weight="5"
         android:gravity="center"
-        android:paddingTop="@dimen/padding_size_xxl"
-        android:paddingBottom="@dimen/padding_size_xl"
+        android:paddingTop="@dimen/padding_size_l"
+        android:paddingBottom="@dimen/padding_size_l"
         android:paddingLeft="@dimen/padding_size_l"
         android:paddingStart="@dimen/padding_size_l"
         android:paddingRight="@dimen/padding_size_l"
@@ -118,7 +104,7 @@
         <ImageButton
             android:id="@+id/btn_poiEdit"
             android:layout_width="@dimen/padding_size_super"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/padding_size_super"
             android:layout_marginRight="@dimen/padding_size_l"
             android:layout_marginEnd="@dimen/padding_size_l"
             android:padding="@dimen/padding_size_s"
@@ -129,7 +115,7 @@
         <ImageButton
             android:id="@+id/btn_poiDelete"
             android:layout_width="@dimen/padding_size_super"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/padding_size_super"
             android:layout_marginRight="@dimen/padding_size_l"
             android:layout_marginEnd="@dimen/padding_size_l"
             android:layout_marginLeft="@dimen/padding_size_l"
@@ -142,11 +128,12 @@
         <ImageButton
             android:id="@+id/btn_facebookShare"
             android:layout_width="@dimen/padding_size_super"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/padding_size_super"
             android:layout_marginLeft="@dimen/padding_size_l"
             android:layout_marginStart="@dimen/padding_size_l"
+            android:padding="@dimen/padding_size_s"
+            android:background="@drawable/background_marker_button"
             android:src="@android:drawable/ic_menu_share"
-            android:background="@drawable/background_common_button"
             android:scaleType="fitCenter"
             android:visibility="visible"/>
 

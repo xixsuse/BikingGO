@@ -23,9 +23,17 @@ public abstract class BaseGoogleApiActivity extends BaseMapActivity implements
 
     protected GoogleApiClient googleApiClient;
 
+    private boolean isMapReady;
+
     @Override
     protected void init() {
         Log.i(TAG, "BaseGoogleApiActivity Init!!!");
+    }
+
+    @Override
+    protected void onMapReady() {
+        isMapReady = true;
+        googleApiClient.connect();
     }
 
     @Override
@@ -47,7 +55,8 @@ public abstract class BaseGoogleApiActivity extends BaseMapActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        googleApiClient.connect();
+        if (isMapReady)
+            googleApiClient.connect();
     }
 
     @Override

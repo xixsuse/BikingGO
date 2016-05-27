@@ -15,8 +15,8 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
-import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.util.ArrayList;
 
@@ -81,7 +81,7 @@ public class MyPoiListAdapter extends BaseAdapter {
         holder.poiPhoto.setOnClickListener(getPhotoClick(position));
 
         if (!poiList.get(position).PHOTO_PATH.isEmpty())
-            holder.poiPhoto.setImageBitmap(Utility.getDecodedBitmap(poiList.get(position).PHOTO_PATH, imageSize, imageSize));
+            holder.poiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmap(poiList.get(position).PHOTO_PATH, imageSize, imageSize));
         else
             holder.poiPhoto.setImageResource(0);
 

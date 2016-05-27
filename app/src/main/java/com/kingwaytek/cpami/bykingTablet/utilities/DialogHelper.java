@@ -113,4 +113,22 @@ public class DialogHelper {
         dialogBuilder.setCancelable(true);
         dialogBuilder.create().show();
     }
+
+    public static void showLocationPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
+        dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setTitle(context.getString(R.string.location_permission_rationale_title));
+        dialogBuilder.setMessage(context.getString(R.string.location_permission_rationale_content));
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setPositiveButton(context.getString(R.string.confirm), positiveClick);
+        dialogBuilder.create().show();
+    }
+
+    public static void showPhotoPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
+        dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setTitle(context.getString(R.string.camera_permission_rationale_title));
+        dialogBuilder.setMessage(context.getString(R.string.camera_permission_rationale_content));
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setPositiveButton(context.getString(R.string.confirm), positiveClick);
+        dialogBuilder.create().show();
+    }
 }

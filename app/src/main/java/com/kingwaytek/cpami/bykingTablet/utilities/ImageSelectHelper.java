@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
+import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
 
 /**
@@ -39,28 +40,13 @@ public class ImageSelectHelper implements CommonBundle {
                 DialogHelper.showDialogPhotoMenu(activity, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent;
-
                         switch (which) {
                             case SELECT_PHOTO_BY_CAMERA:
-                                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                activity.startActivityForResult(intent, REQUEST_PHOTO_FROM_CAMERA);
-
+                                BaseActivity.launchCamera(activity);
                                 break;
 
                             case SELECT_PHOTO_BY_GALLERY:
-                                if (Build.VERSION.SDK_INT < 19) {
-                                    intent = new Intent();
-                                    intent.setType("image/*");
-                                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                                }
-                                else {
-                                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                                    intent.setType("image/*");
-                                }
-                                activity.startActivityForResult(intent, REQUEST_PHOTO_FROM_GALLERY);
-
+                                BaseActivity.launchGallery(activity);
                                 break;
 
                             case SELECT_PHOTO_REMOVE:
@@ -72,7 +58,6 @@ public class ImageSelectHelper implements CommonBundle {
             }
         };
     }
-
 
     @SuppressWarnings("WrongConstant")
     @SuppressLint("NewApi")

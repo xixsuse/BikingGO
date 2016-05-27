@@ -3,6 +3,7 @@ package com.kingwaytek.cpami.bykingTablet.app.ui.poi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
+import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
@@ -117,7 +119,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
         int imageSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
 
         if (!poiItem.PHOTO_PATH.isEmpty())
-            poiPhoto.setImageBitmap(Utility.getDecodedBitmap(poiItem.PHOTO_PATH, imageSize, imageSize));
+            poiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmapInFullWidth(poiItem.PHOTO_PATH));
         else
             poiPhoto.setImageResource(R.drawable.selector_add_photo);
     }
@@ -180,7 +182,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
     private void setPoiImageView(String photoPath) {
         int reqSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
-        poiImageView.setImageBitmap(Utility.getDecodedBitmap(photoPath, reqSize, reqSize));
+        poiImageView.setImageBitmap(BitmapUtility.getDecodedBitmap(photoPath, reqSize, reqSize));
     }
 
     @Override
@@ -218,7 +220,14 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             DialogHelper.showDeleteConfirmDialog(this, poiItem.TITLE, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    FavoriteHelper.removeMyPoi(poiItem.LAT, poiItem.LNG);
+                    if (isFromMap) {
+                        Intent intent = new Intent();
+                        intent.putExtra(BUNDLE_DELETE_POI, new double[]{poiItem.LAT, poiItem.LNG});
+                        setResult(RESULT_DELETE, intent);
+                    }
+                    else
+                        FavoriteHelper.removeMyPoi(poiItem.LAT, poiItem.LNG);
+
                     finish();
                 }
             });
@@ -226,9 +235,23 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (isFromMap)
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                setResult(RESULT_OK);
+                finish();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isFromMap) {
             setResult(RESULT_OK);
+            super.onBackPressed();
+        }
+        else
+            super.onBackPressed();
     }
 }

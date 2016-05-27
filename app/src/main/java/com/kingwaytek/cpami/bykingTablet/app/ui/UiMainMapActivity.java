@@ -48,6 +48,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
+import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
@@ -64,7 +65,7 @@ import java.util.ArrayList;
  *
  * @author Vincent (2016/4/15).
  */
-public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
+public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
         OnPhotoRemovedCallBack {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
@@ -195,7 +196,6 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
                         startActivityForResult(intent, REQUEST_RELOAD_MARKER);
                     }
-
                     break;
 
                 case R.drawable.ic_search_result:
@@ -222,7 +222,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
         if (notNull(photoPath) && !photoPath.isEmpty()) {
             int imgSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
-            markerPoiPhoto.setImageBitmap(Utility.getDecodedBitmap(photoPath, imgSize, imgSize));
+            markerPoiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmap(photoPath, imgSize, imgSize));
         }
         else
             view = getDefaultInfoWindowView();
@@ -300,6 +300,14 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
                         if (notNull(poiItem))
                             reloadMarker(poiItem.TITLE, poiItem.DESCRIPTION, false);
                     }
+                    break;
+            }
+        }
+        else if (resultCode == RESULT_DELETE) {
+            switch (requestCode) {
+                case REQUEST_RELOAD_MARKER:
+                    double[] latLng = data.getDoubleArrayExtra(BUNDLE_DELETE_POI);
+                    removePoiAndMarker(latLng[0], latLng[1]);
                     break;
             }
         }
@@ -517,7 +525,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.showDeleteConfirmDialog(UiPoiSearchMapActivity.this, poiItem.TITLE, new DialogInterface.OnClickListener() {
+                DialogHelper.showDeleteConfirmDialog(UiMainMapActivity.this, poiItem.TITLE, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         removePoiAndMarker(poiItem.LAT, poiItem.LNG);
@@ -538,6 +546,8 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
                 marker.remove();
                 myPoiMarkerList.remove(i);
                 Utility.toastShort(getString(R.string.poi_delete_done));
+
+                showMarkerButtonLayout(false, false);
                 break;
             }
         }
@@ -557,6 +567,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
             setMarkerTypeMap(selectedMarker.getPosition().latitude, selectedMarker.getPosition().longitude, R.drawable.ic_my_poi);
 
             selectedMarker.showInfoWindow();
+            onMarkerClick(selectedMarker);
 
             if (addToList)
                 myPoiMarkerList.add(selectedMarker);
@@ -572,7 +583,7 @@ public class UiPoiSearchMapActivity extends BaseGoogleApiActivity implements Tex
 
     private void setPoiImageView(String photoPath) {
         int reqSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
-        poiImageView.setImageBitmap(Utility.getDecodedBitmap(photoPath, reqSize, reqSize));
+        poiImageView.setImageBitmap(BitmapUtility.getDecodedBitmap(photoPath, reqSize, reqSize));
     }
 
     @Override

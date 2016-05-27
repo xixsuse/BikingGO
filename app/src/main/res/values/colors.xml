@@ -36,6 +36,7 @@
     <color name="transparent_deep_blue">#EF384857</color>
     <color name="transparent_crystal_light">#4F33BEE5</color>
     <color name="transparent_crystal">#3F0092f4</color>
+    <color name="transparent_light_blue">#AF0277BD</color>
 
     <!-- From TYEZgo2.0 -->
     <color name="common_background_color">#F3F3F3</color>

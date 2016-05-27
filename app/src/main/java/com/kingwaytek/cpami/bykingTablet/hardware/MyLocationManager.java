@@ -11,8 +11,6 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.sonavtek.sonav.GPSDATA;
-import com.sonavtek.sonav.MapView;
-import com.sonavtek.sonav.sonav;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -165,8 +163,8 @@ public class MyLocationManager implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-        sonav.getInstance().setgpsvalue(getEngineData(location));
-        sonav.getInstance().setflagpoint(MapView.USER_LOCATION_POINT, location.getLongitude(), location.getLatitude());
+        //sonav.getInstance().setgpsvalue(getEngineData(location));
+        //sonav.getInstance().setflagpoint(MapView.USER_LOCATION_POINT, location.getLongitude(), location.getLatitude());
 
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
             isProviderFromGps = true;

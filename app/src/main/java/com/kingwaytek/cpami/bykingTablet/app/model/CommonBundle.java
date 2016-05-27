@@ -12,6 +12,10 @@ public interface CommonBundle {
 
     int REQUEST_RELOAD_MARKER = 30;
 
+    // Result Code
+    int RESULT_DELETE = -2;
+
     String BUNDLE_MY_POI_INFO = "MyPoiInfo";
     String BUNDLE_MAP_TO_POI_INFO = "MapToPoiInfo";
+    String BUNDLE_DELETE_POI = "DeleteMyPoi";
 }

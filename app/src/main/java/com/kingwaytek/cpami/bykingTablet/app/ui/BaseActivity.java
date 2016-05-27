@@ -1,8 +1,13 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -28,6 +35,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.IOException;
@@ -66,7 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme);
-
+        //setWindowFeatures();
         setContentView(getLayoutId());
 
         setActionBar();
@@ -76,6 +84,14 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         setListener();
         FavoriteHelper.checkAndReplaceAllPhotoPathIfNotExists();
         init();
+    }
+
+    private void setWindowFeatures() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            Window window = getWindow();
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
     }
 
     @Override
@@ -297,6 +313,58 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         }
         catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void launchCamera(Activity activity) {
+        if (PermissionCheckHelper.checkGalleryAndCameraPermissions(activity, PermissionCheckHelper.PERMISSION_REQUEST_CODE_CAMERA)) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            activity.startActivityForResult(intent, REQUEST_PHOTO_FROM_CAMERA);
+        }
+    }
+
+    public static void launchGallery(Activity activity) {
+        if (PermissionCheckHelper.checkGalleryAndCameraPermissions(activity, PermissionCheckHelper.PERMISSION_REQUEST_CODE_GALLERY)) {
+            Intent intent;
+
+            if (Build.VERSION.SDK_INT < 19) {
+                intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+            }
+            else {
+                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+            }
+            activity.startActivityForResult(intent, REQUEST_PHOTO_FROM_GALLERY);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionCheckHelper.PERMISSION_REQUEST_CODE_GALLERY:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                {
+                    launchGallery(this);
+                }
+                else
+                    Utility.toastShort(getString(R.string.camera_permission_denied));
+                break;
+
+            case PermissionCheckHelper.PERMISSION_REQUEST_CODE_CAMERA:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                {
+                    launchCamera(this);
+                }
+                else
+                    Utility.toastShort(getString(R.string.camera_permission_denied));
+                break;
         }
     }
 
