@@ -339,6 +339,11 @@
     <string-array name="dialog_photo_menu">
         <item>@string/dialog_menu_photo_from_camera</item>
         <item>@string/dialog_menu_photo_from_gallery</item>
+    </string-array>
+
+    <string-array name="dialog_photo_menu_has_remove">
+        <item>@string/dialog_menu_photo_from_camera</item>
+        <item>@string/dialog_menu_photo_from_gallery</item>
         <item>@string/dialog_menu_photo_remove</item>
     </string-array>
 

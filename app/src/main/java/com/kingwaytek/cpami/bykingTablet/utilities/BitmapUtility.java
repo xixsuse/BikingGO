@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class BitmapUtility {
 
-    public static Bitmap getDecodedBitmapInFullWidth(String imgPath) {
+    public static Bitmap getDecodedBitmapInFullWidth(String imgPath, int imageViewHeight) {
         if (Utility.isFileNotExists(imgPath))
             return null;
 
@@ -29,7 +29,6 @@ public class BitmapUtility {
         Log.i("DecodeBitmap", "rotation: " + rotation);
 
         int reqWidth = Utility.getScreenWidth();
-        int imageViewHeight = AppController.getInstance().getAppContext().getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view_xl);
         Log.i("DecodeBitmapInFullWidth", "screenWidth: " + reqWidth + " ImageViewHeight: " + imageViewHeight);
 
         final BitmapFactory.Options options = new BitmapFactory.Options();

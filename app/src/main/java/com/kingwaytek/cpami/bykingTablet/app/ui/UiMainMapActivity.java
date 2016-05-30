@@ -225,7 +225,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             markerPoiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmap(photoPath, imgSize, imgSize));
         }
         else
-            view = getDefaultInfoWindowView();
+            markerPoiPhoto.setVisibility(View.GONE);
 
         return view;
     }
@@ -457,8 +457,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         String poiLocation = String.valueOf("\n" + latLng.latitude + ",\n" + latLng.longitude);
         poiLatLng.setText(getString(R.string.poi_lat_lng, poiLocation));
 
-        poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, this));
-
         photoPath = "";
         final boolean isPoiExisted = FavoriteHelper.isPoiExisted(latLng.latitude, latLng.longitude);
 
@@ -519,6 +517,14 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                     setPoiImageView(poiItem.PHOTO_PATH);
             }
         }
+        setImageClickListener();
+    }
+
+    private void setImageClickListener() {
+        if (photoPath == null || photoPath.isEmpty())
+            poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, null));
+        else
+            poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, this));
     }
 
     private View.OnClickListener getDeleteClickListener(final ItemsMyPOI poiItem) {
@@ -579,6 +585,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private void getPhotoPathAndSetImageView(int requestCode, Intent data) {
         photoPath = ImageSelectHelper.getPhotoPath(this, requestCode, data);
         setPoiImageView(photoPath);
+        setImageClickListener();
     }
 
     private void setPoiImageView(String photoPath) {
@@ -590,6 +597,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     public void onPhotoRemoved() {
         photoPath = "";
         poiImageView.setImageResource(R.drawable.selector_add_photo);
+        setImageClickListener();
     }
 
     @Override

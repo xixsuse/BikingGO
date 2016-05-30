@@ -1,47 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/markerInfoWindowLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="@dimen/padding_size_l"
-    android:background="@drawable/float_panel">
+    android:gravity="center_vertical">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginRight="@dimen/padding_size_m"
-        android:layout_marginEnd="@dimen/padding_size_m" >
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/padding_size_xxl"
+        android:layout_marginRight="@dimen/padding_size_xxl"
+        android:paddingTop="@dimen/padding_size_m"
+        android:paddingBottom="@dimen/padding_size_m"
+        android:paddingLeft="@dimen/padding_size_m"
+        android:paddingStart="@dimen/padding_size_m"
+        android:paddingRight="@dimen/padding_size_s"
+        android:paddingEnd="@dimen/padding_size_s"
+        android:background="@drawable/float_panel">
 
-        <TextView
-            android:id="@+id/marker_title"
+        <ImageView
+            android:id="@+id/marker_poiPhoto"
+            android:layout_width="@dimen/poi_photo_edit_view"
+            android:layout_height="@dimen/poi_photo_edit_view"
+            android:layout_weight="0"
+            android:layout_marginRight="@dimen/padding_size_s"
+            android:layout_marginEnd="@dimen/padding_size_s"
+            android:src="@drawable/ic_info"
+            android:visibility="visible"/>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_size_m"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/font_text_size_l" />
+            android:layout_weight="1"
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/marker_snippet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_size_m"
-            android:textColor="@color/common_title_color"
-            android:textSize="@dimen/font_text_size_m"
-            android:maxLength="100" />
+            <TextView
+                android:id="@+id/marker_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_size_m"
+                android:paddingLeft="@dimen/padding_size_s"
+                android:paddingStart="@dimen/padding_size_s"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/md_blue_600"
+                android:textSize="@dimen/font_text_size_l" />
+
+            <TextView
+                android:id="@+id/marker_snippet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:paddingLeft="@dimen/padding_size_s"
+                android:paddingStart="@dimen/padding_size_s"
+                android:paddingBottom="@dimen/padding_size_s"
+                android:textColor="@color/common_title_color"
+                android:textSize="@dimen/font_text_size_m"
+                android:maxLength="25" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size"
+            android:layout_height="@dimen/icon_common_size"
+            android:paddingTop="@dimen/padding_size_m"
+            android:src="@drawable/ic_right_arrow_blue"
+            android:background="@null"
+            android:layout_gravity="bottom"/>
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/marker_poiPhoto"
-        android:layout_width="@dimen/poi_photo_edit_view"
-        android:layout_height="@dimen/poi_photo_edit_view"
-        android:layout_weight="0"
-        android:src="@drawable/ic_info"
-        android:visibility="visible"/>
-
-</LinearLayout>
+</FrameLayout>

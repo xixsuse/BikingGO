@@ -104,8 +104,12 @@ public class DialogHelper {
         });
     }
 
-    public static void showDialogPhotoMenu(Context context, DialogInterface.OnClickListener onClickListener) {
-        String[] items = context.getResources().getStringArray(R.array.dialog_photo_menu);
+    public static void showDialogPhotoMenu(Context context, boolean hasRemoveOption, DialogInterface.OnClickListener onClickListener) {
+        String[] items;
+        if (hasRemoveOption)
+            items = context.getResources().getStringArray(R.array.dialog_photo_menu_has_remove);
+        else
+            items = context.getResources().getStringArray(R.array.dialog_photo_menu);
 
         dialogBuilder = new AlertDialog.Builder(context);
 

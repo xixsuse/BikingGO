@@ -37,7 +37,9 @@ public class ImageSelectHelper implements CommonBundle {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.showDialogPhotoMenu(activity, new DialogInterface.OnClickListener() {
+                boolean hasRemoveOption = photoRemovedCallBack != null;
+
+                DialogHelper.showDialogPhotoMenu(activity, hasRemoveOption, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
@@ -50,7 +52,8 @@ public class ImageSelectHelper implements CommonBundle {
                                 break;
 
                             case SELECT_PHOTO_REMOVE:
-                                photoRemovedCallBack.onPhotoRemoved();
+                                if (photoRemovedCallBack != null)
+                                    photoRemovedCallBack.onPhotoRemoved();
                                 break;
                         }
                     }
@@ -65,13 +68,15 @@ public class ImageSelectHelper implements CommonBundle {
         Uri uri = data.getData();
         Log.i(TAG, "ImageContentPath: " + uri.toString());
 
+        boolean isFromGoogleDrive = uri.toString().contains("com.google.android.apps.docs.storage");
+
         String photoPath = "";
 
         switch (requestCode) {
             case REQUEST_PHOTO_FROM_GALLERY:
             case REQUEST_PHOTO_FROM_CAMERA:
 
-                if (Build.VERSION.SDK_INT < 19 || requestCode == REQUEST_PHOTO_FROM_CAMERA) {
+                if (Build.VERSION.SDK_INT < 19 || requestCode == REQUEST_PHOTO_FROM_CAMERA || isFromGoogleDrive) {
                     String[] projection = {MediaStore.Images.Media.DATA};
                     Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
 

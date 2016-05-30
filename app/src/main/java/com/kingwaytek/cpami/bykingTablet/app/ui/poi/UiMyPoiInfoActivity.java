@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.app.ui.poi;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,8 @@ import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
+
+import java.io.File;
 
 /**
  * My POI Detail Information!!!
@@ -82,7 +85,13 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
         poiPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.showImageViewDialog(UiMyPoiInfoActivity.this, poiItem.TITLE, poiItem.PHOTO_PATH);
+                //DialogHelper.showImageViewDialog(UiMyPoiInfoActivity.this, poiItem.TITLE, poiItem.PHOTO_PATH);
+                if (!poiItem.PHOTO_PATH.isEmpty()) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(new File(poiItem.PHOTO_PATH)), "image/*");
+                    startActivity(intent);
+                }
             }
         });
 
@@ -116,12 +125,16 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
         poiTitle.setText(poiItem.TITLE);
         poiContent.setText(poiItem.DESCRIPTION);
 
-        int imageSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
+        int imageViewHeight = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view_xl);
 
-        if (!poiItem.PHOTO_PATH.isEmpty())
-            poiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmapInFullWidth(poiItem.PHOTO_PATH));
-        else
-            poiPhoto.setImageResource(R.drawable.selector_add_photo);
+        if (!poiItem.PHOTO_PATH.isEmpty()) {
+            poiPhoto.setVisibility(View.VISIBLE);
+            poiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmapInFullWidth(poiItem.PHOTO_PATH, imageViewHeight));
+        }
+        else {
+            poiPhoto.setVisibility(View.GONE);
+            poiPhoto.setImageResource(0);
+        }
     }
 
     private void editMyPoi() {
@@ -150,8 +163,6 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
         if (!poiItem.PHOTO_PATH.isEmpty())
             setPoiImageView(poiItem.PHOTO_PATH);
 
-        poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, this));
-
         poiBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,6 +189,15 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
                 PopWindowHelper.dismissPopWindow();
             }
         });
+
+        setImageClickListener();
+    }
+
+    private void setImageClickListener() {
+        if (photoPath == null || photoPath.isEmpty())
+            poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, null));
+        else
+            poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, this));
     }
 
     private void setPoiImageView(String photoPath) {
@@ -189,6 +209,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
     public void onPhotoRemoved() {
         photoPath = "";
         poiImageView.setImageResource(R.drawable.selector_add_photo);
+        setImageClickListener();
     }
 
     @Override
@@ -208,6 +229,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
     private void getPhotoPathAndSetImageView(int requestCode, Intent data) {
         photoPath = ImageSelectHelper.getPhotoPath(this, requestCode, data);
         setPoiImageView(photoPath);
+        setImageClickListener();
     }
 
     private void resetPoiInfo() {

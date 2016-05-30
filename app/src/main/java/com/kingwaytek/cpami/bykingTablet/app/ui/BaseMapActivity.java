@@ -158,7 +158,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             map.setMyLocationEnabled(true);
             map.setBuildingsEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
-            map.getUiSettings().setMapToolbarEnabled(true);
+            map.getUiSettings().setMapToolbarEnabled(false);
             moveCameraToDefaultLocation();
 
             map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {

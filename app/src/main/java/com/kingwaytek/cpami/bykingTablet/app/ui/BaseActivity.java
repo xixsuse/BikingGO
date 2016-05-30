@@ -209,13 +209,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                actionbar.setIcon(R.drawable.selector_toolbar_back_arrow);
+                //actionbar.setIcon(R.drawable.selector_toolbar_back_arrow);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                actionbar.setIcon(R.drawable.selector_toolbar_list);
+                //actionbar.setIcon(R.drawable.selector_toolbar_list);
             }
         };
         drawer.addDrawerListener(drawerToggle);
