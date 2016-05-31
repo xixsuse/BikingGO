@@ -18,4 +18,15 @@ public interface CommonBundle {
     String BUNDLE_MY_POI_INFO = "MyPoiInfo";
     String BUNDLE_MAP_TO_POI_INFO = "MapToPoiInfo";
     String BUNDLE_DELETE_POI = "DeleteMyPoi";
+
+    // Direction Options
+    String DIR_MODE_DRIVING = "driving";
+    String DIR_MODE_WALKING = "walking";
+    String DIR_MODE_BICYCLING = "bicycling";
+    String DIR_MODE_TRANSIT = "transit";
+
+    String DIR_AVOID_TOLLS = "tolls";
+    String DIR_AVOID_HIGHWAYS = "highways";
+    String DIR_AVOID_FERRIES = "ferries";
+    String DIR_AVOID_INDOOR = "indoor";
 }

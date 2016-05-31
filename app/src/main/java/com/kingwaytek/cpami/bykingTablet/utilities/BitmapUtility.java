@@ -51,7 +51,7 @@ public class BitmapUtility {
             reqWidth = (int) ((double) imgWidth / multiple);
             Log.i("DecodeBitmapInFullWidth", "multiple: " + multiple + " reqWidth: " + reqWidth);
         }
-        else
+        else if (imgWidth < reqWidth)
             reqWidth = imgWidth;
 
         options.inSampleSize = getInSampleSize(options, reqWidth, imageViewHeight);

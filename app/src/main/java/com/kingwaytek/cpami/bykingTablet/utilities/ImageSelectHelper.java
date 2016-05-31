@@ -33,6 +33,9 @@ public class ImageSelectHelper implements CommonBundle {
     private static final int SELECT_PHOTO_BY_GALLERY = 1;
     private static final int SELECT_PHOTO_REMOVE = 2;
 
+    /**
+     * @param photoRemovedCallBack 設為 null 的話可移除 SELECT_PHOTO_REMOVE的選項！
+     */
     public static View.OnClickListener getImageClick(final Activity activity, final OnPhotoRemovedCallBack photoRemovedCallBack) {
         return new View.OnClickListener() {
             @Override

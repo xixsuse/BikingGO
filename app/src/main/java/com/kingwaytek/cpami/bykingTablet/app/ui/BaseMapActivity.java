@@ -158,7 +158,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             map.setMyLocationEnabled(true);
             map.setBuildingsEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
-            map.getUiSettings().setMapToolbarEnabled(false);
+            map.getUiSettings().setMapToolbarEnabled(true);
             moveCameraToDefaultLocation();
 
             map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -303,7 +303,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     }
 
     protected void searchLocation(String query) {
-        LocationSearchHelper.searchLocation(query, new LocationSearchHelper.OnLocationFoundCallBack() {
+        LocationSearchHelper.searchLocation(this, query, new LocationSearchHelper.OnLocationFoundCallBack() {
             @Override
             public void onLocationFound(ArrayList<ItemsSearchResult> searchResults, ArrayList<String> nameList, boolean isSearchByGeocoder) {
                 if (notNull(searchResults.get(0)))
@@ -348,7 +348,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                 markerBtn_edit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onMarkerEditButtonClick();
+                        onMarkerEditClick();
                     }
                 });
             }
@@ -358,14 +358,14 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             markerBtn_direction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onMarkerDirectionButtonClick();
+                    onMarkerDirectionClick();
                 }
             });
 
             markerBtn_navigation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onMarkerNavigationButtonClick();
+                    onMarkerNavigationClick();
                 }
             });
         }
@@ -381,15 +381,15 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
      * 3顆在地圖上出現的 MarkerButton，
      * 以 Override的方法使用！
      */
-    protected void onMarkerEditButtonClick() {
+    protected void onMarkerEditClick() {
 
     }
 
-    protected void onMarkerDirectionButtonClick() {
+    protected void onMarkerDirectionClick() {
 
     }
 
-    protected void onMarkerNavigationButtonClick() {
+    protected void onMarkerNavigationClick() {
 
     }
 

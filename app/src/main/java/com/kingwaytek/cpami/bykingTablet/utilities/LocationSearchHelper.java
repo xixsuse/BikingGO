@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -33,14 +34,14 @@ public class LocationSearchHelper {
         void onNothingFound();
     }
 
-    public static void searchLocation(String input, OnLocationFoundCallBack locationFound) {
+    public static void searchLocation(Context context, String input, OnLocationFoundCallBack locationFound) {
         input = input.trim();
 
         if (input.isEmpty()) {
             Utility.toastShort(AppController.getInstance().getAppContext().getString(R.string.search_any_location));
             return;
         }
-        PopWindowHelper.showLoadingWindow();
+        PopWindowHelper.showLoadingWindow(context);
 
         Geocoder geocoder = new Geocoder(AppController.getInstance().getAppContext());
 

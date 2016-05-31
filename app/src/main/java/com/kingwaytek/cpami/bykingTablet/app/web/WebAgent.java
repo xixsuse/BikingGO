@@ -11,11 +11,13 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.ApiUrls;
 import com.kingwaytek.cpami.bykingTablet.utilities.DebugHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 
 /**
  * 網路活動的方法都應該要集中在這裡，<br>
@@ -33,7 +35,7 @@ public class WebAgent {
     private static boolean needRetry;
     private static int retryCount;
 
-    private final static int CONNECT_TIME_OUT_MS  = 30 * 1000 ;
+    private final static int CONNECT_TIME_OUT_MS  = 20 * 1000 ;
 
     public interface WebResultImplement {
         void onResultSucceed(String response);
@@ -142,5 +144,32 @@ public class WebAgent {
             commonRequest.cancel();
             commonRequest = null;
         }
+    }
+
+    public static void getDirectionsData(final String origin, final String destination, final String mode, final String avoid, final WebResultImplement webResult) {
+        String apiUrl = MessageFormat.format(ApiUrls.API_GOOGLE_DIRECTION, origin, destination, mode, avoid,
+                Utility.getLocaleLanguage(), AppController.getInstance().getAppContext().getString(R.string.GoogleDirectionKey));
+        Log.i(TAG, "GoogleDirectionAPi: " + apiUrl);
+
+        StringRequest directionRequest = new StringRequest(apiUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                webResult.onResultSucceed(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                webResult.onResultFail("ConnectionError, " + error.getMessage());
+                PopWindowHelper.dismissPopWindow();
+            }
+        });
+
+        directionRequest.setRetryPolicy(new DefaultRetryPolicy(
+                CONNECT_TIME_OUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        AppController.getInstance().getRequestQueue().add(directionRequest);
     }
 }

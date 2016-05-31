@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,13 +22,24 @@ public class PopWindowHelper {
 
     private static LayoutInflater inflater;
     private static PopupWindow popWindow;
+    private static ProgressDialog loading;
 
     private static Context appContext() {
         return AppController.getInstance().getAppContext();
     }
 
-    public static void showLoadingWindow() {
-        inflater = LayoutInflater.from(appContext());
+    public static void showLoading(Context context) {
+        loading = new ProgressDialog(context);
+        loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        loading.show();
+    }
+
+    public static void dismissLoading() {
+        loading.dismiss();
+    }
+
+    public static void showLoadingWindow(Context context) {
+        inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.popup_loading_window, null);
 
         double popWidth = Utility.getScreenWidth() / 2;

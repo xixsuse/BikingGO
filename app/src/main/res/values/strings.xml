@@ -271,6 +271,7 @@
 
     <!-- API KEYs -->
     <string name="GoogleMapApiKey">AIzaSyC8GOjYAXr5v7ifZz_4mVplHWw7q9O1iaE</string>
+    <string name="GoogleDirectionKey">AIzaSyCxt5BPrkBVu3QmDR3Ktu5VmLixexKsOss</string>
 
     <string name="keyword_search">請輸入關鍵字</string>
     <string name="share_facebook">Facebook Sharing</string>
@@ -313,6 +314,7 @@
 
     <string name="actionbar_switch_button">圖層開關</string>
     <string name="actionbar_around_button">附近景點</string>
+    <string name="actionbar_add_poi">新增景點</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -328,6 +330,7 @@
     <string name="poi_delete_done">景點刪除完成</string>
     <string name="poi_empty">尚未新增任何景點！</string>
     <string name="poi_confirm_to_delete">是否確認刪除「%s」?</string>
+    <string name="poi_add_a_new_one_instruction">可從附近景點、地點搜尋或在地圖上長按新增點位來新增景點。</string>
 
     <string name="dialog_menu_photo_from_camera">相機</string>
     <string name="dialog_menu_photo_from_gallery">從相簿選擇</string>

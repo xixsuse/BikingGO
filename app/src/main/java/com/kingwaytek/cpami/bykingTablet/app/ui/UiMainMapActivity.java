@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -43,15 +44,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
+import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
+import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
+import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
@@ -72,6 +79,9 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private Marker lastAroundPoiMarker;
     private Marker selectedMarker;
+
+    private Marker myPositionMarker;
+    private Polyline polyLine;
 
     private ArrayList<Marker> myPoiMarkerList;
 
@@ -601,7 +611,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     @Override
-    protected void onMarkerEditButtonClick() {
+    protected void onMarkerEditClick() {
         editMyPoi(selectedMarker.getPosition(), null);
     }
 
@@ -698,6 +708,86 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 onMarkerClick(marker);
                 break;
             }
+        }
+    }
+
+    @Override
+    protected void onMarkerDirectionClick() {
+        startDirection();
+    }
+
+    private void startDirection() {
+        Location location = MyLocationManager.getLastLocation();
+        if (location == null) {
+            Utility.toastShort(getString(R.string.gps_unable_to_get_location));
+            return;
+        }
+
+        PopWindowHelper.showLoading(this);
+
+        String origin = location.getLatitude() + "," + location.getLongitude();
+        String destination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
+
+        String avoidOption = getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS);
+
+        WebAgent.getDirectionsData(origin, destination, DIR_MODE_DRIVING, avoidOption, new WebAgent.WebResultImplement() {
+            @Override
+            public void onResultSucceed(String response) {
+                getPolyLineAndDrawLine(response);
+                PopWindowHelper.dismissLoading();
+            }
+
+            @Override
+            public void onResultFail(String errorMessage) {
+                Utility.toastShort(errorMessage);
+            }
+        });
+    }
+
+    private String getAvoidOptions(String... avoidOptions) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < avoidOptions.length; i++) {
+            if (i != 0)
+                sb.append("|");
+            sb.append(avoidOptions[i]);
+        }
+        return sb.toString();
+    }
+
+    private void getPolyLineAndDrawLine(String jsonString) {
+        String polyOverview = JsonParser.getPolyLineOverview(jsonString);
+
+        if (notNull(polyOverview)) {
+            ArrayList<LatLng> linePoints = PolyHelper.decodePolyLine(polyOverview);
+
+            PolylineOptions polyOptions = new PolylineOptions();
+
+            for (LatLng latLng : linePoints) {
+                polyOptions.add(latLng);
+            }
+            polyOptions.color(ContextCompat.getColor(this, R.color.md_blue_600));
+            polyOptions.width(14);
+
+            if (notNull(myPositionMarker))
+                myPositionMarker.remove();
+
+            if (notNull(polyLine))
+                polyLine.remove();
+
+            MarkerOptions marker = new MarkerOptions();
+            marker.position(linePoints.get(0));
+
+            InputStream is = getResources().openRawResource(+ R.drawable.ic_start);
+            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+
+            myPositionMarker = map.addMarker(marker);
+            polyLine = map.addPolyline(polyOptions);
+
+            PopWindowHelper.dismissPopWindow();
+            moveCamera(linePoints.get(0));
+
+            closeInputStream(is);
         }
     }
 }

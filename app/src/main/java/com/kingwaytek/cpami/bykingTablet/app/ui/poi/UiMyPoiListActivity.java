@@ -2,6 +2,8 @@ package com.kingwaytek.cpami.bykingTablet.app.ui.poi;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -11,7 +13,9 @@ import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.MyPoiListAdapter;
 
 /**
@@ -78,5 +82,25 @@ public class UiMyPoiListActivity extends BaseActivity {
         }
         else
             poiListAdapter.refreshList(DataArray.getMyPOI());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_ADD);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case ACTION_ADD:
+                Utility.toastLong(getString(R.string.poi_add_a_new_one_instruction));
+                goTo(UiMainMapActivity.class, true);
+                break;
+        }
+
+        return true;
     }
 }

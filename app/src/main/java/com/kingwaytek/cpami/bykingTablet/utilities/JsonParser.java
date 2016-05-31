@@ -1,5 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
+import android.util.Log;
+
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.ItemsSearchResult;
@@ -96,11 +98,40 @@ public class JsonParser {
 
                 myPoiList.add(new ItemsMyPOI(title, desc, Double.parseDouble(lat), Double.parseDouble(lng), photoPath));
             }
+            releaseObjects();
             return myPoiList;
         }
         catch(JSONException e) {
             e.printStackTrace();
+            releaseObjects();
             return null;
         }
+    }
+
+    public static String getPolyLineOverview(String jsonString) {
+        try {
+            JO = new JSONObject(jsonString);
+            JA = JO.getJSONArray("routes");
+            String status = JO.getString("status");
+
+            if (status.equals("OK")) {
+                String polyLine = JA.getJSONObject(0).getJSONObject("overview_polyline").getString("points");
+
+                if (!polyLine.isEmpty()) {
+                    releaseObjects();
+                    return polyLine;
+                }
+            }
+            else if (status.equals("REQUEST_DENIED")) {
+                Utility.toastLong(JO.getString("error_message"));
+                Log.e(TAG, JO.getString("error_message"));
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            Log.i(TAG, "getPolyLineError!! " + e.getMessage());
+        }
+        releaseObjects();
+        return null;
     }
 }
