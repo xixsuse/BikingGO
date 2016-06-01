@@ -58,7 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     protected abstract void setListener();
 
     private ActionBar actionbar;
-    private static View actionbarView;
+    private static View windowView;
 
     protected DrawerLayout drawer;
     protected ActionBarDrawerToggle drawerToggle;
@@ -118,7 +118,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             TextView title = (TextView) actionbar.getCustomView().findViewById(R.id.actionBar_title);
             title.setText(getActionBarTitle());
 
-            actionbarView = actionbar.getCustomView();
             showActionbar(true);
         }
     }
@@ -157,9 +156,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         return true;
     }
 
-    public static View getActionbarView() {
-        if (notNull(actionbarView))
-            return actionbarView;
+    public static View getWindowView() {
+        if (notNull(windowView))
+            return windowView;
         return null;
     }
 
@@ -182,10 +181,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     }
 
     private void findActionbarWidgetViewAndSetListener() {
-        loadingCircle = (ProgressBar) actionbarView.findViewById(R.id.loadingCircle);
-        //actionbar_menuBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_menuButton);
-        //actionbar_aroundBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_aroundButton);
-        //actionbar_switchBtn = (ImageButton) actionbarView.findViewById(R.id.actionBar_switchButton);
+        loadingCircle = (ProgressBar) actionbar.getCustomView().findViewById(R.id.loadingCircle);
+        //actionbar_menuBtn = (ImageButton) actionbar.getCustomView().findViewById(R.id.actionBar_menuButton);
+        //actionbar_aroundBtn = (ImageButton) actionbar.getCustomView().findViewById(R.id.actionBar_aroundButton);
+        //actionbar_switchBtn = (ImageButton) actionbar.getCustomView().findViewById(R.id.actionBar_switchButton);
+
+        if (windowView == null)
+            windowView = getWindow().getDecorView();
     }
 
     protected void setMenuButtonIcon(int iconRes) {

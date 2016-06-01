@@ -8,7 +8,7 @@ import android.util.Log;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
-import com.kingwaytek.cpami.bykingTablet.app.model.ItemsSearchResult;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 
 import java.io.IOException;
 import java.util.ArrayList;

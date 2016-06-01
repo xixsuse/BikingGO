@@ -48,7 +48,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
-import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
@@ -77,6 +77,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
+    private Marker myNewMarker;
     private Marker lastAroundPoiMarker;
     private Marker selectedMarker;
 
@@ -436,15 +437,18 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         setMarkerTypeMap(latLng.latitude, latLng.longitude, R.drawable.ic_end);
 
-        Marker newMarker = map.addMarker(marker);
-        newMarker.showInfoWindow();
+        if (notNull(myNewMarker))
+            myNewMarker.remove();
+
+        myNewMarker = map.addMarker(marker);
+        myNewMarker.showInfoWindow();
 
         if (map.getCameraPosition().zoom < 16)
             moveCameraAndZoom(latLng, 16);
         else
             moveCamera(latLng);
 
-        onMarkerClick(newMarker);
+        onMarkerClick(myNewMarker);
 
         closeInputStream(is);
     }
@@ -723,7 +727,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             return;
         }
 
-        PopWindowHelper.showLoading(this);
+        PopWindowHelper.showLoadingWindow(this);
 
         String origin = location.getLatitude() + "," + location.getLongitude();
         String destination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
@@ -734,7 +738,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             @Override
             public void onResultSucceed(String response) {
                 getPolyLineAndDrawLine(response);
-                PopWindowHelper.dismissLoading();
+                PopWindowHelper.dismissPopWindow();
             }
 
             @Override

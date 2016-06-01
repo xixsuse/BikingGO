@@ -1,6 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -22,20 +21,9 @@ public class PopWindowHelper {
 
     private static LayoutInflater inflater;
     private static PopupWindow popWindow;
-    private static ProgressDialog loading;
 
     private static Context appContext() {
         return AppController.getInstance().getAppContext();
-    }
-
-    public static void showLoading(Context context) {
-        loading = new ProgressDialog(context);
-        loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        loading.show();
-    }
-
-    public static void dismissLoading() {
-        loading.dismiss();
     }
 
     public static void showLoadingWindow(Context context) {
@@ -49,11 +37,11 @@ public class PopWindowHelper {
 
         setPopWindowCancelable(false);
 
-        double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
-        double yPos = Utility.getScreenHeight() / 2 - popWidth;
+        //double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
+        //double yPos = Utility.getScreenHeight() / 2 - popWidth;
 
-        if (BaseActivity.getActionbarView() != null)
-            popWindow.showAsDropDown(BaseActivity.getActionbarView(), (int) xPos, (int) yPos);
+        if (BaseActivity.getWindowView() != null)
+            popWindow.showAtLocation(BaseActivity.getWindowView(), Gravity.CENTER, 0, 0);
     }
 
     public static View getPoiEditWindowView(Context context, View anchorView) {

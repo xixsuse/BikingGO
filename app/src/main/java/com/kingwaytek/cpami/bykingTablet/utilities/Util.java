@@ -1,6 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.app.Activity;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -10,8 +11,13 @@ import com.kingwaytek.cpami.bykingTablet.app.CityObject;
 import com.kingwaytek.cpami.bykingTablet.data.ICity;
 import com.sonavtek.sonav.sonav;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,6 +30,8 @@ public class Util {
 	private static String citySortName[] = { "台北市", "新北市", "宜蘭縣", "基隆市", "桃園縣", "新竹縣", "新竹市", "苗栗縣", "台中市", "彰化縣",
 			"南投縣", "雲林縣", "金門縣" };
 	public static ArrayList<CityObject> city_sort;
+
+    private static String sdPath = Environment.getExternalStorageDirectory().getPath();
 
 	public static void getSortPOICity() {
 		sonav engine = sonav.getInstance();
@@ -113,5 +121,52 @@ public class Util {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void writePlanFile(String jsonString) {
+        File planFile = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_my_plan));
+
+        try {
+            if (!planFile.exists())
+                planFile.createNewFile();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(planFile, false));
+            writer.write(jsonString);
+            writer.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readPlanFile() {
+        File planFile = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_my_plan));
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(planFile));
+
+            StringBuilder sb = new StringBuilder();
+            String eachLine;
+
+            while ((eachLine = reader.readLine()) != null) {
+                sb.append(eachLine);
+            }
+            reader.close();
+
+            return sb.toString();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Utility.toastShort("Plan File is Not Exists!");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static boolean isPlanFileNotExistOrEmpty() {
+        File planFile = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_my_plan));
+        return !planFile.exists() || planFile.length() == 0;
     }
 }

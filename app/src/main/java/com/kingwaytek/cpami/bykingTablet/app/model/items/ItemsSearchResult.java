@@ -1,4 +1,4 @@
-package com.kingwaytek.cpami.bykingTablet.app.model;
+package com.kingwaytek.cpami.bykingTablet.app.model.items;
 
 /**
  * Created by Brack on 2016/1/24.

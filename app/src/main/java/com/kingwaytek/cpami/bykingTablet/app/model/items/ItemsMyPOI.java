@@ -1,4 +1,4 @@
-package com.kingwaytek.cpami.bykingTablet.app.model;
+package com.kingwaytek.cpami.bykingTablet.app.model.items;
 
 import java.io.Serializable;
 

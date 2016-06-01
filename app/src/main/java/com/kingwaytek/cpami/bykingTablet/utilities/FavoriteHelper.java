@@ -2,7 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.util.Log;
 
-import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * 用 json的格式記錄我的最愛 or 我的景點，
- * 然後用 sharedPreferences來儲存！
+ * 用 json的格式記錄我的景點 or 行程規劃，
+ * 然後用 sharedPreferences或寫檔案來儲存！
  *
  * @author Vincent (2016/5/12)
  */
@@ -21,6 +21,7 @@ public class FavoriteHelper {
     private static final String TAG = "FavoriteHelper";
 
     private static JSONArray JA_POI;
+    private static JSONArray JA_PLAN;
 
     public static final String POI_TITLE = "title";
     public static final String POI_DESCRIPTION = "description";
@@ -185,4 +186,6 @@ public class FavoriteHelper {
             e.printStackTrace();
         }
     }
+
+
 }

@@ -336,8 +336,15 @@
     <string name="dialog_menu_photo_from_gallery">從相簿選擇</string>
     <string name="dialog_menu_photo_remove">移除照片</string>
 
+    <!-- 行程規劃 -->
+    <string name="plan_title">行程主題</string>
+    <string name="plan_start_planning">開始規劃</string>
+
     <!-- Marker switch window -->
     <string name="marker_my_poi">我的景點</string>
+
+    <!-- File Storage -->
+    <string name="file_path_my_plan">_BikingData/plans.json</string>
 
     <string-array name="dialog_photo_menu">
         <item>@string/dialog_menu_photo_from_camera</item>

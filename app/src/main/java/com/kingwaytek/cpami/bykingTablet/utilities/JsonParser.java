@@ -3,8 +3,8 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
-import com.kingwaytek.cpami.bykingTablet.app.model.ItemsMyPOI;
-import com.kingwaytek.cpami.bykingTablet.app.model.ItemsSearchResult;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;

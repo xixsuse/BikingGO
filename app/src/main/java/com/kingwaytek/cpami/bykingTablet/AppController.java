@@ -74,7 +74,6 @@ public class AppController extends Application {
         return imageLoader;
     }
 
-
     private Thread.UncaughtExceptionHandler getExceptionHandler(Tracker tracker) {
         MyExceptionHandler myExceptionHandler = new MyExceptionHandler(Thread.getDefaultUncaughtExceptionHandler());
         return new ExceptionReporter(tracker, myExceptionHandler, this);
