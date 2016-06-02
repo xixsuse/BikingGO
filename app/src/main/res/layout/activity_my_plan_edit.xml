@@ -9,40 +9,57 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="@dimen/padding_size_l">
+        android:orientation="vertical"
+        android:animateLayoutChanges="true" >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/padding_size_m"
-            android:layout_marginEnd="@dimen/padding_size_m"
-            android:text="@string/plan_title"
-            android:textSize="@dimen/font_text_size_m"
-            android:textColor="@color/md_grey_800"/>
-
-        <EditText
-            android:id="@+id/edit_planTitle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/font_text_size_m"
-            android:textColor="@color/black"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_size_l">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/padding_size_m"
+                android:layout_marginEnd="@dimen/padding_size_m"
+                android:text="@string/plan_title"
+                android:textSize="@dimen/font_text_size_m"
+                android:textColor="@color/md_grey_800"/>
+
+            <EditText
+                android:id="@+id/edit_planTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_text_size_m"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <com.kingwaytek.api.widget.dslv.DragSortListView
+            android:id="@+id/dragListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:dividerHeight="0dp"
+            android:divider="@null"
+            dslv:click_remove_id="@id/drag_click_remove"
+            dslv:drag_handle_id="@id/drag_handle"
+            dslv:remove_enabled="true"
+            dslv:remove_mode="flingRemove"
+            dslv:float_alpha="0.6" />
+
+        <ImageButton
+            android:id="@+id/planAddButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/actionbar_height_higher"
+            android:layout_weight="0"
+            android:layout_marginTop="@dimen/padding_size_m"
+            android:src="@drawable/selector_toolbar_add"
+            android:scaleType="fitCenter"
+            android:background="@drawable/background_poi_photo"/>
 
     </LinearLayout>
-
-    <com.kingwaytek.api.widget.dslv.DragSortListView
-        dslv:drag_handle_id="@id/drag_handle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <ImageButton
-        android:id="@+id/planAddButton"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/actionbar_height_higher"
-        android:layout_marginTop="@dimen/padding_size_l"
-        android:src="@drawable/selector_toolbar_add"
-        android:scaleType="fitCenter"
-        android:background="@drawable/background_poi_photo"/>
 
 </LinearLayout>

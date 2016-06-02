@@ -2,22 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:paddingLeft="@dimen/padding_size_l"
               android:paddingStart="@dimen/padding_size_l"
-              android:paddingRight="@dimen/padding_size_l"
-              android:paddingEnd="@dimen/padding_size_l" >
+              android:paddingRight="@dimen/padding_size_m"
+              android:paddingEnd="@dimen/padding_size_m"
+              android:gravity="center_vertical">
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
+
+        <View
+            android:id="@+id/planNumberLine_up"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/md_light_blue_800"
+            android:visibility="visible"/>
 
         <TextView
             android:id="@+id/text_planNumber"
             android:layout_width="@dimen/icon_common_size"
             android:layout_height="@dimen/icon_common_size"
+            android:layout_weight="0"
             android:gravity="center"
             android:background="@drawable/background_plan_order_number"
             android:text="1"
@@ -26,44 +36,61 @@
             android:textStyle="bold" />
 
         <View
-            android:id="@+id/planNumberLine"
+            android:id="@+id/planNumberLine_down"
             android:layout_width="2dp"
-            android:layout_height="@dimen/actionbar_item_height"
-            android:background="@color/md_light_blue_800"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/md_light_blue_800"
+            android:visibility="visible"/>
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
         android:layout_marginLeft="@dimen/padding_size_l"
         android:layout_marginStart="@dimen/padding_size_l"
-        android:background="@drawable/background_search_text">
+        android:layout_marginTop="@dimen/padding_size_l"
+        android:layout_marginBottom="@dimen/padding_size_l"
+        android:padding="@dimen/padding_size_s"
+        android:background="@drawable/background_plan_edit_row">
 
         <ImageView
-            android:id="@+id/icon_dragSort"
+            android:id="@id/drag_handle"
             android:layout_width="@dimen/icon_common_size"
             android:layout_height="@dimen/icon_common_size"
-            android:src="@drawable/ic_drag_sort"/>
+            android:src="@drawable/ic_drag_sort"
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:id="@+id/text_planSelectedName"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/icon_common_size"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/drag_handle"
+            android:layout_toStartOf="@+id/drag_handle"
+            android:layout_toLeftOf="@+id/drag_click_remove"
+            android:layout_toEndOf="@+id/drag_click_remove"
             android:layout_marginLeft="@dimen/padding_size_m"
             android:layout_marginStart="@dimen/padding_size_m"
-            android:paddingLeft="@dimen/padding_size_m"
-            android:paddingStart="@dimen/padding_size_m"
-            android:paddingRight="@dimen/padding_size_m"
-            android:paddingEnd="@dimen/padding_size_m"
+            android:padding="@dimen/padding_size_m"
             android:gravity="center_vertical"
-            android:text="000000000000"
+            android:clickable="true"
             android:textSize="@dimen/font_text_size_m"
             android:textColor="@color/md_grey_900"
             android:background="@drawable/selector_plan_text"/>
 
-    </LinearLayout>
+        <ImageButton
+            android:id="@id/drag_click_remove"
+            android:layout_width="@dimen/icon_common_size"
+            android:layout_height="@dimen/icon_common_size"
+            android:layout_marginLeft="@dimen/padding_size_m"
+            android:layout_marginStart="@dimen/padding_size_m"
+            android:src="@android:drawable/ic_delete"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
 
 </LinearLayout>

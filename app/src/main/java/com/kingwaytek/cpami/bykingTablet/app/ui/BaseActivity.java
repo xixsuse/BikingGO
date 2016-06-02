@@ -32,6 +32,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.model.ActionbarMenu;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
+import com.kingwaytek.cpami.bykingTablet.app.ui.planning.UiMyPlanListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
@@ -265,7 +266,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                 break;
 
             case R.id.menu_planning:
-
+                goTo(UiMyPlanListActivity.class, false);
                 break;
 
             case R.id.menu_poi_book:

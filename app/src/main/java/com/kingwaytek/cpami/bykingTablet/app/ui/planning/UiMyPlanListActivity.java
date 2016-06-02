@@ -12,7 +12,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
  */
 public class UiMyPlanListActivity extends BaseActivity {
 
-    
+
 
     @Override
     protected void init() {
@@ -48,6 +48,12 @@ public class UiMyPlanListActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case ACTION_ADD:
+                goTo(UiMyPlanEditActivity.class, true);
+                break;
+        }
 
         return true;
     }

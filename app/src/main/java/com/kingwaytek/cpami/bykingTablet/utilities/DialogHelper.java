@@ -118,6 +118,16 @@ public class DialogHelper {
         dialogBuilder.create().show();
     }
 
+    public static void showLocationSelectMenu(Context context, DialogInterface.OnClickListener onClickListener) {
+        String[] items = context.getResources().getStringArray(R.array.location_select_array);
+
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        dialogBuilder.setItems(items, onClickListener);
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.create().show();
+    }
+
     public static void showLocationPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
         dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setTitle(context.getString(R.string.location_permission_rationale_title));

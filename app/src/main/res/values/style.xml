@@ -9,7 +9,19 @@
         <item name="android:actionMenuTextColor">@color/md_grey_50</item>
         <item name="android:editTextStyle">@style/MyEditTextStyle</item>
         <!--
-        <item name="android:windowBackground">@color/md_grey_50</item>
+        <item name="android:windowBackground">@color/md_blue_grey_50</item>
+        <item name="android:textViewStyle">@style/MyTextViewStyle</item>
+        -->
+    </style>
+
+    <style name="AppTheme_light" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/actionbar_background_color</item>
+        <item name="colorPrimaryDark">@color/actionbar_background_color</item>
+        <item name="android:textColorPrimary">@color/md_grey_50</item>
+        <item name="actionBarStyle">@style/MyActionBarStyle</item>
+        <item name="android:actionMenuTextColor">@color/md_grey_50</item>
+        <item name="android:windowBackground">@color/md_blue_grey_50</item>
+        <!--
         <item name="android:textViewStyle">@style/MyTextViewStyle</item>
         -->
     </style>

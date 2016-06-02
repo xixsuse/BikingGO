@@ -51,6 +51,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnLocationSelectedCallBack;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
@@ -75,6 +76,9 @@ import java.util.ArrayList;
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
         OnPhotoRemovedCallBack {
 
+    private int ENTRY_TYPE;
+    private OnLocationSelectedCallBack locationSelectedCallBack;
+
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
     private Marker myNewMarker;
@@ -92,6 +96,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     @Override
     protected void onApiReady() {
         //showRightButtons(true);
+        getEntryTypeAndInterface();
         putMarkersAndSetListener();
         registerPreferenceChangedListener();
         Log.i(TAG, "onApiReady!!!");
@@ -126,6 +131,12 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         super.onDestroy();
         searchText.removeTextChangedListener(this);
         map.setOnMapLongClickListener(null);
+    }
+
+    private void getEntryTypeAndInterface() {
+        ENTRY_TYPE = getIntent().getIntExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_DEFAULT);
+        if (ENTRY_TYPE == ENTRY_TYPE_LOCATION_SELECT)
+            locationSelectedCallBack = (OnLocationSelectedCallBack) getIntent().getSerializableExtra(BUNDLE_LOCATION_SELECT);
     }
 
     private void putMarkersAndSetListener() {
@@ -186,34 +197,43 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        selectedMarker = marker;
-        String key = String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude);
+        switch (ENTRY_TYPE) {
+            case ENTRY_TYPE_DEFAULT:
+                selectedMarker = marker;
+                String key = String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude);
 
-        if (markerTypeMap.containsKey(key)) {
-            switch (markerTypeMap.get(key)) {
-                case R.drawable.ic_end:
-                    editMyPoi(marker.getPosition(), null);
-                    break;
+                if (markerTypeMap.containsKey(key)) {
+                    switch (markerTypeMap.get(key)) {
+                        case R.drawable.ic_end:
+                            editMyPoi(marker.getPosition(), null);
+                            break;
 
-                case R.drawable.ic_my_poi:
-                    if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude)) {
-                        Intent intent = new Intent(this, UiMyPoiInfoActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(BUNDLE_MY_POI_INFO, FavoriteHelper.getMyPoiItem());
+                        case R.drawable.ic_my_poi:
+                            if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude)) {
+                                Intent intent = new Intent(this, UiMyPoiInfoActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable(BUNDLE_MY_POI_INFO, FavoriteHelper.getMyPoiItem());
 
-                        intent.putExtras(bundle);
-                        intent.putExtra(BUNDLE_MAP_TO_POI_INFO, true);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtras(bundle);
+                                intent.putExtra(BUNDLE_MAP_TO_POI_INFO, true);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                        startActivityForResult(intent, REQUEST_RELOAD_MARKER);
+                                startActivityForResult(intent, REQUEST_RELOAD_MARKER);
+                            }
+                            break;
+
+                        case R.drawable.ic_search_result:
+                        case R.drawable.ic_around_poi:
+                            editMyPoi(marker.getPosition(), marker.getTitle());
+                            break;
                     }
-                    break;
+                }
+                break;
 
-                case R.drawable.ic_search_result:
-                case R.drawable.ic_around_poi:
-                    editMyPoi(marker.getPosition(), marker.getTitle());
-                    break;
-            }
+            case ENTRY_TYPE_LOCATION_SELECT:
+                locationSelectedCallBack.onLocationSelected(marker.getTitle(), marker.getPosition());
+                finish();
+                break;
         }
     }
 

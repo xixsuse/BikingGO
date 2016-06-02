@@ -71,6 +71,7 @@ public class ImageSelectHelper implements CommonBundle {
         Uri uri = data.getData();
         Log.i(TAG, "ImageContentPath: " + uri.toString());
 
+        // TODO Parse Uri to real path if photo source is from Google Drive.
         boolean isFromGoogleDrive = uri.toString().contains("com.google.android.apps.docs.storage");
 
         String photoPath = "";

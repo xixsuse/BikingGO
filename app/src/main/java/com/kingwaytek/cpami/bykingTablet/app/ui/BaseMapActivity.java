@@ -215,11 +215,15 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     @Override
     public View getInfoWindow(Marker marker) {
-        View view = LayoutInflater.from(this).inflate(R.layout.inflate_marker_search_result_window, null);
-        TextView title = (TextView) view.findViewById(R.id.marker_title);
-        title.setText(marker.getTitle());
+        if (notNull(marker.getTitle())) {
+            View view = LayoutInflater.from(this).inflate(R.layout.inflate_marker_search_result_window, null);
+            TextView title = (TextView) view.findViewById(R.id.marker_title);
+            title.setText(marker.getTitle());
 
-        return view;
+            return view;
+        }
+        else
+            return null;
     }
 
     @Override
