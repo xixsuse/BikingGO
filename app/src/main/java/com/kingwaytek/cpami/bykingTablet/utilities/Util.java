@@ -133,6 +133,8 @@ public class Util {
             BufferedWriter writer = new BufferedWriter(new FileWriter(planFile, false));
             writer.write(jsonString);
             writer.close();
+
+            Utility.toastShort(AppController.getInstance().getString(R.string.plan_save_completed));
         }
         catch (IOException e) {
             e.printStackTrace();

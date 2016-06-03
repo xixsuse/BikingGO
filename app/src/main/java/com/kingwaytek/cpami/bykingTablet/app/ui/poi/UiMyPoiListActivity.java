@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
@@ -60,17 +61,33 @@ public class UiMyPoiListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ItemsMyPOI poiItem = (ItemsMyPOI) parent.getItemAtPosition(position);
-
-                Intent intent = new Intent(UiMyPoiListActivity.this, UiMainMapActivity.class);
+                Intent intent;
                 Bundle bundle = new Bundle();
 
-                bundle.putSerializable(BUNDLE_MY_POI_INFO, poiItem);
-                intent.putExtras(bundle);
+                switch (ENTRY_TYPE) {
+                    case ENTRY_TYPE_DEFAULT:
+                        intent = new Intent(UiMyPoiListActivity.this, UiMainMapActivity.class);
 
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                        intent.putExtra(BUNDLE_MY_POI_INFO, poiItem);
 
-                SettingManager.MarkerFlag.setMyPoiFlag(true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+
+                        SettingManager.MarkerFlag.setMyPoiFlag(true);
+                        break;
+
+                    case ENTRY_TYPE_LOCATION_SELECT:
+                        intent = new Intent();
+
+                        bundle.putString(BUNDLE_LOCATION_TITLE, poiItem.TITLE);
+                        bundle.putParcelable(BUNDLE_LOCATION_LATLNG, new LatLng(poiItem.LAT, poiItem.LNG));
+
+                        intent.putExtras(bundle);
+
+                        setResult(RESULT_OK, intent);
+                        finish();
+                        break;
+                }
             }
         });
     }

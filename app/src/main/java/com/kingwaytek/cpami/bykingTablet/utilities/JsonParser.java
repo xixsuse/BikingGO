@@ -134,4 +134,29 @@ public class JsonParser {
         releaseObjects();
         return null;
     }
+
+    public static ArrayList<String> getMyPlanNameList() {
+        try {
+            if (Util.isPlanFileNotExistOrEmpty())
+                return null;
+
+            JA = new JSONArray(Util.readPlanFile());
+
+            ArrayList<String> planNameList = new ArrayList<>();
+            String planName;
+
+            for (int i = 0; i < JA.length(); i++) {
+                planName = JA.getJSONObject(i).getString(FavoriteHelper.PLAN_NAME);
+                planNameList.add(planName);
+            }
+
+            releaseObjects();
+            return planNameList;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
 }

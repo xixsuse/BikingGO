@@ -42,6 +42,6 @@
         android:layout_marginLeft="@dimen/padding_size_m"
         android:layout_marginStart="@dimen/padding_size_m"
         android:layout_weight="0"
-        android:background="@drawable/ic_info" />
+        android:background="@drawable/ic_right_arrow_blue" />
 
 </LinearLayout>

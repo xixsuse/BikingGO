@@ -20,7 +20,8 @@ public interface CommonBundle {
     String BUNDLE_MAP_TO_POI_INFO = "MapToPoiInfo";
     String BUNDLE_DELETE_POI = "DeleteMyPoi";
     String BUNDLE_ENTRY_TYPE = "EntryType";
-    String BUNDLE_LOCATION_SELECT = "LocationSelectInterface";
+    String BUNDLE_LOCATION_TITLE = "LocationSelectTitle";
+    String BUNDLE_LOCATION_LATLNG = "LocationSelectLatLng";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;

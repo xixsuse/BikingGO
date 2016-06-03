@@ -58,6 +58,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     protected abstract void findViews();
     protected abstract void setListener();
 
+    protected int ENTRY_TYPE;
+
     private ActionBar actionbar;
     private static View windowView;
 
@@ -77,6 +79,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         setTheme(R.style.AppTheme);
         //setWindowFeatures();
         setContentView(getLayoutId());
+
+        getEntryType();
 
         setActionBar();
         findActionbarWidgetViewAndSetListener();
@@ -101,14 +105,20 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         Log.i(TAG, "onResume!!!");
     }
 
+    private void getEntryType() {
+        ENTRY_TYPE = getIntent().getIntExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_DEFAULT);
+    }
+
     private void setActionBar() {
         actionbar = getSupportActionBar();
 
         if (notNull(actionbar)) {
+            int actionbarOptions = ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP;
+
             actionbar.setDisplayHomeAsUpEnabled(true);  // 會有內建的 back arrow button，可搭配 Drawer使用!
             //actionbar.setHomeButtonEnabled(true);     // 會出現自訂的 back button，無法搭配 Drawer使用
             //actionbar.setDisplayShowTitleEnabled(true);
-            actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
+            actionbar.setDisplayOptions(actionbarOptions);
 
             //setActionbarIcon();
 
@@ -143,7 +153,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (getLayoutId() == R.layout.activity_base_map) {
+                if (getLayoutId() == R.layout.activity_base_map && ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
                     if (drawer.isDrawerOpen(GravityCompat.START))
                         drawer.closeDrawers();
                     else
@@ -221,19 +231,27 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                 //actionbar.setIcon(R.drawable.selector_toolbar_list);
             }
         };
-        drawer.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
 
-        drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                item.setChecked(true);
-                onMenuItemClick(item);
-                drawer.closeDrawers();
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
+            drawer.addDrawerListener(drawerToggle);
+            drawerToggle.syncState();
 
-                return true;
-            }
-        });
+            drawerView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem item) {
+                    item.setChecked(true);
+                    onMenuItemClick(item);
+                    drawer.closeDrawers();
+
+                    return true;
+                }
+            });
+        }
+        // 如果 ENTRY_TYPE不是DEFAULT的話，就不能有menu出現！
+        else {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            drawerToggle.setDrawerIndicatorEnabled(false);
+        }
     }
 
     protected void setDrawerWidth() {
@@ -246,8 +264,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     }
 
     protected void unCheckAllMenuItem() {
-        for (int i = 0; i < drawerView.getMenu().size(); i++) {
-            drawerView.getMenu().getItem(i).setChecked(false);
+        if (notNull(drawerView)) {
+            for (int i = 0; i < drawerView.getMenu().size(); i++) {
+                drawerView.getMenu().getItem(i).setChecked(false);
+            }
         }
     }
 

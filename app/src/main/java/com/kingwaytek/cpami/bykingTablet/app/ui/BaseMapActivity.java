@@ -428,6 +428,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected void onDestroy() {
         super.onDestroy();
         turnOnSearchKeyListener(false);
-        drawer.removeDrawerListener(drawerToggle);
+        if (notNull(drawer))
+            drawer.removeDrawerListener(drawerToggle);
     }
 }

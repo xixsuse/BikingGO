@@ -315,6 +315,7 @@
     <string name="actionbar_switch_button">圖層開關</string>
     <string name="actionbar_around_button">附近景點</string>
     <string name="actionbar_add_poi">新增景點</string>
+    <string name="actionbar_save">儲存</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -339,6 +340,8 @@
     <!-- 行程規劃 -->
     <string name="plan_title">行程主題</string>
     <string name="plan_start_planning">開始規劃</string>
+    <string name="plan_require_title">請輸入行程主題！</string>
+    <string name="plan_save_completed">行程儲存完成</string>
 
     <!-- Marker switch window -->
     <string name="marker_my_poi">我的景點</string>

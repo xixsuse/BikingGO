@@ -36,6 +36,11 @@ public class PlanEditListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void setPlanItem(int index, ItemsPlanItem planItem) {
+        planItemList.set(index, planItem);
+        notifyDataSetChanged();
+    }
+
     public void removePlanItem(int position) {
         planItemList.remove(position);
         resetAllPlanItemOrder();
@@ -107,6 +112,7 @@ public class PlanEditListAdapter extends BaseAdapter {
             holder.planNumberLine_up.setVisibility(View.VISIBLE);
 
         holder.planSelectedName.setText(planItemList.get(position).TITLE);
+        holder.planSelectedName.setOnClickListener(getPlanSelectClick(position));
 
         Log.i("PlanEditListAdapter", "position: " + position + " Order: " + planItemList.get(position).ORDER);
 
@@ -119,6 +125,15 @@ public class PlanEditListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 removePlanItem(position);
                 ((UiMyPlanEditActivity) context).hidePlanAddButtonIfHasFive();
+            }
+        };
+    }
+
+    private View.OnClickListener getPlanSelectClick(final int position) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((UiMyPlanEditActivity) context).selectPlanItem(position);
             }
         };
     }

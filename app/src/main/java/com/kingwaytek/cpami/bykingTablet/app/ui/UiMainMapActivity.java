@@ -51,7 +51,6 @@ import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
-import com.kingwaytek.cpami.bykingTablet.callbacks.OnLocationSelectedCallBack;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
@@ -76,9 +75,6 @@ import java.util.ArrayList;
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
         OnPhotoRemovedCallBack {
 
-    private int ENTRY_TYPE;
-    private OnLocationSelectedCallBack locationSelectedCallBack;
-
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
     private Marker myNewMarker;
@@ -96,7 +92,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     @Override
     protected void onApiReady() {
         //showRightButtons(true);
-        getEntryTypeAndInterface();
         putMarkersAndSetListener();
         registerPreferenceChangedListener();
         Log.i(TAG, "onApiReady!!!");
@@ -131,12 +126,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         super.onDestroy();
         searchText.removeTextChangedListener(this);
         map.setOnMapLongClickListener(null);
-    }
-
-    private void getEntryTypeAndInterface() {
-        ENTRY_TYPE = getIntent().getIntExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_DEFAULT);
-        if (ENTRY_TYPE == ENTRY_TYPE_LOCATION_SELECT)
-            locationSelectedCallBack = (OnLocationSelectedCallBack) getIntent().getSerializableExtra(BUNDLE_LOCATION_SELECT);
     }
 
     private void putMarkersAndSetListener() {
@@ -231,7 +220,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 break;
 
             case ENTRY_TYPE_LOCATION_SELECT:
-                locationSelectedCallBack.onLocationSelected(marker.getTitle(), marker.getPosition());
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+
+                bundle.putString(BUNDLE_LOCATION_TITLE, marker.getTitle());
+                bundle.putParcelable(BUNDLE_LOCATION_LATLNG, marker.getPosition());
+
+                intent.putExtras(bundle);
+
+                setResult(RESULT_OK, intent);
                 finish();
                 break;
         }
@@ -611,6 +608,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             if (addToList)
                 myPoiMarkerList.add(selectedMarker);
+
+            SettingManager.MarkerFlag.setMyPoiFlag(true);
 
             Log.i(TAG, "PoiListSize: " + myPoiMarkerList.size());
         }

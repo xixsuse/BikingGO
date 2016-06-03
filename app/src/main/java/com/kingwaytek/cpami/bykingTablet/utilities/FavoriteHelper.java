@@ -29,6 +29,10 @@ public class FavoriteHelper {
     public static final String POI_LNG = "lng";
     public static final String POI_PHOTO_PATH = "photoPath";
 
+    public static final String POI_ORDER = "order";
+    public static final String PLAN_NAME = "planName";
+    public static final String PLAN_ITEMS = "planItems";
+
     private static int POI_INDEX;
 
     public static void initFavorite() {
@@ -53,9 +57,30 @@ public class FavoriteHelper {
         }
     }
 
+    public static void initPlanData() {
+        try {
+            if (Util.isPlanFileNotExistOrEmpty()) {
+                JA_PLAN = new JSONArray();
+                Log.i(TAG, "plans.json NOT exits!, JA_PLAN init!");
+            }
+            else {
+                JA_PLAN = new JSONArray(Util.readPlanFile());
+                Log.i(TAG, "JA_PLAN init from file!!!");
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void checkIsFavInit() {
         if (SettingManager.Favorite.getMyPoi() == null || JA_POI == null || JA_POI.length() == 0)
             initFavorite();
+    }
+
+    public static void checkIsPlanDataInit() {
+        if (JA_PLAN == null)
+            initPlanData();
     }
 
     public static boolean isPoiExisted(double lat, double lng) {
@@ -187,5 +212,12 @@ public class FavoriteHelper {
         }
     }
 
+    public static void addPlan(JSONObject singlePlanJO) {
+        checkIsPlanDataInit();
 
+        JA_PLAN.put(singlePlanJO);
+        Util.writePlanFile(JA_PLAN.toString());
+
+        Log.i(TAG, JA_PLAN.toString());
+    }
 }

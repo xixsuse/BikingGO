@@ -3,6 +3,7 @@ package com.kingwaytek.cpami.bykingTablet.app.model;
 import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 public class DataArray implements ApiUrls {
 
     public static SoftReference<ArrayList<ItemsSearchResult>> list_searchResult;
+    public static SoftReference<ArrayList<ItemsPlans>> list_plans;
 
     public interface OnDataGetCallBack {
         void onDataGet();
@@ -58,5 +60,13 @@ public class DataArray implements ApiUrls {
 
     public static ArrayList<ItemsMyPOI> getMyPOI() {
         return JsonParser.parseMyPoiAndGetList();
+    }
+
+    public static ArrayList<String> getPlanNameList() {
+        return JsonParser.getMyPlanNameList();
+    }
+
+    public static void getPlansData(final OnDataGetCallBack dataGet) {
+
     }
 }
