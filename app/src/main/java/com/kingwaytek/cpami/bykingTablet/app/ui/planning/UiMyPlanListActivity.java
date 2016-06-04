@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.planning;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,13 +11,17 @@ import android.widget.ListView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PlanListAdapter;
 
 import java.util.ArrayList;
 
 /**
- * Created by vincent.chang on 2016/6/1.
+ * 行程規劃清單頁面
+ *
+ * @author Vincent (2016/6/1)
  */
 public class UiMyPlanListActivity extends BaseActivity {
 
@@ -58,6 +63,23 @@ public class UiMyPlanListActivity extends BaseActivity {
                 intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            }
+        });
+
+        planListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                String planName = (String) parent.getItemAtPosition(position);
+
+                DialogHelper.showDeleteConfirmDialog(UiMyPlanListActivity.this, planName, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FavoriteHelper.removePlan(position);
+                        setPlanList();
+                    }
+                });
+
+                return true;
             }
         });
     }

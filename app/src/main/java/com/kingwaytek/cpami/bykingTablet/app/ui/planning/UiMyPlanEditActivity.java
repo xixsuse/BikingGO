@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -98,10 +100,16 @@ public class UiMyPlanEditActivity extends BaseActivity {
         PLAN_EDIT_INDEX = getIntent().getIntExtra(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX_A_NEW_ONE);
 
         if (PLAN_EDIT_INDEX != PLAN_EDIT_INDEX_A_NEW_ONE) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
             ItemsPlans planAndItems = DataArray.getPlansData().get(PLAN_EDIT_INDEX);
 
             if (notNull(planAndItems))
                 setPlanContents(planAndItems);
+        }
+        else {
+            edit_planTitle.requestFocus();
+            edit_planTitle.setImeOptions(EditorInfo.IME_ACTION_NONE);
         }
     }
 

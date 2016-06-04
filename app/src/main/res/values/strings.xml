@@ -343,6 +343,8 @@
     <string name="plan_start_planning">開始規劃</string>
     <string name="plan_require_title">請輸入行程主題！</string>
     <string name="plan_save_completed">行程儲存完成</string>
+    <string name="plan_update_completed">行程更新完成</string>
+    <string name="plan_remove_completed">行程已刪除</string>
 
     <!-- Marker switch window -->
     <string name="marker_my_poi">我的景點</string>

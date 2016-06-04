@@ -2,6 +2,8 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.util.Log;
 
+import com.kingwaytek.cpami.bykingTablet.AppController;
+import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 
 import org.json.JSONArray;
@@ -204,6 +206,7 @@ public class FavoriteHelper {
             ja_plan.put(singlePlanJO);
             Util.writePlanFile(ja_plan.toString());
 
+            Utility.toastShort(AppController.getInstance().getString(R.string.plan_save_completed));
             Log.i(TAG, "addPlan: " + ja_plan.toString());
 
             return (ja_plan.length() - 1);
@@ -215,7 +218,6 @@ public class FavoriteHelper {
     }
 
     public static void updatePlan(int index, String planName, JSONArray planItems) {
-
         try {
             if (!Util.isPlanFileNotExistOrEmpty()) {
                 JSONArray ja_plans = new JSONArray(Util.readPlanFile());
@@ -225,7 +227,39 @@ public class FavoriteHelper {
 
                 Util.writePlanFile(ja_plans.toString());
 
+                Utility.toastShort(AppController.getInstance().getString(R.string.plan_update_completed));
                 Log.i(TAG, "updatePlan: " + ja_plans.toString());
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void removePlan(int index) {
+        try {
+            if (!Util.isPlanFileNotExistOrEmpty()) {
+                JSONArray ja_plans = new JSONArray(Util.readPlanFile());
+
+                int len = ja_plans.length();
+
+                ArrayList<JSONObject> tempJA = new ArrayList<>();
+
+                for (int i = 0; i < len; i++) {
+                    if (i != index)
+                        tempJA.add(ja_plans.getJSONObject(i));
+                }
+
+                ja_plans = new JSONArray();
+
+                for (JSONObject jo : tempJA) {
+                    ja_plans.put(jo);
+                }
+
+                Util.writePlanFile(ja_plans.toString());
+
+                Utility.toastShort(AppController.getInstance().getString(R.string.plan_remove_completed));
+                Log.i(TAG, "removePlan: " + ja_plans.toString());
             }
         }
         catch (JSONException e) {

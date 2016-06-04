@@ -16,7 +16,10 @@ import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PlanInfoListAdapter;
 
 /**
- * Created by vincent.chang on 2016/6/4.
+ * 行程規劃資訊頁...但沒什麼資訊可言，<br>
+ * 這裡主要是可以接到 UiMyPlanEditActivity & Google Directions.
+ *
+ * @author Vincent (2016/6/4)
  */
 public class UiMyPlanInfoActivity extends BaseActivity {
 
@@ -104,5 +107,15 @@ public class UiMyPlanInfoActivity extends BaseActivity {
         return true;
     }
 
+    private boolean canDirection() {
+        return planListView.getAdapter().getCount() > 1;
+    }
 
+    private boolean isContainWaypoints() {
+        return planListView.getAdapter().getCount() > 2;
+    }
+
+    private void startDirection() {
+
+    }
 }
