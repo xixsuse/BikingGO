@@ -21,7 +21,6 @@ public class FavoriteHelper {
     private static final String TAG = "FavoriteHelper";
 
     private static JSONArray JA_POI;
-    private static JSONArray JA_PLAN;
 
     public static final String POI_TITLE = "title";
     public static final String POI_DESCRIPTION = "description";
@@ -29,7 +28,6 @@ public class FavoriteHelper {
     public static final String POI_LNG = "lng";
     public static final String POI_PHOTO_PATH = "photoPath";
 
-    public static final String POI_ORDER = "order";
     public static final String PLAN_NAME = "planName";
     public static final String PLAN_ITEMS = "planItems";
 
@@ -57,30 +55,9 @@ public class FavoriteHelper {
         }
     }
 
-    public static void initPlanData() {
-        try {
-            if (Util.isPlanFileNotExistOrEmpty()) {
-                JA_PLAN = new JSONArray();
-                Log.i(TAG, "plans.json NOT exits!, JA_PLAN init!");
-            }
-            else {
-                JA_PLAN = new JSONArray(Util.readPlanFile());
-                Log.i(TAG, "JA_PLAN init from file!!!");
-            }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void checkIsFavInit() {
         if (SettingManager.Favorite.getMyPoi() == null || JA_POI == null || JA_POI.length() == 0)
             initFavorite();
-    }
-
-    public static void checkIsPlanDataInit() {
-        if (JA_PLAN == null)
-            initPlanData();
     }
 
     public static boolean isPoiExisted(double lat, double lng) {
@@ -212,12 +189,47 @@ public class FavoriteHelper {
         }
     }
 
-    public static void addPlan(JSONObject singlePlanJO) {
-        checkIsPlanDataInit();
+    /**
+     * @return index where the PlanItem just added.
+     */
+    public static int addPlan(JSONObject singlePlanJO) {
+        JSONArray ja_plan;
 
-        JA_PLAN.put(singlePlanJO);
-        Util.writePlanFile(JA_PLAN.toString());
+        try {
+            if (Util.isPlanFileNotExistOrEmpty())
+                ja_plan = new JSONArray();
+            else
+                ja_plan = new JSONArray(Util.readPlanFile());
 
-        Log.i(TAG, JA_PLAN.toString());
+            ja_plan.put(singlePlanJO);
+            Util.writePlanFile(ja_plan.toString());
+
+            Log.i(TAG, "addPlan: " + ja_plan.toString());
+
+            return (ja_plan.length() - 1);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public static void updatePlan(int index, String planName, JSONArray planItems) {
+
+        try {
+            if (!Util.isPlanFileNotExistOrEmpty()) {
+                JSONArray ja_plans = new JSONArray(Util.readPlanFile());
+
+                ja_plans.getJSONObject(index).put(PLAN_NAME, planName);
+                ja_plans.getJSONObject(index).put(PLAN_ITEMS, planItems);
+
+                Util.writePlanFile(ja_plans.toString());
+
+                Log.i(TAG, "updatePlan: " + ja_plans.toString());
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

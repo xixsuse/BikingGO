@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 
 import org.json.JSONArray;
@@ -152,6 +154,58 @@ public class JsonParser {
 
             releaseObjects();
             return planNameList;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ArrayList<ItemsPlans> getPlansData() {
+        try {
+            if (Util.isPlanFileNotExistOrEmpty())
+                return null;
+
+            JA = new JSONArray(Util.readPlanFile());
+
+            ArrayList<ItemsPlans> plansList = new ArrayList<>();
+
+            JSONArray ja;
+            JSONObject jo;
+
+            String planName;
+            ArrayList<ItemsPlanItem> planItems;
+
+            String title;
+            String lat;
+            String lng;
+
+            for (int i = 0; i < JA.length(); i++) {
+                JO = JA.getJSONObject(i);
+                planName = JO.getString(FavoriteHelper.PLAN_NAME);
+
+                ja = JO.getJSONArray(FavoriteHelper.PLAN_ITEMS);
+
+                planItems = new ArrayList<>();
+
+                for (int j = 0; j < ja.length(); j++) {
+                    jo = ja.getJSONObject(j);
+
+                    title = jo.getString(FavoriteHelper.POI_TITLE);
+                    lat = jo.getString(FavoriteHelper.POI_LAT);
+                    lng = jo.getString(FavoriteHelper.POI_LNG);
+
+                    planItems.add(new ItemsPlanItem(title, Double.parseDouble(lat), Double.parseDouble(lng)));
+                }
+
+                plansList.add(new ItemsPlans(planName, planItems));
+
+                Log.i(TAG, planName + " planItems size: " + planItems.size());
+            }
+
+            releaseObjects();
+            return plansList;
         }
         catch (JSONException e) {
             e.printStackTrace();

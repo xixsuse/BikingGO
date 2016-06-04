@@ -1,7 +1,10 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.planning;
 
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
@@ -48,7 +51,15 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     @Override
     protected void setListener() {
-
+        planListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
+                intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

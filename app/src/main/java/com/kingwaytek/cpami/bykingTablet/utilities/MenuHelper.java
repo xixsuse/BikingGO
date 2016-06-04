@@ -25,6 +25,11 @@ public class MenuHelper implements ActionbarMenu {
                 menu.add(Menu.NONE, ACTION_SAVE, Menu.NONE, R.string.actionbar_save)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                 break;
+
+            case ACTION_EDIT:
+                menu.add(Menu.NONE, ACTION_EDIT, Menu.NONE, R.string.actionbar_edit)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                break;
         }
     }
 

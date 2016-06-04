@@ -316,6 +316,7 @@
     <string name="actionbar_around_button">附近景點</string>
     <string name="actionbar_add_poi">新增景點</string>
     <string name="actionbar_save">儲存</string>
+    <string name="actionbar_edit">編輯</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>

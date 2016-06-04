@@ -25,7 +25,6 @@ import java.util.ArrayList;
 public class DataArray implements ApiUrls {
 
     public static SoftReference<ArrayList<ItemsSearchResult>> list_searchResult;
-    public static SoftReference<ArrayList<ItemsPlans>> list_plans;
 
     public interface OnDataGetCallBack {
         void onDataGet();
@@ -66,7 +65,7 @@ public class DataArray implements ApiUrls {
         return JsonParser.getMyPlanNameList();
     }
 
-    public static void getPlansData(final OnDataGetCallBack dataGet) {
-
+    public static ArrayList<ItemsPlans> getPlansData() {
+        return JsonParser.getPlansData();
     }
 }

@@ -1,7 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.utilities.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,24 +42,12 @@ public class PlanEditListAdapter extends BaseAdapter {
 
     public void removePlanItem(int position) {
         planItemList.remove(position);
-        resetAllPlanItemOrder();
         notifyDataSetChanged();
     }
 
     public void insertPlanItem(int toPosition, ItemsPlanItem planItem) {
         planItemList.add(toPosition, planItem);
-        resetAllPlanItemOrder();
         notifyDataSetChanged();
-    }
-
-    public void resetAllPlanItemOrder() {
-        int order = 1;
-
-        for (ItemsPlanItem planItem : planItemList) {
-            planItem.setOrder(order);
-            planItemList.set(order - 1, planItem);
-            order++;
-        }
     }
 
     @Override
@@ -114,8 +101,6 @@ public class PlanEditListAdapter extends BaseAdapter {
         holder.planSelectedName.setText(planItemList.get(position).TITLE);
         holder.planSelectedName.setOnClickListener(getPlanSelectClick(position));
 
-        Log.i("PlanEditListAdapter", "position: " + position + " Order: " + planItemList.get(position).ORDER);
-
         return convertView;
     }
 
@@ -124,7 +109,7 @@ public class PlanEditListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 removePlanItem(position);
-                ((UiMyPlanEditActivity) context).hidePlanAddButtonIfHasFive();
+                ((UiMyPlanEditActivity) context).hidePlanAddButtonIfReachMax();
             }
         };
     }

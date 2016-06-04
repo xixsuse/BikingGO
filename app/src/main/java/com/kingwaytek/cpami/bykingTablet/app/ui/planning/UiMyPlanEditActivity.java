@@ -13,7 +13,9 @@ import android.widget.ImageButton;
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.api.widget.dslv.DragSortListView;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
@@ -31,7 +33,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by vincent.chang on 2016/6/1.
+ * 行程規劃編輯頁面，
+ * 主要使用 DragAndSorListView & write JSON to SD file來儲存！
+ *
+ * @author Vincent (2016/6/1)
  */
 public class UiMyPlanEditActivity extends BaseActivity {
 
@@ -41,21 +46,22 @@ public class UiMyPlanEditActivity extends BaseActivity {
     private DragSortListView dragSortListView;
     private PlanEditListAdapter editListAdapter;
 
-    private ArrayList<ItemsPlanItem> planItemList;
-
     private static final int MAX_POINTS_COUNT = 5;
     private static final int INDEX_ADD_A_NEW_ONE = -1;
     private int INDEX_WHICH_PLAN_ITEM;
 
+    private static final int PLAN_EDIT_INDEX_A_NEW_ONE = -1;
+    private int PLAN_EDIT_INDEX;
+
     @Override
     protected void init() {
-
+        setPlanIfExists();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        hidePlanAddButtonIfHasFive();
+        hidePlanAddButtonIfReachMax();
     }
 
     @Override
@@ -88,6 +94,26 @@ public class UiMyPlanEditActivity extends BaseActivity {
         dragSortListView.setRemoveListener(getRemoveListener());
     }
 
+    private void setPlanIfExists() {
+        PLAN_EDIT_INDEX = getIntent().getIntExtra(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX_A_NEW_ONE);
+
+        if (PLAN_EDIT_INDEX != PLAN_EDIT_INDEX_A_NEW_ONE) {
+            ItemsPlans planAndItems = DataArray.getPlansData().get(PLAN_EDIT_INDEX);
+
+            if (notNull(planAndItems))
+                setPlanContents(planAndItems);
+        }
+    }
+
+    private void setPlanContents(ItemsPlans planAndItems) {
+        edit_planTitle.setText(planAndItems.NAME);
+        edit_planTitle.setSelection(planAndItems.NAME.length());
+
+        for (ItemsPlanItem planItem : planAndItems.PLAN_ITEMS) {
+            addItemToListView(planItem.TITLE, planItem.LAT, planItem.LNG);
+        }
+    }
+
     public void selectPlanItem(final int index) {
         INDEX_WHICH_PLAN_ITEM = index;
 
@@ -100,9 +126,9 @@ public class UiMyPlanEditActivity extends BaseActivity {
                     case 0:
                         Location location = MyLocationManager.getLastLocation();
                         if (index == INDEX_ADD_A_NEW_ONE)
-                            addItemToListView(getString(R.string.location_current), new LatLng(location.getLatitude(), location.getLongitude()));
+                            addItemToListView(getString(R.string.location_current), location.getLatitude(), location.getLongitude());
                         else
-                            setItemToPosition(getString(R.string.location_current), new LatLng(location.getLatitude(), location.getLongitude()));
+                            setItemToPosition(getString(R.string.location_current), location.getLatitude(), location.getLongitude());
                         break;
 
                     case 1:
@@ -123,24 +149,23 @@ public class UiMyPlanEditActivity extends BaseActivity {
         });
     }
 
-    private void addItemToListView(String title, LatLng latLng) {
+    private void addItemToListView(String title, double lat, double lng) {
         if (editListAdapter == null) {
-            planItemList = new ArrayList<>();
-            planItemList.add(new ItemsPlanItem(title, latLng, 1));
+            ArrayList<ItemsPlanItem> planItemList = new ArrayList<>();
+            planItemList.add(new ItemsPlanItem(title, lat, lng));
 
             editListAdapter = new PlanEditListAdapter(this, planItemList);
             dragSortListView.setAdapter(editListAdapter);
         }
         else {
-            int order = editListAdapter.getCount() + 1;
-            editListAdapter.addPlanItem(new ItemsPlanItem(title, latLng, order));
+            editListAdapter.addPlanItem(new ItemsPlanItem(title, lat, lng));
         }
-        hidePlanAddButtonIfHasFive();
+        hidePlanAddButtonIfReachMax();
     }
 
-    private void setItemToPosition(String title, LatLng latLng) {
-        editListAdapter.setPlanItem(INDEX_WHICH_PLAN_ITEM, new ItemsPlanItem(title, latLng, INDEX_WHICH_PLAN_ITEM + 1));
-        hidePlanAddButtonIfHasFive();
+    private void setItemToPosition(String title, double lat, double lng) {
+        editListAdapter.setPlanItem(INDEX_WHICH_PLAN_ITEM, new ItemsPlanItem(title, lat, lng));
+        hidePlanAddButtonIfReachMax();
     }
 
     private DragSortListView.DropListener getDropListener() {
@@ -161,12 +186,12 @@ public class UiMyPlanEditActivity extends BaseActivity {
             @Override
             public void remove(int which) {
                 editListAdapter.removePlanItem(which);
-                hidePlanAddButtonIfHasFive();
+                hidePlanAddButtonIfReachMax();
             }
         };
     }
 
-    public void hidePlanAddButtonIfHasFive() {
+    public void hidePlanAddButtonIfReachMax() {
         if (notNull(editListAdapter)) {
             if (editListAdapter.getCount() >= MAX_POINTS_COUNT)
                 planAddBtn.setVisibility(View.GONE);
@@ -185,10 +210,12 @@ public class UiMyPlanEditActivity extends BaseActivity {
                         String title = bundle.getString(BUNDLE_LOCATION_TITLE);
                         LatLng latLng = bundle.getParcelable(BUNDLE_LOCATION_LATLNG);
 
-                        if (INDEX_WHICH_PLAN_ITEM == INDEX_ADD_A_NEW_ONE)
-                            addItemToListView(title, latLng);
-                        else
-                            setItemToPosition(title, latLng);
+                        if (notNull(latLng)) {
+                            if (INDEX_WHICH_PLAN_ITEM == INDEX_ADD_A_NEW_ONE)
+                                addItemToListView(title, latLng.latitude, latLng.longitude);
+                            else
+                                setItemToPosition(title, latLng.latitude, latLng.longitude);
+                        }
                     }
                     break;
             }
@@ -235,22 +262,37 @@ public class UiMyPlanEditActivity extends BaseActivity {
 
                         JSONObject jo = new JSONObject();
                         jo.put(FavoriteHelper.POI_TITLE, planItem.TITLE);
-                        jo.put(FavoriteHelper.POI_LAT, planItem.LOCATION.latitude);
-                        jo.put(FavoriteHelper.POI_LNG, planItem.LOCATION.longitude);
-                        jo.put(FavoriteHelper.POI_ORDER, planItem.ORDER);
+                        jo.put(FavoriteHelper.POI_LAT, planItem.LAT);
+                        jo.put(FavoriteHelper.POI_LNG, planItem.LNG);
 
                         ja.put(jo);
                     }
                 }
-                JSONObject singlePlanJO = new JSONObject();
-                singlePlanJO.put(FavoriteHelper.PLAN_NAME, getPlanTitle());
-                singlePlanJO.put(FavoriteHelper.PLAN_ITEMS, ja);
 
-                FavoriteHelper.addPlan(singlePlanJO);
+                if (PLAN_EDIT_INDEX == PLAN_EDIT_INDEX_A_NEW_ONE) {
+                    JSONObject singlePlanJO = new JSONObject();
+                    singlePlanJO.put(FavoriteHelper.PLAN_NAME, getPlanTitle());
+                    singlePlanJO.put(FavoriteHelper.PLAN_ITEMS, ja);
+
+                    int planEditIndex = FavoriteHelper.addPlan(singlePlanJO);
+                    goToPlanInfo(planEditIndex);
+                }
+                else {
+                    FavoriteHelper.updatePlan(PLAN_EDIT_INDEX, getPlanTitle(), ja);
+                    finish();
+                }
             }
             catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void goToPlanInfo(int planEditIndex) {
+        Intent intent = new Intent(UiMyPlanEditActivity.this, UiMyPlanInfoActivity.class);
+        intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, planEditIndex);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }

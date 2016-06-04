@@ -13,5 +13,6 @@ public interface ActionbarMenu {
     int ACTION_AROUND = R.id.actionbar_around;
     int ACTION_ADD = 1 << 1;
     int ACTION_SAVE = 1 << 2;
+    int ACTION_EDIT = 1 << 3;
 
 }

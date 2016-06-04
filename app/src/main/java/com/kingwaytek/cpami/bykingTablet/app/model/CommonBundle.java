@@ -22,6 +22,7 @@ public interface CommonBundle {
     String BUNDLE_ENTRY_TYPE = "EntryType";
     String BUNDLE_LOCATION_TITLE = "LocationSelectTitle";
     String BUNDLE_LOCATION_LATLNG = "LocationSelectLatLng";
+    String BUNDLE_PLAN_EDIT_INDEX = "PlanEditIndex";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;
