@@ -317,6 +317,7 @@
     <string name="actionbar_add_poi">新增景點</string>
     <string name="actionbar_save">儲存</string>
     <string name="actionbar_edit">編輯</string>
+    <string name="actionbar_path_list">路徑清單</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -345,6 +346,10 @@
     <string name="plan_save_completed">行程儲存完成</string>
     <string name="plan_update_completed">行程更新完成</string>
     <string name="plan_remove_completed">行程已刪除</string>
+    <string name="plan_require_more_then_two">需要兩個點位以上才可進行路徑規劃！</string>
+    <string name="plan_start_name_and_end_name">%1$s\t==>\t%2$s</string>
+    <string name="plan_distance_is">距離：%s</string>
+    <string name="plan_duration_is">ETA：%s</string>
 
     <!-- Marker switch window -->
     <string name="marker_my_poi">我的景點</string>

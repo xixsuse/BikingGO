@@ -172,4 +172,29 @@ public class WebAgent {
 
         AppController.getInstance().getRequestQueue().add(directionRequest);
     }
+
+    public static void getMultiDirectionsData(String apiUrl, final WebResultImplement webResult) {
+        Log.i(TAG, "GoogleDirectionAPi: " + apiUrl);
+
+        StringRequest directionRequest = new StringRequest(apiUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                webResult.onResultSucceed(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                webResult.onResultFail("ConnectionError, " + error.getMessage());
+                PopWindowHelper.dismissPopWindow();
+            }
+        });
+
+        directionRequest.setRetryPolicy(new DefaultRetryPolicy(
+                CONNECT_TIME_OUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        AppController.getInstance().getRequestQueue().add(directionRequest);
+    }
 }

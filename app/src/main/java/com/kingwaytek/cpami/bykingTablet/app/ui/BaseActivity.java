@@ -36,6 +36,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.planning.UiMyPlanListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -142,10 +143,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (getLayoutId() == R.layout.activity_base_map) {
-            MenuInflater menuInflater = getMenuInflater();
-            menuInflater.inflate(R.menu.options_menu, menu);
+        switch (ENTRY_TYPE) {
+            case ENTRY_TYPE_DEFAULT:
+                if (getLayoutId() == R.layout.activity_base_map) {
+                    MenuInflater menuInflater = getMenuInflater();
+                    menuInflater.inflate(R.menu.options_menu, menu);
+                }
+                break;
+
+            case ENTRY_TYPE_DIRECTIONS:
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_LIST);
+                break;
         }
+
         return true;
     }
 

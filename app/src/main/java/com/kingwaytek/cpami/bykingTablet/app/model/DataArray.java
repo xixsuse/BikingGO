@@ -3,6 +3,7 @@ package com.kingwaytek.cpami.bykingTablet.app.model;
 import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
@@ -24,7 +25,10 @@ import java.util.ArrayList;
  */
 public class DataArray implements ApiUrls {
 
+    private static final String TAG = "DataArray";
+
     public static SoftReference<ArrayList<ItemsSearchResult>> list_searchResult;
+    public static SoftReference<ArrayList<ItemsPathList>> list_pathList;
 
     public interface OnDataGetCallBack {
         void onDataGet();
@@ -45,14 +49,14 @@ public class DataArray implements ApiUrls {
 
                     @Override
                     public void onParseFail(String errorMessage) {
-                        Log.e("Geocode_ParseError", errorMessage);
+                        Log.e(TAG, "Geocode_ParseError: " + errorMessage);
                     }
                 });
             }
 
             @Override
             public void onResultFail(String errorMessage) {
-                Log.e("Geocode_WebError", errorMessage);
+                Log.e(TAG, "Geocode_WebError: " + errorMessage);
             }
         });
     }
@@ -67,5 +71,27 @@ public class DataArray implements ApiUrls {
 
     public static ArrayList<ItemsPlans> getPlansData() {
         return JsonParser.getPlansData();
+    }
+
+    /**
+     * @param jsonString Whole JSON String returned from Google Directions.
+     * @param namePairList 每一段 steps的起點和終點，內容為：<br>
+     *                     String[]{使用者自訂景點1, 使用者自定景點2}，<br>
+     *                     將對應為 String[]{ItemsPathList.START_NAME, ItemsPathList.END_NAME}，<br>
+     *                     size = (ArrayList<'ItemsPlanItem'>.size() - 1)
+     */
+    public static void getDirectionPathListData(String jsonString, ArrayList<String[]> namePairList, final OnDataGetCallBack dataGet) {
+        JsonParser.parseMultiPointsDirectionData(jsonString, namePairList, new JsonParser.JSONParseResult() {
+            @Override
+            public void onParseFinished() {
+                dataGet.onDataGet();
+            }
+
+            @Override
+            public void onParseFail(String errorMessage) {
+                Utility.toastLong("ParseError: " + errorMessage);
+                Log.e(TAG, "Direction_ParseError: " + errorMessage);
+            }
+        });
     }
 }

@@ -23,10 +23,17 @@ public interface CommonBundle {
     String BUNDLE_LOCATION_TITLE = "LocationSelectTitle";
     String BUNDLE_LOCATION_LATLNG = "LocationSelectLatLng";
     String BUNDLE_PLAN_EDIT_INDEX = "PlanEditIndex";
+    String BUNDLE_PLAN_DIRECTION_JSON = "PlanDirectionJsonString";
+    String BUNDLE_PLAN_DIRECTION_URL = "PlanDirectionUrl";
+    String BUNDLE_PLAN_STEP_START_NAME = "PlanStepStartName";
+    String BUNDLE_PLAN_STEP_END_NAME = "PlanStepEndName";
+    String BUNDLE_PLAN_STEP_DISTANCE = "PlanStepDistance";
+    String BUNDLE_PLAN_STEP_DURATION = "PlanStepDuration";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;
     int ENTRY_TYPE_LOCATION_SELECT = 1;
+    int ENTRY_TYPE_DIRECTIONS = 2;
 
     // Direction Options
     String DIR_MODE_DRIVING = "driving";

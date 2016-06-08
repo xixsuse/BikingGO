@@ -12,9 +12,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,6 +51,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
@@ -62,6 +66,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListPagerAdapter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -73,7 +78,7 @@ import java.util.ArrayList;
  * @author Vincent (2016/4/15).
  */
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
-        OnPhotoRemovedCallBack {
+        OnPhotoRemovedCallBack, ViewPager.OnPageChangeListener {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
@@ -89,10 +94,13 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private ImageView poiImageView;
     private String photoPath;
 
+    private ViewPager pathListPager;
+    private PathListPagerAdapter pagerAdapter;
+
     @Override
     protected void onApiReady() {
         //showRightButtons(true);
-        putMarkersAndSetListener();
+        checkIntentAndDoActions();
         registerPreferenceChangedListener();
         Log.i(TAG, "onApiReady!!!");
     }
@@ -128,14 +136,30 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         map.setOnMapLongClickListener(null);
     }
 
-    private void putMarkersAndSetListener() {
-        map.setOnMapLongClickListener(this);
-        map.setOnMarkerClickListener(this);
+    private void checkIntentAndDoActions() {
+        if (isFirstTimeRun)
+        {
+            switch (ENTRY_TYPE) {
+                case ENTRY_TYPE_DEFAULT:
+                    map.setOnMapLongClickListener(this);
+                    map.setOnMarkerClickListener(this);
 
-        if (isFirstTimeRun) {
-            if (SettingManager.MarkerFlag.getMyPoiFlag())
-                new PutAllMyPoiMarkers().execute();
+                    if (SettingManager.MarkerFlag.getMyPoiFlag())
+                        new PutAllMyPoiMarkers().execute();
 
+                    break;
+
+                case ENTRY_TYPE_DIRECTIONS:
+                    Intent intent = getIntent();
+                    Bundle bundle = intent.getExtras();
+
+                    String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
+                    int planIndex = bundle.getInt(BUNDLE_PLAN_EDIT_INDEX);
+
+                    drawMultiPointsLine(jsonString, planIndex);
+
+                    break;
+            }
             isFirstTimeRun = false;
         }
     }
@@ -269,6 +293,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             case ACTION_AROUND:
                 goToPlacePicker();
+                break;
+
+            case ACTION_LIST:
+                showPathListView();
                 break;
         }
 
@@ -684,7 +712,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         @Override
         protected void onPostExecute(Void aVoid) {
             showLoadingCircle(false);
-            checkIntentAndDoActions();
+            moveCameraAndShowInfoWindowIfIntentHasExtras();
         }
     }
 
@@ -712,25 +740,22 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         }
     }
 
-    private void checkIntentAndDoActions() {
+    private void moveCameraAndShowInfoWindowIfIntentHasExtras() {
         Intent intent = getIntent();
 
         if (intent.hasExtra(BUNDLE_MY_POI_INFO)) {
             ItemsMyPOI poiItem = (ItemsMyPOI) intent.getSerializableExtra(BUNDLE_MY_POI_INFO);
-            moveCameraByPoiItem(poiItem);
+
+            for (Marker marker : myPoiMarkerList) {
+                if (marker.getPosition().latitude == poiItem.LAT && marker.getPosition().longitude == poiItem.LNG) {
+                    moveCameraAndZoom(marker.getPosition(), 16);
+                    marker.showInfoWindow();
+                    onMarkerClick(marker);
+                    break;
+                }
+            }
 
             intent.removeExtra(BUNDLE_MY_POI_INFO);
-        }
-    }
-
-    private void moveCameraByPoiItem(ItemsMyPOI poiItem) {
-        for (Marker marker : myPoiMarkerList) {
-            if (marker.getPosition().latitude == poiItem.LAT && marker.getPosition().longitude == poiItem.LNG) {
-                moveCameraAndZoom(marker.getPosition(), 16);
-                marker.showInfoWindow();
-                onMarkerClick(marker);
-                break;
-            }
         }
     }
 
@@ -790,7 +815,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 polyOptions.add(latLng);
             }
             polyOptions.color(ContextCompat.getColor(this, R.color.md_blue_600));
-            polyOptions.width(14);
+            polyOptions.width(15);
 
             if (notNull(myPositionMarker))
                 myPositionMarker.remove();
@@ -813,4 +838,153 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             closeInputStream(is);
         }
     }
+
+    private void drawMultiPointsLine(String jsonString, int planIndex) {
+        String polyOverview = JsonParser.getPolyLineOverview(jsonString);
+
+        if (notNull(polyOverview)) {
+            ArrayList<LatLng> linePoints = PolyHelper.decodePolyLine(polyOverview);
+            ArrayList<ItemsPlanItem> planItems = DataArray.getPlansData().get(planIndex).PLAN_ITEMS;
+
+            PolylineOptions polyOptions = new PolylineOptions();
+
+            for (LatLng latLng : linePoints) {
+                polyOptions.add(latLng);
+            }
+            polyOptions.color(ContextCompat.getColor(this, R.color.md_light_blue_500));
+            polyOptions.width(15);
+
+            MarkerOptions marker = new MarkerOptions();
+
+            marker.position(linePoints.get(0));
+            marker.title("1." + planItems.get(0).TITLE);
+            InputStream is = getResources().openRawResource(+ R.drawable.ic_start);
+            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+
+            map.addMarker(marker);
+
+            marker.position(linePoints.get(linePoints.size() - 1));
+            marker.title(planItems.size() + "." + planItems.get(planItems.size() - 1).TITLE);
+            is = getResources().openRawResource(+ R.drawable.ic_end);
+            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+
+            map.addMarker(marker);
+
+            if (planItems.size() > 2) {
+                is = getResources().openRawResource(+ R.drawable.ic_search_result);
+                BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is));
+
+                MarkerOptions waypointsMarker = new MarkerOptions();
+
+                for (int i = 0; i < planItems.size(); i ++) {
+                    if (i != 0 && i != planItems.size() -1) {
+                        waypointsMarker.position(new LatLng(planItems.get(i).LAT, planItems.get(i).LNG));
+                        waypointsMarker.title((i + 1) + "." + planItems.get(i).TITLE);
+                        waypointsMarker.icon(markerIcon);
+                        map.addMarker(waypointsMarker);
+                    }
+                }
+            }
+
+            map.addPolyline(polyOptions);
+
+            PopWindowHelper.dismissPopWindow();
+            moveCameraAndZoom(linePoints.get(0), 16);
+
+            closeInputStream(is);
+        }
+    }
+
+    private void showPathListView() {
+        if (PopWindowHelper.isPopWindowShowing()) {
+            PopWindowHelper.dismissPopWindow();
+            if (notNull(pathListPager))
+                pathListPager.removeOnPageChangeListener(this);
+        }
+        else {
+            final View view = PopWindowHelper.getPathListPopWindowView(mapRootLayout, this);
+            Bundle bundle = getIntent().getExtras();
+
+            if (notNull(view) && notNull(bundle)) {
+                String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
+                ArrayList<String[]> namePairList = getNamePairs(bundle.getInt(BUNDLE_PLAN_EDIT_INDEX));
+
+                DataArray.getDirectionPathListData(jsonString, namePairList, new DataArray.OnDataGetCallBack() {
+                    @Override
+                    public void onDataGet() {
+                        setPathListData(view);
+                    }
+                });
+            }
+        }
+    }
+
+    private ArrayList<String[]> getNamePairs(int index) {
+        ArrayList<ItemsPlanItem> planItems = DataArray.getPlansData().get(index).PLAN_ITEMS;
+        int size = planItems.size();
+
+        ArrayList<String[]> namePairList = new ArrayList<>(size - 1);
+
+        for (int i = 0; i < size; i++) {
+            if (i + 1 == size)
+                break;
+            namePairList.add(new String[] {planItems.get(i).TITLE, planItems.get(i + 1).TITLE});
+        }
+        return namePairList;
+    }
+
+    private void setPathListData(View view) {
+        View loadingCircle = view.findViewById(R.id.pathListLoadingCircle);
+        loadingCircle.setVisibility(View.GONE);
+
+        if (pathListPager == null) {
+            pathListPager = (ViewPager) view.findViewById(R.id.pathListPager);
+        }
+        if (pagerAdapter == null)
+            pagerAdapter = new PathListPagerAdapter(getViewListAndSetContent());
+        else
+            pagerAdapter.refeshList(getViewListAndSetContent());
+
+        pathListPager.setOffscreenPageLimit(3);
+        pathListPager.setAdapter(pagerAdapter);
+
+        pathListPager.addOnPageChangeListener(this);
+    }
+
+    private ArrayList<View> getViewListAndSetContent() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        ArrayList<View> viewList = new ArrayList<>();
+
+        View view;
+        for (ItemsPathList pathListItem : DataArray.list_pathList.get()) {
+            view = inflater.inflate(R.layout.view_path_info, null);
+
+            TextView startAndEndName = (TextView) view.findViewById(R.id.text_startAndEndName);
+            TextView distance = (TextView) view.findViewById(R.id.text_pathInfoDistance);
+            TextView duration = (TextView) view.findViewById(R.id.text_pathInfoDuration);
+
+            String startName = pathListItem.START_NAME;
+            String endName = pathListItem.END_NAME;
+            String distanceString = pathListItem.DISTANCE;
+            String durationString = pathListItem.DURATION;
+
+            startAndEndName.setText(getString(R.string.plan_start_name_and_end_name, startName, endName));
+            distance.setText(getString(R.string.plan_distance_is, distanceString));
+            duration.setText(getString(R.string.plan_duration_is, durationString));
+
+            viewList.add(view);
+        }
+        return viewList;
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {}
 }

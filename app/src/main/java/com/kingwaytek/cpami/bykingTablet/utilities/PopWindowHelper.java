@@ -6,6 +6,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.kingwaytek.cpami.bykingTablet.AppController;
@@ -98,6 +100,33 @@ public class PopWindowHelper {
         return view;
     }
 
+    public static View getPathListPopWindowView(View anchorView, Context context) {
+        inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.popup_path_list, null);
+
+        double popWidth = Utility.getScreenWidth() / 2.2;
+        double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
+
+        //FrameLayout headerLayout = (FrameLayout) view.findViewById(R.id.pathListHeaderLayout);
+        //setHeaderLayoutHeight(headerLayout, (int) (popHeight * 0.25));
+
+        popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight, true);
+
+        popWindow.setTouchable(true);
+        popWindow.setFocusable(false);
+        popWindow.setOutsideTouchable(false);
+
+        popWindow.showAtLocation(anchorView, Gravity.BOTTOM|Gravity.START, 0, 0);
+        //popWindow.update(0, 0, (int) popWidth, (int) popHeight, true);
+
+        return view;
+    }
+
+    private static void setHeaderLayoutHeight(FrameLayout layout, int height) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        layout.setLayoutParams(params);
+    }
+
     private static void setPopWindowCancelable(boolean isCancelable) {
         if (isCancelable) {
             popWindow.setFocusable(true);
@@ -105,9 +134,14 @@ public class PopWindowHelper {
             popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
         else {
+            popWindow.setTouchable(true);
             popWindow.setFocusable(true);
             popWindow.setOutsideTouchable(false);
         }
+    }
+
+    public static boolean isPopWindowShowing() {
+        return popWindow != null && popWindow.isShowing();
     }
 
     public static void dismissPopWindow() {

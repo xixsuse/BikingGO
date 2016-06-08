@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_size_l">
+
+            <TextView
+                android:id="@+id/text_startAndEndName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/plan_start_name_and_end_name"
+                android:textStyle="bold"
+                android:textSize="@dimen/font_text_size_m"
+                android:textColor="@color/md_blue_600"/>
+
+            <TextView
+                android:id="@+id/text_pathInfoDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_l"
+                android:layout_marginLeft="@dimen/padding_size_xxl"
+                android:layout_marginStart="@dimen/padding_size_xxl"
+                android:text="@string/plan_distance_is"
+                android:textSize="@dimen/font_text_size_m"
+                android:textColor="@color/md_grey_900"/>
+
+            <TextView
+                android:id="@+id/text_pathInfoDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_m"
+                android:layout_marginLeft="@dimen/padding_size_xxl"
+                android:layout_marginStart="@dimen/padding_size_xxl"
+                android:text="@string/plan_duration_is"
+                android:textSize="@dimen/font_text_size_m"
+                android:textColor="@color/md_grey_900"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,6 +1,8 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.planning;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,15 +11,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.ApiUrls;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
+import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PlanInfoListAdapter;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
 
 /**
  * 行程規劃資訊頁...但沒什麼資訊可言，<br>
- * 這裡主要是可以接到 UiMyPlanEditActivity & Google Directions.
+ * 這裡主要是可以接到 {@link UiMyPlanEditActivity} & Google Directions.
  *
  * @author Vincent (2016/6/4)
  */
@@ -26,6 +37,8 @@ public class UiMyPlanInfoActivity extends BaseActivity {
     private TextView planName;
     private ListView planListView;
     private Button btn_startPlan;
+
+    private PlanInfoListAdapter infoListAdapter;
 
     private int PLAN_EDIT_INDEX;
 
@@ -62,7 +75,7 @@ public class UiMyPlanInfoActivity extends BaseActivity {
         btn_startPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startDirection();
             }
         });
     }
@@ -82,7 +95,13 @@ public class UiMyPlanInfoActivity extends BaseActivity {
 
     private void setPlanContent(ItemsPlans planAndItems) {
         planName.setText(planAndItems.NAME);
-        planListView.setAdapter(new PlanInfoListAdapter(this, planAndItems.PLAN_ITEMS));
+
+        if (infoListAdapter == null) {
+            infoListAdapter = new PlanInfoListAdapter(this, planAndItems.PLAN_ITEMS);
+            planListView.setAdapter(infoListAdapter);
+        }
+        else
+            infoListAdapter.refreshList(planAndItems.PLAN_ITEMS);
     }
 
     @Override
@@ -108,14 +127,108 @@ public class UiMyPlanInfoActivity extends BaseActivity {
     }
 
     private boolean canDirection() {
-        return planListView.getAdapter().getCount() > 1;
+        return infoListAdapter.getCount() > 1;
     }
 
     private boolean isContainWaypoints() {
-        return planListView.getAdapter().getCount() > 2;
+        return infoListAdapter.getCount() > 2;
+    }
+
+    private ArrayList<String> getLatLngArray() {
+        ArrayList<String> latLngArray = new ArrayList<>();
+        ItemsPlanItem planItem;
+
+        for (int i = 0; i < infoListAdapter.getCount(); i++) {
+            planItem = (ItemsPlanItem) infoListAdapter.getItem(i);
+            latLngArray.add(String.valueOf(planItem.LAT + "," + planItem.LNG));
+        }
+        return latLngArray;
+    }
+
+    private String getWaypointsString() {
+        ArrayList<String> latLngArray = getLatLngArray();
+        latLngArray.remove(0);
+        latLngArray.remove(latLngArray.size() - 1);
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < latLngArray.size(); i++) {
+            if (i != 0)
+                sb.append("|");
+            sb.append(latLngArray.get(i));
+        }
+        Log.i(TAG, "WaypointsString: " + sb.toString());
+        return sb.toString();
+    }
+
+    private String getAvoidOptions(String... avoidOptions) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < avoidOptions.length; i++) {
+            if (i != 0)
+                sb.append("|");
+            sb.append(avoidOptions[i]);
+        }
+        return sb.toString();
+    }
+
+    private String getCombinedApiUrl(boolean useOptimize) {
+        ArrayList<String> latLngArray = getLatLngArray();
+        Log.i(TAG, "latLngArray: " + latLngArray.toString());
+
+        String apiUrl;
+
+        if (isContainWaypoints()) {
+            String waypointsString = getWaypointsString();
+
+            apiUrl = MessageFormat.format(ApiUrls.API_GOOGLE_DIRECTION_MULTI_POINT,
+                    latLngArray.get(0),
+                    latLngArray.get(latLngArray.size() - 1),
+                    useOptimize,
+                    waypointsString,
+                    DIR_MODE_DRIVING, getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS), Utility.getLocaleLanguage(),
+                    getString(R.string.GoogleDirectionKey));
+        }
+        else {
+            apiUrl = MessageFormat.format(ApiUrls.API_GOOGLE_DIRECTION,
+                    latLngArray.get(0),
+                    latLngArray.get(latLngArray.size() - 1),
+                    DIR_MODE_DRIVING, getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS), Utility.getLocaleLanguage(),
+                    getString(R.string.GoogleDirectionKey));
+        }
+
+        return apiUrl;
     }
 
     private void startDirection() {
+        if (canDirection()) {
+            PopWindowHelper.showLoadingWindow(this);
 
+            final String apiUrl = getCombinedApiUrl(false);
+
+            WebAgent.getMultiDirectionsData(apiUrl, new WebAgent.WebResultImplement() {
+                @Override
+                public void onResultSucceed(String response) {
+                    Intent intent = new Intent(UiMyPlanInfoActivity.this, UiMainMapActivity.class);
+                    intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_DIRECTIONS);
+                    //intent.putExtra(BUNDLE_PLAN_DIRECTION_URL, apiUrl);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BUNDLE_PLAN_DIRECTION_JSON, response);
+                    bundle.putInt(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX);
+
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onResultFail(String errorMessage) {
+                    Utility.toastLong(errorMessage);
+                    Log.e(TAG, errorMessage);
+                }
+            });
+        }
+        else
+            Utility.toastShort(getString(R.string.plan_require_more_then_two));
     }
 }

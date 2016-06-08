@@ -25,6 +25,11 @@ public class PlanInfoListAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(context);
     }
 
+    public void refreshList(ArrayList<ItemsPlanItem> planItemList) {
+        this.planItemList = planItemList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return planItemList.size();

@@ -16,21 +16,26 @@ public class MenuHelper implements ActionbarMenu {
     public static void setMenuOptionsByMenuAction(Menu menu, int action) {
         switch (action) {
             case ACTION_ADD:
-                menu.add(Menu.NONE, ACTION_ADD, Menu.NONE, R.string.actionbar_add_poi)
+                menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_add_poi)
                         .setIcon(R.drawable.selector_toolbar_add)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 break;
 
             case ACTION_SAVE:
-                menu.add(Menu.NONE, ACTION_SAVE, Menu.NONE, R.string.actionbar_save)
+                menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_save)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                 break;
 
             case ACTION_EDIT:
-                menu.add(Menu.NONE, ACTION_EDIT, Menu.NONE, R.string.actionbar_edit)
+                menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_edit)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                break;
+
+            case ACTION_LIST:
+                menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_path_list)
+                        .setIcon(R.drawable.selector_toolbar_list)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 break;
         }
     }
-
 }

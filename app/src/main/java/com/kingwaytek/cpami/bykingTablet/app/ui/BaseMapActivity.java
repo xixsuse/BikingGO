@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -65,6 +66,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     private boolean locationPermissionChecked;
     private boolean isMapBuilt;
 
+    protected RelativeLayout mapRootLayout;
     protected FrameLayout searchTextLayout;
     protected LinearLayout markerBtnLayout;
 
@@ -96,6 +98,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     @Override
     protected void findViews() {
+        mapRootLayout = (RelativeLayout) findViewById(R.id.mapRootLayout);
         searchTextLayout = (FrameLayout) findViewById(R.id.searchTextLayout);
         searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
         markerBtnLayout = (LinearLayout) findViewById(R.id.markerBtnLayout);
