@@ -49,13 +49,16 @@ public class AppController extends Application {
         return getApplicationContext();
     }
 
-    public MyLocationManager getLocationManager() {
-        if (locationManager == null) {
+    public void initLocationManager() {
+        if (locationManager == null)
             locationManager = new MyLocationManager();
-            return locationManager;
-        }
         else
-            return locationManager;
+            locationManager.getProvidersAndUpdate(MyLocationManager.getLocationManager());
+    }
+
+    public void removeLocationManager() {
+        if (locationManager != null)
+            locationManager.removeUpdate();
     }
 
     public String getDataVersion() {

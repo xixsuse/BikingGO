@@ -2,6 +2,8 @@ package com.kingwaytek.cpami.bykingTablet.app.ui.planning;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +16,8 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PlanListAdapter;
 
 import java.util.ArrayList;
@@ -104,15 +108,35 @@ public class UiMyPlanListActivity extends BaseActivity {
     }
 
     private void setPlanList() {
-        ArrayList<String> planNameList = DataArray.getPlanNameList();
+        if (PermissionCheckHelper.checkFileStoragePermissions(this, PermissionCheckHelper.PERMISSION_REQUEST_CODE_STORAGE)) {
+            ArrayList<String> planNameList = DataArray.getPlanNameList();
 
-        if (notNull(planNameList)) {
-            if (planAdapter == null) {
-                planAdapter = new PlanListAdapter(this, planNameList);
-                planListView.setAdapter(planAdapter);
+            if (notNull(planNameList)) {
+                if (planAdapter == null) {
+                    planAdapter = new PlanListAdapter(this, planNameList);
+                    planListView.setAdapter(planAdapter);
+                }
+                else
+                    planAdapter.refreshList(planNameList);
             }
-            else
-                planAdapter.refreshList(planNameList);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionCheckHelper.PERMISSION_REQUEST_CODE_STORAGE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                {
+                    setPlanList();
+                }
+                else {
+                    Utility.toastShort(getString(R.string.storage_permission_denied));
+                    finish();
+                }
+                break;
         }
     }
 }

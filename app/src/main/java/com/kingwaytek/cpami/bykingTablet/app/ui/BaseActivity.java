@@ -38,6 +38,7 @@ import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.IOException;
@@ -145,6 +146,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     public boolean onCreateOptionsMenu(Menu menu) {
         switch (ENTRY_TYPE) {
             case ENTRY_TYPE_DEFAULT:
+            case ENTRY_TYPE_LOCATION_SELECT:
                 if (getLayoutId() == R.layout.activity_base_map) {
                     MenuInflater menuInflater = getMenuInflater();
                     menuInflater.inflate(R.menu.options_menu, menu);
@@ -406,5 +408,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         super.onDestroy();
         Log.i(TAG, "onDestroy!!!");
         WebAgent.stopRetryThread();
+        PopWindowHelper.dismissPopWindow();
     }
 }

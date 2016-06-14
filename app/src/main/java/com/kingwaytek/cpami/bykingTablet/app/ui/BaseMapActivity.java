@@ -62,7 +62,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     protected GoogleMap map;
 
-    private MyLocationManager locationManager;
+    //private MyLocationManager locationManager;
     private boolean locationPermissionChecked;
     private boolean isMapBuilt;
 
@@ -121,17 +121,13 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     }
 
     private void requestLocationUpdate() {
-        if (locationPermissionChecked) {
-            if (locationManager == null)
-                locationManager = AppController.getInstance().getLocationManager();
-            else
-                locationManager.getProvidersAndUpdate(MyLocationManager.getLocationManager());
-        }
+        if (locationPermissionChecked)
+            AppController.getInstance().initLocationManager();
     }
 
     private void removeLocationUpdate() {
-        if (locationPermissionChecked && notNull(locationManager))
-            locationManager.removeUpdate();
+        if (locationPermissionChecked)
+            AppController.getInstance().removeLocationManager();
     }
 
     private void checkLocationPermissions() {

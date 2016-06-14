@@ -12,7 +12,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_size_l">
+            android:padding="@dimen/padding_size_m">
 
             <TextView
                 android:id="@+id/text_startAndEndName"
@@ -24,27 +24,34 @@
                 android:textSize="@dimen/font_text_size_m"
                 android:textColor="@color/md_blue_600"/>
 
-            <TextView
-                android:id="@+id/text_pathInfoDistance"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_size_l"
-                android:layout_marginLeft="@dimen/padding_size_xxl"
-                android:layout_marginStart="@dimen/padding_size_xxl"
-                android:text="@string/plan_distance_is"
-                android:textSize="@dimen/font_text_size_m"
-                android:textColor="@color/md_grey_900"/>
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/padding_size_m" >
 
-            <TextView
-                android:id="@+id/text_pathInfoDuration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_size_m"
-                android:layout_marginLeft="@dimen/padding_size_xxl"
-                android:layout_marginStart="@dimen/padding_size_xxl"
-                android:text="@string/plan_duration_is"
-                android:textSize="@dimen/font_text_size_m"
-                android:textColor="@color/md_grey_900"/>
+                <TextView
+                    android:id="@+id/text_pathInfoDistance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/plan_distance_is"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_900"/>
+
+                <TextView
+                    android:id="@+id/text_pathInfoDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/plan_duration_is"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_900"/>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

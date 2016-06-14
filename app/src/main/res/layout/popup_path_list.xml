@@ -3,9 +3,9 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@drawable/navi_farturn_bg_tile">
+              android:background="@color/transparent_quarter_black">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/pathListHeaderLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/poi_photo_edit_view"
@@ -14,17 +14,29 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/pathListPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_above="@+id/pageDotLayout"/>
 
         <ProgressBar
             android:id="@+id/pathListLoadingCircle"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:visibility="visible" />
 
-    </FrameLayout>
+        <LinearLayout
+            android:id="@+id/pageDotLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_size_m"
+            android:layout_marginBottom="@dimen/padding_size_s"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/pathListView"

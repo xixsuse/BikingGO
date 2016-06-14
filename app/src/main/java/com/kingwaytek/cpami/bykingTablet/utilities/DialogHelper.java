@@ -145,4 +145,13 @@ public class DialogHelper {
         dialogBuilder.setPositiveButton(context.getString(R.string.confirm), positiveClick);
         dialogBuilder.create().show();
     }
+
+    public static void showStoragePermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
+        dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setTitle(context.getString(R.string.storage_permission_rationale_title));
+        dialogBuilder.setMessage(context.getString(R.string.storage_permission_rationale_content));
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setPositiveButton(context.getString(R.string.confirm), positiveClick);
+        dialogBuilder.create().show();
+    }
 }

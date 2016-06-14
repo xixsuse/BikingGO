@@ -17,7 +17,7 @@ public class PathListPagerAdapter extends PagerAdapter {
         this.viewList = viewList;
     }
 
-    public void refeshList(ArrayList<View> viewList) {
+    public void refreshList(ArrayList<View> viewList) {
         this.viewList = viewList;
         notifyDataSetChanged();
     }

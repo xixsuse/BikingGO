@@ -24,6 +24,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -48,10 +51,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
@@ -67,6 +72,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListPagerAdapter;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListViewAdapter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -94,8 +100,19 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private ImageView poiImageView;
     private String photoPath;
 
+    /******** For Popup Path List View (While using Multi points direction) *********/
     private ViewPager pathListPager;
     private PathListPagerAdapter pagerAdapter;
+    private ListView pathListView;
+
+    private ArrayList<Polyline> highLightPolyList;
+
+    private int pageSize;
+    private ImageView pageDots[];
+    private int lastSelectedPage = 0;
+
+    private boolean moveCameraWhilePageSelected;
+    /******** For Popup Path List View (While using Multi points direction)*********/
 
     @Override
     protected void onApiReady() {
@@ -134,6 +151,9 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         super.onDestroy();
         searchText.removeTextChangedListener(this);
         map.setOnMapLongClickListener(null);
+
+        if (notNull(pathListPager))
+            pathListPager.removeOnPageChangeListener(this);
     }
 
     private void checkIntentAndDoActions() {
@@ -141,6 +161,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         {
             switch (ENTRY_TYPE) {
                 case ENTRY_TYPE_DEFAULT:
+                case ENTRY_TYPE_LOCATION_SELECT:
                     map.setOnMapLongClickListener(this);
                     map.setOnMarkerClickListener(this);
 
@@ -814,7 +835,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             for (LatLng latLng : linePoints) {
                 polyOptions.add(latLng);
             }
-            polyOptions.color(ContextCompat.getColor(this, R.color.md_blue_600));
+            polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_blue_600));
             polyOptions.width(15);
 
             if (notNull(myPositionMarker))
@@ -851,7 +872,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             for (LatLng latLng : linePoints) {
                 polyOptions.add(latLng);
             }
-            polyOptions.color(ContextCompat.getColor(this, R.color.md_light_blue_500));
+            polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_light_blue_300));
             polyOptions.width(15);
 
             MarkerOptions marker = new MarkerOptions();
@@ -898,6 +919,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private void showPathListView() {
         if (PopWindowHelper.isPopWindowShowing()) {
             PopWindowHelper.dismissPopWindow();
+
             if (notNull(pathListPager))
                 pathListPager.removeOnPageChangeListener(this);
         }
@@ -934,21 +956,54 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     private void setPathListData(View view) {
-        View loadingCircle = view.findViewById(R.id.pathListLoadingCircle);
+        ProgressBar loadingCircle = (ProgressBar) view.findViewById(R.id.pathListLoadingCircle);
         loadingCircle.setVisibility(View.GONE);
 
-        if (pathListPager == null) {
-            pathListPager = (ViewPager) view.findViewById(R.id.pathListPager);
-        }
+        pathListPager = (ViewPager) view.findViewById(R.id.pathListPager);
+        pathListView = (ListView) view.findViewById(R.id.pathListView);
+
         if (pagerAdapter == null)
             pagerAdapter = new PathListPagerAdapter(getViewListAndSetContent());
         else
-            pagerAdapter.refeshList(getViewListAndSetContent());
+            pagerAdapter.refreshList(getViewListAndSetContent());
+
+        addPageDotsToLayout(view);
 
         pathListPager.setOffscreenPageLimit(3);
         pathListPager.setAdapter(pagerAdapter);
 
         pathListPager.addOnPageChangeListener(this);
+
+        moveCameraWhilePageSelected = false;
+        onPageSelected(lastSelectedPage);
+    }
+
+    private void addPageDotsToLayout(View view) {
+        LinearLayout dotLayout = (LinearLayout) view.findViewById(R.id.pageDotLayout);
+
+        pageSize = pagerAdapter.getCount();
+        pageDots = new ImageView[pageSize];
+
+        int width = getResources().getDimensionPixelSize(R.dimen.padding_size_m);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT);
+
+        for (int i = 0; i < pageSize; i++) {
+            pageDots[i] = new ImageView(this);
+            if (i != 0)
+                params.setMargins(width, 0, 0, 0);
+
+            pageDots[i].setLayoutParams(params);
+            dotLayout.addView(pageDots[i]);
+        }
+    }
+
+    private void setPageDotState(int position) {
+        for (int i = 0; i < pageSize; i++) {
+            if (i == position)
+                pageDots[i].setImageResource(R.drawable.ic_page_dot_on);
+            else
+                pageDots[i].setImageResource(R.drawable.ic_page_dot_off);
+        }
     }
 
     private ArrayList<View> getViewListAndSetContent() {
@@ -978,13 +1033,94 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        moveCameraWhilePageSelected = true;
+    }
 
     @Override
     public void onPageSelected(int position) {
-
+        pathListPager.setCurrentItem(position);
+        checkPathListData(position);
+        setPageDotState(position);
+        lastSelectedPage = position;
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {}
+
+    private void checkPathListData(final int position) {
+        if (DataArray.list_pathList == null || DataArray.list_pathList.get() == null || DataArray.list_pathList.get().isEmpty()) {
+            Bundle bundle = getIntent().getExtras();
+            String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
+            ArrayList<String[]> namePairList = getNamePairs(bundle.getInt(BUNDLE_PLAN_EDIT_INDEX));
+
+            DataArray.getDirectionPathListData(jsonString, namePairList, new DataArray.OnDataGetCallBack() {
+                @Override
+                public void onDataGet() {
+                    setPathListAndMoveCamera(position);
+                }
+            });
+        }
+        else
+            setPathListAndMoveCamera(position);
+    }
+
+    private void setPathListAndMoveCamera(int position) {
+        ItemsPathList pathList = DataArray.list_pathList.get().get(position);
+
+        if (moveCameraWhilePageSelected)
+            moveCamera(new LatLng(pathList.START_LAT, pathList.START_LNG));
+
+        drawStepsHighLight(position);
+
+        pathListView.setAdapter(new PathListViewAdapter(UiMainMapActivity.this, pathList.PATH_STEPS));
+
+        pathListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ItemsPathStep pathStep = (ItemsPathStep) parent.getItemAtPosition(position);
+                moveCameraAndZoom(new LatLng(pathStep.START_LAT, pathStep.START_LNG), 17);
+
+                removeHighLightPolyline();
+                drawHighLight(pathStep.POLY_LINE);
+
+                PopWindowHelper.showPathStepPopWindow(mapRootLayout, pathStep.INSTRUCTIONS, pathStep.DISTANCE, pathStep.GO_ON_PATH);
+            }
+        });
+    }
+
+    private void drawStepsHighLight(int position) {
+        removeHighLightPolyline();
+
+        for (ItemsPathStep pathStep : DataArray.list_pathList.get().get(position).PATH_STEPS) {
+            drawHighLight(pathStep.POLY_LINE);
+        }
+    }
+
+    private void drawHighLight(String polyLine) {
+        ArrayList<LatLng> linePoints = PolyHelper.decodePolyLine(polyLine);
+
+        PolylineOptions polyOptions = new PolylineOptions();
+
+        for (LatLng latLng : linePoints) {
+            polyOptions.add(latLng);
+        }
+        polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_deep_purple_A400));
+        polyOptions.width(22);
+
+        Polyline highLightPolyLine = map.addPolyline(polyOptions);
+        highLightPolyLine.setZIndex(1000);
+
+        highLightPolyList.add(highLightPolyLine);
+    }
+
+    private void removeHighLightPolyline() {
+        if (notNull(highLightPolyList)) {
+            for (Polyline highLightPoly : highLightPolyList) {
+                highLightPoly.remove();
+            }
+        }
+        else
+            highLightPolyList = new ArrayList<>();
+    }
 }

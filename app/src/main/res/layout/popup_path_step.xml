@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="@dimen/padding_size_m"
+              android:background="@drawable/background_gradient_vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_pathInstruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/popWindowCloseBtn"
+            android:layout_toStartOf="@+id/popWindowCloseBtn"
+            android:textSize="@dimen/font_text_size_m"
+            android:textColor="@color/md_white_1000"/>
+
+        <ImageButton
+            android:id="@+id/popWindowCloseBtn"
+            android:layout_width="@dimen/icon_common_size"
+            android:layout_height="@dimen/icon_common_size"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@android:drawable/ic_delete"
+            android:background="@drawable/background_common_button_3"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/padding_size_m">
+
+        <TextView
+            android:id="@+id/text_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_text_size_m"
+            android:textColor="@color/md_grey_50"/>
+
+        <TextView
+            android:id="@+id/text_goOnPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textSize="@dimen/font_text_size_m"
+            android:textStyle="bold"
+            android:textColor="@color/md_grey_50"/>
+
+    </LinearLayout>
+
+</LinearLayout>
