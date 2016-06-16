@@ -12,9 +12,9 @@
     android:paddingStart="@dimen/padding_size_xxl"
     android:paddingRight="@dimen/padding_size_m"
     android:paddingEnd="@dimen/padding_size_m"
-    android:paddingTop="@dimen/padding_size_l"
-    android:paddingBottom="@dimen/padding_size_l"
-    android:drawableRight="@drawable/ic_next"
-    android:drawableEnd="@drawable/ic_next" />
+    android:paddingTop="@dimen/padding_size_s"
+    android:paddingBottom="@dimen/padding_size_s"
+    android:drawableRight="@drawable/ic_right_arrow_48dp"
+    android:drawableEnd="@drawable/ic_right_arrow_48dp"/>
 
 

@@ -179,6 +179,7 @@ public class WebAgent {
         StringRequest directionRequest = new StringRequest(apiUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                PopWindowHelper.dismissPopWindow();
                 webResult.onResultSucceed(response);
             }
         }, new Response.ErrorListener() {

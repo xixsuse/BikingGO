@@ -10,57 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingTop="@dimen/padding_size_xxl"
         android:paddingBottom="@dimen/padding_size_s">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/padding_size_xxl"
-                android:paddingStart="@dimen/padding_size_xxl"
-                android:paddingRight="@dimen/padding_size_xxl"
-                android:paddingEnd="@dimen/padding_size_xxl"
-                android:layout_marginBottom="@dimen/padding_size_l">
-
-                <ImageView
-                    android:layout_width="@dimen/icon_common_size_xl"
-                    android:layout_height="@dimen/icon_common_size_xl"
-                    android:src="@drawable/ic_my_poi"/>
-
-                <LinearLayout
-                    android:id="@+id/poiTitleLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_size_l"
-                    android:layout_marginStart="@dimen/padding_size_l"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical" >
-
-                    <TextView
-                        android:id="@+id/text_poiTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_text_size_l"
-                        android:textColor="@color/md_grey_900"/>
-
-                    <TextView
-                        android:id="@+id/text_poiLatLng"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/padding_size_m"
-                        android:textSize="@dimen/font_text_size_m"
-                        android:textColor="@color/md_grey_700"
-                        android:text="@string/poi_lat_lng"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
 
             <ImageView
                 android:id="@+id/image_poiPhoto"
@@ -72,16 +27,77 @@
                 android:scaleType="center"/>
 
             <TextView
-                android:id="@+id/text_poiContent"
+                android:id="@+id/text_poiTitle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/padding_size_xl"
+                android:layout_height="wrap_content"
+                android:background="@color/md_amber_700"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_l"
+                android:paddingLeft="@dimen/padding_size_xl"
+                android:paddingStart="@dimen/padding_size_xl"
+                android:paddingRight="@dimen/padding_size_xl"
+                android:paddingEnd="@dimen/padding_size_xl"
+                android:layout_marginBottom="@dimen/padding_size_m"
+                android:text="敦南誠品"
+                android:textSize="@dimen/font_text_size_xxl"
+                android:textColor="@color/md_grey_50"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:paddingLeft="@dimen/padding_size_xxl"
                 android:paddingStart="@dimen/padding_size_xxl"
-                android:paddingRight="@dimen/padding_size_xxl"
-                android:paddingEnd="@dimen/padding_size_xxl"
-                android:textSize="@dimen/font_text_size_l"
-                android:textColor="@color/md_grey_900"/>
+                android:paddingRight="@dimen/padding_size_xl"
+                android:paddingEnd="@dimen/padding_size_xl"
+                android:layout_marginTop="@dimen/padding_size_xxl"
+                android:layout_marginBottom="@dimen/padding_size_s">
+
+                <ImageView
+                    android:layout_width="@dimen/padding_size_xxl"
+                    android:layout_height="@dimen/padding_size_xxl"
+                    android:src="@drawable/ic_location"/>
+
+                <TextView
+                    android:id="@+id/text_poiLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/padding_size_xl"
+                    android:layout_marginStart="@dimen/padding_size_xl"
+                    android:gravity="center_vertical"
+                    android:text="000000000000000000000000000"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_800"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/padding_size_xxl"
+                android:paddingStart="@dimen/padding_size_xxl"
+                android:paddingRight="@dimen/padding_size_xl"
+                android:paddingEnd="@dimen/padding_size_xl"
+                android:layout_marginTop="@dimen/padding_size_xl">
+
+                <ImageView
+                    android:layout_width="@dimen/padding_size_xxl"
+                    android:layout_height="@dimen/padding_size_xxl"
+                    android:src="@drawable/ic_comment"/>
+
+                <TextView
+                    android:id="@+id/text_poiContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/padding_size_xl"
+                    android:layout_marginStart="@dimen/padding_size_xl"
+                    android:gravity="center_vertical"
+                    android:text="00000000000"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_800"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

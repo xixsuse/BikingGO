@@ -4,12 +4,14 @@
     <style name="AppTheme" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/actionbar_background_color</item>
         <item name="colorPrimaryDark">@color/actionbar_background_color</item>
-        <item name="android:textColorPrimary">@color/md_grey_50</item>
+        <item name="colorControlNormal">@color/md_amber_400</item>  <!--目前已知這會改變 scroll bar (in any listView)的顏色 -->
         <item name="actionBarStyle">@style/MyActionBarStyle</item>
-        <item name="android:actionMenuTextColor">@color/md_grey_50</item>
         <item name="android:editTextStyle">@style/MyEditTextStyle</item>
         <item name="actionMenuTextAppearance">@style/MenuTextStyle</item>
         <!--
+        <item name="android:textColorPrimary">@color/md_blue_600</item>
+        <item name="android:textColorSecondary">@color/md_blue_600</item> //會改變menu icon的顏色
+        <item name="android:actionMenuTextColor">@color/md_grey_50</item>
         <item name="android:windowBackground">@color/md_blue_grey_50</item>
         <item name="android:textViewStyle">@style/MyTextViewStyle</item>
         -->

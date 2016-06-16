@@ -30,6 +30,7 @@
     <dimen name="icon_common_size_xl">@dimen/sw600dp_icon_common_size_xl</dimen>
 
     <dimen name="poi_photo_edit_view">@dimen/sw600dp_poi_photo_edit_view</dimen>
+    <dimen name="poi_photo_edit_view_l">@dimen/sw600dp_poi_photo_edit_view_l</dimen>
     <dimen name="poi_photo_edit_view_xl">@dimen/sw600dp_poi_photo_edit_view_xl</dimen>
 
 </resources>

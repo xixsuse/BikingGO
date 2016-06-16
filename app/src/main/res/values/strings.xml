@@ -327,7 +327,7 @@
     <string name="poi_edit_a_exist_one">編輯我的景點</string>
     <string name="poi_title">景點名稱：</string>
     <string name="poi_description">景點描述：</string>
-    <string name="poi_lat_lng">位置：%s</string>
+    <string name="poi_location_is">位置：</string>
     <string name="poi_save">儲存</string>
     <string name="poi_delete">刪除</string>
     <string name="poi_require_title">景點名稱不得為空值</string>
@@ -337,6 +337,8 @@
     <string name="poi_empty">尚未新增任何景點！</string>
     <string name="poi_confirm_to_delete">是否確認刪除「%s」?</string>
     <string name="poi_add_a_new_one_instruction">可從附近景點、地點搜尋或在地圖上長按新增點位來新增景點。</string>
+    <string name="poi_select_this_point">選擇此點位</string>
+    <string name="poi_edit_this_point">編輯此點位</string>
 
     <string name="dialog_menu_photo_from_camera">相機</string>
     <string name="dialog_menu_photo_from_gallery">從相簿選擇</string>

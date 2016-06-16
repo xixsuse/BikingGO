@@ -71,7 +71,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected LinearLayout markerBtnLayout;
 
     protected AutoCompleteTextView searchText;
-    private Marker searchMarker;
+    protected Marker searchMarker;
 
     protected HashMap<String, Integer> markerTypeMap;
 
@@ -157,7 +157,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             map.setMyLocationEnabled(true);
             map.setBuildingsEnabled(true);
             map.getUiSettings().setZoomControlsEnabled(true);
-            map.getUiSettings().setMapToolbarEnabled(true);
+            map.getUiSettings().setMapToolbarEnabled(false);
             moveCameraToDefaultLocation();
 
             map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -217,6 +217,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         if (notNull(marker.getTitle())) {
             View view = LayoutInflater.from(this).inflate(R.layout.inflate_marker_search_result_window, null);
             TextView title = (TextView) view.findViewById(R.id.marker_title);
+
             title.setText(marker.getTitle());
 
             return view;
@@ -310,7 +311,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             @Override
             public void onLocationFound(ArrayList<ItemsSearchResult> searchResults, ArrayList<String> nameList, boolean isSearchByGeocoder) {
                 if (notNull(searchResults.get(0)))
-                    putSearchMarkerOnMap(nameList.get(0), new LatLng(searchResults.get(0).LAT, searchResults.get(0).LNG));
+                    putSearchMarkerOnMap(nameList.get(0), searchResults.get(0).ADDRESS, new LatLng(searchResults.get(0).LAT, searchResults.get(0).LNG));
             }
             @Override
             public void onNothingFound() {
@@ -319,13 +320,15 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         });
     }
 
-    private void putSearchMarkerOnMap(String title, LatLng latLng) {
+    private void putSearchMarkerOnMap(String title, String snippet, LatLng latLng) {
         if (notNull(searchMarker))
             searchMarker.remove();
 
         MarkerOptions marker = new MarkerOptions();
         marker.position(latLng);
         marker.title(title);
+        marker.snippet(snippet);
+
         InputStream is = getResources().openRawResource(+ R.drawable.ic_search_result);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
 
@@ -333,6 +336,9 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
         searchMarker = map.addMarker(marker);
         searchMarker.showInfoWindow();
+
+        onMarkerClick(searchMarker);
+
         moveCameraAndZoom(latLng, 16);
 
         closeInputStream(is);

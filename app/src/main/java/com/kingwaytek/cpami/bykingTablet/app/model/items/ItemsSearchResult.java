@@ -8,13 +8,15 @@ public class ItemsSearchResult {
     public String NAME;
     public String ADMIN_AREA;
     public String COUNTRY_NAME;
+    public String ADDRESS;
     public double LAT;
     public double LNG;
 
-    public ItemsSearchResult(String name, String adminArea, String countryName, double lat, double lng) {
+    public ItemsSearchResult(String name, String adminArea, String countryName, String address, double lat, double lng) {
         this.NAME = name;
         this.ADMIN_AREA = adminArea;
         this.COUNTRY_NAME = countryName;
+        this.ADDRESS = address;
         this.LAT = lat;
         this.LNG = lng;
     }

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -24,7 +23,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -70,10 +68,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     protected NavigationView drawerView;
 
     private ProgressBar loadingCircle;
-
-    protected ImageButton actionbar_menuBtn;
-    private ImageButton actionbar_aroundBtn;
-    private ImageButton actionbar_switchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,29 +186,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             actionbar.hide();
     }
 
-    public void showRightButtons(boolean isShow) {
-        if (isShow) {
-            actionbar_aroundBtn.setVisibility(View.VISIBLE);
-            actionbar_switchBtn.setVisibility(View.VISIBLE);
-        }
-        else {
-            actionbar_aroundBtn.setVisibility(View.GONE);
-            actionbar_switchBtn.setVisibility(View.GONE);
-        }
-    }
-
     private void findActionbarWidgetViewAndSetListener() {
         loadingCircle = (ProgressBar) actionbar.getCustomView().findViewById(R.id.loadingCircle);
-        //actionbar_menuBtn = (ImageButton) actionbar.getCustomView().findViewById(R.id.actionBar_menuButton);
-        //actionbar_aroundBtn = (ImageButton) actionbar.getCustomView().findViewById(R.id.actionBar_aroundButton);
-        //actionbar_switchBtn = (ImageButton) actionbar.getCustomView().findViewById(R.id.actionBar_switchButton);
 
         if (windowView == null)
             windowView = getWindow().getDecorView();
-    }
-
-    protected void setMenuButtonIcon(int iconRes) {
-        actionbar_menuBtn.setImageDrawable(ContextCompat.getDrawable(this, iconRes));
     }
 
     protected void showLoadingCircle(boolean isShow) {
@@ -234,13 +210,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //actionbar.setIcon(R.drawable.selector_toolbar_back_arrow);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                //actionbar.setIcon(R.drawable.selector_toolbar_list);
             }
         };
 

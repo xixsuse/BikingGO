@@ -8,13 +8,15 @@ import java.io.Serializable;
 public class ItemsMyPOI implements Serializable {
 
     public String TITLE;
+    public String ADDRESS;
     public String DESCRIPTION;
     public double LAT;
     public double LNG;
     public String PHOTO_PATH;
 
-    public ItemsMyPOI(String title, String desc, double lat, double lng, String photoPath) {
+    public ItemsMyPOI(String title, String address, String desc, double lat, double lng, String photoPath) {
         this.TITLE = title;
+        this.ADDRESS = address;
         this.DESCRIPTION = desc;
         this.LAT = lat;
         this.LNG = lng;

@@ -63,7 +63,7 @@ public class JsonParser {
                 lat = location.getDouble("lat");
                 lng = location.getDouble("lng");
 
-                resultList.add(new ItemsSearchResult(name, adminArea, countryName, lat, lng));
+                resultList.add(new ItemsSearchResult(name, adminArea, countryName, name, lat, lng));
             }
             if (DataArray.list_searchResult != null)
                 DataArray.list_searchResult.clear();
@@ -85,6 +85,7 @@ public class JsonParser {
             JA = new JSONArray(SettingManager.Favorite.getMyPoi());
 
             String title;
+            String address;
             String desc;
             double lat;
             double lng;
@@ -95,12 +96,13 @@ public class JsonParser {
             for (int i = 0; i < JA.length(); i++) {
                 jo = JA.getJSONObject(i);
                 title = jo.getString(FavoriteHelper.POI_TITLE);
+                address = jo.getString(FavoriteHelper.POI_ADDRESS);
                 desc = jo.getString(FavoriteHelper.POI_DESCRIPTION);
                 lat = jo.getDouble(FavoriteHelper.POI_LAT);
                 lng = jo.getDouble(FavoriteHelper.POI_LNG);
                 photoPath = jo.getString(FavoriteHelper.POI_PHOTO_PATH);
 
-                myPoiList.add(new ItemsMyPOI(title, desc, lat, lng, photoPath));
+                myPoiList.add(new ItemsMyPOI(title, address, desc, lat, lng, photoPath));
             }
             releaseObjects();
             return myPoiList;

@@ -38,7 +38,9 @@
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:drawablePadding="@dimen/padding_size_m"
                 android:hint="@string/search_anywhere"
+                android:textColorHint="@color/md_grey_400"
                 android:textSize="@dimen/font_text_size_m"
+                android:textColor="@color/md_blue_grey_900"
                 android:inputType="textAutoComplete|textAutoCorrect"
                 android:imeOptions="actionDone"
                 android:completionThreshold="1"
@@ -107,6 +109,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:theme="@style/MyNavigationDrawerStyle"
+        app:itemTextColor="@color/md_grey_50"
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/drawer" />
 

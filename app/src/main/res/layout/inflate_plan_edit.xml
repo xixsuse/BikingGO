@@ -86,10 +86,13 @@
             android:layout_height="@dimen/icon_common_size"
             android:layout_marginLeft="@dimen/padding_size_m"
             android:layout_marginStart="@dimen/padding_size_m"
-            android:src="@android:drawable/ic_delete"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:src="@drawable/selector_close_button"
+            android:scaleType="fitCenter"
+            android:padding="@dimen/padding_size_s"
+            android:background="@null"/>
 
     </RelativeLayout>
 

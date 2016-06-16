@@ -67,7 +67,7 @@ public class LocationSearchHelper {
             String geoName;
 
             for (Address addr : addrList) {
-                locationName = getCombinedName(addr);
+                locationName = getFeatureName(addr) != null ? getFeatureName(addr) : getCombinedName(addr);
                 geoName = locationName + " - " + addr.getAdminArea() + addr.getLocality() + " (" + addr.getCountryName() + ")";
                 geoName = geoName.replace("null", " ");
 
@@ -76,8 +76,8 @@ public class LocationSearchHelper {
 
                 locationNameList.add(geoName);
 
-                resultList.add(new ItemsSearchResult(locationName,
-                        addr.getAdminArea(), addr.getCountryName(), addr.getLatitude(), addr.getLongitude()));
+                resultList.add(new ItemsSearchResult(locationName, addr.getAdminArea(), addr.getCountryName(),
+                        getFullAddress(addr), addr.getLatitude(), addr.getLongitude()));
             }
             locationFound.onLocationFound(resultList, locationNameList, true);
             PopWindowHelper.dismissPopWindow();
@@ -85,6 +85,8 @@ public class LocationSearchHelper {
     }
 
     private static void searchByGoogleApi(String input, final OnLocationFoundCallBack locationFound) {
+        input = input.replace(" ", "");
+
         DataArray.getLocationSearchResult(input, new DataArray.OnDataGetCallBack() {
             @Override
             public void onDataGet() {
@@ -110,13 +112,45 @@ public class LocationSearchHelper {
             locationName += addr.getThoroughfare();
         if (addr.getSubThoroughfare() != null) {
             if (addr.getSubThoroughfare().contains("號"))
-                locationName += addr.getSubThoroughfare() + " ";
+                locationName += addr.getSubThoroughfare();
             else
-                locationName += addr.getSubThoroughfare() + "號 ";
+                locationName += addr.getSubThoroughfare() + "號";
         }
+        /*
         if (!addr.getFeatureName().equals(addr.getThoroughfare()) && !addr.getFeatureName().equals(addr.getSubThoroughfare()))
             locationName += addr.getFeatureName();
-
+        */
         return locationName;
+    }
+
+    private static String getFeatureName(Address addr) {
+        if (!addr.getFeatureName().equals(addr.getThoroughfare()) && !addr.getFeatureName().equals(addr.getSubThoroughfare()))
+            return addr.getFeatureName();
+        else
+            return null;
+    }
+
+    private static String getFullAddress(Address addr) {
+        String address = "";
+
+        if (addr.getAdminArea() != null)
+            address += addr.getAdminArea();
+
+        if (addr.getLocality() != null)
+            address += addr.getLocality();
+
+        if (addr.getThoroughfare() != null)
+            address += addr.getThoroughfare();
+
+        if (addr.getSubThoroughfare() != null) {
+            if (addr.getSubThoroughfare().contains("號"))
+                address += addr.getSubThoroughfare();
+            else
+                address += addr.getSubThoroughfare() + "號";
+        }
+
+        address = address.replace("null", "");
+
+        return address;
     }
 }

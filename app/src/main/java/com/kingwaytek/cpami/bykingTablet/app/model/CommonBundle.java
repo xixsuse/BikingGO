@@ -24,7 +24,6 @@ public interface CommonBundle {
     String BUNDLE_LOCATION_LATLNG = "LocationSelectLatLng";
     String BUNDLE_PLAN_EDIT_INDEX = "PlanEditIndex";
     String BUNDLE_PLAN_DIRECTION_JSON = "PlanDirectionJsonString";
-    String BUNDLE_PLAN_DIRECTION_URL = "PlanDirectionUrl";
     String BUNDLE_PLAN_STEP_START_NAME = "PlanStepStartName";
     String BUNDLE_PLAN_STEP_END_NAME = "PlanStepEndName";
     String BUNDLE_PLAN_STEP_DISTANCE = "PlanStepDistance";

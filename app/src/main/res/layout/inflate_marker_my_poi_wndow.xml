@@ -13,12 +13,12 @@
         android:layout_marginLeft="@dimen/padding_size_xxl"
         android:layout_marginRight="@dimen/padding_size_xxl"
         android:paddingTop="@dimen/padding_size_m"
-        android:paddingBottom="@dimen/padding_size_m"
+        android:paddingBottom="@dimen/padding_size_xl"
         android:paddingLeft="@dimen/padding_size_m"
         android:paddingStart="@dimen/padding_size_m"
         android:paddingRight="@dimen/padding_size_s"
         android:paddingEnd="@dimen/padding_size_s"
-        android:background="@drawable/float_panel">
+        android:background="@drawable/info_window">
 
         <ImageView
             android:id="@+id/marker_poiPhoto"
@@ -45,7 +45,7 @@
                 android:paddingStart="@dimen/padding_size_s"
                 android:layout_gravity="center"
                 android:textStyle="bold"
-                android:textColor="@color/md_blue_600"
+                android:textColor="@color/md_green_A400"
                 android:textSize="@dimen/font_text_size_l" />
 
             <TextView
@@ -56,7 +56,7 @@
                 android:paddingLeft="@dimen/padding_size_s"
                 android:paddingStart="@dimen/padding_size_s"
                 android:paddingBottom="@dimen/padding_size_s"
-                android:textColor="@color/common_title_color"
+                android:textColor="@color/md_grey_50"
                 android:textSize="@dimen/font_text_size_m"
                 android:maxLength="25" />
 
@@ -65,8 +65,9 @@
         <ImageView
             android:layout_width="@dimen/icon_common_size"
             android:layout_height="@dimen/icon_common_size"
-            android:paddingTop="@dimen/padding_size_m"
-            android:src="@drawable/ic_right_arrow_blue"
+            android:paddingTop="@dimen/padding_size_l"
+            android:src="@drawable/ic_right_arrow"
+            android:scaleType="centerCrop"
             android:background="@null"
             android:layout_gravity="bottom"/>
 

@@ -59,17 +59,17 @@ public class PopWindowHelper {
         inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.popup_poi_edit_window, null);
 
-        double popWidth = Utility.getScreenWidth() / 1.1;
-        double popHeight = Utility.getScreenHeight() / 1.5;
+        double popWidth = Utility.getScreenWidth();
+        double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
         setPopWindowCancelable(false);
 
-        double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
-        int yPos = appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xl);
+        //double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
+        //int yPos = appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xl);
 
-        popWindow.showAsDropDown(anchorView, (int) xPos, yPos);
+        popWindow.showAtLocation(anchorView, Gravity.BOTTOM, 0, 0);
 
         return view;
     }
@@ -99,7 +99,7 @@ public class PopWindowHelper {
         dismissPopWindow();
 
         inflater = LayoutInflater.from(appContext());
-        View view = inflater.inflate(R.layout.popup_poi_edit_window, null);
+        View view = inflater.inflate(R.layout.popup_poi_edit_window_full_screen, null);
 
         double popWidth = Utility.getScreenWidth();
         double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();

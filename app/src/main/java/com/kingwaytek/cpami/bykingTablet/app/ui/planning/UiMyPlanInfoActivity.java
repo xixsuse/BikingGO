@@ -16,7 +16,6 @@ import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
-import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
@@ -209,9 +208,8 @@ public class UiMyPlanInfoActivity extends BaseActivity {
             WebAgent.getMultiDirectionsData(apiUrl, new WebAgent.WebResultImplement() {
                 @Override
                 public void onResultSucceed(String response) {
-                    Intent intent = new Intent(UiMyPlanInfoActivity.this, UiMainMapActivity.class);
+                    Intent intent = new Intent(UiMyPlanInfoActivity.this, UiPlanDirectionMapActivity.class);
                     intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_DIRECTIONS);
-                    //intent.putExtra(BUNDLE_PLAN_DIRECTION_URL, apiUrl);
 
                     Bundle bundle = new Bundle();
                     bundle.putString(BUNDLE_PLAN_DIRECTION_JSON, response);

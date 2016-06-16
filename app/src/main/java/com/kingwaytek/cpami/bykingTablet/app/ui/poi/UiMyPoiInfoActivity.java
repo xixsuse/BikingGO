@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -39,8 +40,8 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
     private TextView poiTitle;
     private TextView poiContent;
-    private ImageView poiPhoto;
-    private TextView poiLatLng;
+    private ImageView poiBigPhotoView;
+    private TextView poiLocation;
 
     private ImageButton btn_poiEdit;
     private ImageButton btn_poiDelete;
@@ -73,8 +74,8 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
         rootLayout = (ScrollView) findViewById(R.id.poiInfoLayout);
         poiTitle = (TextView) findViewById(R.id.text_poiTitle);
         poiContent = (TextView) findViewById(R.id.text_poiContent);
-        poiPhoto = (ImageView) findViewById(R.id.image_poiPhoto);
-        poiLatLng = (TextView) findViewById(R.id.text_poiLatLng);
+        poiBigPhotoView = (ImageView) findViewById(R.id.image_poiPhoto);
+        poiLocation = (TextView) findViewById(R.id.text_poiLocation);
         btn_poiEdit = (ImageButton) findViewById(R.id.btn_poiEdit);
         btn_poiDelete = (ImageButton) findViewById(R.id.btn_poiDelete);
         btn_fbShare = (ImageButton) findViewById(R.id.btn_facebookShare);
@@ -82,7 +83,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
     @Override
     protected void setListener() {
-        poiPhoto.setOnClickListener(new View.OnClickListener() {
+        poiBigPhotoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //DialogHelper.showImageViewDialog(UiMyPoiInfoActivity.this, poiItem.TITLE, poiItem.PHOTO_PATH);
@@ -119,22 +120,28 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
     }
 
     private void setPoiInfo() {
-        String poiLocation = String.valueOf(poiItem.LAT + ", " + poiItem.LNG);
-        poiLatLng.setText(poiLocation);
+        this.poiLocation.setText(poiItem.ADDRESS);
 
         poiTitle.setText(poiItem.TITLE);
         poiContent.setText(poiItem.DESCRIPTION);
 
-        int imageViewHeight = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view_xl);
-
         if (!poiItem.PHOTO_PATH.isEmpty()) {
-            poiPhoto.setVisibility(View.VISIBLE);
-            poiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmapInFullWidth(poiItem.PHOTO_PATH, imageViewHeight));
+            setImageViewHeight();
+            int imageViewHeight = poiBigPhotoView.getLayoutParams().height;
+
+            poiBigPhotoView.setVisibility(View.VISIBLE);
+            poiBigPhotoView.setImageBitmap(BitmapUtility.getDecodedBitmapInFullWidth(poiItem.PHOTO_PATH, imageViewHeight));
         }
         else {
-            poiPhoto.setVisibility(View.GONE);
-            poiPhoto.setImageResource(0);
+            poiBigPhotoView.setVisibility(View.GONE);
+            poiBigPhotoView.setImageResource(0);
         }
+    }
+
+    private void setImageViewHeight() {
+        int height = (Utility.getScreenWidth() / 3) * 2; // 寬高比 3:2
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        poiBigPhotoView.setLayoutParams(params);
     }
 
     private void editMyPoi() {
@@ -142,36 +149,39 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
         TextView poiBanner = (TextView) view.findViewById(R.id.poiBanner);
         final EditText poiTitle = (EditText) view.findViewById(R.id.edit_poiTitle);
+        final EditText poiLocation = (EditText) view.findViewById(R.id.edit_poiLocation);
         final EditText poiContent = (EditText) view.findViewById(R.id.edit_poiContent);
         poiImageView = (ImageView) view.findViewById(R.id.image_poiPhoto);
-        TextView poiLatLng = (TextView) view.findViewById(R.id.text_poiLatLng);
         Button poiBtnSave = (Button) view.findViewById(R.id.btn_poiSave);
         Button poiBtnCancel = (Button) view.findViewById(R.id.btn_poiCancel);
 
         poiBanner.setText(getString(R.string.poi_edit_a_exist_one));
 
-        String poiLocation = String.valueOf("\n" + poiItem.LAT + ",\n" + poiItem.LNG);
-        poiLatLng.setText(getString(R.string.poi_lat_lng, poiLocation));
 
         poiTitle.setText(poiItem.TITLE);
         poiTitle.setSelection(poiItem.TITLE.length());
+
+        poiLocation.setText(poiItem.ADDRESS);
+        poiLocation.setSelection(poiItem.ADDRESS.length());
+
         poiContent.setText(poiItem.DESCRIPTION);
         poiContent.setSelection(poiItem.DESCRIPTION.length());
 
         photoPath = poiItem.PHOTO_PATH;
 
         if (!poiItem.PHOTO_PATH.isEmpty())
-            setPoiImageView(poiItem.PHOTO_PATH);
+            setPoiEditImageView(poiItem.PHOTO_PATH);
 
         poiBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String title = poiTitle.getText().toString();
+                String address = poiLocation.getText().toString();
                 String content = poiContent.getText().toString();
 
                 if (!title.isEmpty()) {
                     if (isPoiExisted) {
-                        FavoriteHelper.updateMyPoi(title, content, photoPath);
+                        FavoriteHelper.updateMyPoi(title, address, content, photoPath);
                         Utility.toastShort(getString(R.string.poi_update_done));
                         PopWindowHelper.dismissPopWindow();
 
@@ -200,7 +210,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             poiImageView.setOnClickListener(ImageSelectHelper.getImageClick(this, this));
     }
 
-    private void setPoiImageView(String photoPath) {
+    private void setPoiEditImageView(String photoPath) {
         int reqSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
         poiImageView.setImageBitmap(BitmapUtility.getDecodedBitmap(photoPath, reqSize, reqSize));
     }
@@ -228,7 +238,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
     private void getPhotoPathAndSetImageView(int requestCode, Intent data) {
         photoPath = ImageSelectHelper.getPhotoPath(this, requestCode, data);
-        setPoiImageView(photoPath);
+        setPoiEditImageView(photoPath);
         setImageClickListener();
     }
 

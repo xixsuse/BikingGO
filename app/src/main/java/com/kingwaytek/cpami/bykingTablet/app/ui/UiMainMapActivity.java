@@ -12,21 +12,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -34,8 +27,6 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
@@ -46,7 +37,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -55,9 +45,6 @@ import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
-import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
-import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
-import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
@@ -71,8 +58,6 @@ import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
-import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListPagerAdapter;
-import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListViewAdapter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -84,7 +69,7 @@ import java.util.ArrayList;
  * @author Vincent (2016/4/15).
  */
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
-        OnPhotoRemovedCallBack, ViewPager.OnPageChangeListener {
+        OnPhotoRemovedCallBack {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
@@ -99,20 +84,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private ImageView poiImageView;
     private String photoPath;
-
-    /******** For Popup Path List View (While using Multi points direction) *********/
-    private ViewPager pathListPager;
-    private PathListPagerAdapter pagerAdapter;
-    private ListView pathListView;
-
-    private ArrayList<Polyline> highLightPolyList;
-
-    private int pageSize;
-    private ImageView pageDots[];
-    private int lastSelectedPage = 0;
-
-    private boolean moveCameraWhilePageSelected;
-    /******** For Popup Path List View (While using Multi points direction)*********/
 
     @Override
     protected void onApiReady() {
@@ -129,15 +100,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     protected void setListener() {
-        searchText.addTextChangedListener(this);
-        searchText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                searchLocation((String)parent.getItemAtPosition(position));
-                clearSearchText();
-                hideKeyboard(true);
-            }
-        });
+
     }
 
     @Override
@@ -149,11 +112,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     @Override
     public void onDestroy() {
         super.onDestroy();
-        searchText.removeTextChangedListener(this);
         map.setOnMapLongClickListener(null);
-
-        if (notNull(pathListPager))
-            pathListPager.removeOnPageChangeListener(this);
     }
 
     private void checkIntentAndDoActions() {
@@ -167,17 +126,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                     if (SettingManager.MarkerFlag.getMyPoiFlag())
                         new PutAllMyPoiMarkers().execute();
-
-                    break;
-
-                case ENTRY_TYPE_DIRECTIONS:
-                    Intent intent = getIntent();
-                    Bundle bundle = intent.getExtras();
-
-                    String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
-                    int planIndex = bundle.getInt(BUNDLE_PLAN_EDIT_INDEX);
-
-                    drawMultiPointsLine(jsonString, planIndex);
 
                     break;
             }
@@ -239,7 +187,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 if (markerTypeMap.containsKey(key)) {
                     switch (markerTypeMap.get(key)) {
                         case R.drawable.ic_end:
-                            editMyPoi(marker.getPosition(), null);
+                            editMyPoi(marker.getPosition(), null, null);
                             break;
 
                         case R.drawable.ic_my_poi:
@@ -258,7 +206,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                         case R.drawable.ic_search_result:
                         case R.drawable.ic_around_poi:
-                            editMyPoi(marker.getPosition(), marker.getTitle());
+                            editMyPoi(marker.getPosition(), marker.getTitle(), marker.getSnippet());
                             break;
                     }
                 }
@@ -314,10 +262,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             case ACTION_AROUND:
                 goToPlacePicker();
-                break;
-
-            case ACTION_LIST:
-                showPathListView();
                 break;
         }
 
@@ -410,6 +354,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         lastAroundPoiMarker = map.addMarker(marker);
 
+        onMarkerClick(lastAroundPoiMarker);
+
         if (notNull(lastAroundPoiMarker))
             lastAroundPoiMarker.showInfoWindow();
 
@@ -440,54 +386,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-    @Override
-    public void afterTextChanged(final Editable s) {
-        if (s.length() > 0) {
-            LatLngBounds latLngBounds = map.getProjection().getVisibleRegion().latLngBounds;
-            PendingResult<AutocompletePredictionBuffer> results = Places.GeoDataApi.getAutocompletePredictions(
-                    googleApiClient, s.toString(), latLngBounds, null);
-
-            final ArrayList<String> nameList = new ArrayList<>();
-
-            results.setResultCallback(new ResultCallback<AutocompletePredictionBuffer>() {
-                @Override
-                public void onResult(@NonNull AutocompletePredictionBuffer autocompletePredictions) {
-                    for (AutocompletePrediction prediction : autocompletePredictions) {
-                        Log.i(TAG, String.format("PlaceId: '%s', PrimaryText: '%s', SecondaryText: '%s', Type: '%s'",
-                                prediction.getPlaceId(),
-                                prediction.getPrimaryText(null),
-                                prediction.getSecondaryText(null),
-                                prediction.getPlaceTypes()));
-
-                        nameList.add(prediction.getPrimaryText(null).toString());
-                    }
-                    autocompletePredictions.release();
-                    setAutoCompleteText(nameList);
-
-                    Log.i(TAG, "TextChanged: " + s.length());
-                }
-            });
-        }
-        else {
-            searchText.setAdapter(null);
-            searchText.dismissDropDown();
-            Log.i(TAG, "TextChanged: empty!");
-        }
-    }
-
-    private void setAutoCompleteText(ArrayList<String> nameList) {
-        searchText.setAdapter(getSimpleAdapter(nameList));
-        searchText.setDropDownBackgroundResource(R.drawable.background_search_adapter);
-        if (searchText.getText().length() > 0)
-            searchText.showDropDown();
-    }
-
-    @Override
     public void onMapLongClick(LatLng latLng) {
         putNewMarker(latLng);
     }
@@ -495,8 +393,12 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private void putNewMarker(LatLng latLng) {
         MarkerOptions marker = new MarkerOptions();
         marker.position(latLng);
-        marker.title("選擇點位：");
-        marker.snippet(String.valueOf(latLng.latitude + "\n" + latLng.longitude));
+        marker.title(String.valueOf(latLng.latitude + "\n" + latLng.longitude));
+
+        if (ENTRY_TYPE == ENTRY_TYPE_LOCATION_SELECT)
+            marker.snippet(getString(R.string.poi_select_this_point));
+        else
+            marker.snippet(getString(R.string.poi_edit_this_point));
 
         InputStream is = getResources().openRawResource(+R.drawable.ic_end);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
@@ -519,13 +421,13 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         closeInputStream(is);
     }
 
-    private void editMyPoi(final LatLng latLng, @Nullable String title) {
-        View view = PopWindowHelper.getPoiEditWindowView(this, searchTextLayout);
+    private void editMyPoi(final LatLng latLng, @Nullable String title, @Nullable String address) {
+        View view = PopWindowHelper.getPoiEditWindowView(this, mapRootLayout);
 
         final EditText poiTitle = (EditText) view.findViewById(R.id.edit_poiTitle);
+        final EditText poiLocation = (EditText) view.findViewById(R.id.edit_poiLocation);
         final EditText poiContent = (EditText) view.findViewById(R.id.edit_poiContent);
         poiImageView = (ImageView) view.findViewById(R.id.image_poiPhoto);
-        TextView poiLatLng = (TextView) view.findViewById(R.id.text_poiLatLng);
         Button poiBtnSave = (Button) view.findViewById(R.id.btn_poiSave);
         Button poiBtnCancel = (Button) view.findViewById(R.id.btn_poiCancel);
 
@@ -534,8 +436,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             poiTitle.setSelection(title.length());
         }
 
-        String poiLocation = String.valueOf("\n" + latLng.latitude + ",\n" + latLng.longitude);
-        poiLatLng.setText(getString(R.string.poi_lat_lng, poiLocation));
+        if (address == null || address.isEmpty())
+            address = String.valueOf(latLng.latitude + ",\n" + latLng.longitude); // If address is null, use LatLng instead.
+
+        poiLocation.setText(address);
 
         photoPath = "";
         final boolean isPoiExisted = FavoriteHelper.isPoiExisted(latLng.latitude, latLng.longitude);
@@ -544,18 +448,19 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             @Override
             public void onClick(View v) {
                 String title = poiTitle.getText().toString();
+                String address = poiLocation.getText().toString();
                 String content = poiContent.getText().toString();
 
                 if (!title.isEmpty()) {
                     if (isPoiExisted) {
-                        FavoriteHelper.updateMyPoi(title, content, photoPath);
+                        FavoriteHelper.updateMyPoi(title, address, content, photoPath);
                         Utility.toastShort(getString(R.string.poi_update_done));
                         PopWindowHelper.dismissPopWindow();
 
                         reloadMarker(title, content, false);
                     }
                     else {
-                        FavoriteHelper.addMyPoi(title, content, latLng.latitude, latLng.longitude, photoPath);
+                        FavoriteHelper.addMyPoi(title, address, content, latLng.latitude, latLng.longitude, photoPath);
                         Utility.toastShort(getString(R.string.poi_save_done));
                         PopWindowHelper.dismissPopWindow();
 
@@ -587,6 +492,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                 poiTitle.setText(poiItem.TITLE);
                 poiTitle.setSelection(poiItem.TITLE.length());
+                poiLocation.setText(poiItem.ADDRESS);
+                poiLocation.setSelection(poiItem.ADDRESS.length());
                 poiContent.setText(poiItem.DESCRIPTION);
 
                 photoPath = poiItem.PHOTO_PATH;
@@ -650,6 +557,17 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             selectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
             closeInputStream(is);
 
+            /**
+             * 如果正要 Reload的 Marker是搜尋結果打上來的(ic_search_result)，<br>
+             * 那就 assign searchMarker to null，<br>
+             * 避免下次再做搜尋時，已經 Reload的 Marker會被移除！
+             */
+            String key = String.valueOf(selectedMarker.getPosition().latitude) + String.valueOf(selectedMarker.getPosition().longitude);
+            if (notNull(markerTypeMap) && markerTypeMap.containsKey(key)) {
+                if (markerTypeMap.get(key) == R.drawable.ic_search_result)
+                    searchMarker = null;
+            }
+
             setMarkerTypeMap(selectedMarker.getPosition().latitude, selectedMarker.getPosition().longitude, R.drawable.ic_my_poi);
 
             selectedMarker.showInfoWindow();
@@ -684,7 +602,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     protected void onMarkerEditClick() {
-        editMyPoi(selectedMarker.getPosition(), null);
+        editMyPoi(selectedMarker.getPosition(), null, null);
     }
 
     private class PutAllMyPoiMarkers extends AsyncTask<Void, Void, Void> {
@@ -858,269 +776,5 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             closeInputStream(is);
         }
-    }
-
-    private void drawMultiPointsLine(String jsonString, int planIndex) {
-        String polyOverview = JsonParser.getPolyLineOverview(jsonString);
-
-        if (notNull(polyOverview)) {
-            ArrayList<LatLng> linePoints = PolyHelper.decodePolyLine(polyOverview);
-            ArrayList<ItemsPlanItem> planItems = DataArray.getPlansData().get(planIndex).PLAN_ITEMS;
-
-            PolylineOptions polyOptions = new PolylineOptions();
-
-            for (LatLng latLng : linePoints) {
-                polyOptions.add(latLng);
-            }
-            polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_light_blue_300));
-            polyOptions.width(15);
-
-            MarkerOptions marker = new MarkerOptions();
-
-            marker.position(linePoints.get(0));
-            marker.title("1." + planItems.get(0).TITLE);
-            InputStream is = getResources().openRawResource(+ R.drawable.ic_start);
-            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
-
-            map.addMarker(marker);
-
-            marker.position(linePoints.get(linePoints.size() - 1));
-            marker.title(planItems.size() + "." + planItems.get(planItems.size() - 1).TITLE);
-            is = getResources().openRawResource(+ R.drawable.ic_end);
-            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
-
-            map.addMarker(marker);
-
-            if (planItems.size() > 2) {
-                is = getResources().openRawResource(+ R.drawable.ic_search_result);
-                BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is));
-
-                MarkerOptions waypointsMarker = new MarkerOptions();
-
-                for (int i = 0; i < planItems.size(); i ++) {
-                    if (i != 0 && i != planItems.size() -1) {
-                        waypointsMarker.position(new LatLng(planItems.get(i).LAT, planItems.get(i).LNG));
-                        waypointsMarker.title((i + 1) + "." + planItems.get(i).TITLE);
-                        waypointsMarker.icon(markerIcon);
-                        map.addMarker(waypointsMarker);
-                    }
-                }
-            }
-
-            map.addPolyline(polyOptions);
-
-            PopWindowHelper.dismissPopWindow();
-            moveCameraAndZoom(linePoints.get(0), 16);
-
-            closeInputStream(is);
-        }
-    }
-
-    private void showPathListView() {
-        if (PopWindowHelper.isPopWindowShowing()) {
-            PopWindowHelper.dismissPopWindow();
-
-            if (notNull(pathListPager))
-                pathListPager.removeOnPageChangeListener(this);
-        }
-        else {
-            final View view = PopWindowHelper.getPathListPopWindowView(mapRootLayout, this);
-            Bundle bundle = getIntent().getExtras();
-
-            if (notNull(view) && notNull(bundle)) {
-                String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
-                ArrayList<String[]> namePairList = getNamePairs(bundle.getInt(BUNDLE_PLAN_EDIT_INDEX));
-
-                DataArray.getDirectionPathListData(jsonString, namePairList, new DataArray.OnDataGetCallBack() {
-                    @Override
-                    public void onDataGet() {
-                        setPathListData(view);
-                    }
-                });
-            }
-        }
-    }
-
-    private ArrayList<String[]> getNamePairs(int index) {
-        ArrayList<ItemsPlanItem> planItems = DataArray.getPlansData().get(index).PLAN_ITEMS;
-        int size = planItems.size();
-
-        ArrayList<String[]> namePairList = new ArrayList<>(size - 1);
-
-        for (int i = 0; i < size; i++) {
-            if (i + 1 == size)
-                break;
-            namePairList.add(new String[] {planItems.get(i).TITLE, planItems.get(i + 1).TITLE});
-        }
-        return namePairList;
-    }
-
-    private void setPathListData(View view) {
-        ProgressBar loadingCircle = (ProgressBar) view.findViewById(R.id.pathListLoadingCircle);
-        loadingCircle.setVisibility(View.GONE);
-
-        pathListPager = (ViewPager) view.findViewById(R.id.pathListPager);
-        pathListView = (ListView) view.findViewById(R.id.pathListView);
-
-        if (pagerAdapter == null)
-            pagerAdapter = new PathListPagerAdapter(getViewListAndSetContent());
-        else
-            pagerAdapter.refreshList(getViewListAndSetContent());
-
-        addPageDotsToLayout(view);
-
-        pathListPager.setOffscreenPageLimit(3);
-        pathListPager.setAdapter(pagerAdapter);
-
-        pathListPager.addOnPageChangeListener(this);
-
-        moveCameraWhilePageSelected = false;
-        onPageSelected(lastSelectedPage);
-    }
-
-    private void addPageDotsToLayout(View view) {
-        LinearLayout dotLayout = (LinearLayout) view.findViewById(R.id.pageDotLayout);
-
-        pageSize = pagerAdapter.getCount();
-        pageDots = new ImageView[pageSize];
-
-        int width = getResources().getDimensionPixelSize(R.dimen.padding_size_m);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT);
-
-        for (int i = 0; i < pageSize; i++) {
-            pageDots[i] = new ImageView(this);
-            if (i != 0)
-                params.setMargins(width, 0, 0, 0);
-
-            pageDots[i].setLayoutParams(params);
-            dotLayout.addView(pageDots[i]);
-        }
-    }
-
-    private void setPageDotState(int position) {
-        for (int i = 0; i < pageSize; i++) {
-            if (i == position)
-                pageDots[i].setImageResource(R.drawable.ic_page_dot_on);
-            else
-                pageDots[i].setImageResource(R.drawable.ic_page_dot_off);
-        }
-    }
-
-    private ArrayList<View> getViewListAndSetContent() {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        ArrayList<View> viewList = new ArrayList<>();
-
-        View view;
-        for (ItemsPathList pathListItem : DataArray.list_pathList.get()) {
-            view = inflater.inflate(R.layout.view_path_info, null);
-
-            TextView startAndEndName = (TextView) view.findViewById(R.id.text_startAndEndName);
-            TextView distance = (TextView) view.findViewById(R.id.text_pathInfoDistance);
-            TextView duration = (TextView) view.findViewById(R.id.text_pathInfoDuration);
-
-            String startName = pathListItem.START_NAME;
-            String endName = pathListItem.END_NAME;
-            String distanceString = pathListItem.DISTANCE;
-            String durationString = pathListItem.DURATION;
-
-            startAndEndName.setText(getString(R.string.plan_start_name_and_end_name, startName, endName));
-            distance.setText(getString(R.string.plan_distance_is, distanceString));
-            duration.setText(getString(R.string.plan_duration_is, durationString));
-
-            viewList.add(view);
-        }
-        return viewList;
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        moveCameraWhilePageSelected = true;
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        pathListPager.setCurrentItem(position);
-        checkPathListData(position);
-        setPageDotState(position);
-        lastSelectedPage = position;
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {}
-
-    private void checkPathListData(final int position) {
-        if (DataArray.list_pathList == null || DataArray.list_pathList.get() == null || DataArray.list_pathList.get().isEmpty()) {
-            Bundle bundle = getIntent().getExtras();
-            String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
-            ArrayList<String[]> namePairList = getNamePairs(bundle.getInt(BUNDLE_PLAN_EDIT_INDEX));
-
-            DataArray.getDirectionPathListData(jsonString, namePairList, new DataArray.OnDataGetCallBack() {
-                @Override
-                public void onDataGet() {
-                    setPathListAndMoveCamera(position);
-                }
-            });
-        }
-        else
-            setPathListAndMoveCamera(position);
-    }
-
-    private void setPathListAndMoveCamera(int position) {
-        ItemsPathList pathList = DataArray.list_pathList.get().get(position);
-
-        if (moveCameraWhilePageSelected)
-            moveCamera(new LatLng(pathList.START_LAT, pathList.START_LNG));
-
-        drawStepsHighLight(position);
-
-        pathListView.setAdapter(new PathListViewAdapter(UiMainMapActivity.this, pathList.PATH_STEPS));
-
-        pathListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ItemsPathStep pathStep = (ItemsPathStep) parent.getItemAtPosition(position);
-                moveCameraAndZoom(new LatLng(pathStep.START_LAT, pathStep.START_LNG), 17);
-
-                removeHighLightPolyline();
-                drawHighLight(pathStep.POLY_LINE);
-
-                PopWindowHelper.showPathStepPopWindow(mapRootLayout, pathStep.INSTRUCTIONS, pathStep.DISTANCE, pathStep.GO_ON_PATH);
-            }
-        });
-    }
-
-    private void drawStepsHighLight(int position) {
-        removeHighLightPolyline();
-
-        for (ItemsPathStep pathStep : DataArray.list_pathList.get().get(position).PATH_STEPS) {
-            drawHighLight(pathStep.POLY_LINE);
-        }
-    }
-
-    private void drawHighLight(String polyLine) {
-        ArrayList<LatLng> linePoints = PolyHelper.decodePolyLine(polyLine);
-
-        PolylineOptions polyOptions = new PolylineOptions();
-
-        for (LatLng latLng : linePoints) {
-            polyOptions.add(latLng);
-        }
-        polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_deep_purple_A400));
-        polyOptions.width(22);
-
-        Polyline highLightPolyLine = map.addPolyline(polyOptions);
-        highLightPolyLine.setZIndex(1000);
-
-        highLightPolyList.add(highLightPolyLine);
-    }
-
-    private void removeHighLightPolyline() {
-        if (notNull(highLightPolyList)) {
-            for (Polyline highLightPoly : highLightPolyList) {
-                highLightPoly.remove();
-            }
-        }
-        else
-            highLightPolyList = new ArrayList<>();
     }
 }

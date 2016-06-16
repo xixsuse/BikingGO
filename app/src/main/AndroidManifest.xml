@@ -551,6 +551,10 @@
             android:name=".app.ui.planning.UiMyPlanInfoActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".app.ui.planning.UiPlanDirectionMapActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

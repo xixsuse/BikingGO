@@ -25,6 +25,7 @@ public class FavoriteHelper {
     private static JSONArray JA_POI;
 
     public static final String POI_TITLE = "title";
+    public static final String POI_ADDRESS = "address";
     public static final String POI_DESCRIPTION = "description";
     public static final String POI_LAT = "lat";
     public static final String POI_LNG = "lng";
@@ -89,12 +90,13 @@ public class FavoriteHelper {
     public static ItemsMyPOI getMyPoiItem() {
         try {
             String title = JA_POI.getJSONObject(POI_INDEX).getString(POI_TITLE);
+            String address = JA_POI.getJSONObject(POI_INDEX).getString(POI_ADDRESS);
             String desc = JA_POI.getJSONObject(POI_INDEX).getString(POI_DESCRIPTION);
             double lat = JA_POI.getJSONObject(POI_INDEX).getDouble(POI_LAT);
             double lng = JA_POI.getJSONObject(POI_INDEX).getDouble(POI_LNG);
             String photoPath = JA_POI.getJSONObject(POI_INDEX).getString(POI_PHOTO_PATH);
 
-            return new ItemsMyPOI(title, desc, lat, lng, photoPath);
+            return new ItemsMyPOI(title, address, desc, lat, lng, photoPath);
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -102,13 +104,14 @@ public class FavoriteHelper {
         }
     }
 
-    public static void addMyPoi(String title, String desc, double lat, double lng, String photoPath) {
+    public static void addMyPoi(String title, String address, String desc, double lat, double lng, String photoPath) {
         checkIsFavInit();
 
         try {
             JSONObject jo = new JSONObject();
 
             jo.put(POI_TITLE, title);
+            jo.put(POI_ADDRESS, address);
             jo.put(POI_DESCRIPTION, desc);
             jo.put(POI_LAT, lat);
             jo.put(POI_LNG, lng);
@@ -153,9 +156,10 @@ public class FavoriteHelper {
         }
     }
 
-    public static void updateMyPoi(String title, String desc, String photoPath) {
+    public static void updateMyPoi(String title, String address, String desc, String photoPath) {
         try {
             JA_POI.getJSONObject(POI_INDEX).put(POI_TITLE, title);
+            JA_POI.getJSONObject(POI_INDEX).put(POI_ADDRESS, address);
             JA_POI.getJSONObject(POI_INDEX).put(POI_DESCRIPTION, desc);
             JA_POI.getJSONObject(POI_INDEX).put(POI_PHOTO_PATH, photoPath);
 
