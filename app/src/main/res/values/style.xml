@@ -4,7 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/actionbar_background_color</item>
         <item name="colorPrimaryDark">@color/actionbar_background_color</item>
-        <item name="colorControlNormal">@color/md_amber_400</item>  <!--目前已知這會改變 scroll bar (in any listView)的顏色 -->
+        <item name="colorControlNormal">@color/md_amber_400</item>  <!--會改變 scroll bar (in any listView) & EditText baseLine的顏色 -->
         <item name="actionBarStyle">@style/MyActionBarStyle</item>
         <item name="android:editTextStyle">@style/MyEditTextStyle</item>
         <item name="actionMenuTextAppearance">@style/MenuTextStyle</item>
@@ -37,7 +37,7 @@
 
     <style name="MyNavigationDrawerStyle">
         <item name="android:textSize">@dimen/font_text_size_m</item><!-- text size in menu-->
-        <item name="android:listPreferredItemHeightSmall">@dimen/actionbar_item_height</item><!-- item size in menu-->
+        <item name="android:listPreferredItemHeightSmall">@dimen/actionbar_height</item><!-- item size in menu-->
     </style>
 
     <style name="MyActionBarStyle" parent="Widget.AppCompat.Light.ActionBar.Solid">

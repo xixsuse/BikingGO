@@ -710,7 +710,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             return;
         }
 
-        PopWindowHelper.showLoadingWindow(this);
+        DialogHelper.showLoadingDialog(this);
 
         String origin = location.getLatitude() + "," + location.getLongitude();
         String destination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
@@ -721,7 +721,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             @Override
             public void onResultSucceed(String response) {
                 getPolyLineAndDrawLine(response);
-                PopWindowHelper.dismissPopWindow();
             }
 
             @Override

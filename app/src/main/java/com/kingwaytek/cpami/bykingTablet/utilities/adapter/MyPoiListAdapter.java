@@ -83,7 +83,7 @@ public class MyPoiListAdapter extends BaseAdapter {
         if (!poiList.get(position).PHOTO_PATH.isEmpty())
             holder.poiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmap(poiList.get(position).PHOTO_PATH, imageSize, imageSize));
         else
-            holder.poiPhoto.setImageResource(0);
+            holder.poiPhoto.setImageResource(R.drawable.ic_empty_image);
 
         holder.poiTitle.setText(poiList.get(position).TITLE);
         holder.poiInfo.setOnClickListener(getInfoButtonClick(position));

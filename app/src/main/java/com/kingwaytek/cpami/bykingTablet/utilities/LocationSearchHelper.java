@@ -41,7 +41,7 @@ public class LocationSearchHelper {
             Utility.toastShort(AppController.getInstance().getAppContext().getString(R.string.search_any_location));
             return;
         }
-        PopWindowHelper.showLoadingWindow(context);
+        DialogHelper.showLoadingDialog(context);
 
         Geocoder geocoder = new Geocoder(AppController.getInstance().getAppContext());
 
@@ -80,7 +80,7 @@ public class LocationSearchHelper {
                         getFullAddress(addr), addr.getLatitude(), addr.getLongitude()));
             }
             locationFound.onLocationFound(resultList, locationNameList, true);
-            PopWindowHelper.dismissPopWindow();
+            DialogHelper.dismissDialog();
         }
     }
 
@@ -100,7 +100,7 @@ public class LocationSearchHelper {
                 else
                     locationFound.onNothingFound();
 
-                PopWindowHelper.dismissPopWindow();
+                DialogHelper.dismissDialog();
             }
         });
     }

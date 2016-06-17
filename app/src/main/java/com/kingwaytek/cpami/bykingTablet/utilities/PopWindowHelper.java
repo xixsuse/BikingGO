@@ -64,7 +64,9 @@ public class PopWindowHelper {
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
-        setPopWindowCancelable(false);
+        popWindow.setTouchable(true);
+        popWindow.setFocusable(true);
+        popWindow.setOutsideTouchable(false);
 
         //double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
         //int yPos = appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xl);

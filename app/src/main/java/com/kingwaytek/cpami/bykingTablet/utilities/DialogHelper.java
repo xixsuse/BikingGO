@@ -1,11 +1,14 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PhotoOptionsAdapter;
 
 import java.io.File;
 
@@ -30,6 +34,26 @@ import java.io.File;
 public class DialogHelper {
 
     private static AlertDialog.Builder dialogBuilder;
+    private static Dialog dialog;
+
+    public static void showLoadingDialog(Context context) {
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.popup_loading_window, null);
+        dialogBuilder.setView(view);
+        dialogBuilder.setCancelable(false);
+
+        dialog = dialogBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setDimAmount(0.0f);
+
+        dialog.show();
+    }
+
+    public static void dismissDialog() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
 
     public static void showDeleteConfirmDialog(Context context, String name, DialogInterface.OnClickListener confirmClick) {
         dialogBuilder = new AlertDialog.Builder(context);
@@ -113,7 +137,9 @@ public class DialogHelper {
 
         dialogBuilder = new AlertDialog.Builder(context);
 
-        dialogBuilder.setItems(items, onClickListener);
+        dialogBuilder.setAdapter(new PhotoOptionsAdapter(context, items), onClickListener);
+
+        //dialogBuilder.setItems(items, onClickListener);
         dialogBuilder.setCancelable(true);
         dialogBuilder.create().show();
     }

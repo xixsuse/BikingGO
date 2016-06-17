@@ -527,8 +527,7 @@
 
         <activity
             android:name=".app.ui.UiMainMapActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".app.ui.poi.UiMyPoiListActivity"

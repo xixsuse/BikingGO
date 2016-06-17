@@ -5,42 +5,42 @@
 
         <item
             android:id="@+id/menu_home"
-            android:icon="@android:drawable/ic_dialog_dialer"
+            android:icon="@drawable/menu_icon_home"
             android:title="@string/menu_home"/>
 
         <item
             android:id="@+id/menu_bike_track"
-            android:icon="@android:drawable/ic_dialog_map"
+            android:icon="@drawable/menu_icon_bike_tracking"
             android:title="@string/menu_bike_track"/>
 
         <item
             android:id="@+id/menu_my_poi"
-            android:icon="@drawable/main_search"
+            android:icon="@drawable/menu_icon_poi"
             android:title="@string/menu_my_poi"/>
 
         <item
             android:id="@+id/menu_planning"
-            android:icon="@drawable/main_search"
+            android:icon="@drawable/menu_icon_planning"
             android:title="@string/menu_planning"/>
 
         <item
             android:id="@+id/menu_poi_book"
-            android:icon="@drawable/main_catalog"
+            android:icon="@drawable/menu_icon_poi_book"
             android:title="@string/menu_poi_book"/>
 
         <item
             android:id="@+id/menu_events"
-            android:icon="@drawable/main_favor"
+            android:icon="@drawable/menu_icon_events"
             android:title="@string/menu_events"/>
 
         <item
             android:id="@+id/menu_report"
-            android:icon="@drawable/main_condition"
+            android:icon="@drawable/menu_icon_report"
             android:title="@string/menu_report"/>
 
         <item
             android:id="@+id/menu_settings"
-            android:icon="@android:drawable/ic_menu_manage"
+            android:icon="@drawable/menu_icon_settings"
             android:title="@string/menu_settings"/>
 
     </group>

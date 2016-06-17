@@ -3,12 +3,19 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:padding="@dimen/padding_size_l"
+              android:paddingTop="@dimen/padding_size_l"
+              android:paddingBottom="@dimen/padding_size_l"
+              android:paddingLeft="@dimen/padding_size_xl"
+              android:paddingStart="@dimen/padding_size_xl"
+              android:paddingRight="@dimen/padding_size_xl"
+              android:paddingEnd="@dimen/padding_size_xl"
               android:background="@color/md_blue_grey_50">
 
     <ListView
         android:id="@+id/myPlanListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:divider="@color/md_grey_400"
+        android:dividerHeight="0.5dp"/>
 
 </LinearLayout>

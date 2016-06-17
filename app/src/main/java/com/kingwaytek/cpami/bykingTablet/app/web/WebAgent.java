@@ -13,6 +13,7 @@ import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.ApiUrls;
 import com.kingwaytek.cpami.bykingTablet.utilities.DebugHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -154,13 +155,14 @@ public class WebAgent {
         StringRequest directionRequest = new StringRequest(apiUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                DialogHelper.dismissDialog();
                 webResult.onResultSucceed(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                DialogHelper.dismissDialog();
                 webResult.onResultFail("ConnectionError, " + error.getMessage());
-                PopWindowHelper.dismissPopWindow();
             }
         });
 
@@ -179,14 +181,14 @@ public class WebAgent {
         StringRequest directionRequest = new StringRequest(apiUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                PopWindowHelper.dismissPopWindow();
+                DialogHelper.dismissDialog();
                 webResult.onResultSucceed(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                DialogHelper.dismissDialog();
                 webResult.onResultFail("ConnectionError, " + error.getMessage());
-                PopWindowHelper.dismissPopWindow();
             }
         });
 

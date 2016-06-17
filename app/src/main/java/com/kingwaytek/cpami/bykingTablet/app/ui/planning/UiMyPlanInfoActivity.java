@@ -17,8 +17,8 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
+import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
-import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PlanInfoListAdapter;
 
@@ -201,7 +201,7 @@ public class UiMyPlanInfoActivity extends BaseActivity {
 
     private void startDirection() {
         if (canDirection()) {
-            PopWindowHelper.showLoadingWindow(this);
+            DialogHelper.showLoadingDialog(this);
 
             final String apiUrl = getCombinedApiUrl(false);
 

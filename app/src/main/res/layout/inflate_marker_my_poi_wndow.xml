@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/markerInfoWindowLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
@@ -41,9 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_size_m"
-                android:paddingLeft="@dimen/padding_size_s"
-                android:paddingStart="@dimen/padding_size_s"
-                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/padding_size_m"
+                android:layout_marginStart="@dimen/padding_size_m"
+                android:layout_gravity="center_vertical"
                 android:textStyle="bold"
                 android:textColor="@color/md_green_A400"
                 android:textSize="@dimen/font_text_size_l" />
@@ -53,8 +52,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_size_s"
-                android:paddingLeft="@dimen/padding_size_s"
-                android:paddingStart="@dimen/padding_size_s"
+                android:layout_marginLeft="@dimen/padding_size_m"
+                android:layout_marginStart="@dimen/padding_size_m"
                 android:paddingBottom="@dimen/padding_size_s"
                 android:textColor="@color/md_grey_50"
                 android:textSize="@dimen/font_text_size_m"

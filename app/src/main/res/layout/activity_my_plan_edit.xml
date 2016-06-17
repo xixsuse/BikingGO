@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="@dimen/padding_size_l">
+            android:padding="@dimen/padding_size_xl">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
                 android:layout_marginEnd="@dimen/padding_size_m"
                 android:text="@string/plan_title"
                 android:textSize="@dimen/font_text_size_m"
-                android:textColor="@color/md_grey_800"/>
+                android:textColor="@color/md_green_A700"/>
 
             <EditText
                 android:id="@+id/edit_planTitle"

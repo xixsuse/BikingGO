@@ -3,12 +3,8 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:paddingLeft="@dimen/padding_size_m"
-              android:paddingStart="@dimen/padding_size_m"
-              android:paddingRight="@dimen/padding_size_m"
-              android:paddingEnd="@dimen/padding_size_m"
-              android:paddingTop="@dimen/padding_size_s"
-              android:paddingBottom="@dimen/padding_size_s"
+              android:paddingTop="@dimen/padding_size_l"
+              android:paddingBottom="@dimen/padding_size_l"
               android:gravity="center_vertical" >
 
     <ImageView
