@@ -270,4 +270,46 @@ public class FavoriteHelper {
             e.printStackTrace();
         }
     }
+
+    public static void removeMultiPlan(ArrayList<Integer> checkedList) {
+        try {
+            if (!Util.isPlanFileNotExistOrEmpty()) {
+                JSONArray ja_plans = new JSONArray(Util.readPlanFile());
+
+                int len = ja_plans.length();
+
+                ArrayList<JSONObject> tempJA = new ArrayList<>();
+
+                boolean isNotRemovable = true;
+
+                for (int i = 0; i < len; i++) {
+                    for (Integer index : checkedList) {
+                        if (i == index) {
+                            isNotRemovable = false;
+                            break;
+                        }
+                        else
+                            isNotRemovable = true;
+                    }
+
+                    if (isNotRemovable)
+                        tempJA.add(ja_plans.getJSONObject(i));
+                }
+
+                ja_plans = new JSONArray();
+
+                for (JSONObject jo : tempJA) {
+                    ja_plans.put(jo);
+                }
+
+                Util.writePlanFile(ja_plans.toString());
+
+                Utility.toastShort(AppController.getInstance().getString(R.string.plan_remove_completed));
+                Log.i(TAG, "removePlan: " + ja_plans.toString());
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

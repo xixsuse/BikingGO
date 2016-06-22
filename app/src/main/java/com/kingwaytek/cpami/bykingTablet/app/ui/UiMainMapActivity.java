@@ -120,9 +120,16 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         {
             switch (ENTRY_TYPE) {
                 case ENTRY_TYPE_DEFAULT:
-                case ENTRY_TYPE_LOCATION_SELECT:
                     map.setOnMapLongClickListener(this);
                     map.setOnMarkerClickListener(this);
+
+                    if (SettingManager.MarkerFlag.getMyPoiFlag())
+                        new PutAllMyPoiMarkers().execute();
+
+                    break;
+
+                case ENTRY_TYPE_LOCATION_SELECT:
+                    map.setOnMapLongClickListener(this);
 
                     if (SettingManager.MarkerFlag.getMyPoiFlag())
                         new PutAllMyPoiMarkers().execute();
@@ -135,13 +142,14 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        selectedMarker = marker;
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
+            selectedMarker = marker;
 
-        if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude))
-            showMarkerButtonLayout(true, true);
-        else
-            showMarkerButtonLayout(true, false);
-
+            if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude))
+                showMarkerButtonLayout(true, true);
+            else
+                showMarkerButtonLayout(true, false);
+        }
         return false;
     }
 
@@ -717,7 +725,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         String avoidOption = getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS);
 
-        WebAgent.getDirectionsData(origin, destination, DIR_MODE_DRIVING, avoidOption, new WebAgent.WebResultImplement() {
+        WebAgent.getDirectionsData(origin, destination, DIR_MODE_WALKING, avoidOption, new WebAgent.WebResultImplement() {
             @Override
             public void onResultSucceed(String response) {
                 getPolyLineAndDrawLine(response);

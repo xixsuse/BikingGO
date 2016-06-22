@@ -60,6 +60,14 @@ public class Utility {
         return true;
     }
 
+    public static boolean hasNoDuplicateInList(ArrayList<Integer> indexList, int position) {
+        for (int index : indexList) {
+            if (index == position)
+                return false;
+        }
+        return true;
+    }
+
     public static Point getScreenInfo(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point point = new Point();

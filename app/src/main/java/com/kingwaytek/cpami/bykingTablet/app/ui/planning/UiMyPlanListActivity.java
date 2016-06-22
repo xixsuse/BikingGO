@@ -29,6 +29,8 @@ import java.util.ArrayList;
  */
 public class UiMyPlanListActivity extends BaseActivity {
 
+    private Menu menu;
+
     private ListView planListView;
     private PlanListAdapter planAdapter;
 
@@ -73,23 +75,22 @@ public class UiMyPlanListActivity extends BaseActivity {
         planListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                String planName = (String) parent.getItemAtPosition(position);
-
-                DialogHelper.showDeleteConfirmDialog(UiMyPlanListActivity.this, planName, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        FavoriteHelper.removePlan(position);
-                        setPlanList();
-                    }
-                });
+                planAdapter.showCheckBox(true);
+                planAdapter.setBoxChecked(position);
+                setMenuOption(ACTION_DELETE);
 
                 return true;
             }
         });
     }
 
+    private void setMenuOption(int action) {
+        MenuHelper.setMenuOptionsByMenuAction(menu, action);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_ADD);
         return true;
     }
@@ -101,6 +102,10 @@ public class UiMyPlanListActivity extends BaseActivity {
         switch (item.getItemId()) {
             case ACTION_ADD:
                 goTo(UiMyPlanEditActivity.class, true);
+                break;
+
+            case ACTION_DELETE:
+                deleteSelectedItems();
                 break;
         }
 
@@ -122,6 +127,21 @@ public class UiMyPlanListActivity extends BaseActivity {
         }
     }
 
+    private void deleteSelectedItems() {
+        final ArrayList<Integer> checkedList = planAdapter.getCheckedList();
+
+        if (!checkedList.isEmpty()) {
+            DialogHelper.showDeleteConfirmDialog(UiMyPlanListActivity.this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    FavoriteHelper.removeMultiPlan(checkedList);
+                    setPlanList();
+                    onBackPressed();
+                }
+            });
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -138,5 +158,15 @@ public class UiMyPlanListActivity extends BaseActivity {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (notNull(planAdapter) && planAdapter.isCheckBoxShowing()) {
+            planAdapter.unCheckAllBox();
+            setMenuOption(ACTION_ADD);
+        }
+        else
+            super.onBackPressed();
     }
 }

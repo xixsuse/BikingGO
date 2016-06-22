@@ -21,7 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PhotoOptionsAdapter;
+import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.DialogItemsAdapter;
 
 import java.io.File;
 
@@ -58,6 +59,15 @@ public class DialogHelper {
     public static void showDeleteConfirmDialog(Context context, String name, DialogInterface.OnClickListener confirmClick) {
         dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setTitle(context.getString(R.string.poi_confirm_to_delete, name));
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.setPositiveButton(context.getString(R.string.yes), confirmClick);
+        dialogBuilder.setNegativeButton(context.getString(R.string.no), null);
+        dialogBuilder.create().show();
+    }
+
+    public static void showDeleteConfirmDialog(Context context, DialogInterface.OnClickListener confirmClick) {
+        dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setTitle(context.getString(R.string.confirm_to_delete_selected_items));
         dialogBuilder.setCancelable(true);
         dialogBuilder.setPositiveButton(context.getString(R.string.yes), confirmClick);
         dialogBuilder.setNegativeButton(context.getString(R.string.no), null);
@@ -137,11 +147,14 @@ public class DialogHelper {
 
         dialogBuilder = new AlertDialog.Builder(context);
 
-        dialogBuilder.setAdapter(new PhotoOptionsAdapter(context, items), onClickListener);
+        dialogBuilder.setAdapter(new DialogItemsAdapter(context, items, CommonBundle.SELECT_TYPE_PHOTO), onClickListener);
 
         //dialogBuilder.setItems(items, onClickListener);
         dialogBuilder.setCancelable(true);
-        dialogBuilder.create().show();
+
+        dialog = dialogBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     public static void showLocationSelectMenu(Context context, DialogInterface.OnClickListener onClickListener) {
@@ -149,9 +162,12 @@ public class DialogHelper {
 
         dialogBuilder = new AlertDialog.Builder(context);
 
-        dialogBuilder.setItems(items, onClickListener);
+        dialogBuilder.setAdapter(new DialogItemsAdapter(context, items, CommonBundle.SELECT_TYPE_POSITION), onClickListener);
         dialogBuilder.setCancelable(true);
-        dialogBuilder.create().show();
+
+        dialog = dialogBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     public static void showLocationPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {

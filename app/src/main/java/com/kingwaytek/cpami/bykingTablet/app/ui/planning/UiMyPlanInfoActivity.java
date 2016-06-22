@@ -185,14 +185,14 @@ public class UiMyPlanInfoActivity extends BaseActivity {
                     latLngArray.get(latLngArray.size() - 1),
                     useOptimize,
                     waypointsString,
-                    DIR_MODE_DRIVING, getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS), Utility.getLocaleLanguage(),
+                    DIR_MODE_WALKING, getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS), Utility.getLocaleLanguage(),
                     getString(R.string.GoogleDirectionKey));
         }
         else {
             apiUrl = MessageFormat.format(ApiUrls.API_GOOGLE_DIRECTION,
                     latLngArray.get(0),
                     latLngArray.get(latLngArray.size() - 1),
-                    DIR_MODE_DRIVING, getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS), Utility.getLocaleLanguage(),
+                    DIR_MODE_WALKING, getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS), Utility.getLocaleLanguage(),
                     getString(R.string.GoogleDirectionKey));
         }
 
@@ -227,6 +227,6 @@ public class UiMyPlanInfoActivity extends BaseActivity {
             });
         }
         else
-            Utility.toastShort(getString(R.string.plan_require_more_then_two));
+            Utility.toastLong(getString(R.string.plan_require_more_then_two));
     }
 }

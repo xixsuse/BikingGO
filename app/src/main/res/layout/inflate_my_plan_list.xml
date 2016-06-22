@@ -5,7 +5,18 @@
               android:layout_height="wrap_content"
               android:paddingTop="@dimen/padding_size_l"
               android:paddingBottom="@dimen/padding_size_l"
-              android:gravity="center_vertical">
+              android:gravity="center_vertical"
+              android:animateLayoutChanges="true">
+
+    <CheckBox
+        android:id="@+id/checkbox_eachPlan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:layout_marginRight="@dimen/padding_size_xl"
+        android:layout_marginEnd="@dimen/padding_size_xl"
+        android:visibility="gone"/>
 
     <ImageView
         android:layout_width="@dimen/icon_common_size_xl"
@@ -25,6 +36,7 @@
         android:textColor="@color/md_grey_800"/>
 
     <ImageView
+        android:id="@+id/icon_rightArrow"
         android:layout_width="@dimen/icon_common_size"
         android:layout_height="@dimen/icon_common_size_xl"
         android:tint="@color/md_grey_400"

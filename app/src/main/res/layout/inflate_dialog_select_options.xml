@@ -4,22 +4,22 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:padding="@dimen/padding_size_l"
-              android:background="@color/md_blue_grey_50">
+              android:background="@drawable/background_photo_select_options">
 
     <ImageView
-        android:id="@+id/photoOptions_icon"
+        android:id="@+id/options_icon"
         android:layout_width="@dimen/icon_common_size_xl"
         android:layout_height="@dimen/icon_common_size_xl"
         android:src="@drawable/ic_planning"/>
 
     <TextView
-        android:id="@+id/photoOptions_text"
+        android:id="@+id/options_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/padding_size_xl"
         android:layout_marginStart="@dimen/padding_size_xl"
-        android:textSize="@dimen/font_text_size_l"
+        android:textSize="@dimen/font_text_size_m"
         android:textColor="@color/md_grey_900"/>
 
 </LinearLayout>

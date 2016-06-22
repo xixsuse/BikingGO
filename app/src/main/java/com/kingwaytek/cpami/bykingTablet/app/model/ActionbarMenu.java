@@ -15,5 +15,6 @@ public interface ActionbarMenu {
     int ACTION_SAVE = 1 << 2;
     int ACTION_EDIT = 1 << 3;
     int ACTION_LIST = 1 << 4;
+    int ACTION_DELETE = 1 << 5;
 
 }

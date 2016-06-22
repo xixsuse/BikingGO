@@ -44,4 +44,8 @@ public interface CommonBundle {
     String DIR_AVOID_HIGHWAYS = "highways";
     String DIR_AVOID_FERRIES = "ferries";
     String DIR_AVOID_INDOOR = "indoor";
+
+    // Dialog Items Select Type
+    int SELECT_TYPE_PHOTO = 1;
+    int SELECT_TYPE_POSITION = 2;
 }
