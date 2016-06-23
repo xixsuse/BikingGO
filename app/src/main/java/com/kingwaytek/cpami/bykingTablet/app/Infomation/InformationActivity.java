@@ -2,7 +2,6 @@ package com.kingwaytek.cpami.bykingTablet.app.Infomation;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -109,14 +108,12 @@ public class InformationActivity extends CommunicationBaseActivity implements On
 	/* Item on ListView click */
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
+        /*
 		InfomationObject object = dataSource.get(arg2);
-
 		Intent intent = new Intent(this, DetailActivity.class);
-
 		intent.putExtra("Info", object);
-
 		this.startActivity(intent);
+		*/
 	}
 
 	/* Alert */

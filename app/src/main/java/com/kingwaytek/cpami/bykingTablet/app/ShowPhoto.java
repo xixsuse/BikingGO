@@ -1,10 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.text.DecimalFormat;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,7 +18,10 @@ import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ContextMenuOptions;
 
-import facebook.FacebookActivity;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 
 public class ShowPhoto extends Activity {
 
@@ -119,14 +117,14 @@ public class ShowPhoto extends Activity {
 
 			@Override
 			public void onButtonClick(ActionSheet actionsheet, int index, int id) {
-				int flag = 0;
+				int flag;
 				switch (index) {
 				case 0:
+                    /*
 					Intent intentFB = new Intent(ShowPhoto.this, FacebookActivity.class);
-
 					intentFB.putExtra("FILEPATH", filePath);
-
 					ShowPhoto.this.startActivity(intentFB);
+					*/
 					break;
 				case 1:
 					Intent intent = new Intent();

@@ -11,6 +11,8 @@ import android.util.Log;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.Tracker;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
@@ -39,6 +41,7 @@ public class AppController extends Application {
         SettingManager.initPreferences();
         Util.initUserDatabase();
         FavoriteHelper.initFavorite();
+        initFacebookSDK();
     }
 
     public static synchronized AppController getInstance() {
@@ -47,6 +50,11 @@ public class AppController extends Application {
 
     public Context getAppContext() {
         return getApplicationContext();
+    }
+
+    private void initFacebookSDK() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
     }
 
     public void initLocationManager() {

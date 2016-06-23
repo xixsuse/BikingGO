@@ -280,18 +280,17 @@ public class FavoriteHelper {
 
                 ArrayList<JSONObject> tempJA = new ArrayList<>();
 
-                boolean isNotRemovable = true;
+                boolean isNotRemovable;
 
                 for (int i = 0; i < len; i++) {
+                    isNotRemovable = true;
+
                     for (Integer index : checkedList) {
                         if (i == index) {
                             isNotRemovable = false;
                             break;
                         }
-                        else
-                            isNotRemovable = true;
                     }
-
                     if (isNotRemovable)
                         tempJA.add(ja_plans.getJSONObject(i));
                 }

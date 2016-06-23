@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.app.ui.poi;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.view.MenuItem;
@@ -14,6 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareOpenGraphAction;
+import com.facebook.share.model.ShareOpenGraphContent;
+import com.facebook.share.model.ShareOpenGraphObject;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.widget.ShareDialog;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
@@ -32,7 +42,7 @@ import java.io.File;
  *
  * @author Vincent (2016/5/23)
  */
-public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedCallBack{
+public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedCallBack {
 
     private ItemsMyPOI poiItem;
 
@@ -53,10 +63,14 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
     private boolean isPoiExisted;
     private boolean isFromMap;
 
+    private CallbackManager callBackManager;
+    private ShareDialog shareDialog;
+
     @Override
     protected void init() {
         getPoiItem();
         setPoiInfo();
+        initCallback();
     }
 
     @Override
@@ -107,6 +121,14 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             @Override
             public void onClick(View v) {
                 deleteMyPoi();
+            }
+        });
+
+        btn_fbShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //LoginManager.getInstance().logInWithReadPermissions(UiMyPoiInfoActivity.this, Arrays.asList("public_profile", "user_friends"));
+                sharePoiToFacebook();
             }
         });
     }
@@ -185,7 +207,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
                         Utility.toastShort(getString(R.string.poi_update_done));
                         PopWindowHelper.dismissPopWindow();
 
-                        resetPoiInfo();
+                        refreshPoiInfo();
                     }
                 }
                 else
@@ -234,6 +256,8 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
                     break;
             }
         }
+
+        callBackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void getPhotoPathAndSetImageView(int requestCode, Intent data) {
@@ -242,7 +266,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
         setImageClickListener();
     }
 
-    private void resetPoiInfo() {
+    private void refreshPoiInfo() {
         poiItem = FavoriteHelper.getMyPoiItem();
         setPoiInfo();
     }
@@ -264,6 +288,114 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
                 }
             });
         }
+    }
+
+    private void initCallback() {
+        if (callBackManager == null)
+            callBackManager = CallbackManager.Factory.create();
+/*
+        LoginManager.getInstance().registerCallback(callBackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Utility.toastShort("Success! " + loginResult.toString());
+            }
+
+            @Override
+            public void onCancel() {
+                Utility.toastShort("Canceled!");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Utility.toastShort("Error!!! " + error.getMessage());
+            }
+        });
+*/
+
+
+        shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(callBackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                Utility.toastShort("Success! " + result.toString());
+            }
+
+            @Override
+            public void onCancel() {
+                Utility.toastShort("Canceled!");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Utility.toastShort("Error!!! " + error.getMessage());
+            }
+        });
+
+    }
+
+    private void sharePoiToFacebook() {
+        ShareOpenGraphObject object = new ShareOpenGraphObject.Builder()
+                .putString("og:type", "fitness.course")
+                .putString("og:title", getString(R.string.app_name))
+                .putString("og:description", poiItem.TITLE)
+                .putInt("fitness:duration:value", 100)
+                .putString("fitness:duration:units", "s")
+                .putInt("fitness:distance:value", 12)
+                .putString("fitness:distance:units", "km")
+                .putInt("fitness:speed:value", 5)
+                .putString("fitness:speed:units", "m/s")
+                .build();
+
+        ShareOpenGraphAction action;
+
+        if (poiItem.PHOTO_PATH.isEmpty()) {
+            action = new ShareOpenGraphAction.Builder()
+                    .setActionType("fitness.runs")
+                    .putObject("fitness", object)
+                    .build();
+        }
+        else {
+            SharePhoto photo = new SharePhoto.Builder()
+                    .setBitmap(BitmapFactory.decodeFile(poiItem.PHOTO_PATH))
+                    .setCaption(poiItem.TITLE)
+                    .build();
+
+            action = new ShareOpenGraphAction.Builder()
+                    .setActionType("fitness.runs")
+                    .putObject("fitness", object)
+                    .putPhoto("image", photo)
+                    .build();
+        }
+
+        ShareOpenGraphContent content = new ShareOpenGraphContent.Builder()
+                .setPreviewPropertyName("fitness")
+                .setAction(action)
+                .build();
+
+        shareDialog.show(content);
+        /*
+        if (poiItem.PHOTO_PATH.isEmpty()) {
+            ShareLinkContent shareContent = new ShareLinkContent.Builder()
+                    .setContentUrl(Uri.parse("https://www.google.com"))
+                    .setContentTitle(poiItem.TITLE)
+                    .setContentDescription(poiItem.DESCRIPTION)
+                    .build();
+
+            shareDialog.show(shareContent);
+        }
+        else {
+            SharePhoto photo = new SharePhoto.Builder()
+                    .setBitmap(BitmapFactory.decodeFile(poiItem.PHOTO_PATH))
+                    .setCaption(poiItem.TITLE)
+                    .build();
+
+            SharePhotoContent shareContent = new SharePhotoContent.Builder()
+                    .addPhoto(photo)
+                    .build();
+
+            shareDialog.show(shareContent);
+        }
+        */
     }
 
     @Override

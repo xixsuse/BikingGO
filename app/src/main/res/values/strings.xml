@@ -385,4 +385,7 @@
         <item>@string/location_from_my_poi</item>
     </string-array>
 
+    <!-- Brack Facebook app id -->
+    <string name="facebook_app_id">269446120083470</string>
+
 </resources>

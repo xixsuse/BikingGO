@@ -35,11 +35,11 @@ android {
 }
 
 dependencies {
-    compile project(':facebookSDK')
+    //compile project(':facebookSDK')
     compile project(':naviKingApi')
     compile files('libs/apache-ant-zip-1.8.0.jar')
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.android.support:design:23.3.0'
-    //compile 'com.facebook.android:facebook-android-sdk:4.5.0'
-    //compile 'asia.ivity.android:drag-sort-listview:1.0'   This library already added in Kingwaytek Api.
+    compile 'com.facebook.android:facebook-android-sdk:4.11.0'
+    //compile 'asia.ivity.android:drag-sort-listview:1.0'   // This library already added in Kingwaytek Api.
 }
