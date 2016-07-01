@@ -3,10 +3,8 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@color/md_grey_400" />
-
+        android:drawable="@drawable/ic_nav_delete_on" />
     <item
-        android:state_checked="true"
-        android:drawable="@drawable/layer_list_menu_item_selected_background" />
+        android:drawable="@drawable/ic_nav_delete_off" />
 
 </selector>

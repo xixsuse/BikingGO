@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareOpenGraphAction;
 import com.facebook.share.model.ShareOpenGraphContent;
@@ -32,10 +35,12 @@ import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * My POI Detail Information!!!
@@ -128,7 +133,8 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             @Override
             public void onClick(View v) {
                 //LoginManager.getInstance().logInWithReadPermissions(UiMyPoiInfoActivity.this, Arrays.asList("public_profile", "user_friends"));
-                sharePoiToFacebook();
+                LoginManager.getInstance().logInWithPublishPermissions(UiMyPoiInfoActivity.this, Arrays.asList("publish_actions"));
+                //sharePoiToFacebook();
             }
         });
     }
@@ -293,7 +299,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
     private void initCallback() {
         if (callBackManager == null)
             callBackManager = CallbackManager.Factory.create();
-/*
+
         LoginManager.getInstance().registerCallback(callBackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -310,7 +316,6 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
                 Utility.toastShort("Error!!! " + error.getMessage());
             }
         });
-*/
 
 
         shareDialog = new ShareDialog(this);
@@ -350,7 +355,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
         if (poiItem.PHOTO_PATH.isEmpty()) {
             action = new ShareOpenGraphAction.Builder()
-                    .setActionType("fitness.runs")
+                    .setActionType("fitness.bikes")
                     .putObject("fitness", object)
                     .build();
         }
@@ -361,7 +366,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
                     .build();
 
             action = new ShareOpenGraphAction.Builder()
-                    .setActionType("fitness.runs")
+                    .setActionType("fitness.bikes")
                     .putObject("fitness", object)
                     .putPhoto("image", photo)
                     .build();
@@ -396,6 +401,12 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             shareDialog.show(shareContent);
         }
         */
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE);
+        return true;
     }
 
     @Override

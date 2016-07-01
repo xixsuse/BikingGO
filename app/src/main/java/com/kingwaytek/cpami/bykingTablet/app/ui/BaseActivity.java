@@ -197,7 +197,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         if (isShow)
             loadingCircle.setVisibility(View.VISIBLE);
         else
-            loadingCircle.setVisibility(View.GONE);
+            loadingCircle.setVisibility(View.INVISIBLE);
     }
 
     protected void initDrawer() {
@@ -241,7 +241,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     }
 
     protected void setDrawerWidth() {
-        int width = (int) (Utility.getScreenWidth() / 1.6);
+        int width = (int) (Utility.getScreenWidth() / 1.4);
 
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawerView.getLayoutParams();
         params.width = width;
@@ -254,6 +254,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             for (int i = 0; i < drawerView.getMenu().size(); i++) {
                 drawerView.getMenu().getItem(i).setChecked(false);
             }
+            drawerView.getMenu().getItem(0).setChecked(true);
         }
     }
 

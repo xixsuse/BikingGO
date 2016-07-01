@@ -385,7 +385,9 @@
         <item>@string/location_from_my_poi</item>
     </string-array>
 
-    <!-- Brack Facebook app id -->
+    <!-- Brack Facebook ids -->
     <string name="facebook_app_id">269446120083470</string>
+    <string name="facebook_test_user_id">110635599367783</string>
+    <string name="facebook_test_user_access_token">EAAD1D1BGEA4BAPl6RS4oRYrcJpZAhhtbJgMhIvl0uaDXdA9v8ixINyrc6PSe76iAS4tgP5SDJmoLab7lq6Y04oTgZBbL80xj9B0JppPbxxCH2RHEAbmcmqEG4IhZCYZBl7uQZA0TaAGaBD8NfszpGwYbbztQK7uoey5N5w1QOFZBV63s6fI74I</string>
 
 </resources>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/md_grey_50">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/md_grey_50">
 
     <ScrollView
         android:id="@+id/poiInfoLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:paddingBottom="@dimen/padding_size_s">
 
         <LinearLayout
@@ -103,12 +103,25 @@
 
     </ScrollView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingBtn_poiEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/padding_size_xl"
+        android:layout_marginRight="@dimen/padding_size_xl"
+        android:layout_marginEnd="@dimen/padding_size_xl"
+        android:src="@drawable/ic_edit_off"
+        android:scaleType="centerCrop"
+        app:backgroundTint="@color/menu_item_selected_color"
+        app:rippleColor="@color/md_purple_300"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="5.5"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
 
         <ImageButton
             android:id="@+id/btn_poiEdit"
@@ -116,7 +129,7 @@
             android:layout_height="@dimen/padding_size_super"
             android:layout_marginRight="@dimen/padding_size_l"
             android:layout_marginEnd="@dimen/padding_size_l"
-            android:padding="@dimen/padding_size_s"
+            android:padding="@dimen/padding_size_m"
             android:background="@drawable/background_marker_button"
             android:src="@drawable/ic_edit_off"
             android:scaleType="fitCenter"/>
@@ -147,4 +160,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>
