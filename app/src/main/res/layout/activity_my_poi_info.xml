@@ -79,7 +79,8 @@
                 android:paddingStart="@dimen/padding_size_xxl"
                 android:paddingRight="@dimen/padding_size_xl"
                 android:paddingEnd="@dimen/padding_size_xl"
-                android:layout_marginTop="@dimen/padding_size_xl">
+                android:layout_marginTop="@dimen/padding_size_xl"
+                android:layout_marginBottom="@dimen/padding_size_m">
 
                 <ImageView
                     android:layout_width="@dimen/padding_size_xxl"
@@ -114,50 +115,6 @@
         android:src="@drawable/ic_edit_off"
         android:scaleType="centerCrop"
         app:backgroundTint="@color/menu_item_selected_color"
-        app:rippleColor="@color/md_purple_300"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <ImageButton
-            android:id="@+id/btn_poiEdit"
-            android:layout_width="@dimen/padding_size_super"
-            android:layout_height="@dimen/padding_size_super"
-            android:layout_marginRight="@dimen/padding_size_l"
-            android:layout_marginEnd="@dimen/padding_size_l"
-            android:padding="@dimen/padding_size_m"
-            android:background="@drawable/background_marker_button"
-            android:src="@drawable/ic_edit_off"
-            android:scaleType="fitCenter"/>
-
-        <ImageButton
-            android:id="@+id/btn_poiDelete"
-            android:layout_width="@dimen/padding_size_super"
-            android:layout_height="@dimen/padding_size_super"
-            android:layout_marginRight="@dimen/padding_size_l"
-            android:layout_marginEnd="@dimen/padding_size_l"
-            android:layout_marginLeft="@dimen/padding_size_l"
-            android:layout_marginStart="@dimen/padding_size_l"
-            android:src="@android:drawable/ic_menu_delete"
-            android:background="@drawable/background_delete_button"
-            android:scaleType="centerCrop"
-            android:visibility="visible"/>
-
-        <ImageButton
-            android:id="@+id/btn_facebookShare"
-            android:layout_width="@dimen/padding_size_super"
-            android:layout_height="@dimen/padding_size_super"
-            android:layout_marginLeft="@dimen/padding_size_l"
-            android:layout_marginStart="@dimen/padding_size_l"
-            android:background="@drawable/background_marker_button"
-            android:src="@android:drawable/ic_menu_share"
-            android:scaleType="fitCenter"
-            android:visibility="visible"/>
-
-    </LinearLayout>
+        app:rippleColor="@color/md_blue_A700"/>
 
 </FrameLayout>

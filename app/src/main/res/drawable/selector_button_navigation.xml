@@ -3,9 +3,8 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/ic_navigation_on" />
+        android:drawable="@drawable/ic_marker_button_navigation_on" />
     <item
-        android:drawable="@drawable/ic_navigation_off" />
-
+        android:drawable="@drawable/ic_marker_button_navigation_off" />
 
 </selector>

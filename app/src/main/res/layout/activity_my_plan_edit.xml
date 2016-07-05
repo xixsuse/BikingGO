@@ -59,7 +59,7 @@
             android:layout_marginTop="@dimen/padding_size_m"
             android:src="@drawable/selector_toolbar_add"
             android:scaleType="fitCenter"
-            android:background="@drawable/background_poi_photo"/>
+            android:background="@drawable/background_plan_add_button"/>
 
     </LinearLayout>
 

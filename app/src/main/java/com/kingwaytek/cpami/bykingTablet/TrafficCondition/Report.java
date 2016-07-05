@@ -23,10 +23,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
 import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransportList;
+import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -145,21 +145,24 @@ public class Report extends Activity implements OnItemSelectedListener {
 
         // 狀況類別下拉選單
         Spinner spinner = (Spinner) findViewById(R.id.conditionType_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.type_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
         ConditonTypeSpinner = spinner.getId();
+
         spinner.setOnItemSelectedListener(this);
 
         // 地點下拉選單
         Spinner location_spinner = (Spinner) findViewById(R.id.locaton_spinner);
-        ArrayAdapter<CharSequence> location_adapter = ArrayAdapter
-                .createFromResource(this, R.array.location_array,
-                        android.R.layout.simple_spinner_item);
-        location_adapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        ArrayAdapter<CharSequence> location_adapter = ArrayAdapter.createFromResource(
+                this, R.array.location_array, android.R.layout.simple_spinner_item);
+
+        location_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         location_spinner.setAdapter(location_adapter);
+
         LocatonSpinner = location_spinner.getId();
         location_spinner.setOnItemSelectedListener(this);
 
@@ -208,54 +211,52 @@ public class Report extends Activity implements OnItemSelectedListener {
 
             @Override
             public void onClick(View v) {
-                Log.i("Report.java", "nameEditText="
-                        + nameEditText.getText().toString());
+                Log.i("Report.java", "nameEditText=" + nameEditText.getText().toString());
+
                 if (nameEditText.getText().toString().equalsIgnoreCase("")) {
                     Toast.makeText(Report.this, "請輸入名字", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (titleEditText.getText().toString()
+                }
+                else if (titleEditText.getText().toString()
                         .equalsIgnoreCase("")) {
                     Toast.makeText(Report.this, "請輸入標題", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (describeEditText.getText().toString()
+                }
+                else if (describeEditText.getText().toString()
                         .equalsIgnoreCase("")) {
                     Toast.makeText(Report.this, "請簡短描述", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // WaitDialog = ProgressDialog.show(Report.this, "請稍候片刻",
-                // "上傳中...", true);
                 progressDialog.progressDialog("請稍候片刻", "上傳中...");
+
                 new Thread() {
-                    private Dialog WeatherDialog;
                     private String email;
 
                     @Override
                     public void run() {
                         try {
                             String result = "";
-                            double Lon = 0.0, Lat = 0.0;
-                            Location loc = null;
-                            if (ApplicationGlobal.gpsListener!= null) {
-                                loc = ApplicationGlobal.gpsListener
-                                        .getLastLocation();
-                            }
+                            double Lon;
+                            double Lat;
+
+                            Location loc = MyLocationManager.getLastLocation();
+
                             if (loc != null) {
                                 Lon = loc.getLongitude();
                                 Lat = loc.getLatitude();
-                            } else {
-                                WeatherDialog.dismiss();
-                                uploadHandler.sendMessage(uploadHandler
-                                        .obtainMessage(GET_GPS_FAIL, "無法取得目前位置"));
+                            }
+                            else {
+                                uploadHandler.sendMessage(uploadHandler.obtainMessage(GET_GPS_FAIL, "無法取得目前位置"));
                                 return;
                             }
                             // Internet Connect
                             Date date = new Date();
-                            String MD5Code = CreatMD5Code.getMD5((String
-                                    .valueOf(((date.getMonth() + 1) + date
-                                            .getHours())
-                                            * (1208 + date.getDate())) + "Kingway")
-                                    .getBytes());
+                            String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
+                                            * (1208 + date.getDate())) + "Kingway").getBytes());
+
+                            Log.i("Report", "date.getMonth(): " + date.getMonth() + " date.getHours(): " + date.getHours() + " date.getData(): " + date.getDate());
+
                             // *範例
                             // String TrafficAlertUploadURL =
                             // "http://192.168.1.186:8080/BikeGo/TrafficAlertList?AlertStartTime=201111111334&AlertEndTime=201111111334&Code="+MD5Code;//updata的URL
@@ -267,20 +268,16 @@ public class Report extends Activity implements OnItemSelectedListener {
                             // 8)+"&"+"ReportTime="+"19200801123457"+"&Code="+MD5Code;
 
                             name = nameEditText.getText().toString();
-                            type = String.valueOf(ConditionType
-                                    .get(ConditionStr));
+                            type = String.valueOf(ConditionType.get(ConditionStr));
                             title = titleEditText.getText().toString();
                             cityID = String.valueOf(CityID.get(CityIDStr));
-                            startTime = startYear + startMonth + startDay
-                                    + startHour + startMinute;
-                            endTime = endYear + endMonth + endDay + endHour
-                                    + endMinute;
+                            startTime = startYear + startMonth + startDay + startHour + startMinute;
+                            endTime = endYear + endMonth + endDay + endHour + endMinute;
                             decribe = describeEditText.getText().toString();
                             reportTime = getReportTime();
                             email = emailEditText.getText().toString();
 
-                            String TrafficAlertUploadURL = getResources()
-                                    .getString(R.string.cpamiURL)
+                            String TrafficAlertUploadURL = getResources().getString(R.string.cpamiURL)
                                     + "TrafficAlertUpload?"
                                     + "Reporter="
                                     + name
@@ -289,7 +286,7 @@ public class Report extends Activity implements OnItemSelectedListener {
                                     + type
                                     + "&"
                                     + "AlertTitle="
-                                    + title
+                                    + title.replace(" ", "")
                                     + "&"
                                     + "StartTime="
                                     + startTime
@@ -317,42 +314,36 @@ public class Report extends Activity implements OnItemSelectedListener {
                                     + "&Code="
                                     + MD5Code;
 
-                            Log.i("Report.java", "TrafficAlertUploadURL="
-                                    + TrafficAlertUploadURL);
+                            Log.i("Report.java", "TrafficAlertUploadURL=" + TrafficAlertUploadURL);
+
                             HttpClient cliente = new DefaultHttpClient();
                             HttpResponse response;
-                            HttpPost httpPost = new HttpPost(
-                                    TrafficAlertUploadURL);
+
+                            HttpPost httpPost = new HttpPost(TrafficAlertUploadURL);
                             response = cliente.execute(httpPost);
                             HttpEntity entity = response.getEntity();
+
                             if (entity != null) {
                                 InputStream instream = entity.getContent();
-                                result = PublicTransportList
-                                        .convertStreamToString(instream);
+                                result = PublicTransportList.convertStreamToString(instream);
                                 instream.close();
                             }
 
                             if (result.equalsIgnoreCase("0")) {
                                 progressDialog.dismiss();
-                                uploadHandler.sendMessage(uploadHandler
-                                        .obtainMessage(GET_WEB_FINISH,
-                                                String.valueOf(0)));
-                            } else {
-                                progressDialog.dismiss();
-                                uploadHandler.sendMessage(uploadHandler
-                                        .obtainMessage(GET_WEB_FAIL,
-                                                String.valueOf(0)));
+                                uploadHandler.sendMessage(uploadHandler.obtainMessage(GET_WEB_FINISH, String.valueOf(0)));
                             }
-
-                        } catch (Exception e) {
+                            else {
+                                progressDialog.dismiss();
+                                uploadHandler.sendMessage(uploadHandler.obtainMessage(GET_WEB_FAIL, String.valueOf(0)));
+                            }
+                        }
+                        catch (Exception e) {
                             e.printStackTrace();
                             // WaitDialog.dismiss();
                             progressDialog.dismiss();
-                            uploadHandler.sendMessage(uploadHandler
-                                    .obtainMessage(GET_WEB_FAIL, ""));
-
+                            uploadHandler.sendMessage(uploadHandler.obtainMessage(GET_WEB_FAIL, ""));
                         }
-
                     }
                 }.start();
 
@@ -383,13 +374,15 @@ public class Report extends Activity implements OnItemSelectedListener {
             public void handleMessage(Message msg) {
                 if (msg.what == GET_WEB_FINISH) {
                     Toast.makeText(Report.this, "上傳成功", Toast.LENGTH_LONG).show();
-                } else if (msg.what == GET_GPS_FAIL) {
+                }
+                else if (msg.what == GET_GPS_FAIL) {
 
                     UtilDialog uit = new UtilDialog(Report.this);
                     uit.showDialog_route_plan_choice(
                             getString(R.string.gps_unable_to_get_location), null,
                             getString(R.string.dialog_ok_button_text), null);
-                } else if (msg.what == GET_WEB_FAIL) {
+                }
+                else if (msg.what == GET_WEB_FAIL) {
                     Toast.makeText(Report.this, "上傳失敗", Toast.LENGTH_LONG).show();
                 }
             }

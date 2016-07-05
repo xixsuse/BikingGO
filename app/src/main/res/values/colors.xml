@@ -25,7 +25,7 @@
 
     <color name="menu_background_color">#eeeeee</color>
     <color name="menu_item_color">#777777</color>
-    <color name="menu_item_selected_color">#61a2f7</color>
+    <color name="menu_item_selected_color">#61A2F7</color>
 
     <!-- Transparent Colors -->
     <color name="transparent_half_white">#4FFFFFFF</color>
@@ -36,6 +36,7 @@
     <color name="transparent_quarter_gray">#CFE0E0E0</color>
     <color name="transparent_little_black">#1F000000</color>
     <color name="transparent_half_black">#4F000000</color>
+    <color name="transparent_half_and_little_more_black">#6F000000</color>
     <color name="transparent_quarter_black">#AF000000</color>
     <color name="transparent_deep_blue">#EF384857</color>
     <color name="transparent_crystal_light">#4F33BEE5</color>

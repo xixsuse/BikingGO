@@ -352,22 +352,15 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         if (isShow) {
             markerBtnLayout.setVisibility(View.VISIBLE);
 
-            if (showEditBtn) {
-                markerBtn_edit.setVisibility(View.VISIBLE);
-                markerBtn_edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onMarkerEditClick();
-                    }
-                });
-            }
+            if (showEditBtn)
+                markerBtn_edit.setImageResource(R.drawable.selector_button_edit);
             else
-                markerBtn_edit.setVisibility(View.GONE);
+                markerBtn_edit.setImageResource(R.drawable.selector_button_add_poi);
 
-            markerBtn_direction.setOnClickListener(new View.OnClickListener() {
+            markerBtn_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onMarkerDirectionClick();
+                    onMarkerEditClick();
                 }
             });
 
@@ -377,12 +370,19 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                     onMarkerNavigationClick();
                 }
             });
+
+            markerBtn_direction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onMarkerDirectionClick();
+                }
+            });
         }
         else {
             markerBtnLayout.setVisibility(View.GONE);
             markerBtn_edit.setOnClickListener(null);
-            markerBtn_direction.setOnClickListener(null);
             markerBtn_navigation.setOnClickListener(null);
+            markerBtn_direction.setOnClickListener(null);
         }
     }
 
@@ -394,11 +394,11 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     }
 
-    protected void onMarkerDirectionClick() {
+    protected void onMarkerNavigationClick() {
 
     }
 
-    protected void onMarkerNavigationClick() {
+    protected void onMarkerDirectionClick() {
 
     }
 

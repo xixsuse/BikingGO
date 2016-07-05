@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="@dimen/padding_size_s"
-        android:layout_marginBottom="@dimen/padding_size_l"
+        android:layout_marginBottom="@dimen/padding_size_m"
         android:background="@color/md_grey_400" />
 
     <ListView

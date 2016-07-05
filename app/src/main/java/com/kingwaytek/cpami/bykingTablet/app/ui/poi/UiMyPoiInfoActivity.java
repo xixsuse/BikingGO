@@ -4,13 +4,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -58,9 +58,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
     private ImageView poiBigPhotoView;
     private TextView poiLocation;
 
-    private ImageButton btn_poiEdit;
-    private ImageButton btn_poiDelete;
-    private ImageButton btn_fbShare;
+    private FloatingActionButton floatingBtn_poiEdit;
 
     private ImageView poiImageView;
     private String photoPath;
@@ -95,9 +93,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
         poiContent = (TextView) findViewById(R.id.text_poiContent);
         poiBigPhotoView = (ImageView) findViewById(R.id.image_poiPhoto);
         poiLocation = (TextView) findViewById(R.id.text_poiLocation);
-        btn_poiEdit = (ImageButton) findViewById(R.id.btn_poiEdit);
-        btn_poiDelete = (ImageButton) findViewById(R.id.btn_poiDelete);
-        btn_fbShare = (ImageButton) findViewById(R.id.btn_facebookShare);
+        floatingBtn_poiEdit = (FloatingActionButton) findViewById(R.id.floatingBtn_poiEdit);
     }
 
     @Override
@@ -115,26 +111,10 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             }
         });
 
-        btn_poiEdit.setOnClickListener(new View.OnClickListener() {
+        floatingBtn_poiEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editMyPoi();
-            }
-        });
-
-        btn_poiDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteMyPoi();
-            }
-        });
-
-        btn_fbShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //LoginManager.getInstance().logInWithReadPermissions(UiMyPoiInfoActivity.this, Arrays.asList("public_profile", "user_friends"));
-                LoginManager.getInstance().logInWithPublishPermissions(UiMyPoiInfoActivity.this, Arrays.asList("publish_actions"));
-                //sharePoiToFacebook();
             }
         });
     }
@@ -151,7 +131,9 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
         this.poiLocation.setText(poiItem.ADDRESS);
 
         poiTitle.setText(poiItem.TITLE);
-        poiContent.setText(poiItem.DESCRIPTION);
+
+        String description = poiItem.DESCRIPTION + "\n\n\n";
+        poiContent.setText(description);
 
         if (!poiItem.PHOTO_PATH.isEmpty()) {
             setImageViewHeight();
@@ -405,7 +387,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE);
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_SHARE);
         return true;
     }
 
@@ -415,6 +397,16 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             case android.R.id.home:
                 setResult(RESULT_OK);
                 finish();
+                break;
+
+            case ACTION_DELETE:
+                deleteMyPoi();
+                break;
+
+            case ACTION_SHARE:
+                //LoginManager.getInstance().logInWithReadPermissions(UiMyPoiInfoActivity.this, Arrays.asList("public_profile", "user_friends"));
+                LoginManager.getInstance().logInWithPublishPermissions(UiMyPoiInfoActivity.this, Arrays.asList("publish_actions"));
+                //sharePoiToFacebook();
                 break;
         }
         return true;

@@ -52,7 +52,10 @@
         android:layout_marginStart="@dimen/padding_size_l"
         android:layout_marginTop="@dimen/padding_size_l"
         android:layout_marginBottom="@dimen/padding_size_l"
-        android:padding="@dimen/padding_size_s"
+        android:paddingLeft="@dimen/padding_size_s"
+        android:paddingStart="@dimen/padding_size_s"
+        android:paddingRight="@dimen/padding_size_s"
+        android:paddingEnd="@dimen/padding_size_s"
         android:background="@drawable/background_plan_edit_row">
 
         <ImageView
@@ -60,6 +63,7 @@
             android:layout_width="@dimen/icon_common_size"
             android:layout_height="@dimen/icon_common_size"
             android:src="@drawable/ic_drag_sort"
+            android:scaleType="centerCrop"
             android:layout_centerVertical="true"/>
 
         <TextView
@@ -71,8 +75,6 @@
             android:layout_toStartOf="@+id/drag_handle"
             android:layout_toLeftOf="@+id/drag_click_remove"
             android:layout_toEndOf="@+id/drag_click_remove"
-            android:layout_marginLeft="@dimen/padding_size_m"
-            android:layout_marginStart="@dimen/padding_size_m"
             android:padding="@dimen/padding_size_m"
             android:gravity="center_vertical"
             android:clickable="true"
@@ -84,12 +86,12 @@
             android:id="@id/drag_click_remove"
             android:layout_width="@dimen/icon_common_size"
             android:layout_height="@dimen/icon_common_size"
-            android:layout_marginLeft="@dimen/padding_size_m"
-            android:layout_marginStart="@dimen/padding_size_m"
+            android:layout_marginLeft="@dimen/padding_size_s"
+            android:layout_marginStart="@dimen/padding_size_s"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/selector_close_button"
+            android:src="@drawable/selector_remove_button"
             android:scaleType="fitCenter"
             android:padding="@dimen/padding_size_s"
             android:background="@null"/>

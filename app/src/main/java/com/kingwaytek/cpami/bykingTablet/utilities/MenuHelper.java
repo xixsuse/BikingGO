@@ -26,11 +26,13 @@ public class MenuHelper implements ActionbarMenu {
 
                 case ACTION_SAVE:
                     menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_save)
-                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                            .setIcon(R.drawable.selector_toolbar_save)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
 
                 case ACTION_EDIT:
                     menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_edit)
+                            .setIcon(R.drawable.selector_poi_edit)
                             .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                     break;
 
@@ -43,6 +45,12 @@ public class MenuHelper implements ActionbarMenu {
                 case ACTION_DELETE:
                     menu.add(Menu.NONE, action, Menu.NONE, R.string.poi_delete)
                             .setIcon(R.drawable.selector_delete)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                    break;
+
+                case ACTION_SHARE:
+                    menu.add(Menu.NONE, action, Menu.NONE, R.string.poi_share)
+                            .setIcon(android.R.drawable.ic_menu_share)
                             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
             }

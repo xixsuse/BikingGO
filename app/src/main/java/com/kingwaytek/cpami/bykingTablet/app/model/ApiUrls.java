@@ -18,4 +18,18 @@ public interface ApiUrls {
     String API_GOOGLE_DIRECTION_MULTI_POINT =
             "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints=optimize:{2}|{3}" +
                     "&mode={4}&avoid={5}&language={6}&key={7}";
+
+    String API_REPORT = "http://biking.cpami.gov.tw/Service/TrafficAlertUpload?" +
+            "Reporter={0}&" +
+            "AlertTypeID={1}&" +
+            "AlertTitle={2}&" +
+            "StartTime={3}&" +
+            "EndTime={4}&" +
+            "CityID={5}&" +
+            "Detail={6}&" +
+            "Lon={7}&" +
+            "Lat={8}&" +
+            "ReportTime={9}&" +
+            "ReportEmail={10}&" +
+            "Code={11}";
 }
