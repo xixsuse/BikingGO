@@ -205,7 +205,7 @@ public class OperationSetting extends CommunicationBaseActivity {
 /*
 	private String generateMD5(int service_ID) {
 		Date date = new Date();
-		return CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) +
+		return CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) +
                 date.getHours()) * (service_ID + date.getDate())) + "Kingway").getBytes());
 	}
 */

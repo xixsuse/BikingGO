@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
+import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransportList;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
@@ -112,7 +112,7 @@ public class TrafficUpdate extends ListActivity {
 
 					// Internet Connect
 					Date date = new Date();
-					String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
+					String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
 							* (1207 + date.getDate())) + "Kingway").getBytes());
 
 					String TrafficAlertUploadURL = getResources().getString(

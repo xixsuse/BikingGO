@@ -321,6 +321,7 @@
     <string name="actionbar_save">儲存</string>
     <string name="actionbar_edit">編輯</string>
     <string name="actionbar_path_list">路徑清單</string>
+    <string name="actionbar_upload">上傳</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -368,6 +369,22 @@
     <string name="location_current">目前位置</string>
     <string name="location_from_map">從地圖上點選</string>
     <string name="location_from_my_poi">從我的景點選擇</string>
+
+    <!-- User Report -->
+    <string name="report_name">姓名</string>
+    <string name="report_type">類型</string>
+    <string name="report_title">標題</string>
+    <string name="report_start_time">起始</string>
+    <string name="report_end_time">終止</string>
+    <string name="report_location">地點</string>
+    <string name="report_email">信箱</string>
+    <string name="report_description">簡述</string>
+    <string name="report_result_ok">回報成功</string>
+    <string name="report_result_failed">回報失敗!</string>
+    <string name="report_require_name">請輸入姓名</string>
+    <string name="report_require_title">請輸入標題</string>
+    <string name="report_require_description">請輸入簡述</string>
+
 
     <string-array name="dialog_photo_menu">
         <item>@string/dialog_menu_photo_from_camera</item>

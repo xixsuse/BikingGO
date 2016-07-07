@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/md_blue_grey_400">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:isScrollContainer="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <DatePicker
+                android:id="@+id/picker_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:headerBackground="@color/md_amber_600"
+                android:datePickerMode="calendar"/>
+
+            <TimePicker
+                android:id="@+id/picker_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:timePickerMode="spinner"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_size_m"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="@dimen/padding_size_s"
+            android:layout_marginEnd="@dimen/padding_size_s"
+            android:background="@drawable/background_common_button_2"
+            android:textSize="@dimen/font_text_size_m"
+            android:textColor="@color/md_white_1000"
+            android:text="@string/confirm"/>
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/padding_size_s"
+            android:layout_marginStart="@dimen/padding_size_s"
+            android:background="@drawable/background_common_button_2"
+            android:textSize="@dimen/font_text_size_m"
+            android:textColor="@color/md_white_1000"
+            android:text="@string/cancel"/>
+
+    </LinearLayout>
+
+</LinearLayout>

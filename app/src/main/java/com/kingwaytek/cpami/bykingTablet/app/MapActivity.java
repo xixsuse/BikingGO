@@ -1986,7 +1986,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                     }
                     // Internet Connect
                     Date date = new Date();
-                    String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1)
+                    String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1)
                             + date.getHours()) * (1102 + date.getDate())) + "Kingway").getBytes());
 
                     // String WeatherURL =
@@ -2272,7 +2272,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                 // Internet Connect
                 try {
                     Date date = new Date();
-                    String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date
+                    String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date
                             .getMonth() + 1) + date.getHours())
                             * (1207 + date.getDate())) + "Kingway").getBytes());
                     // String TrafficAlertUploadURL =

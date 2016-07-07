@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.app.Infomation;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,7 +10,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
+import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
@@ -75,7 +76,7 @@ public class InformationActivity extends CommunicationBaseActivity implements On
 	private String constructRequestCommand() {
 		Date date = new Date();
 
-		String md5 = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
+		String md5 = CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
 				* (webServiceNumber + date.getDate())) + "Kingway").getBytes());
 
 		return requestCommand + md5;
@@ -108,12 +109,12 @@ public class InformationActivity extends CommunicationBaseActivity implements On
 	/* Item on ListView click */
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        /*
+
 		InfomationObject object = dataSource.get(arg2);
 		Intent intent = new Intent(this, DetailActivity.class);
 		intent.putExtra("Info", object);
 		this.startActivity(intent);
-		*/
+
 	}
 
 	/* Alert */
@@ -170,8 +171,8 @@ public class InformationActivity extends CommunicationBaseActivity implements On
 				object.setParkinginfo(array.getJSONObject(i).getString("parkinginfo"));
 				object.setCharge(array.getJSONObject(i).getString("charge"));
 				object.setRemarks(array.getJSONObject(i).getString("remarks"));
-				object.setRegion(array.getJSONObject(i).getString("region"));
-				object.setTown(array.getJSONObject(i).getString("town"));
+				//object.setRegion(array.getJSONObject(i).getString("region"));
+				//object.setTown(array.getJSONObject(i).getString("town"));
 
 				objects.add(object);
 			}

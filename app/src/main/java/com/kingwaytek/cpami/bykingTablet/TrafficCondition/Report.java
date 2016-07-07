@@ -23,7 +23,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
+import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransportList;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
@@ -252,8 +252,11 @@ public class Report extends Activity implements OnItemSelectedListener {
                             }
                             // Internet Connect
                             Date date = new Date();
-                            String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
-                                            * (1208 + date.getDate())) + "Kingway").getBytes());
+                            String MD5Code = CreateMD5Code.getMD5(
+                                    (String.valueOf(
+                                            ((date.getMonth() + 1) + date.getHours()) * (1208 + date.getDate())
+                                    ) + "Kingway").getBytes()
+                            );
 
                             Log.i("Report", "date.getMonth(): " + date.getMonth() + " date.getHours(): " + date.getHours() + " date.getData(): " + date.getDate());
 
@@ -320,6 +323,7 @@ public class Report extends Activity implements OnItemSelectedListener {
                             HttpResponse response;
 
                             HttpPost httpPost = new HttpPost(TrafficAlertUploadURL);
+
                             response = cliente.execute(httpPost);
                             HttpEntity entity = response.getEntity();
 

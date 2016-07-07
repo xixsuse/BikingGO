@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
@@ -18,6 +19,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 
 /**
@@ -199,5 +201,34 @@ public class WebAgent {
         ));
 
         AppController.getInstance().getRequestQueue().add(directionRequest);
+    }
+
+    public static void sendPostToUrl(String url, final WebResultImplement webResult) {
+        try {
+            byte[] bytes = url.getBytes("UTF-8");
+            url = new String(bytes, Charset.forName("UTF-8"));
+        }
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        webResult.onResultSucceed(response);
+                        Log.i(TAG, "SendPOST: DONE! " + response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null)
+                            Log.e(TAG, "SendPOST: ERROR! " + error.networkResponse.statusCode + " " + error.getMessage());
+                        webResult.onResultFail(error.getMessage());
+                    }
+                });
+
+        AppController.getInstance().getRequestQueue().add(request);
     }
 }

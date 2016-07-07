@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
+import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
 
 import org.apache.http.Header;
@@ -71,7 +71,7 @@ public class Update extends CommunicationBaseActivity {
 	private String constructGetDataRequest() {
 		Date date = new Date();
 
-		String MD5Code = CreatMD5Code
+		String MD5Code = CreateMD5Code
 				.getMD5((String.valueOf(((date.getMonth() + 1) + date
 						.getHours()) * (1106 + date.getDate())) + "Kingway")
 						.getBytes());
@@ -87,7 +87,7 @@ public class Update extends CommunicationBaseActivity {
 	private String constructGetVersionRequest() {
 		Date date = new Date();
 
-		String MD5Code = CreatMD5Code
+		String MD5Code = CreateMD5Code
 				.getMD5((String.valueOf(((date.getMonth() + 1) + date
 						.getHours()) * (1106 + date.getDate())) + "Kingway")
 						.getBytes());

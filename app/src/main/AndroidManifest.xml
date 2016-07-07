@@ -547,6 +547,10 @@
             android:name=".app.ui.planning.UiPlanDirectionMapActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".app.ui.report.UiReportActivity"
+            android:screenOrientation="portrait" />
+
         <!-- FacebookActivity added by Vincent -->
         <activity
             android:name="com.facebook.FacebookActivity"

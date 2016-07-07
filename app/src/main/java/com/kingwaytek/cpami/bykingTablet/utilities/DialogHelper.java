@@ -10,15 +10,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
@@ -36,6 +40,10 @@ public class DialogHelper {
 
     private static AlertDialog.Builder dialogBuilder;
     private static Dialog dialog;
+
+    public interface OnTimeSetCallBack {
+        void onTimeSet(String year, String month, String day, String hours, String minutes);
+    }
 
     public static void showLoadingDialog(Context context) {
         dialogBuilder = new AlertDialog.Builder(context);
@@ -195,5 +203,64 @@ public class DialogHelper {
         dialogBuilder.setCancelable(false);
         dialogBuilder.setPositiveButton(context.getString(R.string.confirm), positiveClick);
         dialogBuilder.create().show();
+    }
+
+    public static void showPickersDialog(Context context, final OnTimeSetCallBack timeSetCallBack) {
+        dialogBuilder = new AlertDialog.Builder(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.inflate_date_and_time_pickers, null);
+
+        final DatePicker datePicker = (DatePicker) view.findViewById(R.id.picker_date);
+        final TimePicker timePicker = (TimePicker) view.findViewById(R.id.picker_time);
+        final Button btn_confirm = (Button) view.findViewById(R.id.btn_confirm);
+        final Button btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
+
+        long aMonth = (1000L * 60 * 60 * 24) * 30;
+        long aMonthLater = System.currentTimeMillis() + aMonth;
+        long aMonthAgo = System.currentTimeMillis() - aMonth;
+
+        datePicker.setMaxDate(aMonthLater);
+        datePicker.setMinDate(aMonthAgo);
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialog != null)
+                    dialog.dismiss();
+
+                btn_cancel.setOnClickListener(null);
+                btn_confirm.setOnClickListener(null);
+            }
+        });
+
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String year = String.valueOf(datePicker.getYear());
+                String month = String.valueOf(datePicker.getMonth());
+                String day = String.valueOf(datePicker.getDayOfMonth());
+                String hours;
+                String minutes;
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    hours = String.valueOf(timePicker.getHour());
+                    minutes = String.valueOf(timePicker.getMinute());
+                }
+                else {
+                    hours = String.valueOf(timePicker.getCurrentHour());
+                    minutes = String.valueOf(timePicker.getCurrentMinute());
+                }
+
+                timeSetCallBack.onTimeSet(year, month, day, hours, minutes);
+
+                dialog.dismiss();
+                btn_cancel.setOnClickListener(null);
+                btn_confirm.setOnClickListener(null);
+            }
+        });
+
+        dialogBuilder.setView(view);
+
+        dialog = dialogBuilder.create();
+        dialog.show();
     }
 }

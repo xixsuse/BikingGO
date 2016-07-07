@@ -1,6 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app;
 
-public class CreatMD5Code {
+public class CreateMD5Code {
 	public static String getMD5(byte[] source) {
 		  String s = null;
 		  char hexDigits[] = {       // 用来将字节转换成 16 进制表示的字符

@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
-import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
+import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
@@ -507,7 +507,7 @@ public class UbikeActivity extends CommunicationBaseActivity implements Location
 
     private String generateMD5(int service_ID) {
         Date date = new Date();
-        return CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
+        return CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
                 * (service_ID + date.getDate())) + "Kingway").getBytes());
     }
 

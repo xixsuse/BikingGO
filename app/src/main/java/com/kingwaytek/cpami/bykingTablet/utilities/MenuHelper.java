@@ -53,6 +53,10 @@ public class MenuHelper implements ActionbarMenu {
                             .setIcon(android.R.drawable.ic_menu_share)
                             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
+
+                case ACTION_UPLOAD:
+                    menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_upload)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
         }
     }

@@ -1,18 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.bus;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -29,14 +16,27 @@ import android.widget.TextView;
 import com.example.actionsheet.ActionSheet;
 import com.example.actionsheet.ActionSheet.ActionSheetButtonClickListener;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
+import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.MyFavorite;
 import com.kingwaytek.cpami.bykingTablet.app.MyHistory;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.address.CitySelection;
 import com.kingwaytek.cpami.bykingTablet.app.poi.POIMethodSelection;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Date;
 
 public class PublicTransport extends Activity {
 	private static TextView TextStartPoint;
@@ -276,7 +276,7 @@ public class PublicTransport extends Activity {
 					URLstrbuilder = new StringBuilder();
 					String TrackPointString = null;
 					Date date = new Date();
-					String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
+					String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
 							* (1103 + date.getDate())) + "Kingway").getBytes());
 					// URLstrbuilder.append("http://192.168.1.186:8080/BikeGo/RoutePath?startp=");
 					// URLstrbuilder.append("http://59.120.150.54:8081/BikeGo/RoutePath?startp=");

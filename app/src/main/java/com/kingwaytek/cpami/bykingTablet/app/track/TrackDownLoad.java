@@ -21,7 +21,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
+import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.app.Infomation.CommunicationBaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackEngine.TrackRecordingStatus;
@@ -83,7 +83,7 @@ public class TrackDownLoad extends CommunicationBaseActivity implements OnItemCl
 	private String contructListCommand(String type) {
 		Date date = new Date();
 
-		String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
+		String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
 				* (1104 + date.getDate())) + "Kingway").getBytes());
 
 		return api_list + "&code=" + MD5Code + "&type=" + type;
@@ -93,7 +93,7 @@ public class TrackDownLoad extends CommunicationBaseActivity implements OnItemCl
 	private String contructDownloadCommand(String routeID) {
 		Date date = new Date();
 
-		String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
+		String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
 				* (1105 + date.getDate())) + "Kingway").getBytes());
 
 		return api_download + MD5Code + "&routeid=" + routeID;
