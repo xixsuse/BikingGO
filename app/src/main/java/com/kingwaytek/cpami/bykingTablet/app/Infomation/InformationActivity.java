@@ -173,8 +173,8 @@ public class InformationActivity extends CommunicationBaseActivity implements On
 				object.setParkinginfo(array.getJSONObject(i).getString("parkinginfo"));
 				object.setCharge(array.getJSONObject(i).getString("charge"));
 				object.setRemarks(array.getJSONObject(i).getString("remarks"));
-				object.setRegion(array.getJSONObject(i).getString("region"));
-				object.setTown(array.getJSONObject(i).getString("town"));
+				//object.setRegion(array.getJSONObject(i).getString("region"));
+				//object.setTown(array.getJSONObject(i).getString("town"));
 
 				objects.add(object);
 			}
