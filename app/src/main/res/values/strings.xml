@@ -383,7 +383,7 @@
     <string name="report_result_failed">回報失敗!</string>
     <string name="report_require_name">請輸入姓名</string>
     <string name="report_require_title">請輸入標題</string>
-    <string name="report_require_description">請輸入簡述</string>
+    <string name="report_require_description">請輸入簡短描述</string>
 
 
     <string-array name="dialog_photo_menu">

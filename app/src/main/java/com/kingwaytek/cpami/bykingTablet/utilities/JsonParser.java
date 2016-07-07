@@ -3,6 +3,7 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
@@ -335,5 +336,69 @@ public class JsonParser {
             instruction = originPath;
 
         return new String[]{instruction, goOnPath};
+    }
+
+    public static void parseEventsDataThenAddToList(String jsonString, JSONParseResult parseResult) {
+        ArrayList<ItemsEvents> eventList = new ArrayList<>();
+
+        try {
+            JA = new JSONArray(jsonString);
+
+            String name;
+            String description;
+            String location;
+            String address;
+            String organization;
+            String startTime;
+            String endTime;
+            String website;
+            String pic1Url;
+            String pic1Name;
+            String pic2Url;
+            String pic2Name;
+            String pic3Url;
+            String pic3Name;
+            double lat;
+            double lng;
+            String travelInfo;
+            String parkingInfo;
+
+            for (int i = 0; i < JA.length(); i++) {
+                JO = JA.getJSONObject(i);
+
+                name = JO.getString("name");
+                description = JO.getString("description");
+                location = JO.getString("location");
+                address = JO.getString("add");
+                organization = JO.getString("org");
+                startTime = JO.getString("start");
+                endTime = JO.getString("end");
+                website = JO.getString("website");
+                pic1Url = JO.getString("picture1");
+                pic1Name = JO.getString("picdescribe1");
+                pic2Url = JO.getString("picture2");
+                pic2Name = JO.getString("picdescribe2");
+                pic3Url = JO.getString("picture3");
+                pic3Name = JO.getString("picdescribe3");
+                lat = JO.getDouble("py");
+                lng = JO.getDouble("px");
+                travelInfo = JO.getString("travellinginfo");
+                parkingInfo = JO.getString("parkinginfo");
+
+                eventList.add((new ItemsEvents(name, description, location, address, organization, startTime, endTime, website,
+                        pic1Url, pic1Name, pic2Url, pic2Name, pic3Url, pic3Name, lat, lng, travelInfo, parkingInfo)));
+            }
+
+            if (DataArray.list_events != null)
+                DataArray.list_events.clear();
+            DataArray.list_events = new SoftReference<>(eventList);
+
+            parseResult.onParseFinished();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            parseResult.onParseFinished();
+        }
+        releaseObjects();
     }
 }

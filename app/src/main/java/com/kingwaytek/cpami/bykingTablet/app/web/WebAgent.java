@@ -19,7 +19,6 @@ import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.text.MessageFormat;
 
 /**
@@ -204,14 +203,6 @@ public class WebAgent {
     }
 
     public static void sendPostToUrl(String url, final WebResultImplement webResult) {
-        try {
-            byte[] bytes = url.getBytes("UTF-8");
-            url = new String(bytes, Charset.forName("UTF-8"));
-        }
-        catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

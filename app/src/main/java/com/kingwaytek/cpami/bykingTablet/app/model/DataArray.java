@@ -2,12 +2,14 @@ package com.kingwaytek.cpami.bykingTablet.app.model;
 
 import android.util.Log;
 
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
+import com.kingwaytek.cpami.bykingTablet.utilities.MD5Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.lang.ref.SoftReference;
@@ -29,6 +31,7 @@ public class DataArray implements ApiUrls {
 
     public static SoftReference<ArrayList<ItemsSearchResult>> list_searchResult;
     public static SoftReference<ArrayList<ItemsPathList>> list_pathList;
+    public static SoftReference<ArrayList<ItemsEvents>> list_events;
 
     public interface OnDataGetCallBack {
         void onDataGet();
@@ -93,5 +96,36 @@ public class DataArray implements ApiUrls {
                 Log.e(TAG, "Direction_ParseError: " + errorMessage);
             }
         });
+    }
+
+    public static void checkAndGetEventsData(final OnDataGetCallBack dataGet) {
+        if (list_events == null || list_events.get() == null || list_events.get().isEmpty()) {
+
+            String apiUrl = MessageFormat.format(API_EVENTS, MD5Util.getMD5Code(MD5Util.SERVICE_NUMBER_EVENTS));
+
+            WebAgent.getStringByUrl(apiUrl, new WebAgent.WebResultImplement() {
+                @Override
+                public void onResultSucceed(String response) {
+                    JsonParser.parseEventsDataThenAddToList(response, new JsonParser.JSONParseResult() {
+                        @Override
+                        public void onParseFinished() {
+                            dataGet.onDataGet();
+                        }
+
+                        @Override
+                        public void onParseFail(String errorMessage) {
+                            Log.e(TAG, "Events_parseError: " + errorMessage);
+                        }
+                    });
+                }
+
+                @Override
+                public void onResultFail(String errorMessage) {
+                    Log.e(TAG, "Events_webError: " + errorMessage);
+                }
+            });
+        }
+        else
+            dataGet.onDataGet();
     }
 }

@@ -205,7 +205,7 @@ public class DialogHelper {
         dialogBuilder.create().show();
     }
 
-    public static void showPickersDialog(Context context, final OnTimeSetCallBack timeSetCallBack) {
+    public static void showPickersDialog(Context context, boolean plusTenMinutes, final OnTimeSetCallBack timeSetCallBack) {
         dialogBuilder = new AlertDialog.Builder(context);
         View view = LayoutInflater.from(context).inflate(R.layout.inflate_date_and_time_pickers, null);
 
@@ -220,6 +220,28 @@ public class DialogHelper {
 
         datePicker.setMaxDate(aMonthLater);
         datePicker.setMinDate(aMonthAgo);
+
+        if (plusTenMinutes) {
+            int totalMinutes;
+            if (Build.VERSION.SDK_INT >= 23)
+                totalMinutes = (timePicker.getHour() * 60) + timePicker.getMinute();
+            else
+                totalMinutes = (timePicker.getCurrentHour() * 60) + timePicker.getCurrentMinute();
+
+            totalMinutes += 10;
+
+            int hours = totalMinutes / 60;
+            int minutes = totalMinutes % 60;
+
+            if (Build.VERSION.SDK_INT >= 23) {
+                timePicker.setHour(hours);
+                timePicker.setMinute(minutes);
+            }
+            else {
+                timePicker.setCurrentHour(hours);
+                timePicker.setCurrentMinute(minutes);
+            }
+        }
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override

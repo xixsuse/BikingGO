@@ -32,4 +32,6 @@ public interface ApiUrls {
             "ReportTime={9}&" +
             "ReportEmail={10}&" +
             "Code={11}";
+
+    String API_EVENTS = "http://biking.cpami.gov.tw/Service/ListActivity?code={0}";
 }

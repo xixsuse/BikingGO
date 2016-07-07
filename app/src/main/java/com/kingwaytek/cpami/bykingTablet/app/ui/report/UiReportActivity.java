@@ -11,19 +11,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.app.model.ApiUrls;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.MD5Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -106,7 +105,7 @@ public class UiReportActivity extends BaseActivity {
         text_startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.showPickersDialog(UiReportActivity.this, new DialogHelper.OnTimeSetCallBack() {
+                DialogHelper.showPickersDialog(UiReportActivity.this, false, new DialogHelper.OnTimeSetCallBack() {
                     @Override
                     public void onTimeSet(String year, String month, String day, String hours, String minutes) {
                         String timeString = year + "/" + month + "/" + day + "  " + hours + ":" + minutes;
@@ -126,7 +125,7 @@ public class UiReportActivity extends BaseActivity {
         text_endTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.showPickersDialog(UiReportActivity.this, new DialogHelper.OnTimeSetCallBack() {
+                DialogHelper.showPickersDialog(UiReportActivity.this, true, new DialogHelper.OnTimeSetCallBack() {
                     @Override
                     public void onTimeSet(String year, String month, String day, String hours, String minutes) {
                         String timeString = year + "/" + month + "/" + day + "  " + hours + ":" + minutes;
@@ -228,18 +227,6 @@ public class UiReportActivity extends BaseActivity {
         return edit_email.getText().toString();
     }
 
-    private String getMD5Code() {
-        Calendar calendar = Calendar.getInstance(Locale.TAIWAN);
-
-        Log.i(TAG, "Month: " + calendar.get(Calendar.MONTH) + " Hours: " + calendar.get(Calendar.HOUR) + " Date: " + calendar.get(Calendar.DATE));
-
-        return CreateMD5Code.getMD5(
-                (String.valueOf(
-                        ((calendar.get(Calendar.MONTH) + 1) + calendar.get(Calendar.HOUR)) * (1208 + calendar.get(Calendar.DATE))
-                ) + "Kingway").getBytes()
-        );
-    }
-
     private boolean isAllowUpload() {
         if (!getReporterName().isEmpty() && !getReportTitle().isEmpty() && !getDescription().isEmpty())
             return true;
@@ -270,7 +257,8 @@ public class UiReportActivity extends BaseActivity {
             }
 
             String reportUrl = MessageFormat.format(ApiUrls.API_REPORT, getReporterName(), getReportType(), getReportTitle(),
-                    getStartTime(), getEndTime(), getReportLocation(), getDescription(), lng, lat, now, getReporterEmail(), getMD5Code());
+                    getStartTime(), getEndTime(), getReportLocation(), getDescription(), lng, lat, now, getReporterEmail(),
+                    MD5Util.getMD5Code(MD5Util.SERVICE_NUMBER_REPORT));
 
             Log.i(TAG, "ReportUrl: " + reportUrl);
 
