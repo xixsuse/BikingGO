@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/setting_menu_navi_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/padding_size_xl"
+        android:background="@drawable/background_photo_select_options">
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size_l"
+            android:layout_height="@dimen/icon_common_size_l"
+            android:layout_weight="0"
+            android:src="@drawable/ic_settings"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/padding_size_xxl"
+            android:layout_marginStart="@dimen/padding_size_xxl"
+            android:text="@string/preference_navi"
+            android:textSize="@dimen/font_text_size_m"/>
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size_l"
+            android:layout_height="@dimen/icon_common_size_l"
+            android:layout_weight="0"
+            android:src="@drawable/ic_right_arrow_grey"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_size_xl"
+        android:paddingStart="@dimen/padding_size_xl"
+        android:paddingRight="@dimen/padding_size_xl"
+        android:paddingEnd="@dimen/padding_size_xl">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/md_grey_400" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/setting_menu_health_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/padding_size_xl"
+        android:background="@drawable/background_photo_select_options">
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size_l"
+            android:layout_height="@dimen/icon_common_size_l"
+            android:layout_weight="0"
+            android:src="@drawable/ic_settings"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/padding_size_xxl"
+            android:layout_marginStart="@dimen/padding_size_xxl"
+            android:text="@string/preference_health"
+            android:textSize="@dimen/font_text_size_m"/>
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size_l"
+            android:layout_height="@dimen/icon_common_size_l"
+            android:layout_weight="0"
+            android:src="@drawable/ic_right_arrow_grey"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_size_xl"
+        android:paddingStart="@dimen/padding_size_xl"
+        android:paddingRight="@dimen/padding_size_xl"
+        android:paddingEnd="@dimen/padding_size_xl">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/md_grey_400" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/setting_menu_map_download_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/padding_size_xl"
+        android:background="@drawable/background_photo_select_options">
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size_l"
+            android:layout_height="@dimen/icon_common_size_l"
+            android:layout_weight="0"
+            android:src="@drawable/ic_settings"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/padding_size_xxl"
+            android:layout_marginStart="@dimen/padding_size_xxl"
+            android:text="@string/map_download"
+            android:textSize="@dimen/font_text_size_m"/>
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size_l"
+            android:layout_height="@dimen/icon_common_size_l"
+            android:layout_weight="0"
+            android:src="@drawable/ic_right_arrow_grey"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_size_xl"
+        android:paddingStart="@dimen/padding_size_xl"
+        android:paddingRight="@dimen/padding_size_xl"
+        android:paddingEnd="@dimen/padding_size_xl">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/md_grey_400" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/setting_menu_about_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/padding_size_xl"
+        android:background="@drawable/background_photo_select_options">
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size_l"
+            android:layout_height="@dimen/icon_common_size_l"
+            android:layout_weight="0"
+            android:src="@drawable/ic_settings"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/padding_size_xxl"
+            android:layout_marginStart="@dimen/padding_size_xxl"
+            android:text="@string/preference_about"
+            android:textSize="@dimen/font_text_size_m"/>
+
+        <ImageView
+            android:layout_width="@dimen/icon_common_size_l"
+            android:layout_height="@dimen/icon_common_size_l"
+            android:layout_weight="0"
+            android:src="@drawable/ic_right_arrow_grey"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_size_xl"
+        android:paddingStart="@dimen/padding_size_xl"
+        android:paddingRight="@dimen/padding_size_xl"
+        android:paddingEnd="@dimen/padding_size_xl">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/md_grey_400" />
+
+    </FrameLayout>
+
+</LinearLayout>

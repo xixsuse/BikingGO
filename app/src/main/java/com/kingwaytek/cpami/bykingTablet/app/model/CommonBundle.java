@@ -28,6 +28,7 @@ public interface CommonBundle {
     String BUNDLE_PLAN_STEP_END_NAME = "PlanStepEndName";
     String BUNDLE_PLAN_STEP_DISTANCE = "PlanStepDistance";
     String BUNDLE_PLAN_STEP_DURATION = "PlanStepDuration";
+    String BUNDLE_EVENT_DETAIL = "EventDetail";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;

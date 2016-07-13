@@ -263,7 +263,7 @@ public class SettingManager {
      * @return The view type of map. Default is {@link MapView#VIEW_2D}.
      */
     public static int getMapViewType() {
-        return prefs.getInt(PREF_MAP_STYLE, appContext().getResources().getInteger(R.integer.mapViewType));
+        return prefs.getInt(PREF_MAP_VIEW_TYPE, appContext().getResources().getInteger(R.integer.mapViewType));
     }
 
     /**

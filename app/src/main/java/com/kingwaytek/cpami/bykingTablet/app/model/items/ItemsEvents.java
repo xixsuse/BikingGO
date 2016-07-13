@@ -1,9 +1,11 @@
 package com.kingwaytek.cpami.bykingTablet.app.model.items;
 
+import java.io.Serializable;
+
 /**
  * Created by vincent.chang on 2016/7/7.
  */
-public class ItemsEvents {
+public class ItemsEvents implements Serializable {
 
     public String NAME;
     public String DESCRIPTION;

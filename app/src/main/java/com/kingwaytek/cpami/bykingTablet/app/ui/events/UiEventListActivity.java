@@ -1,5 +1,8 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.events;
 
+import android.content.Intent;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
@@ -12,7 +15,9 @@ import com.kingwaytek.cpami.bykingTablet.utilities.adapter.EventListAdapter;
 import java.util.ArrayList;
 
 /**
- * Created by vincent.chang on 2016/7/7.
+ * 活動訊息列表
+ *
+ * @author Vincent (2016/7/7)
  */
 public class UiEventListActivity extends BaseActivity {
 
@@ -40,7 +45,12 @@ public class UiEventListActivity extends BaseActivity {
 
     @Override
     protected void setListener() {
-
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                goToDetail(position);
+            }
+        });
     }
 
     private void getEventsData() {
@@ -63,5 +73,20 @@ public class UiEventListActivity extends BaseActivity {
 
     private void setEventListView(ArrayList<String> nameList) {
         eventListView.setAdapter(new EventListAdapter(this, nameList));
+    }
+
+    private void goToDetail(final int position) {
+        DialogHelper.showLoadingDialog(this);
+
+        DataArray.checkAndGetEventsData(new DataArray.OnDataGetCallBack() {
+            @Override
+            public void onDataGet() {
+                Intent intent = new Intent(UiEventListActivity.this, UiEventDetailActivity.class);
+                intent.putExtra(BUNDLE_EVENT_DETAIL, DataArray.list_events.get().get(position));
+                startActivity(intent);
+
+                DialogHelper.dismissDialog();
+            }
+        });
     }
 }

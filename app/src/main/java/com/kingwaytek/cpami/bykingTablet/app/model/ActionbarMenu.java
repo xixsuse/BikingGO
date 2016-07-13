@@ -18,4 +18,5 @@ public interface ActionbarMenu {
     int ACTION_DELETE = 1 << 5;
     int ACTION_SHARE = 1 << 6;
     int ACTION_UPLOAD = 1 << 7;
+    int ACTION_FB_SHARE = 1 << 8;
 }

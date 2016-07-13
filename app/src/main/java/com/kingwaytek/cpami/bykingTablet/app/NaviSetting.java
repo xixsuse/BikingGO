@@ -102,37 +102,32 @@ public class NaviSetting extends Activity {
 
 		actionSheet = (ActionSheet) findViewById(R.id.actionSheet_mapstyle);
 		actionSheet.setContext(NaviSetting.this);
-		actionSheet.setActionSheetLayout(R.layout.action_sheet_mapstyle,
-				sub_view);
-		actionSheet
-				.setOnActionSheetButtonClickListener(new ActionSheetButtonClickListener() {
+		actionSheet.setActionSheetLayout(R.layout.action_sheet_mapstyle, sub_view);
 
-					@Override
-					public void onButtonClick(ActionSheet actionsheet,
-							int index, int id) {
-						int flag = 0;
+        actionSheet.setOnActionSheetButtonClickListener(new ActionSheetButtonClickListener() {
+            @Override
+            public void onButtonClick(ActionSheet actionsheet, int index, int id) {
+                if (index == 0 || index == 11) {
 
-						if (index == 0 || index == 11) {
+                } else {
 
-						} else {
+                    // cuber
+                    SettingManager.setMapStyle(index);
+                    int mapstyle = index;
+                    if (mapstyle < 6) {
+                        instanceEeego.setmapstyle(0, mapstyle, 1);
+                    } else {
+                        mapstyle -= 5;
+                        instanceEeego.setmapstyle(1, 0, mapstyle);
+                    }
 
-							// cuber
-                            SettingManager.setMapStyle(index);
-							int mapstyle = index;
-							if (mapstyle < 6) {
-								instanceEeego.setmapstyle(0, mapstyle, 1);
-							} else {
-								mapstyle -= 5;
-								instanceEeego.setmapstyle(1, 0, mapstyle);
-							}
-
-							instanceEeego.savenaviparameter();
-							mapStyle_layout.setClickable(true);
-							mapstyle_text.setText(style[index]);
-						}
-					}
-				});
-	}
+                    instanceEeego.savenaviparameter();
+                    mapStyle_layout.setClickable(true);
+                    mapstyle_text.setText(style[index]);
+                }
+            }
+        });
+    }
 
 	@Override
 	public void setTitle(CharSequence title) {

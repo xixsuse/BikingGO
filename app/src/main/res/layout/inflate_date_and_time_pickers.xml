@@ -22,8 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:headerBackground="@color/md_amber_600"
-                android:datePickerMode="calendar"/>
+                android:headerBackground="@color/md_amber_600"/>
 
             <TimePicker
                 android:id="@+id/picker_time"

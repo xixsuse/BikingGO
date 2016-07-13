@@ -258,7 +258,7 @@ public class DialogHelper {
             @Override
             public void onClick(View v) {
                 String year = String.valueOf(datePicker.getYear());
-                String month = String.valueOf(datePicker.getMonth());
+                String month = String.valueOf(datePicker.getMonth() + 1);
                 String day = String.valueOf(datePicker.getDayOfMonth());
                 String hours;
                 String minutes;

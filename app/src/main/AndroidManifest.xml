@@ -555,6 +555,22 @@
             android:name=".app.ui.events.UiEventListActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".app.ui.events.UiEventDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".app.ui.settings.UiSettingMenuActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".app.ui.settings.UiAboutActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".app.ui.settings.UiHealthActivity"
+            android:screenOrientation="portrait" />
+
         <!-- FacebookActivity added by Vincent -->
         <activity
             android:name="com.facebook.FacebookActivity"
