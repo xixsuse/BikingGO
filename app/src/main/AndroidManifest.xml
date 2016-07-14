@@ -571,6 +571,14 @@
             android:name=".app.ui.settings.UiHealthActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".app.ui.track.UiTrackListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".app.ui.track.UiTrackMapActivity"
+            android:screenOrientation="portrait" />
+
         <!-- FacebookActivity added by Vincent -->
         <activity
             android:name="com.facebook.FacebookActivity"

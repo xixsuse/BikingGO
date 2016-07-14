@@ -56,6 +56,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     protected abstract void onMapReady();
+    protected abstract int getMapLayout();
     protected abstract void onLocateMyPosition(Location location);
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -92,19 +93,13 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_base_map;
+    protected void init() {
+
     }
 
     @Override
-    protected void findViews() {
-        mapRootLayout = (RelativeLayout) findViewById(R.id.mapRootLayout);
-        searchTextLayout = (FrameLayout) findViewById(R.id.searchTextLayout);
-        searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
-        markerBtnLayout = (LinearLayout) findViewById(R.id.markerBtnLayout);
-        markerBtn_edit = (ImageButton) findViewById(R.id.markerBtn_edit);
-        markerBtn_direction = (ImageButton) findViewById(R.id.markerBtn_routePath);
-        markerBtn_navigation = (ImageButton) findViewById(R.id.markerBtn_navigation);
+    protected int getLayoutId() {
+        return getMapLayout();
     }
 
     @Override

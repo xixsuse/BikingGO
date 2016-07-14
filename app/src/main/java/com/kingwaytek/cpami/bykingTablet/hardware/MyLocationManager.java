@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnGpsLocateCallBack;
 import com.sonavtek.sonav.GPSDATA;
 
 import java.lang.ref.WeakReference;
@@ -33,6 +34,8 @@ public class MyLocationManager implements LocationListener {
     private static WeakReference<LocationManager> locManager;
 
     private static boolean isProviderFromGps;
+
+    private OnGpsLocateCallBack gpsLocateCallBack;
 
     private static Context appContext() {
         return AppController.getInstance().getAppContext();
@@ -66,6 +69,8 @@ public class MyLocationManager implements LocationListener {
             e.printStackTrace();
         }
     }
+
+
 
     /**
      * 如果沒定到任何位置，或手機上的"位置"沒打開，或 SettingManager中的 GpsEnable == false，
@@ -173,6 +178,11 @@ public class MyLocationManager implements LocationListener {
         else {
             isProviderFromGps = false;
             Log.i(TAG, "ProviderIs: " + location.getProvider());
+        }
+
+        if (gpsLocateCallBack != null) {
+            if (location.getProvider().equals(LocationManager.GPS_PROVIDER))
+                gpsLocateCallBack.onGpsLocated();
         }
     }
 

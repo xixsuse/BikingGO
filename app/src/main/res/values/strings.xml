@@ -365,6 +365,8 @@
 
     <!-- File Storage -->
     <string name="file_path_my_plan">_BikingData/plans.json</string>
+    <string name="file_path_track_folder">_BikingData/track/</string>
+    <string name="file_path_track_location">_BikingData/track/trackingLocation.txt</string>
 
     <!-- Location Select -->
     <string name="location_current">目前位置</string>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/mapRootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <fragment
+            android:id="@+id/googleMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".app.ui.track.UiTrackMapActivity"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:contentDescription="@string/img_bottom_background"
+            android:scaleType="fitXY"
+            android:src="@drawable/bottom_background" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingBtn_track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="@dimen/padding_size_xl"
+            android:layout_marginRight="@dimen/padding_size_xl"
+            android:layout_marginEnd="@dimen/padding_size_xl"
+            android:src="@android:drawable/ic_media_play"
+            android:scaleType="centerCrop"
+            app:backgroundTint="@color/menu_item_selected_color"
+            app:rippleColor="@color/md_blue_A700"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

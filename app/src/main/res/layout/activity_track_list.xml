@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="@dimen/padding_size_l"
+              android:paddingBottom="@dimen/padding_size_l"
+              android:paddingLeft="@dimen/padding_size_xl"
+              android:paddingStart="@dimen/padding_size_xl"
+              android:paddingRight="@dimen/padding_size_xl"
+              android:paddingEnd="@dimen/padding_size_xl">
+
+    <ListView
+        android:id="@+id/trackListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/md_grey_400"
+        android:dividerHeight="0.5dp"/>
+
+</LinearLayout>

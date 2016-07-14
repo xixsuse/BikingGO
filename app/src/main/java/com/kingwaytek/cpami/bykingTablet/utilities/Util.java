@@ -169,4 +169,11 @@ public class Util {
         File planFile = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_my_plan));
         return !planFile.exists() || planFile.length() == 0;
     }
+
+    public static void createTrackFolder() {
+        File trackFolder = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_track_folder));
+
+        if (!trackFolder.exists())
+            trackFolder.mkdirs();
+    }
 }
