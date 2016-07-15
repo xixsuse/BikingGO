@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.track;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -64,7 +65,9 @@ public class UiTrackListActivity extends BaseActivity {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case ACTION_ADD:
-                goTo(UiTrackMapActivity.class, false);
+                Intent intent = new Intent(UiTrackListActivity.this, UiTrackMapActivity.class);
+                intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_TRACKING);
+                startActivity(intent);
                 break;
         }
 

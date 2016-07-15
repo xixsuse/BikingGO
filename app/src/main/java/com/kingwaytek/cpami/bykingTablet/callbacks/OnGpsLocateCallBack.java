@@ -6,5 +6,6 @@ package com.kingwaytek.cpami.bykingTablet.callbacks;
 public interface OnGpsLocateCallBack {
 
     void onGpsLocated();
+    void onGpsLocating();
 
 }

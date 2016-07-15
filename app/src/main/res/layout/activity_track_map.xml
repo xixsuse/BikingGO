@@ -27,6 +27,40 @@
             android:scaleType="fitXY"
             android:src="@drawable/bottom_background" />
 
+        <LinearLayout
+            android:id="@+id/gpsStateLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_size_super"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:paddingTop="@dimen/padding_size_s"
+            android:paddingBottom="@dimen/padding_size_s"
+            android:paddingLeft="@dimen/padding_size_m"
+            android:paddingStart="@dimen/padding_size_m"
+            android:paddingRight="@dimen/padding_size_m"
+            android:paddingEnd="@dimen/padding_size_m"
+            android:background="@drawable/background_common_button_2"
+            android:animateLayoutChanges="true">
+
+            <ProgressBar
+                android:id="@+id/gpsStateLoadingCircle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/padding_size_s"
+                android:layout_marginEnd="@dimen/padding_size_s" />
+
+            <TextView
+                android:id="@+id/text_gpsState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/track_gps_locating"
+                android:textColor="@color/md_grey_100"/>
+
+        </LinearLayout>
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/floatingBtn_track"
             android:layout_width="wrap_content"

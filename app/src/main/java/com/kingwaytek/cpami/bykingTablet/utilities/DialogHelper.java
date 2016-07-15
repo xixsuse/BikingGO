@@ -285,4 +285,15 @@ public class DialogHelper {
         dialog = dialogBuilder.create();
         dialog.show();
     }
+
+    public static void showGpsRequestDialog(Context context, DialogInterface.OnClickListener positiveClick) {
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        dialogBuilder.setTitle(R.string.gps_is_not_enabled);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setNegativeButton(R.string.cancel, null);
+        dialogBuilder.setPositiveButton(R.string.confirm, positiveClick);
+
+        dialogBuilder.create().show();
+    }
 }

@@ -423,6 +423,10 @@
     <string name="health_weight">體重</string>
     <string name="health_kilogram">%d公斤</string>
 
+    <!-- Tracking -->
+    <string name="track_gps_locating">GPS定位中&#8230;</string>
+    <string name="track_gps_locate_done">GPS定位完成！</string>
+
 
     <string-array name="dialog_photo_menu">
         <item>@string/dialog_menu_photo_from_camera</item>

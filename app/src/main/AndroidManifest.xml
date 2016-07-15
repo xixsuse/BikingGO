@@ -579,6 +579,11 @@
             android:name=".app.ui.track.UiTrackMapActivity"
             android:screenOrientation="portrait" />
 
+        <service
+            android:name=".app.service.TrackingService"
+            android:enabled="true"
+            android:exported="true" />
+
         <!-- FacebookActivity added by Vincent -->
         <activity
             android:name="com.facebook.FacebookActivity"

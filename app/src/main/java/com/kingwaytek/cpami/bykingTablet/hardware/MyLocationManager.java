@@ -31,11 +31,15 @@ public class MyLocationManager implements LocationListener {
     private static final long UPDATE_POSITION_TIME = 5000;
     private static final int UPDATE_POSITION_METERS = 1;
 
+    private static long GPS_UPDATE_TIME;
+    private static int GPS_UPDATE_DISTANCE;
+
     private static WeakReference<LocationManager> locManager;
 
     private static boolean isProviderFromGps;
 
     private OnGpsLocateCallBack gpsLocateCallBack;
+    private boolean detectGpsLocateState;
 
     private static Context appContext() {
         return AppController.getInstance().getAppContext();
@@ -44,6 +48,14 @@ public class MyLocationManager implements LocationListener {
     public MyLocationManager() {
         LocationManager locationManager = getLocationManager();
         getProvidersAndUpdate(locationManager);
+    }
+
+    public MyLocationManager(long updateTimeDuration, int updateDistanceDuration, OnGpsLocateCallBack gpsLocateCallBack) {
+        GPS_UPDATE_TIME = updateTimeDuration;
+        GPS_UPDATE_DISTANCE = updateDistanceDuration;
+        this.gpsLocateCallBack = gpsLocateCallBack;
+
+        setGPSUpdateRequest();
     }
 
     public static LocationManager getLocationManager() {
@@ -70,7 +82,22 @@ public class MyLocationManager implements LocationListener {
         }
     }
 
+    public void setGPSUpdateRequest() {
+        detectGpsLocateState = true;
 
+        removeUpdate();
+        LocationManager locationManager = getLocationManager();
+
+        try {
+            if (isProviderFromGps)
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
+            else
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, this);
+        }
+        catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 如果沒定到任何位置，或手機上的"位置"沒打開，或 SettingManager中的 GpsEnable == false，
@@ -150,6 +177,7 @@ public class MyLocationManager implements LocationListener {
     public void removeUpdate() {
         try {
             getLocationManager().removeUpdates(this);
+            detectGpsLocateState = false;
         }
         catch (SecurityException e) {
             e.printStackTrace();
@@ -180,9 +208,14 @@ public class MyLocationManager implements LocationListener {
             Log.i(TAG, "ProviderIs: " + location.getProvider());
         }
 
-        if (gpsLocateCallBack != null) {
-            if (location.getProvider().equals(LocationManager.GPS_PROVIDER))
+        if (gpsLocateCallBack != null && detectGpsLocateState) {
+            if (location.getProvider().equals(LocationManager.GPS_PROVIDER)){
+                setGPSUpdateRequest();
                 gpsLocateCallBack.onGpsLocated();
+                detectGpsLocateState = false;
+            }
+            else
+                gpsLocateCallBack.onGpsLocating();
         }
     }
 

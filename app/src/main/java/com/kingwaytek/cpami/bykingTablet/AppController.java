@@ -15,6 +15,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.Tracker;
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnGpsLocateCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapCache;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
@@ -62,6 +63,13 @@ public class AppController extends Application {
             locationManager = new MyLocationManager();
         else
             locationManager.getProvidersAndUpdate(MyLocationManager.getLocationManager());
+    }
+
+    public void initGPSLocationManager(long timeDuration, int distanceDuration, OnGpsLocateCallBack gpsLocateCallBack) {
+        if (locationManager == null)
+            locationManager = new MyLocationManager(timeDuration, distanceDuration, gpsLocateCallBack);
+        else
+            locationManager.setGPSUpdateRequest();
     }
 
     public void removeLocationManager() {

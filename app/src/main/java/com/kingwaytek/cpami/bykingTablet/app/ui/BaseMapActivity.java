@@ -89,7 +89,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         if (locationPermissionChecked)
             buildMap();
 
-        initDrawer();
+        if (ENTRY_TYPE != ENTRY_TYPE_TRACKING)
+            initDrawer();
     }
 
     @Override
@@ -115,12 +116,12 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         removeLocationUpdate();
     }
 
-    private void requestLocationUpdate() {
+    protected void requestLocationUpdate() {
         if (locationPermissionChecked)
             AppController.getInstance().initLocationManager();
     }
 
-    private void removeLocationUpdate() {
+    protected void removeLocationUpdate() {
         if (locationPermissionChecked)
             AppController.getInstance().removeLocationManager();
     }
@@ -274,15 +275,17 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     }
 
     private void turnOnSearchKeyListener(boolean isOn) {
-        if (isOn) {
-            searchText.setOnKeyListener(getOnKeyListener());
-            searchText.setText("");
-            searchText.setSingleLine();
-            searchText.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-        }
-        else {
-            searchText.setOnKeyListener(null);
-            searchText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        if (ENTRY_TYPE != ENTRY_TYPE_TRACKING) {
+            if (isOn) {
+                searchText.setOnKeyListener(getOnKeyListener());
+                searchText.setText("");
+                searchText.setSingleLine();
+                searchText.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+            }
+            else {
+                searchText.setOnKeyListener(null);
+                searchText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            }
         }
     }
 

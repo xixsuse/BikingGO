@@ -34,6 +34,7 @@ public interface CommonBundle {
     int ENTRY_TYPE_DEFAULT = 0;
     int ENTRY_TYPE_LOCATION_SELECT = 1;
     int ENTRY_TYPE_DIRECTIONS = 2;
+    int ENTRY_TYPE_TRACKING = 3;
 
     // Direction Options
     String DIR_MODE_DRIVING = "driving";
