@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.DialogItemsAdapter;
@@ -70,7 +73,10 @@ public class DialogHelper {
         dialogBuilder.setCancelable(true);
         dialogBuilder.setPositiveButton(context.getString(R.string.yes), confirmClick);
         dialogBuilder.setNegativeButton(context.getString(R.string.no), null);
-        dialogBuilder.create().show();
+
+        dialog = dialogBuilder.create();
+        dialog.show();
+        changeDialogTitleColor();
     }
 
     public static void showDeleteConfirmDialog(Context context, DialogInterface.OnClickListener confirmClick) {
@@ -79,7 +85,10 @@ public class DialogHelper {
         dialogBuilder.setCancelable(true);
         dialogBuilder.setPositiveButton(context.getString(R.string.yes), confirmClick);
         dialogBuilder.setNegativeButton(context.getString(R.string.no), null);
-        dialogBuilder.create().show();
+
+        dialog = dialogBuilder.create();
+        dialog.show();
+        changeDialogTitleColor();
     }
 
     public static void showImageViewDialog(final Context context, final String title, final String photoPath) {
@@ -184,7 +193,10 @@ public class DialogHelper {
         dialogBuilder.setMessage(context.getString(R.string.location_permission_rationale_content));
         dialogBuilder.setCancelable(false);
         dialogBuilder.setPositiveButton(context.getString(R.string.confirm), positiveClick);
-        dialogBuilder.create().show();
+
+        dialog = dialogBuilder.create();
+        dialog.show();
+        changeDialogTitleColor();
     }
 
     public static void showPhotoPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
@@ -193,7 +205,10 @@ public class DialogHelper {
         dialogBuilder.setMessage(context.getString(R.string.camera_permission_rationale_content));
         dialogBuilder.setCancelable(false);
         dialogBuilder.setPositiveButton(context.getString(R.string.confirm), positiveClick);
-        dialogBuilder.create().show();
+
+        dialog = dialogBuilder.create();
+        dialog.show();
+        changeDialogTitleColor();
     }
 
     public static void showStoragePermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
@@ -202,7 +217,10 @@ public class DialogHelper {
         dialogBuilder.setMessage(context.getString(R.string.storage_permission_rationale_content));
         dialogBuilder.setCancelable(false);
         dialogBuilder.setPositiveButton(context.getString(R.string.confirm), positiveClick);
-        dialogBuilder.create().show();
+
+        dialog = dialogBuilder.create();
+        dialog.show();
+        changeDialogTitleColor();
     }
 
     public static void showPickersDialog(Context context, boolean plusTenMinutes, final OnTimeSetCallBack timeSetCallBack) {
@@ -286,14 +304,30 @@ public class DialogHelper {
         dialog.show();
     }
 
-    public static void showGpsRequestDialog(Context context, DialogInterface.OnClickListener positiveClick) {
-        dialogBuilder = new AlertDialog.Builder(context);
+    public static void showGpsRequestDialog(final Activity activity, DialogInterface.OnClickListener positiveClick) {
+        dialogBuilder = new AlertDialog.Builder(activity);
 
         dialogBuilder.setTitle(R.string.gps_is_not_enabled);
         dialogBuilder.setCancelable(false);
-        dialogBuilder.setNegativeButton(R.string.cancel, null);
+        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                activity.finish();
+            }
+        });
         dialogBuilder.setPositiveButton(R.string.confirm, positiveClick);
 
-        dialogBuilder.create().show();
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        changeDialogTitleColor();
+    }
+
+    private static void changeDialogTitleColor() {
+        if (Build.VERSION.SDK_INT > 19 && dialog != null && dialog.isShowing()) {
+            int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+            TextView tv = (TextView) dialog.findViewById(textViewId);
+            tv.setTextColor(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_grey_100));
+        }
     }
 }

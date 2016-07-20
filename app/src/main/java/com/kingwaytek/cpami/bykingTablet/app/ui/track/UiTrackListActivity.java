@@ -11,7 +11,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 /**
@@ -50,7 +50,7 @@ public class UiTrackListActivity extends BaseActivity {
 
     private void checkPermissionAndCreateFolder() {
         if (PermissionCheckHelper.checkFileStoragePermissions(this, PermissionCheckHelper.PERMISSION_REQUEST_CODE_STORAGE)) {
-            Util.createTrackFolder();
+            TrackingFileUtil.createTrackFolder();
         }
     }
 
@@ -82,7 +82,7 @@ public class UiTrackListActivity extends BaseActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED)
                 {
-                    Util.createTrackFolder();
+                    TrackingFileUtil.createTrackFolder();
                 }
                 else {
                     Utility.toastShort(getString(R.string.storage_permission_denied));

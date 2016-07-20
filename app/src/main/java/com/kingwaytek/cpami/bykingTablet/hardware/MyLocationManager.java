@@ -11,6 +11,8 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnGpsLocateCallBack;
+import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.sonavtek.sonav.GPSDATA;
 
 import java.lang.ref.WeakReference;
@@ -29,10 +31,10 @@ public class MyLocationManager implements LocationListener {
     private static final LatLng DEFAULT_LOCATION = new LatLng(24.993413, 121.301028);
 
     private static final long UPDATE_POSITION_TIME = 5000;
-    private static final int UPDATE_POSITION_METERS = 1;
+    private static final float UPDATE_POSITION_METERS = 1;
 
     private static long GPS_UPDATE_TIME;
-    private static int GPS_UPDATE_DISTANCE;
+    private static float GPS_UPDATE_DISTANCE;
 
     private static WeakReference<LocationManager> locManager;
 
@@ -40,20 +42,26 @@ public class MyLocationManager implements LocationListener {
 
     private OnGpsLocateCallBack gpsLocateCallBack;
     private boolean detectGpsLocateState;
+    private boolean isTrackingMode;
+
+    private boolean startTracking;
+    private boolean isGpsLocated;
+    private Location lastLocation;
+    private static final float TRACKING_MINI_DISTANCE = 5;
 
     private static Context appContext() {
         return AppController.getInstance().getAppContext();
     }
 
     public MyLocationManager() {
-        LocationManager locationManager = getLocationManager();
-        getProvidersAndUpdate(locationManager);
+        getProvidersAndUpdate();
     }
 
-    public MyLocationManager(long updateTimeDuration, int updateDistanceDuration, OnGpsLocateCallBack gpsLocateCallBack) {
+    public MyLocationManager(long updateTimeDuration, float updateDistanceDuration, OnGpsLocateCallBack gpsLocateCallBack) {
         GPS_UPDATE_TIME = updateTimeDuration;
         GPS_UPDATE_DISTANCE = updateDistanceDuration;
         this.gpsLocateCallBack = gpsLocateCallBack;
+        isTrackingMode = true;
 
         setGPSUpdateRequest();
     }
@@ -64,7 +72,8 @@ public class MyLocationManager implements LocationListener {
         return locManager.get();
     }
 
-    public void getProvidersAndUpdate(LocationManager locationManager) {
+    public void getProvidersAndUpdate() {
+        LocationManager locationManager = getLocationManager();
         List<String> providers = locationManager.getAllProviders();
 
         for (String provider : providers) {
@@ -82,17 +91,21 @@ public class MyLocationManager implements LocationListener {
         }
     }
 
-    public void setGPSUpdateRequest() {
+    private void setGPSUpdateRequest() {
+        //removeUpdate();
+
         detectGpsLocateState = true;
-
-        removeUpdate();
-        LocationManager locationManager = getLocationManager();
-
         try {
-            if (isProviderFromGps)
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
-            else
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, this);
+            if (isProviderFromGps) {
+                getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
+                getLocationManager().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
+                Log.i(TAG, "requestTime: " + GPS_UPDATE_TIME + " requestDistance: " + GPS_UPDATE_DISTANCE);
+            }
+            else {
+                getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
+                getLocationManager().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 500, 0, this);
+                Log.i(TAG, "Default requesting!");
+            }
         }
         catch (SecurityException e) {
             e.printStackTrace();
@@ -205,18 +218,30 @@ public class MyLocationManager implements LocationListener {
         }
         else {
             isProviderFromGps = false;
+            detectGpsLocateState = true;
             Log.i(TAG, "ProviderIs: " + location.getProvider());
         }
 
+        //Log.i(TAG, "GpsCallBackIsNotNull: " + (gpsLocateCallBack != null) + " detectGpsLocateState: " + detectGpsLocateState);
+
         if (gpsLocateCallBack != null && detectGpsLocateState) {
-            if (location.getProvider().equals(LocationManager.GPS_PROVIDER)){
+            if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
                 setGPSUpdateRequest();
                 gpsLocateCallBack.onGpsLocated();
                 detectGpsLocateState = false;
+
+                setGpsIsLocated(true);
+                Log.i(TAG, "GPS CallBack: Located!");
             }
-            else
+            else {
                 gpsLocateCallBack.onGpsLocating();
+                setGpsIsLocated(false);
+                Log.i(TAG, "GPS CallBack: Locating...");
+            }
         }
+
+        if (isTrackingMode)
+            tracking(location);
     }
 
     @Override
@@ -226,13 +251,45 @@ public class MyLocationManager implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        Utility.showToastOnNewThread("ProviderEnabled: " + provider);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
+        Utility.showToastOnNewThread("ProviderDisabled: " + provider);
     }
+
+
+    private void setGpsIsLocated(boolean isLocated) {
+        isGpsLocated = isLocated;
+    }
+
+    public boolean isGpsLocated() {
+        return isGpsLocated;
+    }
+
+    public void setStartTracking(boolean startTracking) {
+        this.startTracking = startTracking;
+    }
+
+    public void tracking(Location location) {
+        if (isGpsLocated && startTracking) {
+            if (lastLocation == null) {
+                lastLocation = location;
+            }
+            else if (location.distanceTo(lastLocation) > TRACKING_MINI_DISTANCE) {
+                TrackingFileUtil.writeLocationTrackingFile(location.getLatitude(), location.getLongitude());
+                gpsLocateCallBack.onLocationWritten(new LatLng(location.getLatitude(), location.getLongitude()));
+
+                lastLocation = location;
+            }
+        }
+    }
+
+    public boolean isTrackingRightNow() {
+        return isGpsLocated && startTracking;
+    }
+
 
     /**
      * Transform the location to the data for engine.

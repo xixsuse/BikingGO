@@ -50,4 +50,11 @@ public interface CommonBundle {
     // Dialog Items Select Type
     int SELECT_TYPE_PHOTO = 1;
     int SELECT_TYPE_POSITION = 2;
+
+    // Broadcast for Tracking
+    String TRACKING_BROADCAST_FOR_ACTIVITY = "TrackingBroadcastForActivity";
+    String TRACKING_BROADCAST_FOR_SERVICE = "TrackingBroadcastForService";
+    String TRACKING_IS_GPS_LOCATED = "IsGpsLocated";
+    String TRACKING_REQUEST_STARTING = "IsGpsStarting";
+    String TRACKING_IS_DOING_RIGHT_NOW = "IsTrackingRightNow";
 }

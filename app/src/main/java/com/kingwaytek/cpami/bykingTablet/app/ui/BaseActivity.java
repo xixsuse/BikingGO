@@ -1,6 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,10 +27,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.model.ActionbarMenu;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
+import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
 import com.kingwaytek.cpami.bykingTablet.app.ui.events.UiEventListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.planning.UiMyPlanListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
@@ -72,6 +75,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     protected NavigationView drawerView;
 
     private ProgressBar loadingCircle;
+    private TextView trackingText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +106,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     @Override
     protected void onResume() {
         super.onResume();
+        showTrackingText();
         Log.i(TAG, "onResume!!!");
     }
 
@@ -192,6 +197,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
     private void findActionbarWidgetViewAndSetListener() {
         loadingCircle = (ProgressBar) actionbar.getCustomView().findViewById(R.id.loadingCircle);
+        trackingText = (TextView) actionbar.getCustomView().findViewById(R.id.text_tracking);
 
         if (windowView == null)
             windowView = getWindow().getDecorView();
@@ -202,6 +208,20 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             loadingCircle.setVisibility(View.VISIBLE);
         else
             loadingCircle.setVisibility(View.INVISIBLE);
+    }
+
+    private void showTrackingText() {
+        if (notNull(AppController.getInstance().getTrackManager()) && AppController.getInstance().getTrackManager().isTrackingRightNow())
+            trackingText.setVisibility(View.VISIBLE);
+        else
+            trackingText.setVisibility(View.GONE);
+    }
+
+    protected void showTrackingText(boolean isShow) {
+        if (isShow)
+            trackingText.setVisibility(View.VISIBLE);
+        else
+            trackingText.setVisibility(View.GONE);
     }
 
     protected void initDrawer() {
@@ -380,6 +400,18 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                     Utility.toastShort(getString(R.string.camera_permission_denied));
                 break;
         }
+    }
+
+    protected boolean isTrackingServiceRunning() {
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo runningService : am.getRunningServices(Integer.MAX_VALUE)) {
+            if (TrackingService.class.getName().equals(runningService.service.getClassName())) {
+                Log.i(TAG, "ServiceRunning! Return true.");
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -117,13 +117,17 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     }
 
     protected void requestLocationUpdate() {
-        if (locationPermissionChecked)
-            AppController.getInstance().initLocationManager();
+        if (locationPermissionChecked) {
+            if (!isTrackingServiceRunning())
+                AppController.getInstance().initLocationManager();
+        }
     }
 
     protected void removeLocationUpdate() {
-        if (locationPermissionChecked)
-            AppController.getInstance().removeLocationManager();
+        if (locationPermissionChecked) {
+            if (!isTrackingServiceRunning())
+                AppController.getInstance().removeLocationManager();
+        }
     }
 
     private void checkLocationPermissions() {
@@ -179,12 +183,14 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                 }
             });
 
-            map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    showMarkerButtonLayout(false, false);
-                }
-            });
+            if (ENTRY_TYPE != ENTRY_TYPE_TRACKING) {
+                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        showMarkerButtonLayout(false, false);
+                    }
+                });
+            }
 
             map.setInfoWindowAdapter(this);
             map.setOnInfoWindowClickListener(this);
@@ -225,6 +231,11 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     @Override
     public View getInfoContents(Marker marker) {
         return null;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
     }
 
     @Override

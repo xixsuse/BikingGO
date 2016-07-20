@@ -31,7 +31,7 @@ public class Util {
 			"南投縣", "雲林縣", "金門縣" };
 	public static ArrayList<CityObject> city_sort;
 
-    private static String sdPath = Environment.getExternalStorageDirectory().getPath();
+    private static final String sdPath = Environment.getExternalStorageDirectory().getPath();
 
 	public static void getSortPOICity() {
 		sonav engine = sonav.getInstance();
@@ -124,7 +124,7 @@ public class Util {
     }
 
     public static void writePlanFile(String jsonString) {
-        File planFile = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_my_plan));
+        File planFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_my_plan));
 
         try {
             if (!planFile.exists())
@@ -140,7 +140,7 @@ public class Util {
     }
 
     public static String readPlanFile() {
-        File planFile = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_my_plan));
+        File planFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_my_plan));
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(planFile));
@@ -166,14 +166,7 @@ public class Util {
     }
 
     public static boolean isPlanFileNotExistOrEmpty() {
-        File planFile = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_my_plan));
+        File planFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_my_plan));
         return !planFile.exists() || planFile.length() == 0;
-    }
-
-    public static void createTrackFolder() {
-        File trackFolder = new File(sdPath, AppController.getInstance().getAppContext().getString(R.string.file_path_track_folder));
-
-        if (!trackFolder.exists())
-            trackFolder.mkdirs();
     }
 }

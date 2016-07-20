@@ -31,6 +31,7 @@ public class AppController extends Application {
 
     private static AppController appInstance;
     private MyLocationManager locationManager;
+    private MyLocationManager trackManager;
 
     private RequestQueue mQueue;
     private ImageLoader imageLoader;
@@ -62,19 +63,22 @@ public class AppController extends Application {
         if (locationManager == null)
             locationManager = new MyLocationManager();
         else
-            locationManager.getProvidersAndUpdate(MyLocationManager.getLocationManager());
-    }
-
-    public void initGPSLocationManager(long timeDuration, int distanceDuration, OnGpsLocateCallBack gpsLocateCallBack) {
-        if (locationManager == null)
-            locationManager = new MyLocationManager(timeDuration, distanceDuration, gpsLocateCallBack);
-        else
-            locationManager.setGPSUpdateRequest();
+            locationManager.getProvidersAndUpdate();
     }
 
     public void removeLocationManager() {
         if (locationManager != null)
             locationManager.removeUpdate();
+    }
+
+    public void initTrackManager(long updateTime, float updateDistance, OnGpsLocateCallBack gpsCallBack) {
+        trackManager = new MyLocationManager(updateTime, updateDistance, gpsCallBack);
+    }
+
+    public MyLocationManager getTrackManager() {
+        if (trackManager != null)
+            return trackManager;
+        return null;
     }
 
     public String getDataVersion() {

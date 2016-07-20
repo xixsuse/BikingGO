@@ -55,7 +55,7 @@
     <string name="gps_no_last_location">查無上次定位記錄</string>
     <string name="gps_position_finish">GPS定位完成</string>
     <string name="gps_unable_to_get_location">無法取得您目前的位置</string>
-    <string name="gps_is_not_enabled">您尚未開啟系統GPS功能,請先開啟。</string>
+    <string name="gps_is_not_enabled">您尚未開啟系統GPS功能，請先開啟。</string>
 
     <!-- AP Functions -->
     <string name="byking_function_address_search_title">地址查詢</string>
@@ -426,6 +426,8 @@
     <!-- Tracking -->
     <string name="track_gps_locating">GPS定位中&#8230;</string>
     <string name="track_gps_locate_done">GPS定位完成！</string>
+    <string name="track_waiting_for_gps_located">GPS尚未定未完成，請稍候</string>
+    <string name="track_tracking_right_now">軌跡錄製中..</string>
 
 
     <string-array name="dialog_photo_menu">

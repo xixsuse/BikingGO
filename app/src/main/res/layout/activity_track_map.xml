@@ -43,7 +43,8 @@
             android:paddingRight="@dimen/padding_size_m"
             android:paddingEnd="@dimen/padding_size_m"
             android:background="@drawable/background_common_button_2"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="true"
+            android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/gpsStateLoadingCircle"

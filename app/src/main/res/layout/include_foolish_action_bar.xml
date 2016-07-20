@@ -29,6 +29,21 @@
         android:background="@xml/progress_circle"
         android:visibility="invisible" />
 
+    <TextView
+        android:id="@+id/text_tracking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/padding_size_s"
+        android:layout_marginEnd="@dimen/padding_size_s"
+        android:text="@string/track_tracking_right_now"
+        android:textColor="@color/md_red_800"
+        android:textSize="@dimen/font_text_size_s"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
 <!--
     <ImageButton
         android:id="@+id/actionBar_menuButton"
