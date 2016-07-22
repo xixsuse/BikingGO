@@ -89,7 +89,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         if (locationPermissionChecked)
             buildMap();
 
-        if (ENTRY_TYPE != ENTRY_TYPE_TRACKING)
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
             initDrawer();
     }
 
@@ -183,7 +183,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                 }
             });
 
-            if (ENTRY_TYPE != ENTRY_TYPE_TRACKING) {
+            if (ENTRY_TYPE != ENTRY_TYPE_TRACKING && ENTRY_TYPE != ENTRY_TYPE_TRACK_VIEWING) {
                 map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
@@ -286,7 +286,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     }
 
     private void turnOnSearchKeyListener(boolean isOn) {
-        if (ENTRY_TYPE != ENTRY_TYPE_TRACKING) {
+        if (ENTRY_TYPE != ENTRY_TYPE_TRACKING && ENTRY_TYPE != ENTRY_TYPE_TRACK_VIEWING) {
             if (isOn) {
                 searchText.setOnKeyListener(getOnKeyListener());
                 searchText.setText("");

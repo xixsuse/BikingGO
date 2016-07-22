@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +21,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -46,6 +49,10 @@ public class DialogHelper {
 
     public interface OnTimeSetCallBack {
         void onTimeSet(String year, String month, String day, String hours, String minutes);
+    }
+
+    public interface OnTrackSavedCallBack {
+        void onTrackSaved(String name, int difficulty, String description);
     }
 
     public static void showLoadingDialog(Context context) {
@@ -321,6 +328,71 @@ public class DialogHelper {
         dialog.show();
 
         changeDialogTitleColor();
+    }
+
+    public static void showTrackFileOverrideConfirmDialog(Context context, DialogInterface.OnClickListener positiveClick) {
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        dialogBuilder.setTitle(R.string.track_confirm_to_override);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setNegativeButton(R.string.cancel, null);
+        dialogBuilder.setPositiveButton(R.string.yes, positiveClick);
+
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        changeDialogTitleColor();
+    }
+
+    public static void getTrackSaveDialogView(Context context, final OnTrackSavedCallBack savedCallBack) {
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.popup_track_saving, null);
+
+        final EditText edit_trackName = (EditText) view.findViewById(R.id.edit_trackName);
+        final RatingBar trackRating = (RatingBar) view.findViewById(R.id.trackRatingBar);
+        final EditText edit_trackDescription = (EditText) view.findViewById(R.id.edit_trackDescription);
+
+        final TextView saveTrack = (TextView) view.findViewById(R.id.trackSave);
+        final TextView cancel = (TextView) view.findViewById(R.id.trackCancel);
+
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setView(view);
+
+        dialog = dialogBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setDimAmount(0.0f);
+        dialog.show();
+
+        saveTrack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = edit_trackName.getText().toString();
+                int difficulty = (int) trackRating.getRating();
+                String description = edit_trackDescription.getText().toString();
+
+                Log.i("DialogHelper", "name: " + name + " Difficulty: " + difficulty + " Description: " + description);
+
+                if (name.isEmpty())
+                    Utility.toastShort(AppController.getInstance().getString(R.string.track_require_name));
+                else if (difficulty == 0)
+                    Utility.toastShort(AppController.getInstance().getString(R.string.track_require_star));
+                else {
+                    savedCallBack.onTrackSaved(name, difficulty, description);
+                    Utility.toastShort(AppController.getInstance().getString(R.string.track_save_done));
+                    dismissDialog();
+                    saveTrack.setOnClickListener(null);
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissDialog();
+                cancel.setOnClickListener(null);
+            }
+        });
     }
 
     private static void changeDialogTitleColor() {

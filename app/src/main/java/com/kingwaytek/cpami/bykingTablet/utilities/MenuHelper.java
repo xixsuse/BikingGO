@@ -64,6 +64,12 @@ public class MenuHelper implements ActionbarMenu {
                             .setIcon(R.drawable.selector_toolbar_facebook)
                             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
+
+                case ACTION_INFO:
+                    menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_info)
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                    break;
             }
         }
     }

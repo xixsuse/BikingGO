@@ -34,6 +34,11 @@ public class FavoriteHelper {
     public static final String PLAN_NAME = "planName";
     public static final String PLAN_ITEMS = "planItems";
 
+    public static final String TRACK_NAME = "name";
+    public static final String TRACK_DIFFICULTY = "difficulty";
+    public static final String TRACK_DESCRIPTION = "description";
+    public static final String TRACK_POLYLINE = "polyline";
+
     private static int POI_INDEX;
 
     public static void initFavorite() {
@@ -306,6 +311,33 @@ public class FavoriteHelper {
                 Utility.toastShort(AppController.getInstance().getString(R.string.plan_remove_completed));
                 Log.i(TAG, "removePlan: " + ja_plans.toString());
             }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addTrack(String name, int difficulty, String description, String polyline) {
+        try {
+            String ja_string = TrackingFileUtil.readTrackFile();
+            JSONArray ja_track;
+
+            if (ja_string == null)
+                ja_track = new JSONArray();
+            else
+                ja_track = new JSONArray(ja_string);
+
+            JSONObject jo = new JSONObject();
+            jo.put(TRACK_NAME, name);
+            jo.put(TRACK_DIFFICULTY, difficulty);
+            jo.put(TRACK_DESCRIPTION, description);
+            jo.put(TRACK_POLYLINE, polyline);
+
+            ja_track.put(jo);
+
+            TrackingFileUtil.writeTrackFile(ja_track.toString());
+
+            Log.i(TAG, "addTrackFile: " + ja_track.toString());
         }
         catch (JSONException e) {
             e.printStackTrace();

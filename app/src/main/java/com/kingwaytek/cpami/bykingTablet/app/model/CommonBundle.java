@@ -29,12 +29,14 @@ public interface CommonBundle {
     String BUNDLE_PLAN_STEP_DISTANCE = "PlanStepDistance";
     String BUNDLE_PLAN_STEP_DURATION = "PlanStepDuration";
     String BUNDLE_EVENT_DETAIL = "EventDetail";
+    String BUNDLE_TRACK_INDEX = "TrackIndex";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;
     int ENTRY_TYPE_LOCATION_SELECT = 1;
     int ENTRY_TYPE_DIRECTIONS = 2;
     int ENTRY_TYPE_TRACKING = 3;
+    int ENTRY_TYPE_TRACK_VIEWING = 4;
 
     // Direction Options
     String DIR_MODE_DRIVING = "driving";

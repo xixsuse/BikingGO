@@ -25,7 +25,7 @@ public class TrackingService extends Service implements OnGpsLocateCallBack, Com
 
     private static final String TAG = "TrackingService";
 
-    private static final long GPS_TRACKING_TIME = 2000;
+    private static final long GPS_TRACKING_TIME = 1000;
     private static final float GPS_TRACKING_DISTANCE = 1;
 
     private Thread thread;
@@ -59,7 +59,7 @@ public class TrackingService extends Service implements OnGpsLocateCallBack, Com
             public void run() {
                 while (!thread.isInterrupted()) {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(10000);
                         Log.i(TAG, "ServiceRunning~");
                     }
                     catch (InterruptedException e) {

@@ -10,6 +10,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -400,5 +401,61 @@ public class JsonParser {
             parseResult.onParseFinished();
         }
         releaseObjects();
+    }
+
+    public static ArrayList<String> getTrackNameList() {
+        try {
+            String trackJsonString = TrackingFileUtil.readTrackFile();
+
+            if (trackJsonString != null) {
+                JA = new JSONArray(trackJsonString);
+
+                ArrayList<String> trackNameList = new ArrayList<>();
+
+                for (int i = 0; i < JA.length(); i++) {
+                    JO = JA.getJSONObject(i);
+                    trackNameList.add(JO.getString(FavoriteHelper.TRACK_NAME));
+                }
+                releaseObjects();
+
+                return trackNameList;
+            }
+            else
+                return null;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ItemsTrackRecord getTrackRecord(int index) {
+        try {
+            String trackJsonString = TrackingFileUtil.readTrackFile();
+
+            if (trackJsonString != null) {
+                JA = new JSONArray(trackJsonString);
+
+                JO = JA.getJSONObject(index);
+
+                ItemsTrackRecord trackItem = new ItemsTrackRecord(
+                        JO.getString(FavoriteHelper.TRACK_NAME),
+                        JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
+                        JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
+                        JO.getString(FavoriteHelper.TRACK_POLYLINE));
+
+                releaseObjects();
+
+                return trackItem;
+            }
+            else
+                return null;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
     }
 }

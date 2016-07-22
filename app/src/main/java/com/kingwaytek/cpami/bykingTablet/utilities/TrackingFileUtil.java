@@ -3,15 +3,19 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 import android.os.Environment;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * 軌跡錄製檔案讀寫 Functions
@@ -99,5 +103,89 @@ public class TrackingFileUtil {
             locationTrackFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_track_location));
 
         return locationTrackFile.exists();
+    }
+
+    public static boolean isTrackingFileEmpty() {
+        return !isTrackingFileExist() || locationTrackFile.length() == 0;
+    }
+
+    public static boolean isTrackingFileContainsData() {
+        return isTrackingFileExist() && locationTrackFile.length() > 0;
+    }
+
+    public static ArrayList<LatLng> readTrackingLatLng() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(locationTrackFile));
+
+            StringBuilder sb = new StringBuilder();
+            String eachLine;
+
+            while ((eachLine = reader.readLine()) != null) {
+                sb.append(eachLine);
+            }
+            reader.close();
+
+            String[] latLngArray = sb.toString().split("&");
+            ArrayList<LatLng> latLngList = new ArrayList<>();
+
+            for (String latLngString : latLngArray) {
+                String[] latLng = latLngString.split(",");
+                latLngList.add(new LatLng(Double.parseDouble(latLng[0]), Double.parseDouble(latLng[1])));
+            }
+
+            return latLngList;
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Utility.toastShort("Tracking File is Not Exists!");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void writeTrackFile(String jsonString) {
+        File trackFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_track_saved));
+
+        try {
+            if (!trackFile.exists())
+                trackFile.createNewFile();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(trackFile, false));
+            writer.write(jsonString);
+            writer.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readTrackFile() {
+        File trackFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_track_saved));
+
+        if (trackFile.exists()) {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(trackFile));
+
+                StringBuilder sb = new StringBuilder();
+                String eachLine;
+
+                while ((eachLine = reader.readLine()) != null) {
+                    sb.append(eachLine);
+                }
+                reader.close();
+
+                return sb.toString();
+            }
+            catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Utility.toastShort("Track File is Not Exists!");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

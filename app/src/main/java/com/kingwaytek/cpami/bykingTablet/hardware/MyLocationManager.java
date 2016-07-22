@@ -47,7 +47,7 @@ public class MyLocationManager implements LocationListener {
     private boolean startTracking;
     private boolean isGpsLocated;
     private Location lastLocation;
-    private static final float TRACKING_MINI_DISTANCE = 5;
+    private static final float TRACKING_MINI_DISTANCE = 10;
 
     private static Context appContext() {
         return AppController.getInstance().getAppContext();
@@ -92,20 +92,11 @@ public class MyLocationManager implements LocationListener {
     }
 
     private void setGPSUpdateRequest() {
-        //removeUpdate();
-
         detectGpsLocateState = true;
         try {
-            if (isProviderFromGps) {
-                getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
-                getLocationManager().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
-                Log.i(TAG, "requestTime: " + GPS_UPDATE_TIME + " requestDistance: " + GPS_UPDATE_DISTANCE);
-            }
-            else {
-                getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
-                getLocationManager().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 500, 0, this);
-                Log.i(TAG, "Default requesting!");
-            }
+            getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
+            getLocationManager().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
+            Log.i(TAG, "requestTime: " + GPS_UPDATE_TIME + " requestDistance: " + GPS_UPDATE_DISTANCE);
         }
         catch (SecurityException e) {
             e.printStackTrace();
@@ -226,7 +217,7 @@ public class MyLocationManager implements LocationListener {
 
         if (gpsLocateCallBack != null && detectGpsLocateState) {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-                setGPSUpdateRequest();
+                //setGPSUpdateRequest();
                 gpsLocateCallBack.onGpsLocated();
                 detectGpsLocateState = false;
 
@@ -261,7 +252,7 @@ public class MyLocationManager implements LocationListener {
 
 
     private void setGpsIsLocated(boolean isLocated) {
-        isGpsLocated = isLocated;
+        this.isGpsLocated = isLocated;
     }
 
     public boolean isGpsLocated() {
@@ -277,11 +268,12 @@ public class MyLocationManager implements LocationListener {
             if (lastLocation == null) {
                 lastLocation = location;
             }
-            else if (location.distanceTo(lastLocation) > TRACKING_MINI_DISTANCE) {
+            else if (location.distanceTo(lastLocation) >= TRACKING_MINI_DISTANCE) {
                 TrackingFileUtil.writeLocationTrackingFile(location.getLatitude(), location.getLongitude());
                 gpsLocateCallBack.onLocationWritten(new LatLng(location.getLatitude(), location.getLongitude()));
 
                 lastLocation = location;
+                Utility.showToastOnNewThread("Location written!");
             }
         }
     }

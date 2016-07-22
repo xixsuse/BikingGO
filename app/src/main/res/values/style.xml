@@ -11,6 +11,7 @@
         <item name="android:windowBackground">@color/md_blue_grey_50</item>
         <item name="android:textViewStyle">@style/MyTextViewStyle</item>
         <!--
+        <item name="android:ratingBarStyle">@style/MyRatingBar</item>
         <item name="android:textColorPrimary">@color/md_blue_600</item>
         <item name="android:textColorSecondary">@color/md_blue_600</item> //會改變menu icon的顏色
         <item name="android:actionMenuTextColor">@color/md_grey_50</item>
@@ -56,6 +57,17 @@
     <style name="MyTextViewStyle" parent="@android:style/Widget.TextView">
         <item name="android:textColor">@color/md_grey_800</item>
         <item name="android:textSize">@dimen/font_text_size_m</item>
+    </style>
+
+    <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
+        <!--
+        -->
+        <item name="android:progressDrawable">@drawable/ratingbar_layer_list</item>
+        <item name="android:rating">?android:attr/ratingBarStyleIndicator</item>
+        <item name="android:minHeight">@dimen/icon_common_size</item>
+        <item name="android:maxHeight">@dimen/icon_common_size</item>
+        <item name="android:numStars">5</item>
+        <item name="android:stepSize">1</item>
     </style>
 
     <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">

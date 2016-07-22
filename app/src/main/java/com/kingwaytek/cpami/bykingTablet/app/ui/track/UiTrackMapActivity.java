@@ -9,24 +9,35 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
 import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseMapActivity;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
+import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
+
+import java.util.ArrayList;
 
 /**
  * 軌跡錄製地圖
@@ -35,16 +46,22 @@ import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
  */
 public class UiTrackMapActivity extends BaseMapActivity {
 
+    private Menu menu;
+
     private LinearLayout gpsStateLayout;
     private TextView gpsStateText;
     private ProgressBar gpsStateCircle;
+    private FrameLayout triggerBtnLayout;
 
-    private FloatingActionButton trackBtn;
+    private ImageButton trackBtn;
 
     private BroadcastReceiver receiver;
 
     private Intent trackingServiceIntent;
     private LatLng preLatLng;
+
+    private ItemsTrackRecord trackItem;
+    private static final int INVALIDATED_INDEX = -1;
 
     private Context appContext() {
         return AppController.getInstance().getAppContext();
@@ -52,21 +69,25 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
     @Override
     protected void onMapReady() {
-
+        drawPolylineIfTrackFileContainsData();
+        getRecordDataAndDrawLine();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        trackingServiceIntent = new Intent(this, TrackingService.class);
-        gettingReceive();
-        checkGpsAndServiceState();
+        if (ENTRY_TYPE == ENTRY_TYPE_TRACKING) {
+            trackingServiceIntent = new Intent(this, TrackingService.class);
+            gettingReceive();
+            checkGpsAndServiceState();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        stopReceiving();
+        if (ENTRY_TYPE == ENTRY_TYPE_TRACKING)
+            stopReceiving();
     }
 
     @Override
@@ -84,7 +105,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
         gpsStateLayout = (LinearLayout) findViewById(R.id.gpsStateLayout);
         gpsStateText = (TextView) findViewById(R.id.text_gpsState);
         gpsStateCircle = (ProgressBar) findViewById(R.id.gpsStateLoadingCircle);
-        trackBtn = (FloatingActionButton) findViewById(R.id.floatingBtn_track);
+        trackBtn = (ImageButton) findViewById(R.id.trackButton);
+        triggerBtnLayout = (FrameLayout) findViewById(R.id.trackButtonLayout);
     }
 
     @Override
@@ -92,28 +114,46 @@ public class UiTrackMapActivity extends BaseMapActivity {
         trackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TRACKING_BROADCAST_FOR_SERVICE);
-
-                if (TrackingService.IS_TRACKING_REQUESTED) {
-                    intent.putExtra(TRACKING_REQUEST_STARTING, false);
-                    trackBtn.setImageResource(android.R.drawable.ic_media_play);
-                    TrackingFileUtil.closeWriter();
-
-                    showTrackingText(false);
-                }
-                else {
-                    intent.putExtra(TRACKING_REQUEST_STARTING, true);
-                    trackBtn.setImageResource(android.R.drawable.ic_media_pause);
-                    TrackingFileUtil.cleanTrackingFile();
-                }
-                LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
+                sendTrackingRequest();
             }
         });
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {}
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+
+        switch (ENTRY_TYPE) {
+            case ENTRY_TYPE_TRACKING:
+                if (TrackingFileUtil.isTrackingFileContainsData())
+                    MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SAVE);
+                break;
+
+            case ENTRY_TYPE_TRACK_VIEWING:
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_INFO);
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case ACTION_SAVE:
+                showSaveDialog();
+                break;
+
+            case ACTION_INFO:
+
+                break;
+        }
+
+        return true;
     }
 
     @Override
@@ -131,6 +171,51 @@ public class UiTrackMapActivity extends BaseMapActivity {
     protected void removeLocationUpdate() {
         // Do Nothing!
         Log.i(TAG, "removeLocationUpdate (Do Nothing)");
+    }
+
+    private void drawPolylineIfTrackFileContainsData() {
+        if (ENTRY_TYPE == ENTRY_TYPE_TRACKING && TrackingFileUtil.isTrackingFileContainsData()) {
+            ArrayList<LatLng> latLngList = TrackingFileUtil.readTrackingLatLng();
+
+            PolylineOptions polyLine = new PolylineOptions();
+
+            if (notNull(latLngList)) {
+                for (LatLng latLng : latLngList) {
+                    polyLine.add(latLng);
+                }
+                polyLine.color(ContextCompat.getColor(appContext(), R.color.md_blue_A700));
+                polyLine.width(20);
+
+                map.addPolyline(polyLine);
+
+                moveCameraAndZoom(latLngList.get(0), 16);
+            }
+        }
+    }
+
+    private void getRecordDataAndDrawLine() {
+        if (ENTRY_TYPE == ENTRY_TYPE_TRACK_VIEWING) {
+            triggerBtnLayout.setVisibility(View.GONE);
+
+            int trackIndex = getIntent().getIntExtra(BUNDLE_TRACK_INDEX, INVALIDATED_INDEX);
+            trackItem = JsonParser.getTrackRecord(trackIndex);
+
+            if (notNull(trackItem)) {
+                ArrayList<LatLng> latLngList = PolyHelper.decodePolyLine(trackItem.POLY_LINE);
+
+                PolylineOptions polyLine = new PolylineOptions();
+
+                for (LatLng latLng : latLngList) {
+                    polyLine.add(latLng);
+                }
+                polyLine.color(ContextCompat.getColor(appContext(), R.color.md_blue_A700));
+                polyLine.width(20);
+
+                map.addPolyline(polyLine);
+
+                moveCameraAndZoom(latLngList.get(0), 16);
+            }
+        }
     }
 
     private void checkGpsAndServiceState() {
@@ -154,12 +239,83 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
     private void checkServiceAndSetButton() {
         if (TrackingService.IS_TRACKING_REQUESTED)
-            trackBtn.setImageResource(android.R.drawable.ic_media_pause);
+            trackBtn.setImageResource(R.drawable.selector_button_stop);
         else
-            trackBtn.setImageResource(android.R.drawable.ic_media_play);
+            trackBtn.setImageResource(R.drawable.selector_button_start);
 
         if (!isTrackingServiceRunning())
             startService(trackingServiceIntent);
+    }
+
+    private void sendTrackingRequest() {
+        final Intent intent = new Intent(TRACKING_BROADCAST_FOR_SERVICE);
+
+        if (TrackingService.IS_TRACKING_REQUESTED) {
+            sendStopRequest(intent);
+        }
+        else {
+            if (TrackingFileUtil.isTrackingFileEmpty()) {
+                sendStartRequest(intent);
+            }
+            else {
+                DialogHelper.showTrackFileOverrideConfirmDialog(this, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        sendStartRequest(intent);
+                    }
+                });
+            }
+        }
+    }
+
+    private void sendStartRequest(Intent intent) {
+        intent.putExtra(TRACKING_REQUEST_STARTING, true);
+        trackBtn.setImageResource(R.drawable.selector_button_stop);
+        TrackingFileUtil.cleanTrackingFile();
+
+        map.clear();
+        menu.clear();
+
+        LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
+    }
+
+    private void sendStopRequest(Intent intent) {
+        intent.putExtra(TRACKING_REQUEST_STARTING, false);
+        trackBtn.setImageResource(R.drawable.selector_button_start);
+        showTrackingText(false);
+
+        LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
+        TrackingFileUtil.closeWriter();
+
+        if (TrackingFileUtil.isTrackingFileContainsData()) {
+            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SAVE);
+            showSaveDialog();
+        }
+    }
+
+    private void showSaveDialog() {
+        DialogHelper.getTrackSaveDialogView(this, new DialogHelper.OnTrackSavedCallBack() {
+            @Override
+            public void onTrackSaved(String name, int difficulty, String description) {
+                FavoriteHelper.addTrack(name, difficulty, description, getEncodedPolyline());
+                TrackingFileUtil.cleanTrackingFile();
+                menu.clear();
+            }
+        });
+    }
+
+    private String getEncodedPolyline() {
+        if (!TrackingFileUtil.isTrackingFileEmpty()) {
+
+            ArrayList<LatLng> latLngList = TrackingFileUtil.readTrackingLatLng();
+
+            if (notNull(latLngList)) {
+                String encoded = PolyUtil.encode(latLngList);
+                Log.i(TAG, "encodedPolyline: " + encoded);
+                return encoded;
+            }
+        }
+        return null;
     }
 
     private void gettingReceive() {
@@ -233,7 +389,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
         if (TrackingService.IS_TRACKING_REQUESTED)
             finish();
         else {
-            stopService(trackingServiceIntent);
+            if (ENTRY_TYPE == ENTRY_TYPE_TRACKING)
+                stopService(trackingServiceIntent);
             showTrackingText(false);
             finish();
             Log.i(TAG, "StopService");

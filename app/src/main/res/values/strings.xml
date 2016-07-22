@@ -322,6 +322,7 @@
     <string name="actionbar_edit">編輯</string>
     <string name="actionbar_path_list">路徑清單</string>
     <string name="actionbar_upload">上傳</string>
+    <string name="actionbar_info">資訊</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -367,6 +368,7 @@
     <string name="file_path_my_plan">_BikingData/plans.json</string>
     <string name="file_path_track_folder">_BikingData/track/</string>
     <string name="file_path_track_location">_BikingData/track/trackingLocation.txt</string>
+    <string name="file_path_track_saved">_BikingData/track/myTrack.json</string>
 
     <!-- Location Select -->
     <string name="location_current">目前位置</string>
@@ -428,6 +430,13 @@
     <string name="track_gps_locate_done">GPS定位完成！</string>
     <string name="track_waiting_for_gps_located">GPS尚未定未完成，請稍候</string>
     <string name="track_tracking_right_now">軌跡錄製中..</string>
+    <string name="track_confirm_to_override">是否要覆寫尚未儲存的軌跡記錄?</string>
+    <string name="track_name">軌跡名稱：</string>
+    <string name="track_difficulty">困難度：</string>
+    <string name="track_description">軌跡描述：</string>
+    <string name="track_require_name">請輸入軌跡名稱</string>
+    <string name="track_require_star">請選擇困難度</string>
+    <string name="track_save_done">軌跡儲存完成！</string>
 
 
     <string-array name="dialog_photo_menu">

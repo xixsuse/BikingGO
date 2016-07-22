@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingTop="@dimen/padding_size_l"
+              android:paddingBottom="@dimen/padding_size_l"
+              android:gravity="center_vertical"
+              android:animateLayoutChanges="true">
+
+    <CheckBox
+        android:id="@+id/checkbox_eachTrack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:layout_marginRight="@dimen/padding_size_xl"
+        android:layout_marginEnd="@dimen/padding_size_xl"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="@dimen/icon_common_size_xl"
+        android:layout_height="@dimen/icon_common_size_xl"
+        android:src="@drawable/ic_planning"/>
+
+    <TextView
+        android:id="@+id/text_trackName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/padding_size_xl"
+        android:layout_marginStart="@dimen/padding_size_xl"
+        android:layout_marginRight="@dimen/padding_size_s"
+        android:layout_marginEnd="@dimen/padding_size_s"
+        android:textSize="@dimen/font_text_size_l"
+        android:textColor="@color/md_grey_800"/>
+
+    <ImageView
+        android:id="@+id/icon_rightArrow"
+        android:layout_width="@dimen/icon_common_size"
+        android:layout_height="@dimen/icon_common_size_xl"
+        android:tint="@color/md_grey_400"
+        android:src="@drawable/ic_right_arrow"
+        android:scaleType="centerCrop"/>
+
+</LinearLayout>
