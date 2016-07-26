@@ -323,6 +323,7 @@
     <string name="actionbar_path_list">路徑清單</string>
     <string name="actionbar_upload">上傳</string>
     <string name="actionbar_info">資訊</string>
+    <string name="actionbar_more">更多</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -437,6 +438,10 @@
     <string name="track_require_name">請輸入軌跡名稱</string>
     <string name="track_require_star">請選擇困難度</string>
     <string name="track_save_done">軌跡儲存完成！</string>
+    <string name="track_delete_completed">軌跡刪除完成</string>
+    <string name="track_download">下載軌跡</string>
+    <string name="track_upload">上傳軌跡</string>
+    <string name="track_delete">刪除軌跡</string>
 
 
     <string-array name="dialog_photo_menu">

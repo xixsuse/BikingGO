@@ -344,7 +344,7 @@ public class DialogHelper {
         changeDialogTitleColor();
     }
 
-    public static void getTrackSaveDialogView(Context context, final OnTrackSavedCallBack savedCallBack) {
+    public static void showTrackSaveDialog(Context context, final OnTrackSavedCallBack savedCallBack) {
         dialogBuilder = new AlertDialog.Builder(context);
 
         View view = LayoutInflater.from(context).inflate(R.layout.popup_track_saving, null);
@@ -361,7 +361,6 @@ public class DialogHelper {
 
         dialog = dialogBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setDimAmount(0.0f);
         dialog.show();
 
         saveTrack.setOnClickListener(new View.OnClickListener() {
@@ -393,6 +392,19 @@ public class DialogHelper {
                 cancel.setOnClickListener(null);
             }
         });
+    }
+
+    public static View getTrackMenuDialogView(Context context) {
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.inflate_track_menu, null);
+        dialogBuilder.setView(view);
+
+        dialog = dialogBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        return view;
     }
 
     private static void changeDialogTitleColor() {

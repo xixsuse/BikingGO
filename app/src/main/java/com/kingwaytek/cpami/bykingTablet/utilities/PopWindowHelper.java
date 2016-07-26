@@ -176,6 +176,22 @@ public class PopWindowHelper {
         secondPopWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 0);
     }
 
+    public static View getTrackInfoPopView(Context context, View anchorView) {
+        inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.popup_track_info, null);
+
+        double popWidth = Utility.getScreenWidth();
+        double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
+
+        popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight, true);
+
+        setPopWindowCancelable(true);
+
+        popWindow.showAtLocation(anchorView, Gravity.BOTTOM|Gravity.START, 0, 0);
+
+        return view;
+    }
+
     private static void setPopWindowCancelable(boolean isCancelable) {
         if (isCancelable) {
             popWindow.setFocusable(true);

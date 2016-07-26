@@ -97,9 +97,14 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
         switch (item.getItemId()) {
+            case android.R.id.home:
+                if (notNull(planAdapter) && planAdapter.isCheckBoxShowing())
+                    unCheckBoxAndResumeMenu();
+                else
+                    super.onOptionsItemSelected(item);
+                break;
+
             case ACTION_ADD:
                 goTo(UiMyPlanEditActivity.class, true);
                 break;
@@ -136,10 +141,15 @@ public class UiMyPlanListActivity extends BaseActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     FavoriteHelper.removeMultiPlan(checkedList);
                     setPlanList();
-                    onBackPressed();
+                    unCheckBoxAndResumeMenu();
                 }
             });
         }
+    }
+
+    private void unCheckBoxAndResumeMenu() {
+        planAdapter.unCheckAllBox();
+        setMenuOption(ACTION_ADD);
     }
 
     @Override
@@ -162,10 +172,8 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (notNull(planAdapter) && planAdapter.isCheckBoxShowing()) {
-            planAdapter.unCheckAllBox();
-            setMenuOption(ACTION_ADD);
-        }
+        if (notNull(planAdapter) && planAdapter.isCheckBoxShowing())
+            unCheckBoxAndResumeMenu();
         else
             super.onBackPressed();
     }

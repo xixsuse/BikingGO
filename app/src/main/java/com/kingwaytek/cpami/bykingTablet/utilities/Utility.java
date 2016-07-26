@@ -18,10 +18,14 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -250,5 +254,33 @@ public class Utility {
     public static boolean isFileNotExists(String filePath) {
         File file = new File(filePath);
         return !file.exists();
+    }
+
+    public static double getDistance(LatLng from, LatLng to) {
+        double redLat1 = from.latitude * Math.PI / 180;
+        double redLat2 = to.latitude * Math.PI / 180;
+        double l = redLat1 - redLat2;
+        double p = (from.longitude * Math.PI / 180) - (to.longitude * Math.PI / 180);
+
+        double distance = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(l / 2), 2)
+                + Math.cos(redLat1) * Math.cos(redLat2)
+                * Math.pow(Math.sin(p / 2), 2)));
+
+        distance = distance * 6378137.0;
+        distance = Math.round(distance * 10000) / 10000;
+
+        return distance;
+    }
+
+    public static String getDistanceText(double distance) {
+        if (distance < 1000)
+            return String.valueOf((int) distance) + "m";
+        else
+            return new DecimalFormat("#.00").format(distance / 1000) + "km";
+    }
+
+    public static String getCurrentTimeInFormat() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm", Locale.TAIWAN);
+        return dateFormat.format(new Date());
     }
 }

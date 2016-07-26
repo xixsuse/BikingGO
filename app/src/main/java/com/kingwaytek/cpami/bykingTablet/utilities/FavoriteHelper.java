@@ -34,10 +34,12 @@ public class FavoriteHelper {
     public static final String PLAN_NAME = "planName";
     public static final String PLAN_ITEMS = "planItems";
 
+    public static final String TRACK_TIME = "time";
     public static final String TRACK_NAME = "name";
     public static final String TRACK_DIFFICULTY = "difficulty";
     public static final String TRACK_DESCRIPTION = "description";
     public static final String TRACK_POLYLINE = "polyline";
+    public static final String TRACK_DISTANCE = "distance";
 
     private static int POI_INDEX;
 
@@ -317,7 +319,7 @@ public class FavoriteHelper {
         }
     }
 
-    public static void addTrack(String name, int difficulty, String description, String polyline) {
+    public static void addTrack(String time, String name, int difficulty, String description, String polyline, String distance) {
         try {
             String ja_string = TrackingFileUtil.readTrackFile();
             JSONArray ja_track;
@@ -328,10 +330,12 @@ public class FavoriteHelper {
                 ja_track = new JSONArray(ja_string);
 
             JSONObject jo = new JSONObject();
+            jo.put(TRACK_TIME, time);
             jo.put(TRACK_NAME, name);
             jo.put(TRACK_DIFFICULTY, difficulty);
             jo.put(TRACK_DESCRIPTION, description);
             jo.put(TRACK_POLYLINE, polyline);
+            jo.put(TRACK_DISTANCE, distance);
 
             ja_track.put(jo);
 
@@ -341,6 +345,68 @@ public class FavoriteHelper {
         }
         catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void removeMultiTrack(ArrayList<Integer> checkedList) {
+        String ja_string = TrackingFileUtil.readTrackFile();
+
+        if (ja_string != null)
+        {
+            try {
+                JSONArray ja = new JSONArray(ja_string);
+
+                ArrayList<JSONObject> tempJA = new ArrayList<>();
+                boolean isNotRemovable;
+
+                for (int i = 0; i < ja.length(); i++) {
+                    isNotRemovable = true;
+
+                    for (Integer index : checkedList) {
+                        if (i == index) {
+                            isNotRemovable = false;
+                            break;
+                        }
+                    }
+                    if (isNotRemovable)
+                        tempJA.add(ja.getJSONObject(i));
+                }
+
+                ja = new JSONArray();
+
+                for (JSONObject jo : tempJA) {
+                    ja.put(jo);
+                }
+
+                TrackingFileUtil.writeTrackFile(ja.toString());
+                Utility.toastShort(AppController.getInstance().getString(R.string.track_delete_completed));
+
+                Log.i(TAG, "removeTrack: " + ja.toString());
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void updateTrackInfo(int index, String name, int difficulty, String description) {
+        String ja_string = TrackingFileUtil.readTrackFile();
+
+        if (ja_string != null) {
+            try {
+                JSONArray ja = new JSONArray(ja_string);
+
+                ja.getJSONObject(index).put(TRACK_NAME, name);
+                ja.getJSONObject(index).put(TRACK_DIFFICULTY, difficulty);
+                ja.getJSONObject(index).put(TRACK_DESCRIPTION, description);
+
+                TrackingFileUtil.writeTrackFile(ja.toString());
+
+                Log.i(TAG, "TrackFileUpdated: " + ja.toString());
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

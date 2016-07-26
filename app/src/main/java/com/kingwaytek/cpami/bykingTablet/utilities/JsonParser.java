@@ -403,18 +403,22 @@ public class JsonParser {
         releaseObjects();
     }
 
-    public static ArrayList<String> getTrackNameList() {
+    public static ArrayList<ItemsTrackRecord> getTrackList() {
         try {
             String trackJsonString = TrackingFileUtil.readTrackFile();
 
             if (trackJsonString != null) {
                 JA = new JSONArray(trackJsonString);
 
-                ArrayList<String> trackNameList = new ArrayList<>();
+                ArrayList<ItemsTrackRecord> trackNameList = new ArrayList<>();
 
                 for (int i = 0; i < JA.length(); i++) {
                     JO = JA.getJSONObject(i);
-                    trackNameList.add(JO.getString(FavoriteHelper.TRACK_NAME));
+                    trackNameList.add(new ItemsTrackRecord(
+                            JO.getString(FavoriteHelper.TRACK_TIME),
+                            JO.getString(FavoriteHelper.TRACK_NAME),
+                            JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
+                            JO.getString(FavoriteHelper.TRACK_DISTANCE)));
                 }
                 releaseObjects();
 
@@ -440,10 +444,12 @@ public class JsonParser {
                 JO = JA.getJSONObject(index);
 
                 ItemsTrackRecord trackItem = new ItemsTrackRecord(
+                        JO.getString(FavoriteHelper.TRACK_TIME),
                         JO.getString(FavoriteHelper.TRACK_NAME),
                         JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
                         JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
-                        JO.getString(FavoriteHelper.TRACK_POLYLINE));
+                        JO.getString(FavoriteHelper.TRACK_POLYLINE),
+                        JO.getString(FavoriteHelper.TRACK_DISTANCE));
 
                 releaseObjects();
 

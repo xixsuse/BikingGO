@@ -1,16 +1,23 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.track;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
@@ -27,9 +34,12 @@ import java.util.ArrayList;
  */
 public class UiTrackListActivity extends BaseActivity {
 
+    private Menu menu;
+
     private boolean hasGoodPermission;
     private ListView trackListView;
     private TrackListAdapter trackListAdapter;
+    private FloatingActionButton floatingBtn_addTrack;
 
     @Override
     protected void init() {
@@ -56,19 +66,46 @@ public class UiTrackListActivity extends BaseActivity {
     @Override
     protected void findViews() {
         trackListView = (ListView) findViewById(R.id.trackListView);
+        floatingBtn_addTrack = (FloatingActionButton) findViewById(R.id.floatingBtn_addTrack);
     }
 
     @Override
     protected void setListener() {
+        floatingBtn_addTrack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UiTrackListActivity.this, UiTrackMapActivity.class);
+                intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_TRACKING);
+                startActivity(intent);
+            }
+        });
+
         trackListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(UiTrackListActivity.this, UiTrackMapActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_TRACK_VIEWING);
-                intent.putExtra(BUNDLE_TRACK_INDEX, position);
+                // 最後一行是 footer view，它不能有點擊事件！
+                if (position != parent.getCount() - 1) {
+                    Intent intent = new Intent(UiTrackListActivity.this, UiTrackMapActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_TRACK_VIEWING);
+                    intent.putExtra(BUNDLE_TRACK_INDEX, position);
 
-                startActivity(intent);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        trackListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // 最後一行是 footer view，它不能有點擊事件！
+                if (position != parent.getCount() - 1) {
+                    trackListAdapter.showCheckBox(true);
+                    trackListAdapter.setBoxChecked(position);
+                    MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE);
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -81,36 +118,119 @@ public class UiTrackListActivity extends BaseActivity {
         if (hasGoodPermission) {
             TrackingFileUtil.createTrackFolder();
 
-            ArrayList<String> trackNameList = JsonParser.getTrackNameList();
+            ArrayList<ItemsTrackRecord> trackList = JsonParser.getTrackList();
 
-            if (notNull(trackNameList)) {
+            if (notNull(trackList)) {
                 if (trackListAdapter == null) {
-                    trackListAdapter = new TrackListAdapter(this, trackNameList);
+                    trackListAdapter = new TrackListAdapter(this, trackList);
                     trackListView.setAdapter(trackListAdapter);
+
+                    // Add an empty footer view, in order to prevent the final row of ListView get blocked by FloatingButton.
+                    View view = LayoutInflater.from(this).inflate(R.layout.inflate_empty_footer_view, null);
+                    trackListView.addFooterView(view);
                 }
                 else
-                    trackListAdapter.refreshList(trackNameList);
+                    trackListAdapter.refreshList(trackList);
             }
         }
     }
 
+    private void showTrackMenuDialog() {
+        View view = DialogHelper.getTrackMenuDialogView(this);
+        TextView trackDownload = (TextView) view.findViewById(R.id.trackMenu_download);
+        TextView trackUpload = (TextView) view.findViewById(R.id.trackMenu_upload);
+        TextView trackDelete = (TextView) view.findViewById(R.id.trackMenu_delete);
+
+        trackDownload.setOnClickListener(getTrackMenuClick(trackDownload.getId()));
+        trackUpload.setOnClickListener(getTrackMenuClick(trackUpload.getId()));
+
+        if (trackListAdapter == null || trackListAdapter.isEmpty())
+            trackDelete.setVisibility(View.GONE);
+        else
+            trackDelete.setOnClickListener(getTrackMenuClick(trackDelete.getId()));
+    }
+
+    private View.OnClickListener getTrackMenuClick(final int id) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (id) {
+                    case R.id.trackMenu_download:
+                        DialogHelper.dismissDialog();
+                        break;
+
+                    case R.id.trackMenu_upload:
+                        DialogHelper.dismissDialog();
+                        break;
+
+                    case R.id.trackMenu_delete:
+                        if (notNull(trackListAdapter)) {
+                            trackListAdapter.showCheckBox(true);
+                            trackListAdapter.notifyDataSetChanged();
+                        }
+                        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE);
+
+                        DialogHelper.dismissDialog();
+                        break;
+                }
+            }
+        };
+    }
+
+    private void deleteSelectedTrack() {
+        final ArrayList<Integer> indexList = trackListAdapter.getCheckedList();
+
+        if (!indexList.isEmpty()) {
+            DialogHelper.showDeleteConfirmDialog(this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    FavoriteHelper.removeMultiTrack(indexList);
+                    createFolderAndSetListView();
+                    unCheckBoxAndResumeMenu();
+                }
+            });
+        }
+    }
+
+    private void unCheckBoxAndResumeMenu() {
+        trackListAdapter.unCheckAllBox();
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_MORE);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_ADD);
+        this.menu = menu;
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_MORE);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-            case ACTION_ADD:
-                Intent intent = new Intent(UiTrackListActivity.this, UiTrackMapActivity.class);
-                intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_TRACKING);
-                startActivity(intent);
+            case android.R.id.home:
+                if (notNull(trackListAdapter) && trackListAdapter.isCheckBoxShowing())
+                    unCheckBoxAndResumeMenu();
+                else
+                    super.onOptionsItemSelected(item);
+                break;
+
+            case ACTION_MORE:
+                showTrackMenuDialog();
+                break;
+
+            case ACTION_DELETE:
+                deleteSelectedTrack();
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (notNull(trackListAdapter) && trackListAdapter.isCheckBoxShowing())
+            unCheckBoxAndResumeMenu();
+        else
+            super.onBackPressed();
     }
 
     @Override

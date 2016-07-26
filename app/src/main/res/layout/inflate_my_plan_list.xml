@@ -19,8 +19,8 @@
         android:visibility="gone"/>
 
     <ImageView
-        android:layout_width="@dimen/icon_common_size_xl"
-        android:layout_height="@dimen/icon_common_size_xl"
+        android:layout_width="@dimen/icon_common_size_l"
+        android:layout_height="@dimen/icon_common_size_l"
         android:src="@drawable/ic_planning"/>
 
     <TextView
@@ -38,7 +38,7 @@
     <ImageView
         android:id="@+id/icon_rightArrow"
         android:layout_width="@dimen/icon_common_size"
-        android:layout_height="@dimen/icon_common_size_xl"
+        android:layout_height="@dimen/icon_common_size_l"
         android:tint="@color/md_grey_400"
         android:src="@drawable/ic_right_arrow"
         android:scaleType="centerCrop"/>

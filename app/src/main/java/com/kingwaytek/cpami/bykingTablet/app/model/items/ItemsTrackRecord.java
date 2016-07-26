@@ -5,15 +5,26 @@ package com.kingwaytek.cpami.bykingTablet.app.model.items;
  */
 public class ItemsTrackRecord {
 
+    public String TIME;
     public String NAME;
     public int DIFFICULTY;
     public String DESCRIPTION;
     public String POLY_LINE;
+    public String DISTANCE;
 
-    public ItemsTrackRecord(String name, int difficulty, String description, String polyLine) {
+    public ItemsTrackRecord(String time, String name, int difficulty, String description, String polyLine, String distance) {
+        this.TIME = time;
         this.NAME = name;
         this.DIFFICULTY = difficulty;
         this.DESCRIPTION = description;
         this.POLY_LINE = polyLine;
+        this.DISTANCE = distance;
+    }
+
+    public ItemsTrackRecord(String time, String name, int difficulty, String distance) {
+        this.TIME = time;
+        this.NAME = name;
+        this.DIFFICULTY = difficulty;
+        this.DISTANCE = distance;
     }
 }

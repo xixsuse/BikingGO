@@ -19,26 +19,58 @@
         android:visibility="gone"/>
 
     <ImageView
-        android:layout_width="@dimen/icon_common_size_xl"
-        android:layout_height="@dimen/icon_common_size_xl"
-        android:src="@drawable/ic_planning"/>
+        android:layout_width="@dimen/icon_common_size_l"
+        android:layout_height="@dimen/icon_common_size_l"
+        android:src="@drawable/ic_tracking"/>
 
-    <TextView
-        android:id="@+id/text_trackName"
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginLeft="@dimen/padding_size_xl"
-        android:layout_marginStart="@dimen/padding_size_xl"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/padding_size_l"
+        android:layout_marginStart="@dimen/padding_size_l"
         android:layout_marginRight="@dimen/padding_size_s"
-        android:layout_marginEnd="@dimen/padding_size_s"
-        android:textSize="@dimen/font_text_size_l"
-        android:textColor="@color/md_grey_800"/>
+        android:layout_marginEnd="@dimen/padding_size_s">
+
+        <TextView
+            android:id="@+id/text_trackName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_size_s"
+            android:textSize="@dimen/font_text_size_m"
+            android:textColor="@color/md_black_1000"
+            android:text="00000000000"/>
+
+        <TextView
+            android:id="@+id/text_trackTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_trackName"
+            android:textSize="@dimen/font_text_size_s"
+            android:textColor="@color/md_green_600"
+            android:text="2016年7月26日 23:56"/>
+
+        <TextView
+            android:id="@+id/text_trackDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/text_trackName"
+            android:layout_toRightOf="@+id/text_trackTime"
+            android:layout_toEndOf="@+id/text_trackTime"
+            android:gravity="center_vertical|end"
+            android:textSize="@dimen/font_text_size_s"
+            android:textColor="@color/md_green_600"
+            android:text="3.19km"/>
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/icon_rightArrow"
         android:layout_width="@dimen/icon_common_size"
-        android:layout_height="@dimen/icon_common_size_xl"
+        android:layout_height="@dimen/icon_common_size_l"
         android:tint="@color/md_grey_400"
         android:src="@drawable/ic_right_arrow"
         android:scaleType="centerCrop"/>

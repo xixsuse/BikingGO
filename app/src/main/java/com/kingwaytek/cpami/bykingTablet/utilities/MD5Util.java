@@ -2,8 +2,6 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.util.Log;
 
-import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
-
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -59,7 +57,7 @@ public class MD5Util {
     public static String getMD5Code(int serviceNumber) {
         Log.i(TAG, "Month: " + calendar.get(Calendar.MONTH) + " Hours: " + calendar.get(Calendar.HOUR_OF_DAY) + " Date: " + calendar.get(Calendar.DATE));
 
-        return CreateMD5Code.getMD5(
+        return createMD5(
                 (String.valueOf(
                         ((calendar.get(Calendar.MONTH) + 1) + calendar.get(Calendar.HOUR_OF_DAY)) * (serviceNumber + calendar.get(Calendar.DATE))
                 ) + "Kingway").getBytes()

@@ -4,6 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:padding="@dimen/padding_size_xl"
+              android:background="@color/transparent_half_black"
               android:gravity="center">
 
     <ScrollView
@@ -29,8 +30,8 @@
                 android:text="@string/track_name"
                 android:textColor="@color/md_black_1000"/>
 
-            <EditText
-                android:id="@+id/edit_trackName"
+            <TextView
+                android:id="@+id/text_trackName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_size_l"
@@ -38,7 +39,9 @@
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
                 android:layout_marginBottom="@dimen/padding_size_l"
-                android:textColor="@color/md_grey_900"/>
+                android:padding="@dimen/padding_size_s"
+                android:textColor="@color/md_grey_800"
+                android:textSize="@dimen/font_text_size_l"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -73,8 +76,8 @@
                 android:text="@string/track_description"
                 android:textColor="@color/md_black_1000"/>
 
-            <EditText
-                android:id="@+id/edit_trackDescription"
+            <TextView
+                android:id="@+id/text_trackDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_size_l"
@@ -82,7 +85,9 @@
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
                 android:layout_marginBottom="@dimen/padding_size_m"
-                android:textColor="@color/md_grey_900"/>
+                android:padding="@dimen/padding_size_s"
+                android:textColor="@color/md_grey_800"
+                android:textSize="@dimen/font_text_size_l"/>
 
             <View
                 android:layout_width="match_parent"
@@ -96,34 +101,14 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/trackSave"
+                    android:id="@+id/trackClose"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:clickable="true"
                     android:paddingTop="@dimen/padding_size_m"
                     android:paddingBottom="@dimen/padding_size_m"
-                    android:text="@string/poi_save"
-                    android:textColor="@color/md_blue_A700"
-                    android:textSize="@dimen/font_text_size_m"
-                    android:background="@drawable/background_transparent_button_no_board"/>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/transparent_little_black"/>
-
-                <TextView
-                    android:id="@+id/trackCancel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:paddingTop="@dimen/padding_size_m"
-                    android:paddingBottom="@dimen/padding_size_m"
-                    android:text="@string/cancel"
+                    android:text="@string/dialog_close_button_text"
                     android:textColor="@color/md_blue_A700"
                     android:textSize="@dimen/font_text_size_m"
                     android:background="@drawable/background_transparent_button_no_board"/>

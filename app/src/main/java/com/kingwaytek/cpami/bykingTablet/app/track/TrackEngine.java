@@ -89,8 +89,7 @@ public class TrackEngine implements LocationListener {
 
 					Location loc = null;
 					if (ApplicationGlobal.gpsListener != null) {
-						instance.currentLocation = ApplicationGlobal.gpsListener
-								.getLastLocation();
+						instance.currentLocation = ApplicationGlobal.gpsListener.getLastLocation();
 					}
 				}
 			}
@@ -231,8 +230,7 @@ public class TrackEngine implements LocationListener {
 		// TODO Auto-generated method stub
 		Log.i("TrackEngine", "location Changed.");
 		if (location == null) {
-			location = instance.locManager
-					.getLastKnownLocation(instance.locProvider);
+			location = instance.locManager.getLastKnownLocation(instance.locProvider);
 		}
 		instance.currentLocation = location;
 

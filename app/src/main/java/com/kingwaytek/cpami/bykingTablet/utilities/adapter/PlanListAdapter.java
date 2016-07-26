@@ -29,7 +29,6 @@ public class PlanListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
     private boolean showCheckBox;
-
     private HashMap<Integer, Boolean> checkedMap;
 
     public PlanListAdapter(Context context, ArrayList<String> planNameList) {

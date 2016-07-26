@@ -19,6 +19,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -35,7 +37,9 @@ import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.util.ArrayList;
 
@@ -102,6 +106,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
     @Override
     protected void findViews() {
+        mapRootLayout = (RelativeLayout) findViewById(R.id.mapRootLayout);
+
         gpsStateLayout = (LinearLayout) findViewById(R.id.gpsStateLayout);
         gpsStateText = (TextView) findViewById(R.id.text_gpsState);
         gpsStateCircle = (ProgressBar) findViewById(R.id.gpsStateLoadingCircle);
@@ -149,7 +155,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 break;
 
             case ACTION_INFO:
-
+                showTrackInfo();
                 break;
         }
 
@@ -271,8 +277,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
     private void sendStartRequest(Intent intent) {
         intent.putExtra(TRACKING_REQUEST_STARTING, true);
         trackBtn.setImageResource(R.drawable.selector_button_stop);
-        TrackingFileUtil.cleanTrackingFile();
 
+        TrackingFileUtil.cleanTrackingFile();
         map.clear();
         menu.clear();
 
@@ -294,28 +300,42 @@ public class UiTrackMapActivity extends BaseMapActivity {
     }
 
     private void showSaveDialog() {
-        DialogHelper.getTrackSaveDialogView(this, new DialogHelper.OnTrackSavedCallBack() {
+        DialogHelper.showTrackSaveDialog(this, new DialogHelper.OnTrackSavedCallBack() {
             @Override
             public void onTrackSaved(String name, int difficulty, String description) {
-                FavoriteHelper.addTrack(name, difficulty, description, getEncodedPolyline());
-                TrackingFileUtil.cleanTrackingFile();
-                menu.clear();
+                if (!TrackingFileUtil.isTrackingFileEmpty()) {
+                    ArrayList<LatLng> latLngList = TrackingFileUtil.readTrackingLatLng();
+
+                    FavoriteHelper.addTrack(
+                            Utility.getCurrentTimeInFormat(),
+                            name, difficulty, description,
+                            getEncodedPolyline(latLngList),
+                            getTrackDistance(latLngList));
+
+                    TrackingFileUtil.cleanTrackingFile();
+                    menu.clear();
+                }
             }
         });
     }
 
-    private String getEncodedPolyline() {
-        if (!TrackingFileUtil.isTrackingFileEmpty()) {
-
-            ArrayList<LatLng> latLngList = TrackingFileUtil.readTrackingLatLng();
-
-            if (notNull(latLngList)) {
-                String encoded = PolyUtil.encode(latLngList);
-                Log.i(TAG, "encodedPolyline: " + encoded);
-                return encoded;
-            }
+    private String getEncodedPolyline(ArrayList<LatLng> latLngList) {
+        if (notNull(latLngList)) {
+            String encoded = PolyUtil.encode(latLngList);
+            Log.i(TAG, "encodedPolyline: " + encoded);
+            return encoded;
         }
         return null;
+    }
+
+    private String getTrackDistance(ArrayList<LatLng> latLngList) {
+        double distance = 0;
+
+        for (int i = 0; i < latLngList.size(); i++) {
+            if (i + 1 < latLngList.size())
+                distance += Utility.getDistance(latLngList.get(i), latLngList.get(i + 1));
+        }
+        return Utility.getDistanceText(distance);
     }
 
     private void gettingReceive() {
@@ -381,6 +401,28 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
             preLatLng = newLatLng;
         }
+    }
+
+    private void showTrackInfo() {
+        View view = PopWindowHelper.getTrackInfoPopView(this, mapRootLayout);
+
+        TextView trackName = (TextView) view.findViewById(R.id.text_trackName);
+        TextView trackDesc = (TextView) view.findViewById(R.id.text_trackDescription);
+        RatingBar trackRating = (RatingBar) view.findViewById(R.id.trackRatingBar);
+        final TextView closeBtn = (TextView) view.findViewById(R.id.trackClose);
+
+        trackName.setText(trackItem.NAME);
+        trackDesc.setText(trackItem.DESCRIPTION);
+        trackRating.setProgress(trackItem.DIFFICULTY);
+        trackRating.setIsIndicator(true);
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopWindowHelper.dismissPopWindow();
+                closeBtn.setOnClickListener(null);
+            }
+        });
     }
 
     @Override
