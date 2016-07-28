@@ -81,6 +81,10 @@ public class AppController extends Application {
         return null;
     }
 
+    public void releaseTrackManager() {
+        trackManager = null;
+    }
+
     public String getDataVersion() {
         return getString(R.string.DataVersion);
     }

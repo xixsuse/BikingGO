@@ -25,8 +25,8 @@ public class TrackingService extends Service implements OnGpsLocateCallBack, Com
 
     private static final String TAG = "TrackingService";
 
-    private static final long GPS_TRACKING_TIME = 1000;
-    private static final float GPS_TRACKING_DISTANCE = 1;
+    private static final long GPS_TRACKING_TIME = 1000L;
+    private static final float GPS_TRACKING_DISTANCE = 2.0f;
 
     private Thread thread;
 
@@ -82,6 +82,7 @@ public class TrackingService extends Service implements OnGpsLocateCallBack, Com
         trackManager().removeUpdate();
         stopReceiving();
         IS_TRACKING_REQUESTED = false;
+        AppController.getInstance().releaseTrackManager();
         Log.i(TAG, "Service onDestroy!!!");
     }
 
@@ -143,8 +144,10 @@ public class TrackingService extends Service implements OnGpsLocateCallBack, Com
             if (IS_TRACKING_REQUESTED) {
                 if (trackManager().isGpsLocated())
                     trackManager().tracking(MyLocationManager.getLastLocation());
-                else
+                else {
                     Utility.showToastOnNewThread(getString(R.string.track_waiting_for_gps_located));
+                    trackManager().onLocationChanged(MyLocationManager.getLastLocation());
+                }
             }
         }
     }

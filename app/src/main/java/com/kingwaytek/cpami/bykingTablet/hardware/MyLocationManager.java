@@ -199,7 +199,7 @@ public class MyLocationManager implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-
+        Log.i(TAG, "onLocationChanged!!!");
         //sonav.getInstance().setgpsvalue(getEngineData(location));
         //sonav.getInstance().setflagpoint(MapView.USER_LOCATION_POINT, location.getLongitude(), location.getLatitude());
 
@@ -216,7 +216,7 @@ public class MyLocationManager implements LocationListener {
         //Log.i(TAG, "GpsCallBackIsNotNull: " + (gpsLocateCallBack != null) + " detectGpsLocateState: " + detectGpsLocateState);
 
         if (gpsLocateCallBack != null && detectGpsLocateState) {
-            if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+            if (isProviderFromGps) {
                 //setGPSUpdateRequest();
                 gpsLocateCallBack.onGpsLocated();
                 detectGpsLocateState = false;

@@ -73,7 +73,7 @@ public class UiMyPoiListActivity extends BaseActivity {
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 
-                        SettingManager.MarkerFlag.setMyPoiFlag(true);
+                        SettingManager.MapLayer.setMyPoiFlag(true);
                         break;
 
                     case ENTRY_TYPE_LOCATION_SELECT:

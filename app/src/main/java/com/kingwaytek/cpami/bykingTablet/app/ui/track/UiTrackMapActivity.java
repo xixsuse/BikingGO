@@ -134,7 +134,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
         switch (ENTRY_TYPE) {
             case ENTRY_TYPE_TRACKING:
-                if (TrackingFileUtil.isTrackingFileContainsData())
+                if (TrackingFileUtil.isTrackingFileContainsData() && !TrackingService.IS_TRACKING_REQUESTED)
                     MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SAVE);
                 break;
 
@@ -409,11 +409,13 @@ public class UiTrackMapActivity extends BaseMapActivity {
         TextView trackName = (TextView) view.findViewById(R.id.text_trackName);
         TextView trackDesc = (TextView) view.findViewById(R.id.text_trackDescription);
         RatingBar trackRating = (RatingBar) view.findViewById(R.id.trackRatingBar);
+        TextView trackLength = (TextView) view.findViewById(R.id.text_trackLength);
         final TextView closeBtn = (TextView) view.findViewById(R.id.trackClose);
 
         trackName.setText(trackItem.NAME);
         trackDesc.setText(trackItem.DESCRIPTION);
         trackRating.setProgress(trackItem.DIFFICULTY);
+        trackLength.setText(trackItem.DISTANCE);
         trackRating.setIsIndicator(true);
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
@@ -431,11 +433,12 @@ public class UiTrackMapActivity extends BaseMapActivity {
         if (TrackingService.IS_TRACKING_REQUESTED)
             finish();
         else {
-            if (ENTRY_TYPE == ENTRY_TYPE_TRACKING)
+            if (ENTRY_TYPE == ENTRY_TYPE_TRACKING) {
                 stopService(trackingServiceIntent);
+                Log.i(TAG, "StopService");
+            }
             showTrackingText(false);
             finish();
-            Log.i(TAG, "StopService");
         }
         Log.i(TAG, "IsServiceRunning: " + isTrackingServiceRunning());
     }

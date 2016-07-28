@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.api.widget.dslv.DragSortListView;
@@ -43,7 +43,7 @@ import java.util.ArrayList;
 public class UiMyPlanEditActivity extends BaseActivity {
 
     private EditText edit_planTitle;
-    private ImageButton planAddBtn;
+    private FrameLayout planAddBtn;
 
     private DragSortListView dragSortListView;
     private PlanEditListAdapter editListAdapter;
@@ -79,7 +79,7 @@ public class UiMyPlanEditActivity extends BaseActivity {
     @Override
     protected void findViews() {
         edit_planTitle = (EditText) findViewById(R.id.edit_planTitle);
-        planAddBtn = (ImageButton) findViewById(R.id.planAddButton);
+        planAddBtn = (FrameLayout) findViewById(R.id.planAddLayout);
         dragSortListView = (DragSortListView) findViewById(R.id.dragListView);
     }
 

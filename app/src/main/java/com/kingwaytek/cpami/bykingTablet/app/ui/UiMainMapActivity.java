@@ -9,6 +9,8 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -69,7 +71,7 @@ import java.util.ArrayList;
  * @author Vincent (2016/4/15).
  */
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
-        OnPhotoRemovedCallBack {
+        OnPhotoRemovedCallBack, MapLayerHandler.OnLayerChangedCallback {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
@@ -84,6 +86,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private ImageView poiImageView;
     private String photoPath;
+
+    private MapLayerHandler layerHandler;
+    private static final String NAME_OF_HANDLER_THREAD = "LayerHandlerThread";
+    private static HandlerThread handlerThread;
 
     @Override
     protected void onApiReady() {
@@ -113,6 +119,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     public void onDestroy() {
         super.onDestroy();
         map.setOnMapLongClickListener(null);
+        closeAllLayerFlag();
     }
 
     private void checkIntentAndDoActions() {
@@ -123,7 +130,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                     map.setOnMapLongClickListener(this);
                     map.setOnMarkerClickListener(this);
 
-                    if (SettingManager.MarkerFlag.getMyPoiFlag())
+                    if (SettingManager.MapLayer.getMyPoiFlag())
                         new PutAllMyPoiMarkers().execute();
 
                     break;
@@ -131,7 +138,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 case ENTRY_TYPE_LOCATION_SELECT:
                     map.setOnMapLongClickListener(this);
 
-                    if (SettingManager.MarkerFlag.getMyPoiFlag())
+                    if (SettingManager.MapLayer.getMyPoiFlag())
                         new PutAllMyPoiMarkers().execute();
 
                     break;
@@ -280,15 +287,64 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         View view = PopWindowHelper.getMarkerSwitchWindowView(searchTextLayout);
 
         Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
+        final Switch switch_layerCycling = (Switch) view.findViewById(R.id.switch_layer_cycling_1);
+        final Switch switch_layerTopTen = (Switch) view.findViewById(R.id.switch_layer_top_ten);
+        final Switch switch_layerRecommended = (Switch) view.findViewById(R.id.switch_layer_recommended);
+        Switch switch_layerAllOfTaiwan = (Switch) view.findViewById(R.id.switch_layer_all_of_taiwan);
+        final Switch switch_layerRentStation = (Switch) view.findViewById(R.id.switch_layer_rent_station);
 
-        switch_myPoi.setChecked(SettingManager.MarkerFlag.getMyPoiFlag());
+        switch_myPoi.setChecked(SettingManager.MapLayer.getMyPoiFlag());
+        switch_layerCycling.setChecked(SettingManager.MapLayer.getCyclingLayer());
+        switch_layerTopTen.setChecked(SettingManager.MapLayer.getTopTenLayer());
+        switch_layerRecommended.setChecked(SettingManager.MapLayer.getRecommendedLayer());
+        switch_layerAllOfTaiwan.setChecked(SettingManager.MapLayer.getAllOfTaiwanLayer());
+        switch_layerRentStation.setChecked(SettingManager.MapLayer.getRentStationLayer());
 
-        switch_myPoi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switch_myPoi.setOnCheckedChangeListener(getCheckedListener(switch_myPoi.getId()));
+        switch_layerCycling.setOnCheckedChangeListener(getCheckedListener(switch_layerCycling.getId()));
+        switch_layerTopTen.setOnCheckedChangeListener(getCheckedListener(switch_layerTopTen.getId()));
+        switch_layerRecommended.setOnCheckedChangeListener(getCheckedListener(switch_layerRecommended.getId()));
+        switch_layerRentStation.setOnCheckedChangeListener(getCheckedListener(switch_layerRentStation.getId()));
+
+        switch_layerAllOfTaiwan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SettingManager.MarkerFlag.setMyPoiFlag(isChecked);
+                switch_layerCycling.setChecked(false);
+                switch_layerTopTen.setChecked(false);
+                switch_layerRecommended.setChecked(false);
+                switch_layerRentStation.setChecked(false);
+                SettingManager.MapLayer.setAllOfTaiwanLayer(isChecked);
             }
         });
+    }
+
+    private CompoundButton.OnCheckedChangeListener getCheckedListener(final int id) {
+        return new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                switch (id) {
+                    case R.id.switch_my_poi:
+                        SettingManager.MapLayer.setMyPoiFlag(isChecked);
+                        break;
+
+                    case R.id.switch_layer_cycling_1:
+                        SettingManager.MapLayer.setCyclingLayer(isChecked);
+                        break;
+
+                    case R.id.switch_layer_top_ten:
+                        SettingManager.MapLayer.setTopTenLayer(isChecked);
+                        break;
+
+                    case R.id.switch_layer_recommended:
+                        SettingManager.MapLayer.setRecommendedLayer(isChecked);
+                        break;
+
+                    case R.id.switch_layer_rent_station:
+                        SettingManager.MapLayer.setRentStationLayer(isChecked);
+                        break;
+                }
+            }
+        };
     }
 
     private void goToPlacePicker() {
@@ -584,7 +640,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             if (addToList)
                 myPoiMarkerList.add(selectedMarker);
 
-            SettingManager.MarkerFlag.setMyPoiFlag(true);
+            SettingManager.MapLayer.setMyPoiFlag(true);
 
             Log.i(TAG, "PoiListSize: " + myPoiMarkerList.size());
         }
@@ -610,7 +666,14 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     protected void onMarkerEditClick() {
-        editMyPoi(selectedMarker.getPosition(), null, null);
+        String title = null;
+        /** 判斷 Marker title是經緯度還是一般的名子，
+         *  先假設如果 title多於 15個數字的話，就是經緯度！ */
+        if (notNull(selectedMarker.getTitle())) {
+            if (Utility.getNumericCount(selectedMarker.getTitle()) < 15)
+                title = selectedMarker.getTitle();
+        }
+        editMyPoi(selectedMarker.getPosition(), title, null);
     }
 
     private class PutAllMyPoiMarkers extends AsyncTask<Void, Void, Void> {
@@ -679,10 +742,14 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case SettingManager.PREFS_MARKER_MY_POI:
-                if (SettingManager.MarkerFlag.getMyPoiFlag())
+                if (SettingManager.MapLayer.getMyPoiFlag())
                     new PutAllMyPoiMarkers().execute();
                 else
                     removeAllMyPoiMarkers();
+                break;
+
+            default:
+                setLayersByPrefKey(key);
                 break;
         }
     }
@@ -783,5 +850,87 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             closeInputStream(is);
         }
+    }
+
+    private void setLayersByPrefKey(String key) {
+        if (handlerThread == null) {
+            handlerThread = new HandlerThread(NAME_OF_HANDLER_THREAD);
+            handlerThread.start();
+        }
+
+        if (layerHandler == null)
+            layerHandler = new MapLayerHandler(handlerThread.getLooper(), new Handler(), this);
+
+        switch (key) {
+            case SettingManager.PREFS_LAYER_CYCLING_1:
+                if (SettingManager.MapLayer.getCyclingLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_CYCLING);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_CYCLING);
+                break;
+
+            case SettingManager.PREFS_LAYER_TOP_TEN:
+                if (SettingManager.MapLayer.getTopTenLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_TOP_TEN);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_TOP_TEN);
+
+                break;
+
+            case SettingManager.PREFS_LAYER_RECOMMENDED:
+                if (SettingManager.MapLayer.getRecommendedLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_RECOMMENDED);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_RECOMMENDED);
+                break;
+
+            case SettingManager.PREFS_LAYER_ALL_OF_TAIWAN:
+                if (SettingManager.MapLayer.getAllOfTaiwanLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                break;
+
+            case SettingManager.PREFS_LAYER_RENT_STATION:
+                if (SettingManager.MapLayer.getRentStationLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_RENT_STATION);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_RENT_STATION);
+                break;
+        }
+    }
+
+    @Override
+    public void onLayerAdded(int layerCode) {
+        showLoadingCircle(false);
+    }
+
+    @Override
+    public void onLayersAllGone() {
+        if (notNull(handlerThread)) {
+            handlerThread.quit();
+            handlerThread.interrupt();
+            handlerThread = null;
+        }
+        if (notNull(layerHandler))
+            layerHandler = null;
+    }
+
+    private void closeAllLayerFlag() {
+        SettingManager.MapLayer.setCyclingLayer(false);
+        SettingManager.MapLayer.setTopTenLayer(false);
+        SettingManager.MapLayer.setRecommendedLayer(false);
+        SettingManager.MapLayer.setAllOfTaiwanLayer(false);
+        SettingManager.MapLayer.setRentStationLayer(false);
     }
 }

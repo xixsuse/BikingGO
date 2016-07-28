@@ -76,16 +76,16 @@ public class SettingManager {
     /** Preference name for setting weight of user. */
     private static final String PREF_USER_WEIGHT = "userWeight";
 
-    /** User is male */
-    private static final int MALE = 1;
-
-    /** User is female */
-    private static final int FEMALE = 2;
-
     private static final String PREFS_FAVORITE = "FavoriteAndPOI";
     private static final String PREFS_MY_POI = "MyPoi";
 
+    /** MainMap Map Layer */
     public static final String PREFS_MARKER_MY_POI = "MyPoiMarker";
+    public static final String PREFS_LAYER_CYCLING_1 = "LayerCycling1";
+    public static final String PREFS_LAYER_TOP_TEN = "LayerTopTen";
+    public static final String PREFS_LAYER_RECOMMENDED = "LayerRecommended";
+    public static final String PREFS_LAYER_ALL_OF_TAIWAN = "LayerAllOfTaiwan";
+    public static final String PREFS_LAYER_RENT_STATION = "LayerRentStation";
 
     public static SharedPreferences prefs;
     private static SharedPreferences.Editor editor;
@@ -382,7 +382,7 @@ public class SettingManager {
         editor.putInt(PREF_USER_WEIGHT, weight).apply();
     }
 
-    public static class MarkerFlag {
+    public static class MapLayer {
 
         public static void setMyPoiFlag(boolean isChecked) {
             editor.putBoolean(PREFS_MARKER_MY_POI, isChecked).apply();
@@ -390,6 +390,46 @@ public class SettingManager {
 
         public static boolean getMyPoiFlag() {
             return prefs.getBoolean(PREFS_MARKER_MY_POI, true);
+        }
+
+        public static void setCyclingLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_LAYER_CYCLING_1, isChecked).apply();
+        }
+
+        public static boolean getCyclingLayer() {
+            return prefs.getBoolean(PREFS_LAYER_CYCLING_1, false);
+        }
+
+        public static void setTopTenLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_LAYER_TOP_TEN, isChecked).apply();
+        }
+
+        public static boolean getTopTenLayer() {
+            return prefs.getBoolean(PREFS_LAYER_TOP_TEN, false);
+        }
+
+        public static void setRecommendedLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_LAYER_RECOMMENDED, isChecked).apply();
+        }
+
+        public static boolean getRecommendedLayer() {
+            return prefs.getBoolean(PREFS_LAYER_RECOMMENDED, false);
+        }
+
+        public static void setAllOfTaiwanLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_LAYER_ALL_OF_TAIWAN, isChecked).apply();
+        }
+
+        public static boolean getAllOfTaiwanLayer() {
+            return prefs.getBoolean(PREFS_LAYER_ALL_OF_TAIWAN, false);
+        }
+
+        public static void setRentStationLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_LAYER_RENT_STATION, isChecked).apply();
+        }
+
+        public static boolean getRentStationLayer() {
+            return prefs.getBoolean(PREFS_LAYER_RENT_STATION, false);
         }
     }
 

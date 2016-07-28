@@ -315,6 +315,13 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
 
+    <!-- Layer Switch -->
+    <string name="layer_cycling_1">環島一號線</string>
+    <string name="layer_top_ten">十大經典自行車道</string>
+    <string name="layer_recommended">推薦自行車道</string>
+    <string name="layer_all_of_taiwan">全臺自行車道</string>
+    <string name="layer_rent_station">自行車租借站</string>
+
     <string name="actionbar_switch_button">圖層開關</string>
     <string name="actionbar_around_button">附近景點</string>
     <string name="actionbar_add_poi">新增景點</string>
@@ -442,6 +449,7 @@
     <string name="track_download">下載軌跡</string>
     <string name="track_upload">上傳軌跡</string>
     <string name="track_delete">刪除軌跡</string>
+    <string name="track_length">軌跡長度：</string>
 
 
     <string-array name="dialog_photo_menu">

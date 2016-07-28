@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -138,16 +139,19 @@ public class UiTrackListActivity extends BaseActivity {
     private void showTrackMenuDialog() {
         View view = DialogHelper.getTrackMenuDialogView(this);
         TextView trackDownload = (TextView) view.findViewById(R.id.trackMenu_download);
-        TextView trackUpload = (TextView) view.findViewById(R.id.trackMenu_upload);
-        TextView trackDelete = (TextView) view.findViewById(R.id.trackMenu_delete);
+        LinearLayout trackUpload = (LinearLayout) view.findViewById(R.id.trackMenu_upload);
+        LinearLayout trackDelete = (LinearLayout) view.findViewById(R.id.trackMenu_delete);
 
         trackDownload.setOnClickListener(getTrackMenuClick(trackDownload.getId()));
-        trackUpload.setOnClickListener(getTrackMenuClick(trackUpload.getId()));
 
-        if (trackListAdapter == null || trackListAdapter.isEmpty())
+        if (trackListAdapter == null || trackListAdapter.isEmpty()) {
+            trackUpload.setVisibility(View.GONE);
             trackDelete.setVisibility(View.GONE);
-        else
+        }
+        else {
+            trackUpload.setOnClickListener(getTrackMenuClick(trackUpload.getId()));
             trackDelete.setOnClickListener(getTrackMenuClick(trackDelete.getId()));
+        }
     }
 
     private View.OnClickListener getTrackMenuClick(final int id) {

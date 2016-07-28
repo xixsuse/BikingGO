@@ -3,60 +3,288 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:paddingTop="@dimen/padding_size_m"
-              android:paddingBottom="@dimen/padding_size_m"
               android:background="@color/transparent_quarter_black">
 
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/padding_size_m"
-        android:paddingBottom="@dimen/padding_size_m">
+        android:paddingBottom="@dimen/padding_size_m"
+        android:paddingLeft="@dimen/padding_size_xl"
+        android:paddingStart="@dimen/padding_size_xl"
+        android:paddingRight="@dimen/padding_size_xl"
+        android:paddingEnd="@dimen/padding_size_xl">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/icon_common_size"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_my_poi"/>
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:text="@string/marker_my_poi"
-            android:textSize="@dimen/font_text_size_m"
-            android:textColor="@color/md_grey_50"/>
+            android:orientation="vertical">
 
-        <Switch
-            android:id="@+id/switch_my_poi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/padding_size_xxl"
-            android:layout_marginEnd="@dimen/padding_size_xxl"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m">
 
-    </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_weight="2.1"
+                    android:src="@drawable/ic_my_poi"/>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_size_s"
-        android:layout_marginBottom="@dimen/padding_size_s"
-        android:paddingLeft="@dimen/padding_size_xxl"
-        android:paddingStart="@dimen/padding_size_xxl"
-        android:paddingRight="@dimen/padding_size_xxl"
-        android:paddingEnd="@dimen/padding_size_xxl">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_size_l"
+                    android:layout_marginStart="@dimen/padding_size_l"
+                    android:text="@string/marker_my_poi"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_50"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/md_grey_200" />
+                <Switch
+                    android:id="@+id/switch_my_poi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_gravity="center_vertical"/>
 
-    </FrameLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_s" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_grey_200" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_m">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_weight="2.1"
+                    android:src="@drawable/ic_my_poi"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_size_l"
+                    android:layout_marginStart="@dimen/padding_size_l"
+                    android:text="@string/layer_cycling_1"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_50"/>
+
+                <Switch
+                    android:id="@+id/switch_layer_cycling_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_s" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_grey_200" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_m">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_weight="2.1"
+                    android:src="@drawable/ic_my_poi"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_size_l"
+                    android:layout_marginStart="@dimen/padding_size_l"
+                    android:text="@string/layer_top_ten"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_50"/>
+
+                <Switch
+                    android:id="@+id/switch_layer_top_ten"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_s" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_grey_200" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_m">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_weight="2.1"
+                    android:src="@drawable/ic_my_poi"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_size_l"
+                    android:layout_marginStart="@dimen/padding_size_l"
+                    android:text="@string/layer_recommended"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_50"/>
+
+                <Switch
+                    android:id="@+id/switch_layer_recommended"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_s" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_grey_200" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_m">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_weight="2.1"
+                    android:src="@drawable/ic_my_poi"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_size_l"
+                    android:layout_marginStart="@dimen/padding_size_l"
+                    android:text="@string/layer_all_of_taiwan"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_50"/>
+
+                <Switch
+                    android:id="@+id/switch_layer_all_of_taiwan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_s" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_grey_200" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_m">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_weight="2.1"
+                    android:src="@drawable/ic_my_poi"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_size_l"
+                    android:layout_marginStart="@dimen/padding_size_l"
+                    android:text="@string/layer_rent_station"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_50"/>
+
+                <Switch
+                    android:id="@+id/switch_layer_rent_station"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

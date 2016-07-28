@@ -31,39 +31,53 @@
                 android:textSize="@dimen/font_text_size_l"
                 android:background="@drawable/background_transparent_button"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/md_grey_400"/>
-
-            <TextView
+            <LinearLayout
                 android:id="@+id/trackMenu_upload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_size_l"
-                android:paddingBottom="@dimen/padding_size_l"
-                android:gravity="center"
+                android:orientation="vertical"
                 android:clickable="true"
-                android:text="@string/track_upload"
-                android:textSize="@dimen/font_text_size_l"
-                android:background="@drawable/background_transparent_button"/>
+                android:background="@drawable/background_transparent_button">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/md_grey_400"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_grey_400"/>
 
-            <TextView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding_size_l"
+                    android:paddingBottom="@dimen/padding_size_l"
+                    android:gravity="center"
+                    android:text="@string/track_upload"
+                    android:textSize="@dimen/font_text_size_l"/>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/trackMenu_delete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_size_l"
-                android:paddingBottom="@dimen/padding_size_l"
-                android:gravity="center"
+                android:orientation="vertical"
                 android:clickable="true"
-                android:text="@string/track_delete"
-                android:textSize="@dimen/font_text_size_l"
-                android:background="@drawable/background_transparent_button"/>
+                android:background="@drawable/background_transparent_button">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/md_grey_400"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding_size_l"
+                    android:paddingBottom="@dimen/padding_size_l"
+                    android:gravity="center"
+                    android:text="@string/track_delete"
+                    android:textSize="@dimen/font_text_size_l"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
