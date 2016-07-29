@@ -42,6 +42,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.track.UiTrackListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.NotifyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
@@ -104,9 +105,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (isTrackingServiceRunning()) {
+            NotifyHelper.showServiceNotification();
+            Log.i(TAG, "ServiceRunning, show notification!");
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         showTrackingText();
+        NotifyHelper.clearServiceNotification();
         Log.i(TAG, "onResume!!!");
     }
 

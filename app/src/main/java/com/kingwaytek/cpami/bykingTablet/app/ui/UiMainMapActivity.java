@@ -286,11 +286,11 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private void showSwitchPopView() {
         View view = PopWindowHelper.getMarkerSwitchWindowView(searchTextLayout);
 
-        Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
+        final Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
         final Switch switch_layerCycling = (Switch) view.findViewById(R.id.switch_layer_cycling_1);
         final Switch switch_layerTopTen = (Switch) view.findViewById(R.id.switch_layer_top_ten);
         final Switch switch_layerRecommended = (Switch) view.findViewById(R.id.switch_layer_recommended);
-        Switch switch_layerAllOfTaiwan = (Switch) view.findViewById(R.id.switch_layer_all_of_taiwan);
+        final Switch switch_layerAllOfTaiwan = (Switch) view.findViewById(R.id.switch_layer_all_of_taiwan);
         final Switch switch_layerRentStation = (Switch) view.findViewById(R.id.switch_layer_rent_station);
 
         switch_myPoi.setChecked(SettingManager.MapLayer.getMyPoiFlag());
@@ -300,51 +300,76 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         switch_layerAllOfTaiwan.setChecked(SettingManager.MapLayer.getAllOfTaiwanLayer());
         switch_layerRentStation.setChecked(SettingManager.MapLayer.getRentStationLayer());
 
-        switch_myPoi.setOnCheckedChangeListener(getCheckedListener(switch_myPoi.getId()));
-        switch_layerCycling.setOnCheckedChangeListener(getCheckedListener(switch_layerCycling.getId()));
-        switch_layerTopTen.setOnCheckedChangeListener(getCheckedListener(switch_layerTopTen.getId()));
-        switch_layerRecommended.setOnCheckedChangeListener(getCheckedListener(switch_layerRecommended.getId()));
-        switch_layerRentStation.setOnCheckedChangeListener(getCheckedListener(switch_layerRentStation.getId()));
+        switch_myPoi.setTag(switch_myPoi.getId());
+        switch_layerCycling.setTag(switch_layerCycling.getId());
+        switch_layerTopTen.setTag(switch_layerTopTen.getId());
+        switch_layerRecommended.setTag(switch_layerRecommended.getId());
+        switch_layerAllOfTaiwan.setTag(switch_layerAllOfTaiwan.getId());
+        switch_layerRentStation.setTag(switch_layerRentStation.getId());
 
-        switch_layerAllOfTaiwan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                switch_layerCycling.setChecked(false);
-                switch_layerTopTen.setChecked(false);
-                switch_layerRecommended.setChecked(false);
-                switch_layerRentStation.setChecked(false);
-                SettingManager.MapLayer.setAllOfTaiwanLayer(isChecked);
-            }
-        });
-    }
-
-    private CompoundButton.OnCheckedChangeListener getCheckedListener(final int id) {
-        return new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                switch (id) {
+                switch ((int)buttonView.getTag()) {
                     case R.id.switch_my_poi:
+                        switch_myPoi.setChecked(isChecked);
                         SettingManager.MapLayer.setMyPoiFlag(isChecked);
                         break;
 
                     case R.id.switch_layer_cycling_1:
+                        if (isChecked) {
+                            switch_layerAllOfTaiwan.setChecked(false);
+                            switch_layerRentStation.setChecked(false);
+                        }
+                        switch_layerCycling.setChecked(isChecked);
                         SettingManager.MapLayer.setCyclingLayer(isChecked);
                         break;
 
                     case R.id.switch_layer_top_ten:
+                        if (isChecked) {
+                            switch_layerAllOfTaiwan.setChecked(false);
+                            switch_layerRentStation.setChecked(false);
+                        }
+                        switch_layerTopTen.setChecked(isChecked);
                         SettingManager.MapLayer.setTopTenLayer(isChecked);
                         break;
 
                     case R.id.switch_layer_recommended:
+                        if (isChecked) {
+                            switch_layerAllOfTaiwan.setChecked(false);
+                            switch_layerRentStation.setChecked(false);
+                        }
+                        switch_layerRecommended.setChecked(isChecked);
                         SettingManager.MapLayer.setRecommendedLayer(isChecked);
                         break;
 
+                    case R.id.switch_layer_all_of_taiwan:
+                        switch_layerCycling.setChecked(false);
+                        switch_layerTopTen.setChecked(false);
+                        switch_layerRecommended.setChecked(false);
+                        switch_layerRentStation.setChecked(false);
+                        switch_layerAllOfTaiwan.setChecked(isChecked);
+                        SettingManager.MapLayer.setAllOfTaiwanLayer(isChecked);
+                        break;
+
                     case R.id.switch_layer_rent_station:
+                        switch_layerCycling.setChecked(false);
+                        switch_layerTopTen.setChecked(false);
+                        switch_layerRecommended.setChecked(false);
+                        switch_layerAllOfTaiwan.setChecked(false);
+                        switch_layerRentStation.setChecked(isChecked);
                         SettingManager.MapLayer.setRentStationLayer(isChecked);
                         break;
                 }
             }
         };
+
+        switch_myPoi.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerCycling.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerTopTen.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerRecommended.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerAllOfTaiwan.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerRentStation.setOnCheckedChangeListener(checkedChangeListener);
     }
 
     private void goToPlacePicker() {

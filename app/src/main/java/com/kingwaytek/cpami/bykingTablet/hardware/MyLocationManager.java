@@ -181,6 +181,7 @@ public class MyLocationManager implements LocationListener {
     public void removeUpdate() {
         try {
             getLocationManager().removeUpdates(this);
+            setGpsIsLocated(false);
             detectGpsLocateState = false;
         }
         catch (SecurityException e) {

@@ -450,6 +450,7 @@
     <string name="track_upload">上傳軌跡</string>
     <string name="track_delete">刪除軌跡</string>
     <string name="track_length">軌跡長度：</string>
+    <string name="track_in_background">軌跡錄製背景執行中</string>
 
 
     <string-array name="dialog_photo_menu">

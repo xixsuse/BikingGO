@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -20,7 +21,16 @@ import org.json.JSONException;
 import java.io.IOException;
 
 /**
- * Created by vincent.chang on 2016/7/27.
+ * <h1>處理 layers疊加到 GoogleMap上的 Handler，
+ *<p>
+ * 需搭配：<br>
+ * 1. HandlerThread (Using its looper.)<br>
+ * 2. UI Handler (A new Handler created from UI thread)
+ *</p>
+ * {1} HandlerThread搭配 this Handler可單線程循序，並且執行緒安全地在背景作業，<br>
+ * 背景作業完後需更新 UI時，再交給 {2} UI Handler。
+ *
+ * @author Vincent (2016/7/27)
  */
 public class MapLayerHandler extends Handler {
 
@@ -83,6 +93,8 @@ public class MapLayerHandler extends Handler {
                                 pointStyle.setIcon(icon);
 
                                 feature.setPointStyle(pointStyle);
+                                
+                                Log.i(TAG, "PointStyle: " + feature.getPointStyle().toString());
                             }
 
                             break;
@@ -108,6 +120,11 @@ public class MapLayerHandler extends Handler {
                         case LAYER_RENT_STATION:
                             if (layer_rentStation == null)
                                 layer_rentStation = new GeoJsonLayer(map, R.raw.layer_station, appContext());
+
+                            for (GeoJsonFeature feature : layer_rentStation.getFeatures()) {
+
+                            }
+
 
                             break;
                     }
@@ -193,10 +210,10 @@ public class MapLayerHandler extends Handler {
                 }
                 break;
         }
-        checkIsAllLayerRemoved();
+        checkAreAllLayerRemoved();
     }
 
-    private void checkIsAllLayerRemoved() {
+    private void checkAreAllLayerRemoved() {
         if (layer_cyclingLine == null && layer_cyclingPoints == null
                 && layer_topTen == null && layer_recommended == null
                 && layer_allOfTaiwan == null && layer_rentStation == null)
