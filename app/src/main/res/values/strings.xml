@@ -290,6 +290,7 @@
     <string name="google_api_places_unavailable">The Google Places API was UNAVAILABLE!!</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="update_done">更新完成！</string>
 
     <!-- Permission Request -->
     <string name="location_permission_rationale_title">允許裝置存取目前位置</string>

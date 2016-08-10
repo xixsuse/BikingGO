@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,7 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     private ListView planListView;
     private PlanListAdapter planAdapter;
+    private FloatingActionButton floatingBtn_addPlan;
 
     @Override
     protected void init() {
@@ -58,6 +60,7 @@ public class UiMyPlanListActivity extends BaseActivity {
     @Override
     protected void findViews() {
         planListView = (ListView) findViewById(R.id.myPlanListView);
+        floatingBtn_addPlan = (FloatingActionButton) findViewById(R.id.floatingBtn_addPlan);
     }
 
     @Override
@@ -82,6 +85,13 @@ public class UiMyPlanListActivity extends BaseActivity {
                 return true;
             }
         });
+
+        floatingBtn_addPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goTo(UiMyPlanEditActivity.class, true);
+            }
+        });
     }
 
     private void setMenuOption(int action) {
@@ -91,7 +101,7 @@ public class UiMyPlanListActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_ADD);
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_MORE);
         return true;
     }
 
@@ -105,8 +115,8 @@ public class UiMyPlanListActivity extends BaseActivity {
                     super.onOptionsItemSelected(item);
                 break;
 
-            case ACTION_ADD:
-                goTo(UiMyPlanEditActivity.class, true);
+            case ACTION_MORE:
+
                 break;
 
             case ACTION_DELETE:
@@ -149,7 +159,7 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     private void unCheckBoxAndResumeMenu() {
         planAdapter.unCheckAllBox();
-        setMenuOption(ACTION_ADD);
+        setMenuOption(ACTION_MORE);
     }
 
     @Override

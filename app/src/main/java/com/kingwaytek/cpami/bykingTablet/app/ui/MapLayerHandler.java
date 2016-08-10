@@ -10,15 +10,22 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPointStyle;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsGeoLines;
+import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * <h1>處理 layers疊加到 GoogleMap上的 Handler，
@@ -36,25 +43,35 @@ public class MapLayerHandler extends Handler {
 
     private static final String TAG = "MapLayerHandler";
 
-    private GeoJsonLayer layer_cyclingLine;
-    private GeoJsonLayer layer_cyclingPoints;
-    private GeoJsonLayer layer_topTen;
-    private GeoJsonLayer layer_recommended;
-    private GeoJsonLayer layer_allOfTaiwan;
-    private GeoJsonLayer layer_rentStation;
+    public GeoJsonLayer layer_cyclingLine;
+    public GeoJsonLayer layer_cyclingPoints;
+    public GeoJsonLayer layer_topTen;
+    public GeoJsonLayer layer_recommended;
+    public GeoJsonLayer layer_allOfTaiwan;
+    public GeoJsonLayer layer_rentStation;
 
-    public static final int LAYER_CYCLING = 1;
-    public static final int LAYER_TOP_TEN = 2;
-    public static final int LAYER_RECOMMENDED = 3;
-    public static final int LAYER_ALL_OF_TAIWAN = 4;
-    public static final int LAYER_RENT_STATION = 5;
+    public static final int LAYER_CYCLING = 100;
+    public static final int LAYER_TOP_TEN = 200;
+    public static final int LAYER_RECOMMENDED = 300;
+    public static final int LAYER_ALL_OF_TAIWAN = 400;
+    public static final int LAYER_RENT_STATION = 500;
+    private static final int LAYER_PROPERTIES = 600;
 
     private static final String PROP_NAME = "Name";
 
     private Handler uiHandler;
     private OnLayerChangedCallback layerChangedCallback;
 
+    public ArrayList<Polyline> polyLineCyclingList;
+    public ArrayList<Polyline> polyLineTopTenList;
+    public ArrayList<Polyline> polyLineRecommendList;
+    public ArrayList<Polyline> polyLineTaiwanList;
+
+    private boolean isLayerChanging;
+
     public interface OnLayerChangedCallback {
+        void onPolylinePrepared(int layerCode, PolylineOptions polyLine);
+        void onPolylineClick(String name, String location, String description);
         void onLayerAdded(int layerCode);
         void onLayersAllGone();
     }
@@ -73,47 +90,131 @@ public class MapLayerHandler extends Handler {
         this.post(new Runnable() {
             @Override
             public void run() {
+                isLayerChanging = true;
+
                 try {
                     switch (layerCode) {
                         case LAYER_CYCLING:
-                            if (layer_cyclingLine == null)
-                                layer_cyclingLine = new GeoJsonLayer(map, R.raw.layer_cycling_route_line, appContext());
-
                             if (layer_cyclingPoints == null)
                                 layer_cyclingPoints = new GeoJsonLayer(map, R.raw.layer_cycling_route_point, appContext());
 
-                            layer_cyclingLine.getDefaultLineStringStyle().setColor(ContextCompat.getColor(appContext(), R.color.md_brown_800));
-                            layer_cyclingLine.getDefaultLineStringStyle().setWidth(18);
+                            JsonParser.parseGeoJsonCoordinates(R.raw.layer_cycling_route_line, true, new JsonParser.GeoJsonParseResult() {
+                                @Override
+                                public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                                    polyLineCyclingList = new ArrayList<>();
 
-                            BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                                    for (int i = 0; i < geoLines.size(); i++) {
+                                        PolylineOptions polyLine = new PolylineOptions();
 
-                            for (GeoJsonFeature feature : layer_cyclingPoints.getFeatures()) {
-                                GeoJsonPointStyle pointStyle = new GeoJsonPointStyle();
-                                pointStyle.setTitle(feature.getProperty(PROP_NAME));
-                                pointStyle.setIcon(icon);
+                                        ArrayList<LatLng> latLngList = geoLines.get(i).COORDINATES;
+                                        for (int j = 0; j < latLngList.size(); j++) {
+                                            polyLine.add(latLngList.get(j));
+                                        }
+                                        polyLine.color(ContextCompat.getColor(appContext(), R.color.md_brown_700));
+                                        polyLine.width(16);
+                                        polyLine.clickable(true);
+                                        polyLine.zIndex(LAYER_CYCLING + i);
 
-                                feature.setPointStyle(pointStyle);
-                                
-                                Log.i(TAG, "PointStyle: " + feature.getPointStyle().toString());
-                            }
+                                        //obtainMessage(layerCode, polyLine).sendToTarget();
+                                        layerChangedCallback.onPolylinePrepared(LAYER_CYCLING, polyLine);
+                                    }
+                                }
+
+                                @Override
+                                public void onParseFail(String errorMessage) {
+                                    Utility.showToastOnNewThread(errorMessage);
+                                }
+                            });
 
                             break;
 
                         case LAYER_TOP_TEN:
-                            if (layer_topTen == null)
-                                layer_topTen = new GeoJsonLayer(map, R.raw.layer_top10, appContext());
+                            JsonParser.parseGeoJsonCoordinates(R.raw.layer_top10, true, new JsonParser.GeoJsonParseResult() {
+                                @Override
+                                public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                                    polyLineTopTenList = new ArrayList<>();
+
+                                    for (int i = 0; i < geoLines.size(); i++) {
+                                        PolylineOptions polyLine = new PolylineOptions();
+
+                                        ArrayList<LatLng> latLngList = geoLines.get(i).COORDINATES;
+                                        for (int j = 0; j < latLngList.size(); j++) {
+                                            polyLine.add(latLngList.get(j));
+                                        }
+                                        polyLine.color(ContextCompat.getColor(appContext(), R.color.md_deep_orange_900));
+                                        polyLine.width(16);
+                                        polyLine.clickable(true);
+                                        polyLine.zIndex(LAYER_TOP_TEN + i);
+
+                                        layerChangedCallback.onPolylinePrepared(LAYER_TOP_TEN, polyLine);
+                                    }
+                                }
+
+                                @Override
+                                public void onParseFail(String errorMessage) {
+                                    Utility.showToastOnNewThread(errorMessage);
+                                }
+                            });
 
                             break;
 
                         case LAYER_RECOMMENDED:
-                            if (layer_recommended == null)
-                                layer_recommended = new GeoJsonLayer(map, R.raw.layer_recommend, appContext());
+                            JsonParser.parseGeoJsonCoordinates(R.raw.layer_recommend, true, new JsonParser.GeoJsonParseResult() {
+                                @Override
+                                public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                                    polyLineRecommendList = new ArrayList<>();
+
+                                    for (int i = 0; i < geoLines.size(); i++) {
+                                        PolylineOptions polyLine = new PolylineOptions();
+
+                                        ArrayList<LatLng> latLngList = geoLines.get(i).COORDINATES;
+                                        for (int j = 0; j < latLngList.size(); j++) {
+                                            polyLine.add(latLngList.get(j));
+                                        }
+                                        polyLine.color(ContextCompat.getColor(appContext(), R.color.md_deep_purple_A400));
+                                        polyLine.width(16);
+                                        polyLine.clickable(true);
+                                        polyLine.zIndex(LAYER_RECOMMENDED + i);
+
+                                        layerChangedCallback.onPolylinePrepared(LAYER_RECOMMENDED, polyLine);
+                                    }
+                                }
+
+                                @Override
+                                public void onParseFail(String errorMessage) {
+                                    Utility.showToastOnNewThread(errorMessage);
+                                }
+                            });
 
                             break;
 
                         case LAYER_ALL_OF_TAIWAN:
-                            if (layer_allOfTaiwan == null)
-                                layer_allOfTaiwan = new GeoJsonLayer(map, R.raw.layer_biking_route_taiwan, appContext());
+                            JsonParser.parseGeoJsonCoordinates(R.raw.layer_biking_route_taiwan, false, new JsonParser.GeoJsonParseResult() {
+                                @Override
+                                public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                                    polyLineTaiwanList = new ArrayList<>();
+
+                                    for (int i = 0; i < geoLines.size(); i++) {
+                                        PolylineOptions polyLine = new PolylineOptions();
+
+                                        ArrayList<LatLng> latLngList = geoLines.get(i).COORDINATES;
+                                        for (int j = 0; j < latLngList.size(); j++) {
+                                            polyLine.add(latLngList.get(j));
+                                        }
+                                        polyLine.color(ContextCompat.getColor(appContext(), R.color.md_black_1000));
+                                        polyLine.width(15);
+                                        polyLine.clickable(true);
+                                        polyLine.zIndex(LAYER_ALL_OF_TAIWAN + i);
+
+                                        layerChangedCallback.onPolylinePrepared(LAYER_ALL_OF_TAIWAN, polyLine);
+                                    }
+                                }
+
+                                @Override
+                                public void onParseFail(String errorMessage) {
+                                    Utility.showToastOnNewThread(errorMessage);
+                                }
+                            });
 
                             break;
 
@@ -122,10 +223,10 @@ public class MapLayerHandler extends Handler {
                                 layer_rentStation = new GeoJsonLayer(map, R.raw.layer_station, appContext());
 
                             for (GeoJsonFeature feature : layer_rentStation.getFeatures()) {
-
+                                GeoJsonPointStyle pointStyle = new GeoJsonPointStyle();
+                                pointStyle.setTitle(feature.getProperty(PROP_NAME));
+                                feature.setPointStyle(pointStyle);
                             }
-
-
                             break;
                     }
                     sendEmptyMessage(layerCode);
@@ -137,35 +238,77 @@ public class MapLayerHandler extends Handler {
         });
     }
 
+    public void getLayerProperties(final int geoJsonData, final int zIndex) {
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                JsonParser.parseGeoJsonProperty(geoJsonData, new JsonParser.GeoJsonParseResult() {
+                    @Override
+                    public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                        ItemsGeoLines geoItem = geoLines.get(zIndex);
+                        obtainMessage(LAYER_PROPERTIES, geoItem).sendToTarget();
+                    }
+
+                    @Override
+                    public void onParseFail(String errorMessage) {
+                        Utility.showToastOnNewThread(errorMessage);
+                        Log.e(TAG, errorMessage);
+                    }
+                });
+            }
+        });
+    }
+
     @Override
-    public void handleMessage(Message msg) {
+    public void handleMessage(final Message msg) {
         final int layerCode = msg.what;
+
+        final ItemsGeoLines geoItem = (ItemsGeoLines) msg.obj;
 
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
                 switch (layerCode) {
                     case LAYER_CYCLING:
-                        layer_cyclingLine.addLayerToMap();
+                        BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+
+                        for (GeoJsonFeature feature : layer_cyclingPoints.getFeatures()) {
+                            GeoJsonPointStyle pointStyle = new GeoJsonPointStyle();
+                            pointStyle.setTitle(feature.getProperty(PROP_NAME));
+                            pointStyle.setIcon(icon);
+
+                            feature.setPointStyle(pointStyle);
+                        }
+
                         layer_cyclingPoints.addLayerToMap();
+
+                        Log.i(TAG, "LayerCycling Added!!");
+
                         break;
 
                     case LAYER_TOP_TEN:
-                        layer_topTen.addLayerToMap();
+
                         break;
 
                     case LAYER_RECOMMENDED:
-                        layer_recommended.addLayerToMap();
+
                         break;
 
                     case LAYER_ALL_OF_TAIWAN:
-                        layer_allOfTaiwan.addLayerToMap();
+
                         break;
 
                     case LAYER_RENT_STATION:
                         layer_rentStation.addLayerToMap();
                         break;
+
+                    case LAYER_PROPERTIES:
+                        if (geoItem != null) {
+                            layerChangedCallback.onPolylineClick(geoItem.NAME, geoItem.LOCATION, geoItem.DESCRIPTION);
+                        }
+                        break;
                 }
+                isLayerChanging = false;
                 layerChangedCallback.onLayerAdded(layerCode);
             }
         });
@@ -174,32 +317,47 @@ public class MapLayerHandler extends Handler {
     public void removeLayer(int layerCode) {
         switch (layerCode) {
             case LAYER_CYCLING:
-                if (layer_cyclingLine != null && layer_cyclingPoints != null) {
-                    layer_cyclingLine.removeLayerFromMap();
+                if ( layer_cyclingPoints != null) {
                     layer_cyclingPoints.removeLayerFromMap();
-                    layer_cyclingLine = null;
                     layer_cyclingPoints = null;
+                }
+
+                if (polyLineCyclingList != null) {
+                    for (Polyline polyLine : polyLineCyclingList) {
+                        polyLine.remove();
+                    }
+                    polyLineCyclingList.clear();
+                    polyLineCyclingList = null;
                 }
                 break;
 
             case LAYER_TOP_TEN:
-                if (layer_topTen != null) {
-                    layer_topTen.removeLayerFromMap();
-                    layer_topTen = null;
+                if (polyLineTopTenList != null) {
+                    for (Polyline polyLine : polyLineTopTenList) {
+                        polyLine.remove();
+                    }
+                    polyLineTopTenList.clear();
+                    polyLineTopTenList = null;
                 }
                 break;
 
             case LAYER_RECOMMENDED:
-                if (layer_recommended != null) {
-                    layer_recommended.removeLayerFromMap();
-                    layer_recommended = null;
+                if (polyLineRecommendList != null) {
+                    for (Polyline polyline : polyLineRecommendList) {
+                        polyline.remove();
+                    }
+                    polyLineRecommendList.clear();
+                    polyLineRecommendList = null;
                 }
                 break;
 
             case LAYER_ALL_OF_TAIWAN:
-                if (layer_allOfTaiwan != null) {
-                    layer_allOfTaiwan.removeLayerFromMap();
-                    layer_allOfTaiwan = null;
+                if (polyLineTaiwanList != null) {
+                    for (Polyline polyline : polyLineTaiwanList) {
+                        polyline.remove();
+                    }
+                    polyLineTaiwanList.clear();
+                    polyLineTaiwanList = null;
                 }
                 break;
 
@@ -210,13 +368,14 @@ public class MapLayerHandler extends Handler {
                 }
                 break;
         }
-        checkAreAllLayerRemoved();
+        if (!isLayerChanging)
+            checkAreAllLayerRemoved();
     }
 
     private void checkAreAllLayerRemoved() {
-        if (layer_cyclingLine == null && layer_cyclingPoints == null
-                && layer_topTen == null && layer_recommended == null
-                && layer_allOfTaiwan == null && layer_rentStation == null)
+        if (polyLineCyclingList == null && layer_cyclingPoints == null
+                && polyLineTopTenList == null && polyLineRecommendList == null
+                && polyLineTaiwanList == null && layer_rentStation == null)
         {
             layerChangedCallback.onLayersAllGone();
         }

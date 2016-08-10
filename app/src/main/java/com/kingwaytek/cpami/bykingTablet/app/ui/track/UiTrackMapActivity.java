@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -66,6 +67,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
     private ItemsTrackRecord trackItem;
     private static final int INVALIDATED_INDEX = -1;
+    private boolean isInfoInEditing;
 
     private Context appContext() {
         return AppController.getInstance().getAppContext();
@@ -406,23 +408,60 @@ public class UiTrackMapActivity extends BaseMapActivity {
     private void showTrackInfo() {
         View view = PopWindowHelper.getTrackInfoPopView(this, mapRootLayout);
 
-        TextView trackName = (TextView) view.findViewById(R.id.text_trackName);
-        TextView trackDesc = (TextView) view.findViewById(R.id.text_trackDescription);
-        RatingBar trackRating = (RatingBar) view.findViewById(R.id.trackRatingBar);
+        final EditText trackName = (EditText) view.findViewById(R.id.edit_trackName);
+        final EditText trackDesc = (EditText) view.findViewById(R.id.edit_trackDescription);
+        final RatingBar trackRating = (RatingBar) view.findViewById(R.id.trackRatingBar);
         TextView trackLength = (TextView) view.findViewById(R.id.text_trackLength);
         final TextView closeBtn = (TextView) view.findViewById(R.id.trackClose);
+        final TextView editBtn = (TextView) view.findViewById(R.id.trackEdit);
 
         trackName.setText(trackItem.NAME);
         trackDesc.setText(trackItem.DESCRIPTION);
+        trackName.setEnabled(false);
+        trackDesc.setEnabled(false);
         trackRating.setProgress(trackItem.DIFFICULTY);
         trackLength.setText(trackItem.DISTANCE);
         trackRating.setIsIndicator(true);
+
+        isInfoInEditing = false;
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopWindowHelper.dismissPopWindow();
                 closeBtn.setOnClickListener(null);
+            }
+        });
+
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isInfoInEditing) {
+                    isInfoInEditing = false;
+
+                    int trackIndex = getIntent().getIntExtra(BUNDLE_TRACK_INDEX, INVALIDATED_INDEX);
+                    FavoriteHelper.updateTrackInfo(trackIndex, trackName.getText().toString(), (int)trackRating.getRating(), trackDesc.getText().toString());
+
+                    trackName.setEnabled(false);
+                    trackDesc.setEnabled(false);
+                    trackRating.setIsIndicator(true);
+                    editBtn.setText(getString(R.string.actionbar_edit));
+
+                    trackItem = JsonParser.getTrackRecord(trackIndex);
+                    Utility.toastShort(getString(R.string.update_done));
+                }
+                else {
+                    isInfoInEditing = true;
+                    trackName.setEnabled(true);
+                    trackDesc.setEnabled(true);
+                    trackRating.setIsIndicator(false);
+
+                    trackName.setSelection(trackName.getText().length());
+                    trackDesc.setSelection(trackDesc.getText().length());
+                    trackName.requestFocus();
+
+                    editBtn.setText(getString(R.string.poi_save));
+                }
             }
         });
     }

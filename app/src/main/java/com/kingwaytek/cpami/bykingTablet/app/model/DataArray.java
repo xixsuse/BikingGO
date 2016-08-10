@@ -8,6 +8,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
+import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.MD5Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
@@ -52,6 +53,7 @@ public class DataArray implements ApiUrls {
 
                     @Override
                     public void onParseFail(String errorMessage) {
+                        DialogHelper.dismissDialog();
                         Log.e(TAG, "Geocode_ParseError: " + errorMessage);
                     }
                 });
@@ -59,6 +61,7 @@ public class DataArray implements ApiUrls {
 
             @Override
             public void onResultFail(String errorMessage) {
+                DialogHelper.dismissDialog();
                 Log.e(TAG, "Geocode_WebError: " + errorMessage);
             }
         });
@@ -114,6 +117,7 @@ public class DataArray implements ApiUrls {
 
                         @Override
                         public void onParseFail(String errorMessage) {
+                            DialogHelper.dismissDialog();
                             Log.e(TAG, "Events_parseError: " + errorMessage);
                         }
                     });
@@ -121,6 +125,7 @@ public class DataArray implements ApiUrls {
 
                 @Override
                 public void onResultFail(String errorMessage) {
+                    DialogHelper.dismissDialog();
                     Log.e(TAG, "Events_webError: " + errorMessage);
                 }
             });

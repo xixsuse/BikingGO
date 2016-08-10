@@ -30,8 +30,8 @@
                 android:text="@string/track_name"
                 android:textColor="@color/md_black_1000"/>
 
-            <TextView
-                android:id="@+id/text_trackName"
+            <EditText
+                android:id="@+id/edit_trackName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_size_l"
@@ -39,9 +39,10 @@
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
                 android:layout_marginBottom="@dimen/padding_size_l"
-                android:padding="@dimen/padding_size_s"
-                android:textColor="@color/md_grey_800"
-                android:textSize="@dimen/font_text_size_l"/>
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m"
+                android:textColor="@color/edit_text_enable_color"
+                android:textSize="@dimen/font_text_size_m"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,8 +77,8 @@
                 android:text="@string/track_description"
                 android:textColor="@color/md_black_1000"/>
 
-            <TextView
-                android:id="@+id/text_trackDescription"
+            <EditText
+                android:id="@+id/edit_trackDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_size_l"
@@ -85,9 +86,10 @@
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
                 android:layout_marginBottom="@dimen/padding_size_l"
-                android:padding="@dimen/padding_size_s"
-                android:textColor="@color/md_grey_800"
-                android:textSize="@dimen/font_text_size_l"/>
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m"
+                android:textColor="@color/edit_text_enable_color"
+                android:textSize="@dimen/font_text_size_m"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -103,14 +105,15 @@
                 android:id="@+id/text_trackLength"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_size_l"
-                android:layout_marginStart="@dimen/padding_size_l"
+                android:layout_marginLeft="@dimen/padding_size_xl"
+                android:layout_marginStart="@dimen/padding_size_xl"
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
                 android:layout_marginBottom="@dimen/padding_size_m"
-                android:padding="@dimen/padding_size_s"
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m"
                 android:textColor="@color/md_grey_800"
-                android:textSize="@dimen/font_text_size_l"/>
+                android:textSize="@dimen/font_text_size_m"/>
 
             <View
                 android:layout_width="match_parent"
@@ -127,12 +130,27 @@
                     android:id="@+id/trackClose"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:clickable="true"
                     android:paddingTop="@dimen/padding_size_m"
                     android:paddingBottom="@dimen/padding_size_m"
                     android:text="@string/dialog_close_button_text"
                     android:textColor="@color/md_blue_A700"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:background="@drawable/background_transparent_button_no_board"/>
+
+                <TextView
+                    android:id="@+id/trackEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:paddingTop="@dimen/padding_size_m"
+                    android:paddingBottom="@dimen/padding_size_m"
+                    android:text="@string/actionbar_edit"
+                    android:textColor="@color/md_amber_700"
                     android:textSize="@dimen/font_text_size_m"
                     android:background="@drawable/background_transparent_button_no_board"/>
 

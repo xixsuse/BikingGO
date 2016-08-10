@@ -18,6 +18,18 @@ public class MenuHelper implements ActionbarMenu {
 
         for (int action : actions) {
             switch (action) {
+                case ACTION_SWITCH:
+                    menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_switch_button)
+                            .setIcon(R.drawable.selector_toolbar_switch)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                    break;
+
+                case ACTION_AROUND:
+                    menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_around_button)
+                            .setIcon(R.drawable.selector_toolbar_around)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                    break;
+
                 case ACTION_ADD:
                     menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_add_poi)
                             .setIcon(R.drawable.selector_toolbar_add)

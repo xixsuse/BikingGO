@@ -51,6 +51,7 @@ public class PathListViewAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.instruction = (TextView) convertView.findViewById(R.id.text_pathInstruction);
             holder.distance = (TextView) convertView.findViewById(R.id.text_distance);
+            holder.duration = (TextView) convertView.findViewById(R.id.text_duration);
             holder.goOnPath = (TextView) convertView.findViewById(R.id.text_goOnPath);
 
             convertView.setTag(holder);
@@ -60,6 +61,12 @@ public class PathListViewAdapter extends BaseAdapter {
 
         holder.instruction.setText(Html.fromHtml(pathStepList.get(position).INSTRUCTIONS));
         holder.distance.setText(pathStepList.get(position).DISTANCE);
+
+        if (pathStepList.get(position).DURATION != null) {
+            holder.duration.setVisibility(View.VISIBLE);
+            holder.duration.setText(pathStepList.get(position).DURATION);
+        }
+
         holder.goOnPath.setText(Html.fromHtml(pathStepList.get(position).GO_ON_PATH));
 
         return convertView;
@@ -68,6 +75,7 @@ public class PathListViewAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView instruction;
         TextView distance;
+        TextView duration;
         TextView goOnPath;
     }
 }

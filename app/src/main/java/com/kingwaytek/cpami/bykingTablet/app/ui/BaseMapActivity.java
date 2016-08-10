@@ -80,6 +80,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected ImageButton markerBtn_direction;
     protected ImageButton markerBtn_navigation;
 
+    protected RelativeLayout polylineInfoLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,11 +185,12 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                 }
             });
 
-            if (ENTRY_TYPE != ENTRY_TYPE_TRACKING && ENTRY_TYPE != ENTRY_TYPE_TRACK_VIEWING) {
+            if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
                 map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
                         showMarkerButtonLayout(false, false);
+                        polylineInfoLayout.setVisibility(View.GONE);
                     }
                 });
             }

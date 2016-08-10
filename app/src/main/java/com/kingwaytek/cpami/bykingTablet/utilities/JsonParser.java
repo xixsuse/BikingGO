@@ -2,8 +2,11 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsGeoLines;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
@@ -16,6 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 
@@ -33,6 +40,11 @@ public class JsonParser {
 
     public interface JSONParseResult {
         void onParseFinished();
+        void onParseFail(String errorMessage);
+    }
+
+    public interface GeoJsonParseResult {
+        void onParseFinished(ArrayList<ItemsGeoLines> geoLines);
         void onParseFail(String errorMessage);
     }
 
@@ -212,6 +224,51 @@ public class JsonParser {
 
             releaseObjects();
             return plansList;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ArrayList<ItemsPathStep> parseAnGetDirectionItems(String jsonString) {
+        try {
+            ArrayList<ItemsPathStep> dirItemList = new ArrayList<>();
+
+            String distance;
+            String duration;
+            String[] instructionAndGoOnPath;
+            double startLat;
+            double startLng;
+            double endLat;
+            double endLng;
+            String polyLine;
+
+            JO = new JSONObject(jsonString);
+            JA = JO.getJSONArray("routes");
+            JSONObject route = JA.getJSONObject(0);
+            JSONArray stepArr = route.getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+
+            for (int i = 0; i < stepArr.length(); i++) {
+                JSONObject singleStep = stepArr.getJSONObject(i);
+
+                distance = getDistanceString(singleStep.getJSONObject("distance"));
+                duration = singleStep.getJSONObject("duration").getString("text");
+                instructionAndGoOnPath = getInstructionPath(singleStep.getString("html_instructions"));
+                polyLine = singleStep.getJSONObject("polyline").getString("points");
+                startLat = singleStep.getJSONObject("start_location").getDouble("lat");
+                startLng = singleStep.getJSONObject("start_location").getDouble("lng");
+                endLat = singleStep.getJSONObject("end_location").getDouble("lat");
+                endLng = singleStep.getJSONObject("end_location").getDouble("lng");
+
+                dirItemList.add(new ItemsPathStep(distance, duration, instructionAndGoOnPath[0], instructionAndGoOnPath[1],
+                        polyLine, startLat, startLng, endLat, endLng));
+            }
+
+            releaseObjects();
+
+            return dirItemList;
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -462,6 +519,125 @@ public class JsonParser {
             e.printStackTrace();
             releaseObjects();
             return null;
+        }
+    }
+
+    public static void parseGeoJsonCoordinates(int rawGeoJson, boolean nestedCoordinates, GeoJsonParseResult parseResult) {
+        InputStream is = AppController.getInstance().getResources().openRawResource(rawGeoJson);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder sb = new StringBuilder();
+        String eachLine;
+
+        try {
+            while ((eachLine = reader.readLine()) != null) {
+                sb.append(eachLine);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                ArrayList<ItemsGeoLines> geoLines = new ArrayList<>();
+
+                JO = new JSONObject(sb.toString());
+                JA = JO.getJSONArray("features");
+
+                JSONArray coordinates;
+                JSONArray coordinateArray;
+
+                ArrayList<LatLng> latLngList;
+
+                for (int i = 0; i < JA.length(); i++) {
+                    coordinates = JA.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+
+                    latLngList = new ArrayList<>();
+
+                    for (int j = 0; j < coordinates.length(); j++) {
+
+                        coordinateArray = coordinates.getJSONArray(j);
+
+                        if (nestedCoordinates) {
+                            for (int k = 0; k < coordinateArray.length(); k++) {
+                                latLngList.add(new LatLng(coordinateArray.getJSONArray(k).getDouble(1), coordinateArray.getJSONArray(k).getDouble(0)));
+                            }
+                        }
+                        else
+                            latLngList.add(new LatLng(coordinateArray.getDouble(1), coordinateArray.getDouble(0)));
+                    }
+
+                    geoLines.add(new ItemsGeoLines(latLngList));
+                }
+                parseResult.onParseFinished(geoLines);
+
+                is.close();
+                reader.close();
+                releaseObjects();
+            }
+            catch (IOException | JSONException e) {
+                e.printStackTrace();
+                parseResult.onParseFail(e.getMessage());
+                releaseObjects();
+            }
+        }
+    }
+
+    public static void parseGeoJsonProperty(int rawGeoJson, GeoJsonParseResult parseResult) {
+        InputStream is = AppController.getInstance().getResources().openRawResource(rawGeoJson);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder sb = new StringBuilder();
+        String eachLine;
+
+        try {
+            while ((eachLine = reader.readLine()) != null) {
+                sb.append(eachLine);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                ArrayList<ItemsGeoLines> geoLines = new ArrayList<>();
+
+                JO = new JSONObject(sb.toString());
+                JA = JO.getJSONArray("features");
+
+                JSONObject jo;
+                JSONObject jo_properties;
+
+                String name;
+                String description;
+                String location = "";
+
+                for (int i = 0; i < JA.length(); i++) {
+                    jo = JA.getJSONObject(i);
+                    jo_properties = jo.getJSONObject("properties");
+
+                    name = jo_properties.getString("Name");
+
+                    description = jo_properties.getString("description");
+                    if (description.equals("null"))
+                        description = "";
+
+                    if (jo_properties.has("Location"))
+                        location = jo_properties.getString("Location");
+
+                    geoLines.add(new ItemsGeoLines(name, description, location));
+                }
+                parseResult.onParseFinished(geoLines);
+
+                is.close();
+                reader.close();
+                releaseObjects();
+            }
+            catch (IOException | JSONException e) {
+                e.printStackTrace();
+                parseResult.onParseFail(e.getMessage());
+                releaseObjects();
+            }
         }
     }
 }

@@ -63,7 +63,7 @@ public class TrackListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.inflate_track_list, null);
 
             holder = new ViewHolder();
-            holder.trackName = (TextView) convertView.findViewById(R.id.text_trackName);
+            holder.trackName = (TextView) convertView.findViewById(R.id.edit_trackName);
             holder.trackTime = (TextView) convertView.findViewById(R.id.text_trackTime);
             holder.trackDistance = (TextView) convertView.findViewById(R.id.text_trackDistance);
             holder.checkbox = (CheckBox) convertView.findViewById(R.id.checkbox_eachTrack);

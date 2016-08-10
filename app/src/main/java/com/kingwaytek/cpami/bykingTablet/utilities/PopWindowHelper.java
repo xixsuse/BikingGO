@@ -80,10 +80,10 @@ public class PopWindowHelper {
         dismissPopWindow();
 
         inflater = LayoutInflater.from(appContext());
-        View view = inflater.inflate(R.layout.popup_marker_switch_window, null);
+        View view = inflater.inflate(R.layout.popup_layer_switch_window, null);
 
         double popWidth = Utility.getScreenWidth() / 1.2;
-        double popHeight = Utility.getScreenHeight() / 1.5;
+        double popHeight = Utility.getScreenHeight() / 1.55;
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 

@@ -16,12 +16,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -47,6 +52,7 @@ import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
@@ -56,10 +62,12 @@ import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
+import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListViewAdapter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -74,6 +82,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         OnPhotoRemovedCallBack, MapLayerHandler.OnLayerChangedCallback {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
+
+    private Menu menu;
 
     private Marker myNewMarker;
     private Marker lastAroundPoiMarker;
@@ -91,6 +101,14 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private static final String NAME_OF_HANDLER_THREAD = "LayerHandlerThread";
     private static HandlerThread handlerThread;
 
+    private LinearLayout pathInfoLayout;
+    private ListView pathListView;
+    private Polyline highLightPoly;
+
+    private TextView polylineName;
+    private TextView polylineLocation;
+    private TextView polylineDescription;
+
     @Override
     protected void onApiReady() {
         //showRightButtons(true);
@@ -101,7 +119,19 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     protected String getActionBarTitle() {
-        return getString(R.string.poi_search_location);
+        return getString(R.string.app_name);
+    }
+
+    @Override
+    protected void findViews() {
+        super.findViews();
+        pathInfoLayout = (LinearLayout) findViewById(R.id.pathInfoLayout);
+        pathListView = (ListView) findViewById(R.id.pathListView);
+
+        polylineInfoLayout = (RelativeLayout) findViewById(R.id.polylineInfoLayout);
+        polylineName = (TextView) findViewById(R.id.text_polylineName);
+        polylineLocation = (TextView) findViewById(R.id.text_polylineLocation);
+        polylineDescription = (TextView) findViewById(R.id.text_polylineDescription);
     }
 
     @Override
@@ -267,6 +297,14 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        this.menu = menu;
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
@@ -277,6 +315,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             case ACTION_AROUND:
                 goToPlacePicker();
+                break;
+
+            case ACTION_LIST:
+                showPathInfo();
                 break;
         }
 
@@ -874,7 +916,53 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             moveCamera(linePoints.get(0));
 
             closeInputStream(is);
+
+            setPathListView(jsonString);
+            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_LIST, ACTION_SWITCH, ACTION_AROUND);
         }
+    }
+
+    private void setPathListView(String jsonString) {
+        pathListView.setAdapter(new PathListViewAdapter(this, JsonParser.parseAnGetDirectionItems(jsonString)));
+    }
+
+    private void showPathInfo() {
+        if (pathInfoLayout.getVisibility() == View.GONE) {
+            pathInfoLayout.setVisibility(View.VISIBLE);
+            pathListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    showMarkerButtonLayout(false, false);
+                    selectedMarker.hideInfoWindow();
+                    ItemsPathStep pathStepItem = (ItemsPathStep) parent.getItemAtPosition(position);
+                    moveCameraAndDrawHighlight(pathStepItem);
+                }
+            });
+        }
+        else {
+            pathInfoLayout.setVisibility(View.GONE);
+            pathListView.setOnItemClickListener(null);
+        }
+    }
+
+    private void moveCameraAndDrawHighlight(ItemsPathStep pathStepItem) {
+        moveCameraAndZoom(new LatLng(pathStepItem.START_LAT, pathStepItem.START_LNG), 17);
+
+        ArrayList<LatLng> latLngList = PolyHelper.decodePolyLine(pathStepItem.POLY_LINE);
+
+        PolylineOptions polyLine = new PolylineOptions();
+
+        for (LatLng latLng : latLngList) {
+            polyLine.add(latLng);
+        }
+        polyLine.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_deep_purple_A400));
+        polyLine.width(18);
+        polyLine.zIndex(1000);
+
+        if (highLightPoly != null)
+            highLightPoly.remove();
+
+        highLightPoly = map.addPolyline(polyLine);
     }
 
     private void setLayersByPrefKey(String key) {
@@ -936,6 +1024,106 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     @Override
+    public void onPolylinePrepared(final int layerCode, final PolylineOptions polyLine) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (layerCode) {
+                    case MapLayerHandler.LAYER_CYCLING:
+                        layerHandler.polyLineCyclingList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_TOP_TEN:
+                        layerHandler.polyLineTopTenList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_RECOMMENDED:
+                        layerHandler.polyLineRecommendList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_ALL_OF_TAIWAN:
+                        layerHandler.polyLineTaiwanList.add(map.addPolyline(polyLine));
+                        break;
+                }
+
+                map.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+                    @Override
+                    public void onPolylineClick(Polyline polyline) {
+                        int zIndex;
+                        Log.i(TAG, "zIndex: " + polyline.getZIndex() + " LayerCode: " + getLayerCodeByZIndex((int) polyline.getZIndex()));
+                        switch (getLayerCodeByZIndex((int) polyline.getZIndex())) {
+                            case MapLayerHandler.LAYER_CYCLING:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_CYCLING);
+                                showPolylineInfo(R.raw.layer_cycling_route_line, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_TOP_TEN:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_TOP_TEN);
+                                showPolylineInfo(R.raw.layer_top10, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_RECOMMENDED:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_RECOMMENDED);
+                                showPolylineInfo(R.raw.layer_recommend, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_ALL_OF_TAIWAN:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                                showPolylineInfo(R.raw.layer_biking_route_taiwan, zIndex);
+                                break;
+                        }
+
+                    }
+                });
+            }
+        });
+    }
+
+    private int getLayerCodeByZIndex(int zIndex) {
+        if (zIndex - MapLayerHandler.LAYER_CYCLING < 100 && zIndex - MapLayerHandler.LAYER_CYCLING >= 0)
+            return MapLayerHandler.LAYER_CYCLING;
+
+        else if (zIndex - MapLayerHandler.LAYER_TOP_TEN < 100 && zIndex - MapLayerHandler.LAYER_TOP_TEN >= 0)
+            return MapLayerHandler.LAYER_TOP_TEN;
+
+        else if (zIndex - MapLayerHandler.LAYER_RECOMMENDED < 100 && zIndex - MapLayerHandler.LAYER_RECOMMENDED >= 0)
+            return MapLayerHandler.LAYER_RECOMMENDED;
+
+        else if (zIndex - MapLayerHandler.LAYER_ALL_OF_TAIWAN >= 0)
+            return MapLayerHandler.LAYER_ALL_OF_TAIWAN;
+
+        else
+            return 0;
+    }
+
+    private void showPolylineInfo(int geoJsonData, final int zIndex) {
+        showLoadingCircle(true);
+
+        layerHandler.getLayerProperties(geoJsonData, zIndex);
+    }
+
+    @Override
+    public void onPolylineClick(String name, String location, String description) {
+        polylineInfoLayout.setVisibility(View.VISIBLE);
+
+        polylineName.setText(name);
+
+        if (!location.isEmpty()) {
+            polylineLocation.setVisibility(View.VISIBLE);
+            polylineLocation.setText(location);
+        }
+        else
+            polylineLocation.setVisibility(View.GONE);
+
+        if (!description.isEmpty()) {
+            polylineDescription.setVisibility(View.VISIBLE);
+            polylineDescription.setText(description);
+        }
+        else
+            polylineDescription.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onLayerAdded(int layerCode) {
         showLoadingCircle(false);
     }
@@ -949,6 +1137,9 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         }
         if (notNull(layerHandler))
             layerHandler = null;
+
+        map.setOnPolylineClickListener(null);
+        polylineInfoLayout.setVisibility(View.GONE);
     }
 
     private void closeAllLayerFlag() {
