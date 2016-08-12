@@ -55,7 +55,7 @@ public class MapLayerHandler extends Handler {
     public static final int LAYER_RECOMMENDED = 300;
     public static final int LAYER_ALL_OF_TAIWAN = 400;
     public static final int LAYER_RENT_STATION = 500;
-    private static final int LAYER_PROPERTIES = 600;
+    private static final int LAYER_GET_PROPERTIES = 600;
 
     private static final String PROP_NAME = "Name";
 
@@ -141,7 +141,7 @@ public class MapLayerHandler extends Handler {
                                         for (int j = 0; j < latLngList.size(); j++) {
                                             polyLine.add(latLngList.get(j));
                                         }
-                                        polyLine.color(ContextCompat.getColor(appContext(), R.color.md_deep_orange_900));
+                                        polyLine.color(ContextCompat.getColor(appContext(), R.color.md_deep_purple_A400));
                                         polyLine.width(16);
                                         polyLine.clickable(true);
                                         polyLine.zIndex(LAYER_TOP_TEN + i);
@@ -171,7 +171,7 @@ public class MapLayerHandler extends Handler {
                                         for (int j = 0; j < latLngList.size(); j++) {
                                             polyLine.add(latLngList.get(j));
                                         }
-                                        polyLine.color(ContextCompat.getColor(appContext(), R.color.md_deep_purple_A400));
+                                        polyLine.color(ContextCompat.getColor(appContext(), R.color.md_deep_orange_900));
                                         polyLine.width(16);
                                         polyLine.clickable(true);
                                         polyLine.zIndex(LAYER_RECOMMENDED + i);
@@ -246,7 +246,7 @@ public class MapLayerHandler extends Handler {
                     @Override
                     public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
                         ItemsGeoLines geoItem = geoLines.get(zIndex);
-                        obtainMessage(LAYER_PROPERTIES, geoItem).sendToTarget();
+                        obtainMessage(LAYER_GET_PROPERTIES, geoItem).sendToTarget();
                     }
 
                     @Override
@@ -302,10 +302,10 @@ public class MapLayerHandler extends Handler {
                         layer_rentStation.addLayerToMap();
                         break;
 
-                    case LAYER_PROPERTIES:
-                        if (geoItem != null) {
+                    case LAYER_GET_PROPERTIES:
+                        if (geoItem != null)
                             layerChangedCallback.onPolylineClick(geoItem.NAME, geoItem.LOCATION, geoItem.DESCRIPTION);
-                        }
+
                         break;
                 }
                 isLayerChanging = false;

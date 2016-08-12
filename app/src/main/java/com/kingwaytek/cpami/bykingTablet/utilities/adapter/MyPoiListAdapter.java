@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.utilities.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
@@ -80,8 +82,19 @@ public class MyPoiListAdapter extends BaseAdapter {
 
         holder.poiPhoto.setOnClickListener(getPhotoClick(position));
 
-        if (!poiList.get(position).PHOTO_PATH.isEmpty())
-            holder.poiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmap(poiList.get(position).PHOTO_PATH, imageSize, imageSize));
+        String photoPath = poiList.get(position).PHOTO_PATH;
+
+        if (!photoPath.isEmpty()) {
+            Bitmap cachedPhoto = ((BaseActivity) context).getBitmapFromMemCache(photoPath);
+
+            if (cachedPhoto == null) {
+                Bitmap scaledPhoto = BitmapUtility.getDecodedBitmap(photoPath, imageSize, imageSize);
+                ((BaseActivity) context).addBitmapToMemoryCache(photoPath, scaledPhoto);
+                holder.poiPhoto.setImageBitmap(scaledPhoto);
+            }
+            else
+                holder.poiPhoto.setImageBitmap(cachedPhoto);
+        }
         else
             holder.poiPhoto.setImageResource(R.drawable.ic_empty_image);
 

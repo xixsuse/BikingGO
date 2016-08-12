@@ -13,7 +13,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -102,6 +104,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private static HandlerThread handlerThread;
 
     private LinearLayout pathInfoLayout;
+    private TabLayout modeSwitchTab;
+    private ViewPager pathListPager;
     private ListView pathListView;
     private Polyline highLightPoly;
 
@@ -126,6 +130,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     protected void findViews() {
         super.findViews();
         pathInfoLayout = (LinearLayout) findViewById(R.id.pathInfoLayout);
+        modeSwitchTab = (TabLayout) findViewById(R.id.directionModeTabLayout);
+        pathListPager = (ViewPager) findViewById(R.id.pathListPager);
         pathListView = (ListView) findViewById(R.id.pathListView);
 
         polylineInfoLayout = (RelativeLayout) findViewById(R.id.polylineInfoLayout);
@@ -875,6 +881,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private String getAvoidOptions(String... avoidOptions) {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("&avoid=");
+
         for (int i = 0; i < avoidOptions.length; i++) {
             if (i != 0)
                 sb.append("|");
@@ -915,6 +923,13 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             PopWindowHelper.dismissPopWindow();
             moveCamera(linePoints.get(0));
 
+            if (notNull(myNewMarker))
+                myNewMarker.hideInfoWindow();
+            if (notNull(selectedMarker))
+                selectedMarker.hideInfoWindow();
+
+            showMarkerButtonLayout(false, false);
+
             closeInputStream(is);
 
             setPathListView(jsonString);
@@ -926,7 +941,18 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         pathListView.setAdapter(new PathListViewAdapter(this, JsonParser.parseAnGetDirectionItems(jsonString)));
     }
 
+    private void setPathListPager() {
+        pathListPager.setOffscreenPageLimit(0);
+
+    }
+
     private void showPathInfo() {
+        if (modeSwitchTab.getTabCount() == 0) {
+
+            modeSwitchTab.addTab(modeSwitchTab.newTab().setIcon(R.drawable.ic_directions_walk));
+            modeSwitchTab.addTab(modeSwitchTab.newTab().setIcon(R.drawable.ic_directions_transit));
+        }
+
         if (pathInfoLayout.getVisibility() == View.GONE) {
             pathInfoLayout.setVisibility(View.VISIBLE);
             pathListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

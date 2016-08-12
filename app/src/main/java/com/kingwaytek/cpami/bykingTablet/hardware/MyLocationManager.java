@@ -94,9 +94,15 @@ public class MyLocationManager implements LocationListener {
     private void setGPSUpdateRequest() {
         detectGpsLocateState = true;
         try {
-            getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
-            getLocationManager().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
-            Log.i(TAG, "requestTime: " + GPS_UPDATE_TIME + " requestDistance: " + GPS_UPDATE_DISTANCE);
+            if (isProviderFromGps) {
+                getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
+                getLocationManager().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GPS_UPDATE_TIME, GPS_UPDATE_DISTANCE, this);
+                Log.i(TAG, "requestTime: " + GPS_UPDATE_TIME + " requestDistance: " + GPS_UPDATE_DISTANCE);
+            }
+            else {
+                getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+                getLocationManager().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, this);
+            }
         }
         catch (SecurityException e) {
             e.printStackTrace();
@@ -218,7 +224,7 @@ public class MyLocationManager implements LocationListener {
 
         if (gpsLocateCallBack != null && detectGpsLocateState) {
             if (isProviderFromGps) {
-                //setGPSUpdateRequest();
+                setGPSUpdateRequest();
                 gpsLocateCallBack.onGpsLocated();
                 detectGpsLocateState = false;
 

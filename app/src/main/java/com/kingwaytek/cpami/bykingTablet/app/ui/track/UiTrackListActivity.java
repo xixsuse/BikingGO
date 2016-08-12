@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
+import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
@@ -52,6 +53,7 @@ public class UiTrackListActivity extends BaseActivity {
         super.onResume();
         checkStoragePermission();
         createFolderAndSetListView();
+        checkTrackingStatusAndSetButton();
     }
 
     @Override
@@ -134,6 +136,13 @@ public class UiTrackListActivity extends BaseActivity {
                     trackListAdapter.refreshList(trackList);
             }
         }
+    }
+
+    private void checkTrackingStatusAndSetButton() {
+        if (TrackingService.IS_TRACKING_REQUESTED)
+            floatingBtn_addTrack.setImageResource(R.drawable.ic_button_return);
+        else
+            floatingBtn_addTrack.setImageResource(R.drawable.ic_button_add);
     }
 
     private void showTrackMenuDialog() {

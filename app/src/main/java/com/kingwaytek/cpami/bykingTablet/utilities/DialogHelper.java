@@ -118,7 +118,7 @@ public class DialogHelper {
 
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams windowParams = dialogWindow.getAttributes();
-        windowParams.alpha = 0.9f;
+        //windowParams.alpha = 0.9f;
         windowParams.width = width;
         windowParams.height = height;
         windowParams.gravity = Gravity.CENTER;

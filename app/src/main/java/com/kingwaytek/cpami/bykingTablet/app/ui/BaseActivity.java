@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -78,12 +80,18 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     private ProgressBar loadingCircle;
     private TextView trackingText;
 
+    private final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+    private final int bitmapCacheSize = maxMemory / 8;
+    protected LruCache<String, Bitmap> bitmapCache;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme);
         //setWindowFeatures();
         setContentView(getLayoutId());
+
+        initLruCache();
 
         getEntryType();
 
@@ -102,6 +110,25 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
+    }
+
+    private void initLruCache() {
+        bitmapCache = new LruCache<String, Bitmap>(bitmapCacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null)
+            bitmapCache.put(key, bitmap);
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return bitmapCache.get(key);
     }
 
     @Override

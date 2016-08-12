@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.web;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -148,7 +149,13 @@ public class WebAgent {
         }
     }
 
-    public static void getDirectionsData(final String origin, final String destination, final String mode, final String avoid, final WebResultImplement webResult) {
+    /**
+     * @param avoid Set avoid option to null, if you want to using transit mode.
+     */
+    public static void getDirectionsData(final String origin, final String destination, final String mode, @Nullable String avoid, final WebResultImplement webResult) {
+        if (avoid == null)
+            avoid = "";
+
         String apiUrl = MessageFormat.format(ApiUrls.API_GOOGLE_DIRECTION, origin, destination, mode, avoid,
                 Utility.getLocaleLanguage(), AppController.getInstance().getAppContext().getString(R.string.GoogleDirectionKey));
         Log.i(TAG, "GoogleDirectionAPi: " + apiUrl);

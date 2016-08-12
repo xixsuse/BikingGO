@@ -46,7 +46,7 @@ public class PathListViewAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.inflate_path_list_step, null);
+            convertView = inflater.inflate(R.layout.inflate_path_list_step_2, null);
 
             holder = new ViewHolder();
             holder.instruction = (TextView) convertView.findViewById(R.id.text_pathInstruction);

@@ -13,7 +13,7 @@ public interface ApiUrls {
     String API_UBIKE_NEW_TAIPEI = "http://data.ntpc.gov.tw/od/data/api/54DDDC93-589C-4858-9C95-18B2046CC1FC?$format=json";
 
     String API_GOOGLE_DIRECTION =
-            "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}&avoid={3}&language={4}&key={5}";
+            "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}{3}&language={4}&key={5}";
 
     String API_GOOGLE_DIRECTION_MULTI_POINT =
             "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints=optimize:{2}|{3}" +
