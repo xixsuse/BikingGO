@@ -28,7 +28,7 @@
                 android:gravity="center"
                 android:clickable="true"
                 android:text="@string/track_download"
-                android:textSize="@dimen/font_text_size_l"
+                android:textSize="@dimen/font_text_size_m"
                 android:background="@drawable/background_transparent_button"/>
 
             <LinearLayout
@@ -51,7 +51,7 @@
                     android:paddingBottom="@dimen/padding_size_l"
                     android:gravity="center"
                     android:text="@string/track_upload"
-                    android:textSize="@dimen/font_text_size_l"/>
+                    android:textSize="@dimen/font_text_size_m"/>
 
             </LinearLayout>
 
@@ -75,7 +75,7 @@
                     android:paddingBottom="@dimen/padding_size_l"
                     android:gravity="center"
                     android:text="@string/track_delete"
-                    android:textSize="@dimen/font_text_size_l"/>
+                    android:textSize="@dimen/font_text_size_m"/>
 
             </LinearLayout>
 

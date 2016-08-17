@@ -82,17 +82,14 @@ public class PopWindowHelper {
         inflater = LayoutInflater.from(appContext());
         View view = inflater.inflate(R.layout.popup_layer_switch_window, null);
 
-        double popWidth = Utility.getScreenWidth() / 1.2;
-        double popHeight = Utility.getScreenHeight() / 1.55;
+        double popWidth = Utility.getScreenWidth();
+        double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
         setPopWindowCancelable(true);
 
-        double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
-        int yPos = appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xl);
-
-        popWindow.showAsDropDown(anchorView, (int) xPos, yPos);
+        popWindow.showAtLocation(anchorView, Gravity.BOTTOM, 0, 0);
 
         return view;
     }

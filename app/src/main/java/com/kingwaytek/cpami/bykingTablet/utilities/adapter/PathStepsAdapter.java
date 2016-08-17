@@ -16,13 +16,16 @@ import java.util.ArrayList;
 /**
  * Created by vincent.chang on 2016/6/13.
  */
-public class PathListViewAdapter extends BaseAdapter {
+public class PathStepsAdapter extends BaseAdapter {
 
     private ArrayList<ItemsPathStep> pathStepList;
     private LayoutInflater inflater;
 
-    public PathListViewAdapter(Context context, ArrayList<ItemsPathStep> pathStepList) {
+    private boolean lightText;
+
+    public PathStepsAdapter(Context context, ArrayList<ItemsPathStep> pathStepList, boolean lightText) {
         this.pathStepList = pathStepList;
+        this.lightText = lightText;
         inflater = LayoutInflater.from(context);
     }
 
@@ -46,7 +49,9 @@ public class PathListViewAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.inflate_path_list_step_2, null);
+            int layoutId = lightText ? R.layout.inflate_path_steps_light_text : R.layout.inflate_path_steps_dark_text;
+
+            convertView = inflater.inflate(layoutId, null);
 
             holder = new ViewHolder();
             holder.instruction = (TextView) convertView.findViewById(R.id.text_pathInstruction);

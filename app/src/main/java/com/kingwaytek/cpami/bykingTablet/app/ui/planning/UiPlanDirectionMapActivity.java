@@ -35,7 +35,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListPagerAdapter;
-import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListViewAdapter;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathStepsAdapter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -329,7 +329,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
         drawStepsHighLight(position);
 
-        pathListView.setAdapter(new PathListViewAdapter(this, pathList.PATH_STEPS));
+        pathListView.setAdapter(new PathStepsAdapter(this, pathList.PATH_STEPS, true));
 
         pathListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

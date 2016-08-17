@@ -30,6 +30,8 @@ public interface CommonBundle {
     String BUNDLE_PLAN_STEP_DURATION = "PlanStepDuration";
     String BUNDLE_EVENT_DETAIL = "EventDetail";
     String BUNDLE_TRACK_INDEX = "TrackIndex";
+    String BUNDLE_DIRECTION_MODE = "DirectionMode";
+    String BUNDLE_FRAGMENT_DEFAULT_ARG = "FragmentDefaultArgument";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;

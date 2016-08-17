@@ -40,7 +40,6 @@ import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.File;
-import java.util.Arrays;
 
 /**
  * My POI Detail Information!!!
@@ -73,7 +72,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
     protected void init() {
         getPoiItem();
         setPoiInfo();
-        initCallback();
+        //initCallback();
     }
 
     @Override
@@ -387,7 +386,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_SHARE);
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE);
         return true;
     }
 
@@ -402,12 +401,13 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             case ACTION_DELETE:
                 deleteMyPoi();
                 break;
-
+            /*
             case ACTION_SHARE:
                 //LoginManager.getInstance().logInWithReadPermissions(UiMyPoiInfoActivity.this, Arrays.asList("public_profile", "user_friends"));
                 LoginManager.getInstance().logInWithPublishPermissions(UiMyPoiInfoActivity.this, Arrays.asList("publish_actions"));
                 //sharePoiToFacebook();
                 break;
+            */
         }
         return true;
     }

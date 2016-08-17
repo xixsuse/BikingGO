@@ -18,16 +18,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -55,6 +53,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
+import com.kingwaytek.cpami.bykingTablet.app.ui.fragment.UiDirectionModeFragment;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
@@ -64,12 +63,11 @@ import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
-import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
-import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListViewAdapter;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.DirectionModePagerAdapter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -81,11 +79,9 @@ import java.util.ArrayList;
  * @author Vincent (2016/4/15).
  */
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
-        OnPhotoRemovedCallBack, MapLayerHandler.OnLayerChangedCallback {
+        OnPhotoRemovedCallBack, MapLayerHandler.OnLayerChangedCallback, View.OnTouchListener {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
-
-    private Menu menu;
 
     private Marker myNewMarker;
     private Marker lastAroundPoiMarker;
@@ -103,19 +99,29 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private static final String NAME_OF_HANDLER_THREAD = "LayerHandlerThread";
     private static HandlerThread handlerThread;
 
+    private String currentOrigin;
+    private String currentDestination;
+
+    private DirectionModePagerAdapter pagerAdapter;
     private LinearLayout pathInfoLayout;
-    private TabLayout modeSwitchTab;
+    private TabLayout modeTab;
     private ViewPager pathListPager;
-    private ListView pathListView;
     private Polyline highLightPoly;
 
     private TextView polylineName;
     private TextView polylineLocation;
     private TextView polylineDescription;
 
+    private ImageView footerImage;
+    private static final int FOOTER_TAG_BACKGROUND_LIGHT = 0;
+    private static final int FOOTER_TAG_BACKGROUND_DARK = 1;
+
+    private final int screenWidth = Utility.getScreenWidth();
+    private final int screenHeight = Utility.getScreenHeight();
+    private int pathInfoLayoutMaxHeight;
+
     @Override
     protected void onApiReady() {
-        //showRightButtons(true);
         checkIntentAndDoActions();
         registerPreferenceChangedListener();
         Log.i(TAG, "onApiReady!!!");
@@ -130,14 +136,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     protected void findViews() {
         super.findViews();
         pathInfoLayout = (LinearLayout) findViewById(R.id.pathInfoLayout);
-        modeSwitchTab = (TabLayout) findViewById(R.id.directionModeTabLayout);
+        modeTab = (TabLayout) findViewById(R.id.directionModeTabLayout);
         pathListPager = (ViewPager) findViewById(R.id.pathListPager);
-        pathListView = (ListView) findViewById(R.id.pathListView);
 
         polylineInfoLayout = (RelativeLayout) findViewById(R.id.polylineInfoLayout);
         polylineName = (TextView) findViewById(R.id.text_polylineName);
         polylineLocation = (TextView) findViewById(R.id.text_polylineLocation);
         polylineDescription = (TextView) findViewById(R.id.text_polylineDescription);
+
+        footerImage = (ImageView) findViewById(R.id.footerImage);
     }
 
     @Override
@@ -238,7 +245,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 if (markerTypeMap.containsKey(key)) {
                     switch (markerTypeMap.get(key)) {
                         case R.drawable.ic_end:
-                            editMyPoi(marker.getPosition(), null, null);
+                            //editMyPoi(marker.getPosition(), null, null);
                             break;
 
                         case R.drawable.ic_my_poi:
@@ -257,7 +264,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                         case R.drawable.ic_search_result:
                         case R.drawable.ic_around_poi:
-                            editMyPoi(marker.getPosition(), marker.getTitle(), marker.getSnippet());
+                            //editMyPoi(marker.getPosition(), marker.getTitle(), marker.getSnippet());
                             break;
                     }
                 }
@@ -303,14 +310,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        this.menu = menu;
-
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
@@ -322,17 +321,13 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             case ACTION_AROUND:
                 goToPlacePicker();
                 break;
-
-            case ACTION_LIST:
-                showPathInfo();
-                break;
         }
 
         return true;
     }
 
     private void showSwitchPopView() {
-        View view = PopWindowHelper.getMarkerSwitchWindowView(searchTextLayout);
+        View view = PopWindowHelper.getMarkerSwitchWindowView(mapRootLayout);
 
         final Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
         final Switch switch_layerCycling = (Switch) view.findViewById(R.id.switch_layer_cycling_1);
@@ -740,13 +735,22 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     @Override
     protected void onMarkerEditClick() {
         String title = null;
+        String address = null;
+
         /** 判斷 Marker title是經緯度還是一般的名子，
          *  先假設如果 title多於 15個數字的話，就是經緯度！ */
         if (notNull(selectedMarker.getTitle())) {
             if (Utility.getNumericCount(selectedMarker.getTitle()) < 15)
                 title = selectedMarker.getTitle();
         }
-        editMyPoi(selectedMarker.getPosition(), title, null);
+
+        if (notNull(selectedMarker.getSnippet())) {
+            if (!selectedMarker.getSnippet().equals(getString(R.string.poi_edit_this_point)) &&
+                    !selectedMarker.getSnippet().equals(getString(R.string.poi_select_this_point)))
+                address = selectedMarker.getSnippet();
+        }
+
+        editMyPoi(selectedMarker.getPosition(), title, address);
     }
 
     private class PutAllMyPoiMarkers extends AsyncTask<Void, Void, Void> {
@@ -860,15 +864,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         DialogHelper.showLoadingDialog(this);
 
-        String origin = location.getLatitude() + "," + location.getLongitude();
-        String destination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
+        currentOrigin = location.getLatitude() + "," + location.getLongitude();
+        currentDestination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
 
         String avoidOption = getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS);
 
-        WebAgent.getDirectionsData(origin, destination, DIR_MODE_WALKING, avoidOption, new WebAgent.WebResultImplement() {
+        WebAgent.getDirectionsData(currentOrigin, currentDestination, DIR_MODE_WALKING, avoidOption, new WebAgent.WebResultImplement() {
             @Override
             public void onResultSucceed(String response) {
-                getPolyLineAndDrawLine(response);
+                getPolylineAndDrawLine(response);
             }
 
             @Override
@@ -891,7 +895,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         return sb.toString();
     }
 
-    private void getPolyLineAndDrawLine(String jsonString) {
+    private void getPolylineAndDrawLine(String jsonString) {
         String polyOverview = JsonParser.getPolyLineOverview(jsonString);
 
         if (notNull(polyOverview)) {
@@ -932,42 +936,58 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             closeInputStream(is);
 
-            setPathListView(jsonString);
-            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_LIST, ACTION_SWITCH, ACTION_AROUND);
+            footerImage.setOnTouchListener(this);
+            footerImage.setImageResource(R.drawable.ic_drag_sort);
+            footerImage.setTag(FOOTER_TAG_BACKGROUND_LIGHT);
+            footerImage.setBackgroundResource(R.drawable.background_footer_gradient_light);
+            footerImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+            openPathInfoLayout();
         }
     }
 
-    private void setPathListView(String jsonString) {
-        pathListView.setAdapter(new PathListViewAdapter(this, JsonParser.parseAnGetDirectionItems(jsonString)));
-    }
+    private void openPathInfoLayout() {
+        showPathInfoLayout(true);
 
-    private void setPathListPager() {
-        pathListPager.setOffscreenPageLimit(0);
-
-    }
-
-    private void showPathInfo() {
-        if (modeSwitchTab.getTabCount() == 0) {
-
-            modeSwitchTab.addTab(modeSwitchTab.newTab().setIcon(R.drawable.ic_directions_walk));
-            modeSwitchTab.addTab(modeSwitchTab.newTab().setIcon(R.drawable.ic_directions_transit));
-        }
-
-        if (pathInfoLayout.getVisibility() == View.GONE) {
-            pathInfoLayout.setVisibility(View.VISIBLE);
-            pathListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    showMarkerButtonLayout(false, false);
-                    selectedMarker.hideInfoWindow();
-                    ItemsPathStep pathStepItem = (ItemsPathStep) parent.getItemAtPosition(position);
-                    moveCameraAndDrawHighlight(pathStepItem);
-                }
-            });
+        if (pagerAdapter == null) {
+            pagerAdapter = new DirectionModePagerAdapter(getSupportFragmentManager(), currentOrigin, currentDestination);
+            pathListPager.setAdapter(pagerAdapter);
         }
         else {
-            pathInfoLayout.setVisibility(View.GONE);
-            pathListView.setOnItemClickListener(null);
+            UiDirectionModeFragment directionFragment = pagerAdapter.getDirectionFragmentInstance(modeTab.getSelectedTabPosition());
+            directionFragment.updateData(currentOrigin, currentDestination);
+        }
+
+        final int height = (int) (screenHeight * 0.4);
+
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        pathInfoLayout.setLayoutParams(params);
+
+        if (modeTab.getTabCount() == 0) {
+            modeTab.setupWithViewPager(pathListPager);
+
+            modeTab.getTabAt(0).setIcon(R.drawable.ic_directions_walk);
+            modeTab.getTabAt(1).setIcon(R.drawable.ic_directions_transit);
+        }
+        setPathInfoLayoutMaxHeight();
+    }
+
+    private void showPathInfoLayout(boolean isShow) {
+        pathInfoLayout.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    public void onPathStepClick(ItemsPathStep pathStepItem) {
+        showMarkerButtonLayout(false, false);
+        selectedMarker.hideInfoWindow();
+        moveCameraAndDrawHighlight(pathStepItem);
+
+        int layoutMinHeight = (int) (screenHeight * 0.7);
+        int layoutDefaultHeight = (int) (screenHeight * 0.4);
+
+        if (pathInfoLayout.getLayoutParams().height > layoutMinHeight) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, layoutDefaultHeight);
+            pathInfoLayout.setLayoutParams(params);
+            setFooterBackground(true);
         }
     }
 
@@ -1098,7 +1118,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                                 showPolylineInfo(R.raw.layer_biking_route_taiwan, zIndex);
                                 break;
                         }
-
+                        showMarkerButtonLayout(false, false);
                     }
                 });
             }
@@ -1174,5 +1194,91 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         SettingManager.MapLayer.setRecommendedLayer(false);
         SettingManager.MapLayer.setAllOfTaiwanLayer(false);
         SettingManager.MapLayer.setRentStationLayer(false);
+    }
+
+    private void setPathInfoLayoutMaxHeight() {
+        if (pathInfoLayoutMaxHeight == 0) {
+            pathInfoLayoutMaxHeight = (screenHeight - (
+                    Utility.getActionbarHeight() + getApplicationContext().getResources().getDimensionPixelSize(R.dimen.font_text_size_xxl)
+            ));
+        }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        final float X = event.getRawX();
+        final float Y = event.getRawY();
+        //Log.i(TAG, "onTouch - RawX: " + X + " RawY: " + Y);
+
+        float xDown;
+        float yDown;
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                xDown = screenWidth - X;
+                yDown = screenHeight - Y;
+                Log.i(TAG, "ACTION_MOVE - xDown: " + xDown + " yDown: " + yDown);
+
+                if (yDown > (screenHeight / 10)) {
+                    showPathInfoLayout(true);
+                    setPathInfoLayoutHeight((int)yDown);
+                }
+                else
+                    showPathInfoLayout(false);
+
+                break;
+
+            case MotionEvent.ACTION_UP:
+
+                break;
+        }
+
+        return true;
+    }
+
+    private void setPathInfoLayoutHeight(int height) {
+        if (isNotReachedMaxHeight() || height < pathInfoLayoutMaxHeight) {
+            final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+            pathInfoLayout.setLayoutParams(params);
+            setFooterBackground(true);
+        }
+        else
+            setFooterBackground(false);
+    }
+
+    private boolean isNotReachedMaxHeight() {
+        if (pathInfoLayout.getLayoutParams().height > (pathInfoLayoutMaxHeight * 0.9)) {
+            final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, pathInfoLayoutMaxHeight);
+            pathInfoLayout.setLayoutParams(params);
+            setFooterBackground(false);
+        }
+        return pathInfoLayout.getLayoutParams().height < pathInfoLayoutMaxHeight;
+    }
+
+    private void setFooterBackground(boolean lightBackground) {
+        if (notNull(footerImage.getTag())) {
+            if (lightBackground && (int)footerImage.getTag() != FOOTER_TAG_BACKGROUND_LIGHT) {
+                footerImage.setBackgroundResource(R.drawable.background_footer_gradient_light);
+                footerImage.setTag(FOOTER_TAG_BACKGROUND_LIGHT);
+            }
+            else if (!lightBackground) {
+                footerImage.setBackgroundResource(R.drawable.background_footer_gradient_dark);
+                footerImage.setTag(FOOTER_TAG_BACKGROUND_DARK);
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (pathInfoLayout.getVisibility() == View.VISIBLE) {
+            showPathInfoLayout(false);
+            setFooterBackground(true);
+        }
+        else
+            super.onBackPressed();
     }
 }
