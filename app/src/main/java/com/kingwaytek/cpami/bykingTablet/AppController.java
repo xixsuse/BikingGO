@@ -18,9 +18,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnGpsLocateCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapCache;
-import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 
 /**
  * The global controller for application level.
@@ -41,8 +39,6 @@ public class AppController extends Application {
         super.onCreate();
         appInstance = this;
         SettingManager.initPreferences();
-        Util.initUserDatabase();
-        FavoriteHelper.initFavorite();
         initFacebookSDK();
     }
 

@@ -238,7 +238,7 @@
 
     <!-- 軟體使用聲明 -->
     <string name="announce_title">軟體使用聲明</string>
-    <string name="announce_warnning">提醒您, 騎乘自行車上路請注意交通安全, 並務必遵守交通法規與標誌號誌指示</string>
+    <string name="announce_warning">提醒您, 騎乘自行車上路請注意交通安全, 並務必遵守交通法規與標誌號誌指示</string>
     <string name="announce_description">下載, 安裝或使用本應用程式及其所屬的任何原件(以下簡稱"本應用程式")時, 即表示您同意以下聲明 :</string>
     <string name="announce_description1">您明確了解並同意, "本應用程式"提供之所有資訊, 僅供您參考應用, 建議您仍須根據實際道路或地點狀況進行判斷。</string>
     <string name="announce_description2">使用"本應用程式"必須自行承擔所有風險, "本應用程式"不提供任何形式之擔保</string>
@@ -302,6 +302,7 @@
     <string name="storage_permission_rationale_title">允許裝置讀取與寫入檔案至儲存空間</string>
     <string name="storage_permission_rationale_content">允許以將使用者自訂內容儲存至本機上，如行程規劃。</string>
     <string name="storage_permission_denied">儲存空間讀取或寫入權限未開啟</string>
+    <string name="storage_permission_denied_force_require">儲存空間讀取或寫入權限必須開啟，程式才可繼續使用！</string>
 
     <!-- Menu Options -->
     <string name="menu_home">首頁</string>
@@ -374,7 +375,9 @@
     <string name="marker_my_poi">我的景點</string>
 
     <!-- File Storage -->
+    <string name="file_user_data_directory">/_BikingData/</string>
     <string name="file_path_my_plan">_BikingData/plans.json</string>
+    <string name="file_path_my_poi">_BikingData/poi.json</string>
     <string name="file_path_track_folder">_BikingData/track/</string>
     <string name="file_path_track_location">_BikingData/track/trackingLocation.txt</string>
     <string name="file_path_track_saved">_BikingData/track/myTrack.json</string>

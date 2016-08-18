@@ -35,8 +35,8 @@ public class JsonParser {
 
     private static final String TAG = "JsonParser";
 
-    static JSONObject JO;
-    static JSONArray JA;
+    private static JSONObject JO;
+    private static JSONArray JA;
 
     public interface JSONParseResult {
         void onParseFinished();
@@ -96,7 +96,7 @@ public class JsonParser {
         try {
             ArrayList<ItemsMyPOI> myPoiList = new ArrayList<>();
 
-            JA = new JSONArray(SettingManager.Favorite.getMyPoi());
+            JA = new JSONArray(Util.readPoiFile());
 
             String title;
             String address;

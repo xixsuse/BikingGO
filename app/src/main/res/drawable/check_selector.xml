@@ -2,8 +2,13 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- normal image -->
-    <item android:drawable="@drawable/check_white" android:state_checked="false"/>
+    <item
+        android:state_checked="false"
+        android:drawable="@drawable/check_white"/>
+
     <!-- changed image -->
-    <item android:drawable="@drawable/checkmark" android:state_checked="true"/>
+    <item
+        android:state_checked="true"
+        android:drawable="@drawable/checkmark" />
 
 </selector>

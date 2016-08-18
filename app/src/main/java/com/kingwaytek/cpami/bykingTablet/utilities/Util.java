@@ -73,7 +73,7 @@ public class Util {
      * Method moved by Vincent.
      */
     public static void initUserDatabase() {
-        String DATABASE_PATH = AppController.getInstance().getAppContext().getString(R.string.SQLite_Usr_Database_Path);
+        String DATABASE_PATH = sdPath + AppController.getInstance().getString(R.string.file_user_data_directory);
         String DATABASE_NAME = AppController.getInstance().getAppContext().getString(R.string.SQLite_Usr_Database_Name);
 
         // 輸出路徑
@@ -121,6 +121,53 @@ public class Util {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void writePoiFile(String jsonString) {
+        File planFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_my_poi));
+
+        try {
+            if (!planFile.exists())
+                planFile.createNewFile();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(planFile, false));
+            writer.write(jsonString);
+            writer.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readPoiFile() {
+        File planFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_my_poi));
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(planFile));
+
+            StringBuilder sb = new StringBuilder();
+            String eachLine;
+
+            while ((eachLine = reader.readLine()) != null) {
+                sb.append(eachLine);
+            }
+            reader.close();
+
+            return sb.toString();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Utility.toastShort("POI File is Not Exists!");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static boolean isPoiFileNotExistOrEmpty() {
+        File planFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_my_poi));
+        return !planFile.exists() || planFile.length() == 0;
     }
 
     public static void writePlanFile(String jsonString) {

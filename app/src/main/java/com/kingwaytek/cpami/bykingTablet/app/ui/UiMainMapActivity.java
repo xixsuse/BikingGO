@@ -165,7 +165,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         closeAllLayerFlag();
     }
 
-    private void checkIntentAndDoActions() {
+    void checkIntentAndDoActions() {
         if (isFirstTimeRun)
         {
             switch (ENTRY_TYPE) {
@@ -189,6 +189,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             isFirstTimeRun = false;
         }
     }
+
 
     @Override
     public boolean onMarkerClick(Marker marker) {

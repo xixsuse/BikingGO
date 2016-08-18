@@ -22,7 +22,7 @@ public class FavoriteHelper {
 
     private static final String TAG = "FavoriteHelper";
 
-    private static JSONArray JA_POI;
+    public static JSONArray JA_POI;
 
     public static final String POI_TITLE = "title";
     public static final String POI_ADDRESS = "address";
@@ -43,19 +43,17 @@ public class FavoriteHelper {
 
     private static int POI_INDEX;
 
-    public static void initFavorite() {
-        SettingManager.Favorite.initFavoritePreference();
-
+    public static void initPoiFavorite() {
         try {
-            if (SettingManager.Favorite.getMyPoi() == null) {
+            if (Util.isPoiFileNotExistOrEmpty()) {
                 JA_POI = new JSONArray();
 
-                SettingManager.Favorite.setMyPoi(JA_POI.toString());
+                Util.writePoiFile(JA_POI.toString());
 
                 Log.i(TAG, "JA_POI isNull, FavInit!!");
             }
             else {
-                JA_POI = new JSONArray(SettingManager.Favorite.getMyPoi());
+                JA_POI = new JSONArray(Util.readPoiFile());
                 Log.i(TAG, "JA_POI isNotNull, FavInit!!");
                 Log.i(TAG, "PoiInit: " + JA_POI.toString());
             }
@@ -63,16 +61,12 @@ public class FavoriteHelper {
         catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void checkIsFavInit() {
-        if (SettingManager.Favorite.getMyPoi() == null || JA_POI == null || JA_POI.length() == 0)
-            initFavorite();
+        finally {
+            checkAndReplaceAllPhotoPathIfNotExists();
+        }
     }
 
     public static boolean isPoiExisted(double lat, double lng) {
-        checkIsFavInit();
-
         String LAT = String.valueOf(lat);
         String LNG = String.valueOf(lng);
 
@@ -112,8 +106,6 @@ public class FavoriteHelper {
     }
 
     public static void addMyPoi(String title, String address, String desc, double lat, double lng, String photoPath) {
-        checkIsFavInit();
-
         try {
             JSONObject jo = new JSONObject();
 
@@ -126,7 +118,7 @@ public class FavoriteHelper {
 
             JA_POI.put(jo);
 
-            SettingManager.Favorite.setMyPoi(JA_POI.toString());
+            Util.writePoiFile(JA_POI.toString());
             Log.i(TAG, "PoiAdded: " + JA_POI.toString());
         }
         catch (JSONException e) {
@@ -152,7 +144,7 @@ public class FavoriteHelper {
                     if (jo != null)
                         JA_POI.put(jo);
                 }
-                SettingManager.Favorite.setMyPoi(JA_POI.toString());
+                Util.writePoiFile(JA_POI.toString());
                 Log.i(TAG, "PoiRemoved: " + JA_POI.toString());
             }
             else
@@ -170,7 +162,7 @@ public class FavoriteHelper {
             JA_POI.getJSONObject(POI_INDEX).put(POI_DESCRIPTION, desc);
             JA_POI.getJSONObject(POI_INDEX).put(POI_PHOTO_PATH, photoPath);
 
-            SettingManager.Favorite.setMyPoi(JA_POI.toString());
+            Util.writePoiFile(JA_POI.toString());
 
             Log.i(TAG, "PoiUpdated: " + JA_POI.toString());
         }
@@ -179,12 +171,12 @@ public class FavoriteHelper {
         }
     }
 
-    public static void checkAndReplaceAllPhotoPathIfNotExists() {
-        checkIsFavInit();
-
+    private static void checkAndReplaceAllPhotoPathIfNotExists() {
         try {
             JSONObject jo;
             String photoPath;
+
+            boolean needRewrite = false;
 
             for (int i = 0; i < JA_POI.length(); i++) {
                 jo = JA_POI.getJSONObject(i);
@@ -192,10 +184,13 @@ public class FavoriteHelper {
 
                 if (Utility.isFileNotExists(photoPath)) {
                     jo.put(POI_PHOTO_PATH, "");
+                    needRewrite = true;
                     Log.i(TAG, "PhotoPath Replaced: " + photoPath);
                 }
             }
-            SettingManager.Favorite.setMyPoi(JA_POI.toString());
+
+            if (needRewrite)
+                Util.writePoiFile(JA_POI.toString());
         }
         catch (JSONException e) {
             e.printStackTrace();

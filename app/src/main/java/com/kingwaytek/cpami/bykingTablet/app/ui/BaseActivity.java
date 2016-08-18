@@ -42,7 +42,6 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.report.UiReportActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.settings.UiSettingMenuActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.track.UiTrackListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
-import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.NotifyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
@@ -100,7 +99,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
         findViews();
         setListener();
-        FavoriteHelper.checkAndReplaceAllPhotoPathIfNotExists();
+
         init();
     }
 
@@ -130,6 +129,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     public Bitmap getBitmapFromMemCache(String key) {
         return bitmapCache.get(key);
     }
+
+
 
     @Override
     protected void onPause() {

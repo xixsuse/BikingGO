@@ -2,7 +2,6 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
@@ -432,7 +431,7 @@ public class SettingManager {
             return prefs.getBoolean(PREFS_LAYER_RENT_STATION, false);
         }
     }
-
+/*
     public static class Favorite {
 
         private static SharedPreferences prefs;
@@ -455,4 +454,5 @@ public class SettingManager {
             return prefs.getString(PREFS_MY_POI, null);
         }
     }
+*/
 }
