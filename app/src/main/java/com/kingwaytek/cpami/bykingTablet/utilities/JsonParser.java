@@ -155,23 +155,25 @@ public class JsonParser {
         return null;
     }
 
-    public static ArrayList<String> getMyPlanNameList() {
+    public static ArrayList<String[]> getMyPlanNameAndDateList() {
         try {
             if (Util.isPlanFileNotExistOrEmpty())
                 return null;
 
             JA = new JSONArray(Util.readPlanFile());
 
-            ArrayList<String> planNameList = new ArrayList<>();
-            String planName;
+            ArrayList<String[]> planPairList = new ArrayList<>();
 
             for (int i = 0; i < JA.length(); i++) {
-                planName = JA.getJSONObject(i).getString(FavoriteHelper.PLAN_NAME);
-                planNameList.add(planName);
+                String[] pair = new String[] {
+                        JA.getJSONObject(i).getString(FavoriteHelper.PLAN_NAME),
+                        JA.getJSONObject(i).getString(FavoriteHelper.PLAN_DATE)
+                };
+                planPairList.add(pair);
             }
 
             releaseObjects();
-            return planNameList;
+            return planPairList;
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -193,6 +195,7 @@ public class JsonParser {
             JSONObject jo;
 
             String planName;
+            String planDate;
             ArrayList<ItemsPlanItem> planItems;
 
             String title;
@@ -202,6 +205,7 @@ public class JsonParser {
             for (int i = 0; i < JA.length(); i++) {
                 JO = JA.getJSONObject(i);
                 planName = JO.getString(FavoriteHelper.PLAN_NAME);
+                planDate = JO.getString(FavoriteHelper.PLAN_DATE);
 
                 ja = JO.getJSONArray(FavoriteHelper.PLAN_ITEMS);
 
@@ -217,7 +221,7 @@ public class JsonParser {
                     planItems.add(new ItemsPlanItem(title, lat, lng));
                 }
 
-                plansList.add(new ItemsPlans(planName, planItems));
+                plansList.add(new ItemsPlans(planName, planDate, planItems));
 
                 Log.i(TAG, planName + " planItems size: " + planItems.size());
             }

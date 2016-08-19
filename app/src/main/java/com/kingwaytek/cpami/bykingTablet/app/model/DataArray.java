@@ -71,8 +71,8 @@ public class DataArray implements ApiUrls {
         return JsonParser.parseMyPoiAndGetList();
     }
 
-    public static ArrayList<String> getPlanNameList() {
-        return JsonParser.getMyPlanNameList();
+    public static ArrayList<String[]> getPlanNameAndDateList() {
+        return JsonParser.getMyPlanNameAndDateList();
     }
 
     public static ArrayList<ItemsPlans> getPlansData() {

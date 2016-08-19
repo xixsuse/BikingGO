@@ -114,7 +114,7 @@ public class UiTrackListActivity extends BaseActivity {
     }
 
     private void checkStoragePermission() {
-        hasGoodPermission = PermissionCheckHelper.checkFileStoragePermissions(this, PermissionCheckHelper.PERMISSION_REQUEST_CODE_STORAGE);
+        hasGoodPermission = PermissionCheckHelper.checkFileStoragePermissions(this);
     }
 
     private void createFolderAndSetListView() {

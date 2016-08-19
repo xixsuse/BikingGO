@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.planning;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PlanInfoListAdapter;
@@ -40,6 +42,7 @@ public class UiMyPlanInfoActivity extends BaseActivity {
     private PlanInfoListAdapter infoListAdapter;
 
     private int PLAN_EDIT_INDEX;
+    private String name;
 
     @Override
     protected void init() {
@@ -87,8 +90,10 @@ public class UiMyPlanInfoActivity extends BaseActivity {
 
             ItemsPlans planAndItems = DataArray.getPlansData().get(PLAN_EDIT_INDEX);
 
-            if (notNull(planAndItems))
+            if (notNull(planAndItems)) {
+                name = planAndItems.NAME;
                 setPlanContent(planAndItems);
+            }
         }
     }
 
@@ -105,7 +110,7 @@ public class UiMyPlanInfoActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_EDIT);
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_EDIT);
         return true;
     }
 
@@ -119,6 +124,18 @@ public class UiMyPlanInfoActivity extends BaseActivity {
                 intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                break;
+
+            case ACTION_DELETE:
+                DialogHelper.showDeleteConfirmDialog(this, name, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FavoriteHelper.removePlan(PLAN_EDIT_INDEX);
+                        Utility.toastShort(getString(R.string.plan_remove_completed));
+                        finish();
+                    }
+                });
+
                 break;
         }
 

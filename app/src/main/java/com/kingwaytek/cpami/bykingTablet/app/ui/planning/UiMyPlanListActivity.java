@@ -128,16 +128,16 @@ public class UiMyPlanListActivity extends BaseActivity {
     }
 
     private void setPlanList() {
-        if (PermissionCheckHelper.checkFileStoragePermissions(this, PermissionCheckHelper.PERMISSION_REQUEST_CODE_STORAGE)) {
-            ArrayList<String> planNameList = DataArray.getPlanNameList();
+        if (PermissionCheckHelper.checkFileStoragePermissions(this)) {
+            ArrayList<String[]> planPairList = DataArray.getPlanNameAndDateList();
 
-            if (notNull(planNameList)) {
+            if (notNull(planPairList)) {
                 if (planAdapter == null) {
-                    planAdapter = new PlanListAdapter(this, planNameList);
+                    planAdapter = new PlanListAdapter(this, planPairList);
                     planListView.setAdapter(planAdapter);
                 }
                 else
-                    planAdapter.refreshList(planNameList);
+                    planAdapter.refreshList(planPairList);
             }
         }
     }

@@ -38,7 +38,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 public class StartupActivity extends Activity {
 
     private static final long SPLASH_SCREEN_DURATION = 1000;
-    private static final long PERMISSION_REQUIRE_TIPS = 3500;
+    private static final long PERMISSION_REQUIREMENT_TIPS = 3500;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -56,7 +56,7 @@ public class StartupActivity extends Activity {
     }
 
     private void checkStoragePermissionAndInit() {
-        if (PermissionCheckHelper.checkFileStoragePermissions(this, PermissionCheckHelper.PERMISSION_REQUEST_CODE_STORAGE))
+        if (PermissionCheckHelper.checkFileStoragePermissions(this))
             init();
     }
 
@@ -129,7 +129,7 @@ public class StartupActivity extends Activity {
                         public void run() {
                             checkStoragePermissionAndInit();
                         }
-                    }, PERMISSION_REQUIRE_TIPS);
+                    }, PERMISSION_REQUIREMENT_TIPS);
                 }
                 break;
         }

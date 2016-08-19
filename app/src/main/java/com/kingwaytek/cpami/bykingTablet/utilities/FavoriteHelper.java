@@ -32,6 +32,7 @@ public class FavoriteHelper {
     public static final String POI_PHOTO_PATH = "photoPath";
 
     public static final String PLAN_NAME = "planName";
+    public static final String PLAN_DATE = "planDate";
     public static final String PLAN_ITEMS = "planItems";
 
     public static final String TRACK_TIME = "time";
@@ -223,12 +224,13 @@ public class FavoriteHelper {
         }
     }
 
-    public static void updatePlan(int index, String planName, JSONArray planItems) {
+    public static void updatePlan(int index, String planName, String planDate, JSONArray planItems) {
         try {
             if (!Util.isPlanFileNotExistOrEmpty()) {
                 JSONArray ja_plans = new JSONArray(Util.readPlanFile());
 
                 ja_plans.getJSONObject(index).put(PLAN_NAME, planName);
+                ja_plans.getJSONObject(index).put(PLAN_DATE, planDate);
                 ja_plans.getJSONObject(index).put(PLAN_ITEMS, planItems);
 
                 Util.writePlanFile(ja_plans.toString());

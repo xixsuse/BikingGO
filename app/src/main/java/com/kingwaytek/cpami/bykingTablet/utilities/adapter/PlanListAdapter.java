@@ -25,31 +25,31 @@ public class PlanListAdapter extends BaseAdapter {
 
     private static final String TAG = "PlanListAdapter";
 
-    private ArrayList<String> planNameList;
+    private ArrayList<String[]> planPairList;
     private LayoutInflater inflater;
 
     private boolean showCheckBox;
     private HashMap<Integer, Boolean> checkedMap;
 
-    public PlanListAdapter(Context context, ArrayList<String> planNameList) {
-        this.planNameList = planNameList;
+    public PlanListAdapter(Context context, ArrayList<String[]> planPairList) {
+        this.planPairList = planPairList;
         inflater = LayoutInflater.from(context);
         checkedMap = new HashMap<>();
     }
 
-    public void refreshList(ArrayList<String> planNameList) {
-        this.planNameList = planNameList;
+    public void refreshList(ArrayList<String[]> planNameList) {
+        this.planPairList = planNameList;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return planNameList.size();
+        return planPairList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return planNameList.get(position);
+        return planPairList.get(position);
     }
 
     @Override
@@ -66,6 +66,7 @@ public class PlanListAdapter extends BaseAdapter {
 
             holder = new ViewHolder();
             holder.planName = (TextView) convertView.findViewById(R.id.text_planName);
+            holder.planDate = (TextView) convertView.findViewById(R.id.text_planDate);
             holder.checkbox = (CheckBox) convertView.findViewById(R.id.checkbox_eachPlan);
             holder.rightArrow = (ImageView) convertView.findViewById(R.id.icon_rightArrow);
 
@@ -74,7 +75,8 @@ public class PlanListAdapter extends BaseAdapter {
         else
             holder = (ViewHolder) convertView.getTag();
 
-        holder.planName.setText(planNameList.get(position));
+        holder.planName.setText(planPairList.get(position)[0]);
+        holder.planDate.setText(planPairList.get(position)[1]);
 
         if (!checkedMap.containsKey(position)) {
             checkedMap.put(position, false);
@@ -108,8 +110,8 @@ public class PlanListAdapter extends BaseAdapter {
             holder.checkbox.setChecked(false);
         }
 
-        boolean isThisPositionChecked = checkedMap.containsKey(position) && checkedMap.get(position);
-        Log.i(TAG, "isThisPositionChecked: " + position + " " + isThisPositionChecked);
+        //boolean isThisPositionChecked = checkedMap.containsKey(position) && checkedMap.get(position);
+        //Log.i(TAG, "isThisPositionChecked: " + position + " " + isThisPositionChecked);
 
         return convertView;
     }
@@ -152,6 +154,7 @@ public class PlanListAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView planName;
+        TextView planDate;
         CheckBox checkbox;
         ImageView rightArrow;
     }

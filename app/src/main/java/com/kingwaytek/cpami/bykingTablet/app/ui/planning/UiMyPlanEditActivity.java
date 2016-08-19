@@ -280,13 +280,14 @@ public class UiMyPlanEditActivity extends BaseActivity {
                 if (PLAN_EDIT_INDEX == PLAN_EDIT_INDEX_A_NEW_ONE) {
                     JSONObject singlePlanJO = new JSONObject();
                     singlePlanJO.put(FavoriteHelper.PLAN_NAME, getPlanTitle());
+                    singlePlanJO.put(FavoriteHelper.PLAN_DATE, Utility.getCurrentTimeInFormat());
                     singlePlanJO.put(FavoriteHelper.PLAN_ITEMS, ja);
 
                     int planEditIndex = FavoriteHelper.addPlan(singlePlanJO);
                     goToPlanInfo(planEditIndex);
                 }
                 else {
-                    FavoriteHelper.updatePlan(PLAN_EDIT_INDEX, getPlanTitle(), ja);
+                    FavoriteHelper.updatePlan(PLAN_EDIT_INDEX, getPlanTitle(), Utility.getCurrentTimeInFormat(), ja);
                     finish();
                 }
             }
