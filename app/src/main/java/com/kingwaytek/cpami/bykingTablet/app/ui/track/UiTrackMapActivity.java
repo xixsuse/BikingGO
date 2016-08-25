@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Handler;
 import android.provider.Settings;
@@ -15,16 +17,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.kingwaytek.cpami.bykingTablet.AppController;
@@ -33,12 +38,13 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
 import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseMapActivity;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.NotifyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
-import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -57,8 +63,13 @@ public class UiTrackMapActivity extends BaseMapActivity {
     private TextView gpsStateText;
     private ProgressBar gpsStateCircle;
     private FrameLayout triggerBtnLayout;
-
     private ImageButton trackBtn;
+
+    private ScrollView trackInfoLayout;
+    private TextView text_trackName;
+    private RatingBar trackRating;
+    private TextView text_trackDescription;
+    private TextView text_trackLength;
 
     private BroadcastReceiver receiver;
 
@@ -113,8 +124,15 @@ public class UiTrackMapActivity extends BaseMapActivity {
         gpsStateLayout = (LinearLayout) findViewById(R.id.gpsStateLayout);
         gpsStateText = (TextView) findViewById(R.id.text_gpsState);
         gpsStateCircle = (ProgressBar) findViewById(R.id.gpsStateLoadingCircle);
-        trackBtn = (ImageButton) findViewById(R.id.trackButton);
         triggerBtnLayout = (FrameLayout) findViewById(R.id.trackButtonLayout);
+        trackBtn = (ImageButton) findViewById(R.id.trackButton);
+
+        trackInfoLayout = (ScrollView) findViewById(R.id.trackInfoLayout);
+        text_trackName = (TextView) findViewById(R.id.text_trackName);
+        trackRating = (RatingBar) findViewById(R.id.trackRatingBar);
+        text_trackDescription = (TextView) findViewById(R.id.text_trackDescription);
+        text_trackLength = (TextView) findViewById(R.id.text_trackLength);
+
     }
 
     @Override
@@ -141,7 +159,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 break;
 
             case ENTRY_TYPE_TRACK_VIEWING:
-                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_INFO);
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_UPLOAD, ACTION_EDIT);
                 break;
         }
         return true;
@@ -156,8 +174,16 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 showSaveDialog();
                 break;
 
-            case ACTION_INFO:
-                showTrackInfo();
+            case ACTION_EDIT:
+                showEditDialog();
+                break;
+
+            case ACTION_UPLOAD:
+
+                break;
+
+            case ACTION_DELETE:
+                deleteTrack();
                 break;
         }
 
@@ -221,9 +247,38 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
                 map.addPolyline(polyLine);
 
+                Bitmap pinBitmap = getBitmapFromMemCache(BITMAP_KEY_PIN_PLACE);
+
+                if (pinBitmap == null) {
+                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_pin_place);
+                    pinBitmap = BitmapUtility.convertDrawableToBitmap(drawable, getResources().getDimensionPixelSize(R.dimen.icon_common_size));
+                    addBitmapToMemoryCache(BITMAP_KEY_PIN_PLACE, pinBitmap);
+                }
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(pinBitmap);
+
+                MarkerOptions marker = new MarkerOptions();
+
+                marker.icon(icon);
+                marker.position(latLngList.get(0));
+                map.addMarker(marker);
+
+                marker.position(latLngList.get(latLngList.size() - 1));
+                map.addMarker(marker);
+
                 moveCameraAndZoom(latLngList.get(0), 16);
             }
+
+            setInfoLayout();
         }
+    }
+
+    private void setInfoLayout() {
+        trackInfoLayout.setVisibility(ENTRY_TYPE == ENTRY_TYPE_TRACK_VIEWING ? View.VISIBLE : View.GONE);
+
+        text_trackName.setText(trackItem.NAME);
+        trackRating.setRating(trackItem.DIFFICULTY);
+        text_trackDescription.setText(trackItem.DESCRIPTION);
+        text_trackLength.setText(trackItem.DISTANCE);
     }
 
     private void checkGpsAndServiceState() {
@@ -302,20 +357,24 @@ public class UiTrackMapActivity extends BaseMapActivity {
     }
 
     private void showSaveDialog() {
-        DialogHelper.showTrackSaveDialog(this, new DialogHelper.OnTrackSavedCallBack() {
+        final ArrayList<LatLng> latLngList = TrackingFileUtil.readTrackingLatLng();
+        final String trackLength = getTrackDistance(latLngList);
+
+        DialogHelper.showTrackSaveDialog(this, trackLength, new DialogHelper.OnTrackSavedCallBack() {
             @Override
             public void onTrackSaved(String name, int difficulty, String description) {
                 if (!TrackingFileUtil.isTrackingFileEmpty()) {
-                    ArrayList<LatLng> latLngList = TrackingFileUtil.readTrackingLatLng();
 
                     FavoriteHelper.addTrack(
                             Utility.getCurrentTimeInFormat(),
                             name, difficulty, description,
                             getEncodedPolyline(latLngList),
-                            getTrackDistance(latLngList));
+                            trackLength);
 
                     TrackingFileUtil.cleanTrackingFile();
                     menu.clear();
+
+                    Utility.toastShort(AppController.getInstance().getString(R.string.track_save_done));
                 }
             }
         });
@@ -405,63 +464,26 @@ public class UiTrackMapActivity extends BaseMapActivity {
         }
     }
 
-    private void showTrackInfo() {
-        View view = PopWindowHelper.getTrackInfoPopView(this, mapRootLayout);
-
-        final EditText trackName = (EditText) view.findViewById(R.id.edit_trackName);
-        final EditText trackDesc = (EditText) view.findViewById(R.id.edit_trackDescription);
-        final RatingBar trackRating = (RatingBar) view.findViewById(R.id.trackRatingBar);
-        TextView trackLength = (TextView) view.findViewById(R.id.text_trackLength);
-        final TextView closeBtn = (TextView) view.findViewById(R.id.trackClose);
-        final TextView editBtn = (TextView) view.findViewById(R.id.trackEdit);
-
-        trackName.setText(trackItem.NAME);
-        trackDesc.setText(trackItem.DESCRIPTION);
-        trackName.setEnabled(false);
-        trackDesc.setEnabled(false);
-        trackRating.setProgress(trackItem.DIFFICULTY);
-        trackLength.setText(trackItem.DISTANCE);
-        trackRating.setIsIndicator(true);
-
-        isInfoInEditing = false;
-
-        closeBtn.setOnClickListener(new View.OnClickListener() {
+    private void showEditDialog() {
+        DialogHelper.showTrackEditDialog(this, trackItem, new DialogHelper.OnTrackSavedCallBack() {
             @Override
-            public void onClick(View v) {
-                PopWindowHelper.dismissPopWindow();
-                closeBtn.setOnClickListener(null);
+            public void onTrackSaved(String name, int difficulty, String description) {
+                int trackIndex = getIntent().getIntExtra(BUNDLE_TRACK_INDEX, INVALIDATED_INDEX);
+                FavoriteHelper.updateTrackInfo(trackIndex, name, difficulty, description);
+                trackItem = JsonParser.getTrackRecord(trackIndex);
+                setInfoLayout();
+                Utility.toastShort(getString(R.string.update_done));
             }
         });
+    }
 
-        editBtn.setOnClickListener(new View.OnClickListener() {
+    private void deleteTrack() {
+        DialogHelper.showDeleteConfirmDialog(this, trackItem.NAME, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (isInfoInEditing) {
-                    isInfoInEditing = false;
-
-                    int trackIndex = getIntent().getIntExtra(BUNDLE_TRACK_INDEX, INVALIDATED_INDEX);
-                    FavoriteHelper.updateTrackInfo(trackIndex, trackName.getText().toString(), (int)trackRating.getRating(), trackDesc.getText().toString());
-
-                    trackName.setEnabled(false);
-                    trackDesc.setEnabled(false);
-                    trackRating.setIsIndicator(true);
-                    editBtn.setText(getString(R.string.actionbar_edit));
-
-                    trackItem = JsonParser.getTrackRecord(trackIndex);
-                    Utility.toastShort(getString(R.string.update_done));
-                }
-                else {
-                    isInfoInEditing = true;
-                    trackName.setEnabled(true);
-                    trackDesc.setEnabled(true);
-                    trackRating.setIsIndicator(false);
-
-                    trackName.setSelection(trackName.getText().length());
-                    trackDesc.setSelection(trackDesc.getText().length());
-                    trackName.requestFocus();
-
-                    editBtn.setText(getString(R.string.poi_save));
-                }
+            public void onClick(DialogInterface dialog, int which) {
+                int trackIndex = getIntent().getIntExtra(BUNDLE_TRACK_INDEX, INVALIDATED_INDEX);
+                FavoriteHelper.removeTrack(trackIndex);
+                finish();
             }
         });
     }
@@ -476,6 +498,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 stopService(trackingServiceIntent);
                 Log.i(TAG, "StopService");
             }
+            NotifyHelper.clearServiceNotification();
             showTrackingText(false);
             finish();
         }

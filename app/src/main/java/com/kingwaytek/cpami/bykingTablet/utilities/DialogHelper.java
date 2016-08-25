@@ -13,7 +13,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +31,7 @@ import android.widget.TimePicker;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.DialogItemsAdapter;
 
 import java.io.File;
@@ -344,11 +344,12 @@ public class DialogHelper {
         changeDialogTitleColor();
     }
 
-    public static void showTrackSaveDialog(Context context, final OnTrackSavedCallBack savedCallBack) {
+    public static void showTrackSaveDialog(Context context, String trackLength, final OnTrackSavedCallBack savedCallBack) {
         dialogBuilder = new AlertDialog.Builder(context);
 
         View view = LayoutInflater.from(context).inflate(R.layout.popup_track_saving, null);
 
+        final TextView text_trackLength = (TextView) view.findViewById(R.id.text_trackTotalLength);
         final EditText edit_trackName = (EditText) view.findViewById(R.id.edit_trackName);
         final RatingBar trackRating = (RatingBar) view.findViewById(R.id.trackRatingBar);
         final EditText edit_trackDescription = (EditText) view.findViewById(R.id.edit_trackDescription);
@@ -363,6 +364,8 @@ public class DialogHelper {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
+        text_trackLength.setText(AppController.getInstance().getString(R.string.track_done_and_total_length, trackLength));
+
         saveTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -370,17 +373,15 @@ public class DialogHelper {
                 int difficulty = (int) trackRating.getRating();
                 String description = edit_trackDescription.getText().toString();
 
-                Log.i("DialogHelper", "name: " + name + " Difficulty: " + difficulty + " Description: " + description);
-
                 if (name.isEmpty())
                     Utility.toastShort(AppController.getInstance().getString(R.string.track_require_name));
                 else if (difficulty == 0)
                     Utility.toastShort(AppController.getInstance().getString(R.string.track_require_star));
                 else {
                     savedCallBack.onTrackSaved(name, difficulty, description);
-                    Utility.toastShort(AppController.getInstance().getString(R.string.track_save_done));
                     dismissDialog();
                     saveTrack.setOnClickListener(null);
+                    cancel.setOnClickListener(null);
                 }
             }
         });
@@ -389,6 +390,71 @@ public class DialogHelper {
             @Override
             public void onClick(View view) {
                 dismissDialog();
+                saveTrack.setOnClickListener(null);
+                cancel.setOnClickListener(null);
+            }
+        });
+    }
+
+    public static void showTrackEditDialog(Context context, final ItemsTrackRecord trackItem, final OnTrackSavedCallBack savedCallBack) {
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.popup_track_saving, null);
+
+        final TextView text_trackLength = (TextView) view.findViewById(R.id.text_trackTotalLength);
+        final EditText edit_trackName = (EditText) view.findViewById(R.id.edit_trackName);
+        final RatingBar trackRating = (RatingBar) view.findViewById(R.id.trackRatingBar);
+        final EditText edit_trackDescription = (EditText) view.findViewById(R.id.edit_trackDescription);
+
+        final TextView saveTrack = (TextView) view.findViewById(R.id.trackSave);
+        final TextView cancel = (TextView) view.findViewById(R.id.trackCancel);
+
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setView(view);
+
+        dialog = dialogBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        text_trackLength.setText(AppController.getInstance().getString(R.string.track_total_length, trackItem.DISTANCE));
+        edit_trackName.setText(trackItem.NAME);
+        edit_trackName.setSelection(trackItem.NAME.length());
+        trackRating.setRating(trackItem.DIFFICULTY);
+        edit_trackDescription.setText(trackItem.DESCRIPTION);
+        edit_trackDescription.setSelection(trackItem.DESCRIPTION.length());
+
+        saveTrack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = edit_trackName.getText().toString();
+                int difficulty = (int) trackRating.getRating();
+                String description = edit_trackDescription.getText().toString();
+
+                if (!name.equals(trackItem.NAME) || difficulty != trackItem.DIFFICULTY || !description.equals(trackItem.DESCRIPTION)) {
+                    if (name.isEmpty())
+                        Utility.toastShort(AppController.getInstance().getString(R.string.track_require_name));
+                    else if (difficulty == 0)
+                        Utility.toastShort(AppController.getInstance().getString(R.string.track_require_star));
+                    else {
+                        savedCallBack.onTrackSaved(name, difficulty, description);
+                        dismissDialog();
+                        saveTrack.setOnClickListener(null);
+                        cancel.setOnClickListener(null);
+                    }
+                }
+                else {
+                    dismissDialog();
+                    saveTrack.setOnClickListener(null);
+                    cancel.setOnClickListener(null);
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissDialog();
+                saveTrack.setOnClickListener(null);
                 cancel.setOnClickListener(null);
             }
         });

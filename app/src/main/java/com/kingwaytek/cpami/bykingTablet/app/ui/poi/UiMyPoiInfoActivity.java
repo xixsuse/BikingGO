@@ -244,7 +244,7 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             }
         }
 
-        callBackManager.onActivityResult(requestCode, resultCode, data);
+        //callBackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void getPhotoPathAndSetImageView(int requestCode, Intent data) {

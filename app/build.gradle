@@ -42,5 +42,11 @@ dependencies {
     compile 'com.android.support:design:23.3.0'
     compile 'com.google.maps.android:android-maps-utils:0.4.3'
     compile 'com.facebook.android:facebook-android-sdk:4.11.0'
-    //compile 'asia.ivity.android:drag-sort-listview:1.0'   // This library already added in naviKingApi.
+
+    /** For crawling Taipei YouBike data.
+    compile 'com.github.abola:crawler:1.0.3-1'
+    */
+
+    /** This library already added in naviKingApi. */
+    //compile 'asia.ivity.android:drag-sort-listview:1.0'
 }

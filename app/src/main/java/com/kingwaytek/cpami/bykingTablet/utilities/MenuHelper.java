@@ -68,7 +68,8 @@ public class MenuHelper implements ActionbarMenu {
 
                 case ACTION_UPLOAD:
                     menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_upload)
-                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                            .setIcon(R.drawable.selector_toolbar_upload)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
 
                 case ACTION_FB_SHARE:

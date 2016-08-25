@@ -128,7 +128,7 @@ public class UiTrackListActivity extends BaseActivity {
                     trackListAdapter = new TrackListAdapter(this, trackList);
                     trackListView.setAdapter(trackListAdapter);
 
-                    // Add an empty footer view, in order to prevent the final row of ListView get blocked by FloatingButton.
+                    // Add an empty footer view, to prevent the final row of ListView get blocked by FloatingButton.
                     View view = LayoutInflater.from(this).inflate(R.layout.inflate_empty_footer_view, null);
                     trackListView.addFooterView(view);
                 }

@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.web;
 
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -17,9 +18,16 @@ import com.kingwaytek.cpami.bykingTablet.app.model.ApiUrls;
 import com.kingwaytek.cpami.bykingTablet.utilities.DebugHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.MessageFormat;
 
 /**
@@ -43,6 +51,11 @@ public class WebAgent {
     public interface WebResultImplement {
         void onResultSucceed(String response);
         void onResultFail(String errorMessage);
+    }
+
+    public interface FileDownloadCallback {
+        void onDownloadFinished();
+        void onDownloadFailed(String errorMessage);
     }
 
     public static void getStringByUrl(final String url, final WebResultImplement webResult) {
@@ -228,5 +241,53 @@ public class WebAgent {
                 });
 
         AppController.getInstance().getRequestQueue().add(request);
+    }
+
+    public static void downloadTaipeiYouBikeData(final Handler uiHandler, final FileDownloadCallback downloadCallback) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final URL url = new URL(ApiUrls.API_UBIKE_TAIPEI);
+
+                    final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(CONNECT_TIME_OUT_MS);
+                    connection.setReadTimeout(CONNECT_TIME_OUT_MS);
+                    connection.connect();
+
+                    File storagePath = new File(Util.sdPath, AppController.getInstance().getString(R.string.file_path_you_bike_data));
+                    if (!storagePath.exists())
+                        storagePath.createNewFile();
+
+                    final FileOutputStream fos = new FileOutputStream(storagePath, false);
+                    final byte buffer[] = new byte[8 * 1024];
+
+                    final InputStream is = connection.getInputStream();
+
+                    int length;
+                    while ((length = is.read(buffer)) > 0) {
+                        fos.write(buffer, 0, length);
+                    }
+
+                    fos.flush();
+                    fos.close();
+                    is.close();
+                    connection.disconnect();
+
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            downloadCallback.onDownloadFinished();
+                        }
+                    });
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+
+                    downloadCallback.onDownloadFailed(e.getMessage());
+                }
+            }
+        }.start();
     }
 }

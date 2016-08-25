@@ -47,7 +47,7 @@ public class MyLocationManager implements LocationListener {
     private boolean startTracking;
     private boolean isGpsLocated;
     private Location lastLocation;
-    private static final float TRACKING_MINI_DISTANCE = 10;
+    private static final float TRACKING_MINI_DISTANCE = 8;
 
     private static Context appContext() {
         return AppController.getInstance().getAppContext();

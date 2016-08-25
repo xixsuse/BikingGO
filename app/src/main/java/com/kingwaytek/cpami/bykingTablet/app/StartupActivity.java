@@ -62,7 +62,7 @@ public class StartupActivity extends Activity {
 
     private void init() {
         Util.initUserDatabase();
-        FavoriteHelper.initPoiFavorite();
+        FavoriteHelper.initPoiFavorite(true);
         goToMain();
     }
 

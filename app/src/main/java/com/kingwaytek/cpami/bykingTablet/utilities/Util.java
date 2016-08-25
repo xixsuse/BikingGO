@@ -31,7 +31,7 @@ public class Util {
 			"南投縣", "雲林縣", "金門縣" };
 	public static ArrayList<CityObject> city_sort;
 
-    private static final String sdPath = Environment.getExternalStorageDirectory().getPath();
+    public static final String sdPath = Environment.getExternalStorageDirectory().getPath();
 
 	public static void getSortPOICity() {
 		sonav engine = sonav.getInstance();
@@ -73,7 +73,7 @@ public class Util {
      * Method moved by Vincent.
      */
     public static void initUserDatabase() {
-        String DATABASE_PATH = sdPath + AppController.getInstance().getString(R.string.file_user_data_directory);
+        String DATABASE_PATH = sdPath + AppController.getInstance().getString(R.string.file_biking_data_directory);
         String DATABASE_NAME = AppController.getInstance().getAppContext().getString(R.string.SQLite_Usr_Database_Name);
 
         // 輸出路徑
@@ -90,6 +90,7 @@ public class Util {
             if (!dir.mkdirs())
                 return;
         }
+
         // 從資源中讀取數據庫流
         InputStream input = AppController.getInstance().getAppContext().getResources().openRawResource(R.raw.biking_data);
 
@@ -127,8 +128,13 @@ public class Util {
         File planFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_my_poi));
 
         try {
-            if (!planFile.exists())
+            if (!planFile.exists()) {
+                File userDir = new File(sdPath, AppController.getInstance().getString(R.string.file_user_data_directory));
+                if (!userDir.exists())
+                    userDir.mkdirs();
+
                 planFile.createNewFile();
+            }
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(planFile, false));
             writer.write(jsonString);
@@ -157,7 +163,7 @@ public class Util {
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
-            Utility.toastShort("POI File is Not Exists!");
+            Log.e("UserData", "POI File is Not Exists!");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -215,5 +221,31 @@ public class Util {
     public static boolean isPlanFileNotExistOrEmpty() {
         File planFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_my_plan));
         return !planFile.exists() || planFile.length() == 0;
+    }
+
+    public static String readYouBikeTPData() {
+        File uBikeFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_you_bike_data));
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(uBikeFile));
+
+            StringBuilder sb = new StringBuilder();
+            String eachLine;
+
+            while ((eachLine = reader.readLine()) != null) {
+                sb.append(eachLine);
+            }
+            reader.close();
+
+            return sb.toString();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Utility.toastShort("YouBike File is Not Exists!");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

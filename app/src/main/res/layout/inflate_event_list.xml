@@ -12,8 +12,7 @@
         android:layout_height="@dimen/icon_common_size"
         android:layout_marginLeft="@dimen/padding_size_s"
         android:layout_marginStart="@dimen/padding_size_s"
-        android:src="@drawable/ic_biking_logo"
-        android:background="@color/transparent_half_black"/>
+        android:src="@drawable/ic_events"/>
 
     <TextView
         android:id="@+id/text_eventName"

@@ -9,7 +9,7 @@ package com.kingwaytek.cpami.bykingTablet.app.model;
 public interface ApiUrls {
 
     String API_GOOGLE_GEOCODE = "http://maps.google.com/maps/api/geocode/json?address={0}&language={1}";
-    String GZ_UBIKE_TAIPEI = "http://data.taipei/youbike";
+    String API_UBIKE_TAIPEI = "https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.gz";
     String API_UBIKE_NEW_TAIPEI = "http://data.ntpc.gov.tw/od/data/api/54DDDC93-589C-4858-9C95-18B2046CC1FC?$format=json";
 
     String API_GOOGLE_DIRECTION =
@@ -33,5 +33,5 @@ public interface ApiUrls {
             "ReportEmail={10}&" +
             "Code={11}";
 
-    String API_EVENTS = "http://biking.cpami.gov.tw/Service/ListActivity?code={0}";
+    String API_EVENTS = "http://gis.taiwan.net.tw/XMLReleaseALL_public/activity_C_f.json";
 }

@@ -11,7 +11,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.fragment.UiDirectionModeFragment
  */
 public class DirectionModePagerAdapter extends FragmentPagerAdapter {
 
-    private static final int PAGE_COUNT = 2;
+    private static final int PAGE_COUNT = 1;
 
     private String[] fromTo;
 

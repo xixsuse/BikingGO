@@ -131,7 +131,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     }
 
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -323,12 +322,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
     private void onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
+
             case R.id.menu_home:
                 goTo(MainActivity.class, false);
-                break;
-
-            case R.id.menu_bike_track:
-                goTo(UiTrackListActivity.class, false);
                 break;
 
             case R.id.menu_my_poi:
@@ -337,6 +333,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
             case R.id.menu_planning:
                 goTo(UiMyPlanListActivity.class, false);
+                break;
+
+            case R.id.menu_bike_track:
+                goTo(UiTrackListActivity.class, false);
                 break;
 
             case R.id.menu_poi_book:

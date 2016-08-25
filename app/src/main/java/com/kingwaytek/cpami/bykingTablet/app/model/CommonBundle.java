@@ -61,4 +61,14 @@ public interface CommonBundle {
     String TRACKING_IS_GPS_LOCATED = "IsGpsLocated";
     String TRACKING_REQUEST_STARTING = "IsGpsStarting";
     String TRACKING_IS_DOING_RIGHT_NOW = "IsTrackingRightNow";
+
+    // LruCache bitmap key
+    String BITMAP_KEY_MY_POI = "MyPoi";
+    String BITMAP_KEY_BIKE_RENT_STATION = "BikeRentStation";
+    String BITMAP_KEY_YOU_BIKE_NORMAL = "YouBikeNormal";
+    String BITMAP_KEY_YOU_BIKE_FULL = "YouBikeNormal";
+    String BITMAP_KEY_YOU_BIKE_EMPTY = "YouBikeNormal";
+    String BITMAP_KEY_YOU_BIKE_OUT_OF_SERVICE = "YouBikeOutOfService";
+    String BITMAP_KEY_PIN_PLACE = "PinPlace";
+    String BITMAP_KEY_PIN_POINT = "PinPoint";
 }

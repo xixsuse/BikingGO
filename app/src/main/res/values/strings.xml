@@ -309,7 +309,7 @@
     <string name="menu_bike_track">單車軌跡</string>
     <string name="menu_my_poi">我的景點</string>
     <string name="menu_planning">行程規劃</string>
-    <string name="menu_poi_book">景點書(需下載)</string>
+    <string name="menu_poi_book">景點書</string>
     <string name="menu_events">活動訊息</string>
     <string name="menu_report">車友通報</string>
     <string name="menu_settings">設定</string>
@@ -323,6 +323,8 @@
     <string name="layer_recommended">推薦自行車道</string>
     <string name="layer_all_of_taiwan">全臺自行車道</string>
     <string name="layer_rent_station">自行車租借站</string>
+    <string name="layer_biking_lines">自行車車道</string>
+    <string name="layer_you_bike">YouBike租借站</string>
 
     <string name="actionbar_switch_button">圖層開關</string>
     <string name="actionbar_around_button">附近景點</string>
@@ -375,12 +377,14 @@
     <string name="marker_my_poi">我的景點</string>
 
     <!-- File Storage -->
-    <string name="file_user_data_directory">/_BikingData/</string>
-    <string name="file_path_my_plan">_BikingData/plans.json</string>
-    <string name="file_path_my_poi">_BikingData/poi.json</string>
-    <string name="file_path_track_folder">_BikingData/track/</string>
-    <string name="file_path_track_location">_BikingData/track/trackingLocation.txt</string>
-    <string name="file_path_track_saved">_BikingData/track/myTrack.json</string>
+    <string name="file_biking_data_directory">/_BikingData/</string>
+    <string name="file_user_data_directory">_BikingData/userData/</string>
+    <string name="file_path_my_plan">_BikingData/userData/plans.json</string>
+    <string name="file_path_my_poi">_BikingData/userData/poi.json</string>
+    <string name="file_path_track_folder">_BikingData/userData/track/</string>
+    <string name="file_path_track_location">_BikingData/userData/track/trackingLocation.txt</string>
+    <string name="file_path_track_saved">_BikingData/userData/track/myTrack.json</string>
+    <string name="file_path_you_bike_data">_BikingData/YouBikeTP.json</string>
 
     <!-- Location Select -->
     <string name="location_current">目前位置</string>
@@ -455,6 +459,8 @@
     <string name="track_delete">刪除軌跡</string>
     <string name="track_length">軌跡長度：</string>
     <string name="track_in_background">軌跡錄製背景執行中</string>
+    <string name="track_done_and_total_length">軌跡錄製完成！\n總長度：%s</string>
+    <string name="track_total_length">軌跡總長度：%s</string>
 
 
     <string-array name="dialog_photo_menu">

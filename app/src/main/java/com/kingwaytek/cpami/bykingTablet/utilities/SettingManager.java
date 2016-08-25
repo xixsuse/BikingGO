@@ -85,6 +85,7 @@ public class SettingManager {
     public static final String PREFS_LAYER_RECOMMENDED = "LayerRecommended";
     public static final String PREFS_LAYER_ALL_OF_TAIWAN = "LayerAllOfTaiwan";
     public static final String PREFS_LAYER_RENT_STATION = "LayerRentStation";
+    public static final String PREFS_LAYER_YOU_BIKE = "LayerYouBike";
 
     public static SharedPreferences prefs;
     private static SharedPreferences.Editor editor;
@@ -429,6 +430,14 @@ public class SettingManager {
 
         public static boolean getRentStationLayer() {
             return prefs.getBoolean(PREFS_LAYER_RENT_STATION, false);
+        }
+
+        public static void setYouBikeLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_LAYER_YOU_BIKE, isChecked).apply();
+        }
+
+        public static boolean getYouBikeLayer() {
+            return prefs.getBoolean(PREFS_LAYER_YOU_BIKE, false);
         }
     }
 /*

@@ -14,6 +14,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Parse JSON 並建立 Items，搭配 DataArray使用！
@@ -45,6 +47,11 @@ public class JsonParser {
 
     public interface GeoJsonParseResult {
         void onParseFinished(ArrayList<ItemsGeoLines> geoLines);
+        void onParseFail(String errorMessage);
+    }
+
+    public interface YouBikeParseResult {
+        void onParseFinished(ArrayList<ItemsYouBike> uBikeItems);
         void onParseFail(String errorMessage);
     }
 
@@ -96,7 +103,12 @@ public class JsonParser {
         try {
             ArrayList<ItemsMyPOI> myPoiList = new ArrayList<>();
 
-            JA = new JSONArray(Util.readPoiFile());
+            String poiJsonString = Util.readPoiFile();
+
+            if (poiJsonString == null)
+                return null;
+
+            JA = new JSONArray(poiJsonString);
 
             String title;
             String address;
@@ -121,7 +133,7 @@ public class JsonParser {
             releaseObjects();
             return myPoiList;
         }
-        catch(JSONException e) {
+        catch (JSONException e) {
             e.printStackTrace();
             releaseObjects();
             return null;
@@ -404,7 +416,8 @@ public class JsonParser {
         ArrayList<ItemsEvents> eventList = new ArrayList<>();
 
         try {
-            JA = new JSONArray(jsonString);
+            JO = new JSONObject(jsonString);
+            JA = JO.getJSONObject("Infos").getJSONArray("Info");
 
             String name;
             String description;
@@ -426,26 +439,26 @@ public class JsonParser {
             String parkingInfo;
 
             for (int i = 0; i < JA.length(); i++) {
-                JO = JA.getJSONObject(i);
+                JSONObject jo = JA.getJSONObject(i);
 
-                name = JO.getString("name");
-                description = JO.getString("description");
-                location = JO.getString("location");
-                address = JO.getString("add");
-                organization = JO.getString("org");
-                startTime = JO.getString("start");
-                endTime = JO.getString("end");
-                website = JO.getString("website");
-                pic1Url = JO.getString("picture1");
-                pic1Name = JO.getString("picdescribe1");
-                pic2Url = JO.getString("picture2");
-                pic2Name = JO.getString("picdescribe2");
-                pic3Url = JO.getString("picture3");
-                pic3Name = JO.getString("picdescribe3");
-                lat = JO.getDouble("py");
-                lng = JO.getDouble("px");
-                travelInfo = JO.getString("travellinginfo");
-                parkingInfo = JO.getString("parkinginfo");
+                name = jo.getString("Name");
+                description = jo.getString("Description");
+                location = jo.getString("Location");
+                address = jo.getString("Add");
+                organization = jo.getString("Org");
+                startTime = jo.getString("Start");
+                endTime = jo.getString("End");
+                website = jo.getString("Website");
+                pic1Url = jo.getString("Picture1");
+                pic1Name = jo.getString("Picdescribe1");
+                pic2Url = jo.getString("Picture2");
+                pic2Name = jo.getString("Picdescribe2");
+                pic3Url = jo.getString("Picture3");
+                pic3Name = jo.getString("Picdescribe3");
+                lat = jo.getDouble("Py");
+                lng = jo.getDouble("Px");
+                travelInfo = jo.getString("Travellinginfo");
+                parkingInfo = jo.getString("Parkinginfo");
 
                 eventList.add((new ItemsEvents(name, description, location, address, organization, startTime, endTime, website,
                         pic1Url, pic1Name, pic2Url, pic2Name, pic3Url, pic3Name, lat, lng, travelInfo, parkingInfo)));
@@ -459,7 +472,7 @@ public class JsonParser {
         }
         catch (JSONException e) {
             e.printStackTrace();
-            parseResult.onParseFinished();
+            parseResult.onParseFail(e.getMessage());
         }
         releaseObjects();
     }
@@ -642,6 +655,102 @@ public class JsonParser {
                 parseResult.onParseFail(e.getMessage());
                 releaseObjects();
             }
+        }
+    }
+
+    public static void parseTaipeiYouBikeData(YouBikeParseResult parseResult) {
+        try {
+            ArrayList<ItemsYouBike> uBikeItems = new ArrayList<>();
+
+            JSONObject jo = new JSONObject(Util.readYouBikeTPData());
+
+            JSONObject jo_stations = jo.getJSONObject("retVal");
+            JSONObject jo_eachStation;
+
+            String name;
+            int totals;
+            int availableBike;
+            int availableSpace;
+            String area;
+            String address;
+            double lat;
+            double lng;
+            String updateTime;
+            int status;
+
+            int index = 0;
+
+            for (int i = 0; i < jo_stations.length(); i++) {
+                String sno;
+                do {
+                    index++;
+                    sno = String.format(Locale.TAIWAN, "%04d", index);
+                }
+                while (!jo_stations.has(sno));
+
+                jo_eachStation = jo_stations.getJSONObject(sno);
+
+                name = jo_eachStation.getString("sna");
+                totals = jo_eachStation.getInt("tot");
+                availableBike = jo_eachStation.getInt("sbi");
+                availableSpace = jo_eachStation.getInt("bemp");
+                area = jo_eachStation.getString("sarea");
+                address = jo_eachStation.getString("ar");
+                lat = jo_eachStation.getDouble("lat");
+                lng = jo_eachStation.getDouble("lng");
+                updateTime = jo_eachStation.getString("mday");
+                status = jo_eachStation.getInt("act");
+
+                uBikeItems.add(new ItemsYouBike(name, totals, availableBike, availableSpace, area, address, lat, lng, updateTime, status));
+            }
+            parseResult.onParseFinished(uBikeItems);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            parseResult.onParseFail(e.getMessage());
+        }
+    }
+
+    public static void parseNewTaipeiYouBikeData(String jsonString, YouBikeParseResult parseResult) {
+        try {
+            ArrayList<ItemsYouBike> uBikeItems = new ArrayList<>();
+
+            JSONArray ja = new JSONArray(jsonString);
+
+            String name;
+            int totals;
+            int availableBike;
+            int availableSpace;
+            String area;
+            String address;
+            double lat;
+            double lng;
+            String updateTime;
+            int status;
+
+            JSONObject jo_eachStation;
+
+            for (int i = 0; i < ja.length(); i++) {
+                jo_eachStation = ja.getJSONObject(i);
+
+                name = jo_eachStation.getString("sna");
+                totals = jo_eachStation.getInt("tot");
+                availableBike = jo_eachStation.getInt("sbi");
+                availableSpace = jo_eachStation.getInt("bemp");
+                area = jo_eachStation.getString("sarea");
+                address = jo_eachStation.getString("ar");
+                lat = jo_eachStation.getDouble("lat");
+                lng = jo_eachStation.getDouble("lng");
+                updateTime = jo_eachStation.getString("mday");
+                status = jo_eachStation.getInt("act");
+
+                uBikeItems.add(new ItemsYouBike(name, totals, availableBike, availableSpace, area, address, lat, lng, updateTime, status));
+            }
+            parseResult.onParseFinished(uBikeItems);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            parseResult.onParseFail(e.getMessage());
         }
     }
 }
