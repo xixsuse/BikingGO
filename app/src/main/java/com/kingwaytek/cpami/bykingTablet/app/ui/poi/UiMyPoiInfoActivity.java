@@ -268,8 +268,10 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
                         intent.putExtra(BUNDLE_DELETE_POI, new double[]{poiItem.LAT, poiItem.LNG});
                         setResult(RESULT_DELETE, intent);
                     }
-                    else
+                    else {
                         FavoriteHelper.removeMyPoi(poiItem.LAT, poiItem.LNG);
+                        setResult(RESULT_DELETE);
+                    }
 
                     finish();
                 }

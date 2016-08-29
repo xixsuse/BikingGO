@@ -2,10 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:paddingTop="@dimen/padding_size_l"
               android:paddingBottom="@dimen/padding_size_l"
-              android:gravity="center_vertical" >
+              android:gravity="center_vertical"
+              android:animateLayoutChanges="true">
+
+    <CheckBox
+        android:id="@+id/checkbox_eachPoi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:layout_marginRight="@dimen/padding_size_xl"
+        android:layout_marginEnd="@dimen/padding_size_xl"
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/image_poiThumbnail"

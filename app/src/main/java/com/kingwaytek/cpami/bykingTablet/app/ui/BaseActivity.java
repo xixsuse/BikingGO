@@ -328,7 +328,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                 break;
 
             case R.id.menu_my_poi:
-                goTo(UiMyPoiListActivity.class, false);
+                Intent intent = new Intent(this, UiMyPoiListActivity.class);
+                startActivityForResult(intent, REQUEST_RELOAD_ALL_MARKER);
                 break;
 
             case R.id.menu_planning:

@@ -18,7 +18,7 @@
     <string name="Track_Export_Path">/sdcard/_BikingData/track/</string>
 
     <!-- namespace for the application -->
-    <string name="app_namespace">		http://schemas.android.com/apk/res/com.kingwaytek.cpami.bykingTablet</string>
+    <string name="app_namespace">		http://schemas.android.com/apk/res-auto</string>
     <!-- for check version -->
     <string name="CodeVersion">2.0.0</string>
     <string name="DataVersion">20140620</string>
@@ -349,7 +349,7 @@
     <string name="poi_require_title">景點名稱不得為空值</string>
     <string name="poi_save_done">景點新增成功</string>
     <string name="poi_update_done">景點更新成功</string>
-    <string name="poi_delete_done">景點刪除完成</string>
+    <string name="poi_remove_done">景點刪除完成</string>
     <string name="poi_empty">尚未新增任何景點！</string>
     <string name="poi_confirm_to_delete">是否確認刪除「%s」?</string>
     <string name="poi_add_a_new_one_instruction">可從附近景點、地點搜尋或在地圖上長按新增點位來新增景點。</string>
@@ -372,6 +372,9 @@
     <string name="plan_distance_is">距離：%s</string>
     <string name="plan_duration_is">ETA：%s</string>
     <string name="confirm_to_delete_selected_items">是否刪除選取的項目?</string>
+    <string name="plan_browse_shared">查看車友分享的行程</string>
+    <string name="plan_upload">上傳行程</string>
+    <string name="plan_delete">刪除行程</string>
 
     <!-- Marker switch window -->
     <string name="marker_my_poi">我的景點</string>
@@ -454,7 +457,7 @@
     <string name="track_require_star">請選擇困難度</string>
     <string name="track_save_done">軌跡儲存完成！</string>
     <string name="track_delete_completed">軌跡刪除完成</string>
-    <string name="track_download">下載軌跡</string>
+    <string name="track_browse_shared">查看車友分享的軌跡</string>
     <string name="track_upload">上傳軌跡</string>
     <string name="track_delete">刪除軌跡</string>
     <string name="track_length">軌跡長度：</string>

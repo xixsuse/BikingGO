@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
@@ -68,21 +71,25 @@ public class UiMyPlanListActivity extends BaseActivity {
         planListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
-                intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                if (position != parent.getCount() -1) {
+                    Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
+                    intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
             }
         });
 
         planListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                planAdapter.showCheckBox(true);
-                planAdapter.setBoxChecked(position);
-                setMenuOption(ACTION_DELETE);
-
-                return true;
+                if (position != parent.getCount() - 1) {
+                    planAdapter.showCheckBox(true);
+                    planAdapter.setBoxChecked(position);
+                    setMenuOption(ACTION_DELETE);
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -116,7 +123,7 @@ public class UiMyPlanListActivity extends BaseActivity {
                 break;
 
             case ACTION_MORE:
-
+                showPlanMenuDialog();
                 break;
 
             case ACTION_DELETE:
@@ -135,10 +142,64 @@ public class UiMyPlanListActivity extends BaseActivity {
                 if (planAdapter == null) {
                     planAdapter = new PlanListAdapter(this, planPairList);
                     planListView.setAdapter(planAdapter);
+
+                    // Add an empty footer view, to prevent the final row of ListView get blocked by FloatingButton.
+                    View view = LayoutInflater.from(this).inflate(R.layout.inflate_empty_footer_view, null);
+                    planListView.addFooterView(view);
                 }
                 else
                     planAdapter.refreshList(planPairList);
             }
+        }
+    }
+
+    private void showPlanMenuDialog() {
+        View view = DialogHelper.getListMenuDialogView(this, true);
+        final TextView planBrowse = (TextView) view.findViewById(R.id.planMenu_browse);
+        final LinearLayout planUpload = (LinearLayout) view.findViewById(R.id.planMenu_upload);
+        final LinearLayout planDelete = (LinearLayout) view.findViewById(R.id.planMenu_delete);
+
+        planBrowse.setTag(planBrowse.getId());
+        planUpload.setTag(planUpload.getId());
+        planDelete.setTag(planDelete.getId());
+
+        View.OnClickListener menuClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch ((int)v.getTag()) {
+                    case R.id.planMenu_browse:
+                        DialogHelper.dismissDialog();
+                        break;
+
+                    case R.id.planMenu_upload:
+                        DialogHelper.dismissDialog();
+                        break;
+
+                    case R.id.planMenu_delete:
+                        if (notNull(planAdapter)) {
+                            planAdapter.showCheckBox(true);
+                            planAdapter.notifyDataSetChanged();
+                        }
+                        setMenuOption(ACTION_DELETE);
+
+                        DialogHelper.dismissDialog();
+                        break;
+                }
+                planBrowse.setOnClickListener(null);
+                planUpload.setOnClickListener(null);
+                planDelete.setOnClickListener(null);
+            }
+        };
+
+        planBrowse.setOnClickListener(menuClick);
+
+        if (planAdapter == null || planAdapter.isEmpty()) {
+            planUpload.setVisibility(View.GONE);
+            planDelete.setVisibility(View.GONE);
+        }
+        else {
+            planUpload.setOnClickListener(menuClick);
+            planDelete.setOnClickListener(menuClick);
         }
     }
 

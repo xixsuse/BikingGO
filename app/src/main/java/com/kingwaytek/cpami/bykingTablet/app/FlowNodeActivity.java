@@ -84,23 +84,15 @@ public abstract class FlowNodeActivity extends EngineCheckActivity {
                 int resId = getMenuResource();
 
                 if (resId > 0) {
-                    LayoutInflater inflater =
-                            (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                    LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
                     View menuLayout = inflater.inflate(resId, null);
 
-                    menuLayout.setAnimation(
-                            AnimationUtils.loadAnimation(this, R.anim.show_menu));
+                    menuLayout.setAnimation(AnimationUtils.loadAnimation(this, R.anim.show_menu));
 
-                    ((IconListView) menuLayout.findViewById(R.id.list)).
-                            setOnItemClickListener(new OnItemClickListener() {
-
-                        public void onItemClick(
-                                AdapterView<?> parent,
-                                View view,
-                                int position,
-                                long id) {
-
+                    ((IconListView) menuLayout.findViewById(R.id.list)).setOnItemClickListener(new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             onMenuItemClick(parent, view, position, id);
                         }
                     });
@@ -286,10 +278,10 @@ public abstract class FlowNodeActivity extends EngineCheckActivity {
         menu = null;
     }
 
-	public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenuInfo menuInfo) {
-			super.onCreateContextMenu(contextMenu, view, menuInfo);
-		
-	}
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(contextMenu, view, menuInfo);
+
+    }
 
 	public boolean onContextItemSelected(MenuItem item) {
 			return super.onContextItemSelected(item);

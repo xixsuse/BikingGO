@@ -502,6 +502,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                     double[] latLng = data.getDoubleArrayExtra(BUNDLE_DELETE_POI);
                     removePoiAndMarker(latLng[0], latLng[1]);
                     break;
+
+                case REQUEST_RELOAD_ALL_MARKER:
+                    new PutAllMyPoiMarkers().execute();
+                    break;
             }
         }
     }
@@ -710,7 +714,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             if (marker.getPosition().latitude == lat && marker.getPosition().longitude == lng) {
                 marker.remove();
                 myPoiMarkerList.remove(i);
-                Utility.toastShort(getString(R.string.poi_delete_done));
+                Utility.toastShort(getString(R.string.poi_remove_done));
 
                 showMarkerButtonLayout(false, false);
                 break;

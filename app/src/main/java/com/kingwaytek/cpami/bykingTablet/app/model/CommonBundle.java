@@ -10,6 +10,7 @@ public interface CommonBundle {
     int REQUEST_PHOTO_FROM_GALLERY = 10;
     int REQUEST_PHOTO_FROM_CAMERA = 20;
     int REQUEST_RELOAD_MARKER = 30;
+    int REQUEST_RELOAD_ALL_MARKER = 35;
     int REQUEST_SELECT_LOCATION = 40;
 
     // Result Code

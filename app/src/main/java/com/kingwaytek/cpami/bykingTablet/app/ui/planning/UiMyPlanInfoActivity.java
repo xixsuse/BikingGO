@@ -110,7 +110,7 @@ public class UiMyPlanInfoActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_EDIT);
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_UPLOAD, ACTION_EDIT);
         return true;
     }
 
@@ -124,6 +124,10 @@ public class UiMyPlanInfoActivity extends BaseActivity {
                 intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                break;
+
+            case ACTION_UPLOAD:
+
                 break;
 
             case ACTION_DELETE:

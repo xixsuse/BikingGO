@@ -460,10 +460,12 @@ public class DialogHelper {
         });
     }
 
-    public static View getTrackMenuDialogView(Context context) {
+    public static View getListMenuDialogView(Context context, boolean isPlanList) {
         dialogBuilder = new AlertDialog.Builder(context);
 
-        View view = LayoutInflater.from(context).inflate(R.layout.inflate_track_menu, null);
+        int layoutId = isPlanList ? R.layout.inflate_plan_list_menu : R.layout.inflate_track_list_menu;
+
+        View view = LayoutInflater.from(context).inflate(layoutId, null);
         dialogBuilder.setView(view);
 
         dialog = dialogBuilder.create();

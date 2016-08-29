@@ -173,6 +173,46 @@ public class FavoriteHelper {
         }
     }
 
+    public static void removeMultiPoi(ArrayList<Integer> checkedList) {
+        checkPoiArrayIsStillAlive();
+        try {
+            JSONArray ja_poi = JA_POI.get();
+
+            int len = ja_poi.length();
+
+            ArrayList<JSONObject> tempJA = new ArrayList<>();
+
+            boolean isNotRemovable;
+
+            for (int i = 0; i < len; i++) {
+                isNotRemovable = true;
+
+                for (Integer index : checkedList) {
+                    if (i == index) {
+                        isNotRemovable = false;
+                        break;
+                    }
+                }
+                if (isNotRemovable)
+                    tempJA.add(ja_poi.getJSONObject(i));
+            }
+
+            ja_poi = new JSONArray();
+
+            for (JSONObject jo : tempJA) {
+                ja_poi.put(jo);
+            }
+
+            Util.writePoiFile(ja_poi.toString());
+
+            Utility.toastShort(AppController.getInstance().getString(R.string.poi_remove_done));
+            Log.i(TAG, "removePoi: " + ja_poi.toString());
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void updateMyPoi(String title, String address, String desc, String photoPath) {
         checkPoiArrayIsStillAlive();
         try {

@@ -70,8 +70,7 @@
                 android:layout_marginStart="@dimen/padding_size_xl"
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
-                android:layout_marginBottom="@dimen/padding_size_l"
-                android:minHeight="@dimen/icon_common_size"
+                android:layout_marginBottom="@dimen/padding_size_m"
                 android:stepSize="1"
                 android:rating="0"/>
 

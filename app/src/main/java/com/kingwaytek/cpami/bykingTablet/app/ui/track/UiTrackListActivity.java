@@ -146,29 +146,20 @@ public class UiTrackListActivity extends BaseActivity {
     }
 
     private void showTrackMenuDialog() {
-        View view = DialogHelper.getTrackMenuDialogView(this);
-        TextView trackDownload = (TextView) view.findViewById(R.id.trackMenu_download);
-        LinearLayout trackUpload = (LinearLayout) view.findViewById(R.id.trackMenu_upload);
-        LinearLayout trackDelete = (LinearLayout) view.findViewById(R.id.trackMenu_delete);
+        View view = DialogHelper.getListMenuDialogView(this, false);
+        final TextView trackBrowse = (TextView) view.findViewById(R.id.trackMenu_browse);
+        final LinearLayout trackUpload = (LinearLayout) view.findViewById(R.id.trackMenu_upload);
+        final LinearLayout trackDelete = (LinearLayout) view.findViewById(R.id.trackMenu_delete);
 
-        trackDownload.setOnClickListener(getTrackMenuClick(trackDownload.getId()));
+        trackBrowse.setTag(trackBrowse.getId());
+        trackUpload.setTag(trackUpload.getId());
+        trackDelete.setTag(trackDelete.getId());
 
-        if (trackListAdapter == null || trackListAdapter.isEmpty()) {
-            trackUpload.setVisibility(View.GONE);
-            trackDelete.setVisibility(View.GONE);
-        }
-        else {
-            trackUpload.setOnClickListener(getTrackMenuClick(trackUpload.getId()));
-            trackDelete.setOnClickListener(getTrackMenuClick(trackDelete.getId()));
-        }
-    }
-
-    private View.OnClickListener getTrackMenuClick(final int id) {
-        return new View.OnClickListener() {
+        View.OnClickListener menuClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (id) {
-                    case R.id.trackMenu_download:
+                switch ((int)v.getTag()) {
+                    case R.id.trackMenu_browse:
                         DialogHelper.dismissDialog();
                         break;
 
@@ -186,8 +177,22 @@ public class UiTrackListActivity extends BaseActivity {
                         DialogHelper.dismissDialog();
                         break;
                 }
+                trackBrowse.setOnClickListener(null);
+                trackUpload.setOnClickListener(null);
+                trackDelete.setOnClickListener(null);
             }
         };
+
+        trackBrowse.setOnClickListener(menuClick);
+
+        if (trackListAdapter == null || trackListAdapter.isEmpty()) {
+            trackUpload.setVisibility(View.GONE);
+            trackDelete.setVisibility(View.GONE);
+        }
+        else {
+            trackUpload.setOnClickListener(menuClick);
+            trackDelete.setOnClickListener(menuClick);
+        }
     }
 
     private void deleteSelectedTrack() {
