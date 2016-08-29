@@ -11,13 +11,14 @@ import android.util.Log;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.Tracker;
+import com.kingwaytek.cpami.bykingTablet.callbacks.OnGpsLocateCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapCache;
-import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 
 /**
  * The global controller for application level.
@@ -28,6 +29,7 @@ public class AppController extends Application {
 
     private static AppController appInstance;
     private MyLocationManager locationManager;
+    private MyLocationManager trackManager;
 
     private RequestQueue mQueue;
     private ImageLoader imageLoader;
@@ -37,8 +39,7 @@ public class AppController extends Application {
         super.onCreate();
         appInstance = this;
         SettingManager.initPreferences();
-        Util.initUserDatabase();
-        FavoriteHelper.initFavorite();
+        initFacebookSDK();
     }
 
     public static synchronized AppController getInstance() {
@@ -49,16 +50,35 @@ public class AppController extends Application {
         return getApplicationContext();
     }
 
+    private void initFacebookSDK() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+    }
+
     public void initLocationManager() {
         if (locationManager == null)
             locationManager = new MyLocationManager();
         else
-            locationManager.getProvidersAndUpdate(MyLocationManager.getLocationManager());
+            locationManager.getProvidersAndUpdate();
     }
 
     public void removeLocationManager() {
         if (locationManager != null)
             locationManager.removeUpdate();
+    }
+
+    public void initTrackManager(long updateTime, float updateDistance, OnGpsLocateCallBack gpsCallBack) {
+        trackManager = new MyLocationManager(updateTime, updateDistance, gpsCallBack);
+    }
+
+    public MyLocationManager getTrackManager() {
+        if (trackManager != null)
+            return trackManager;
+        return null;
+    }
+
+    public void releaseTrackManager() {
+        trackManager = null;
     }
 
     public String getDataVersion() {

@@ -22,6 +22,7 @@
 	<dimen name="padding_size_super">@dimen/sw800dp_padding_size_super</dimen>
 
     <dimen name="icon_common_size">@dimen/normal_icon_common_size</dimen>
+    <dimen name="icon_common_size_l">@dimen/normal_icon_common_size_l</dimen>
     <dimen name="icon_common_size_xl">@dimen/normal_icon_common_size_xl</dimen>
 
     <dimen name="kiosk_main_menu_width">@dimen/sw800dp_kiosk_main_menu_width</dimen>

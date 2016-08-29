@@ -28,12 +28,12 @@ public class PermissionCheckHelper {
                 DialogHelper.showLocationPermissionRationaleDialog(activity, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        requestLocationPermission(activity, PERMISSION_REQUEST_CODE_LOCATION);
+                        requestLocationPermission(activity);
                     }
                 });
             }
             else
-                requestLocationPermission(activity, PERMISSION_REQUEST_CODE_LOCATION);
+                requestLocationPermission(activity);
 
             return false;
         }
@@ -41,9 +41,12 @@ public class PermissionCheckHelper {
             return true;
     }
 
-    private static void requestLocationPermission(Activity activity, int requestCode) {
-        ActivityCompat.requestPermissions(activity,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, requestCode);
+    private static void requestLocationPermission(Activity activity) {
+        ActivityCompat.requestPermissions(
+                activity,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                PERMISSION_REQUEST_CODE_LOCATION
+        );
     }
 
     public static boolean checkGalleryAndCameraPermissions(final Activity activity, final int requestCode) {
@@ -78,7 +81,7 @@ public class PermissionCheckHelper {
         ActivityCompat.requestPermissions(activity, permissionArray, requestCode);
     }
 
-    public static boolean checkFileStoragePermissions(final Activity activity, final int requestCode) {
+    public static boolean checkFileStoragePermissions(final Activity activity) {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
@@ -87,12 +90,12 @@ public class PermissionCheckHelper {
                 DialogHelper.showStoragePermissionRationaleDialog(activity, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        requestStoragePermission(activity, requestCode);
+                        requestStoragePermission(activity);
                     }
                 });
             }
             else
-                requestStoragePermission(activity, requestCode);
+                requestStoragePermission(activity);
 
             return false;
         }
@@ -100,13 +103,13 @@ public class PermissionCheckHelper {
             return true;
     }
 
-    private static void requestStoragePermission(Activity activity, int requestCode) {
+    private static void requestStoragePermission(Activity activity) {
         String[] permissionArray;
         if (Build.VERSION.SDK_INT > 15)
             permissionArray = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         else
             permissionArray = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        ActivityCompat.requestPermissions(activity, permissionArray, requestCode);
+        ActivityCompat.requestPermissions(activity, permissionArray, PERMISSION_REQUEST_CODE_STORAGE);
     }
 }

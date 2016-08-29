@@ -1,7 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.app.Infomation;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -9,21 +8,9 @@ import android.content.pm.Signature;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.WebDialog;
-import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -106,7 +93,7 @@ public class DetailActivity extends Activity {
 
     }
 
-    /* Share to Facebook button pressed */
+    /* Share to Facebook button pressed
     public void shareToFacebook(View view) {
 
         Session.openActiveSession(this, true, new Session.StatusCallback() {
@@ -128,7 +115,8 @@ public class DetailActivity extends Activity {
             }
         });
     }
-
+    */
+    /*
     private void startPublish() {
         if (object == null) {
             return;
@@ -189,7 +177,7 @@ public class DetailActivity extends Activity {
 
         feedDialog.show();
     }
-
+    */
     private boolean isSubsetOf(Collection<String> subset, Collection<String> superset) {
         for (String string : subset) {
             if (!superset.contains(string)) {
@@ -199,7 +187,7 @@ public class DetailActivity extends Activity {
         return true;
     }
 
-    /* Alert */
+    /* Alert
     private void showAlert(String title, String message) {
 
         UtilDialog uit = new UtilDialog(DetailActivity.this);
@@ -213,14 +201,15 @@ public class DetailActivity extends Activity {
 
         Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
     }
-
+    */
+    /*
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (this.getIntent().getStringExtra("GCM") != null) {
                 Intent intent = new Intent();
-                intent.setClass(this, InformationActivity.class);
+                intent.setClass(this, InfomationActivity.class);
                 startActivity(intent);
                 finish();
             } else {
@@ -230,4 +219,5 @@ public class DetailActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
+    */
 }

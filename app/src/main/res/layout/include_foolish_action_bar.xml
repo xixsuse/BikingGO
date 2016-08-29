@@ -5,25 +5,44 @@
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="true">
 
-    <ProgressBar
-        android:id="@+id/loadingCircle"
-        android:layout_width="@dimen/icon_common_size"
-        android:layout_height="@dimen/icon_common_size"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/padding_size_s"
-        android:layout_marginStart="@dimen/padding_size_s"
-        android:background="@xml/progress_circle"
-        android:visibility="gone" />
-
     <TextView
         android:id="@+id/actionBar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/padding_size_l"
+        android:layout_marginStart="@dimen/padding_size_l"
         android:text="@string/information_title"
         android:textColor="@color/md_grey_50"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:typeface="sans" />
+
+    <ProgressBar
+        android:id="@+id/loadingCircle"
+        android:layout_width="@dimen/icon_common_size"
+        android:layout_height="@dimen/icon_common_size"
+        android:layout_marginLeft="@dimen/padding_size_m"
+        android:layout_marginStart="@dimen/padding_size_m"
+        android:layout_toRightOf="@+id/actionBar_title"
+        android:layout_toEndOf="@+id/actionBar_title"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+        <!-- android:background="@xml/progress_circle" -->
+
+    <TextView
+        android:id="@+id/text_tracking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/padding_size_s"
+        android:layout_marginEnd="@dimen/padding_size_s"
+        android:text="@string/track_tracking_right_now"
+        android:textColor="@color/md_red_800"
+        android:textSize="@dimen/font_text_size_s"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 <!--
     <ImageButton

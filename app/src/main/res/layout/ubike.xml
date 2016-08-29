@@ -3,7 +3,7 @@
 <!-- Layout for MapActivity -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:kingwaytek="http://schemas.android.com/apk/res/com.kingwaytek.cpami.bykingTablet"
+    xmlns:kingwaytek="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mapLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >

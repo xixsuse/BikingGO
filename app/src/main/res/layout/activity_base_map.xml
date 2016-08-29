@@ -7,112 +7,222 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/mapRootLayout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:animateLayoutChanges="true">
 
-        <fragment
-            android:id="@+id/googleMapFragment"
+        <RelativeLayout
+            android:id="@+id/mapRootLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".app.ui.BaseMapActivity"
-            android:name="com.google.android.gms.maps.SupportMapFragment" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:animateLayoutChanges="true">
 
-        <FrameLayout
-            android:id="@+id/searchTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_size_xxl"
-            android:paddingStart="@dimen/padding_size_xxl"
-            android:paddingRight="@dimen/padding_size_super"
-            android:paddingEnd="@dimen/padding_size_super"
-            android:paddingTop="@dimen/padding_size_l">
+            <fragment
+                android:id="@+id/googleMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".app.ui.BaseMapActivity"
+                android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-            <AutoCompleteTextView
-                android:id="@+id/edit_searchText"
+            <FrameLayout
+                android:id="@+id/searchTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@android:drawable/ic_menu_search"
-                android:drawableStart="@android:drawable/ic_menu_search"
-                android:drawablePadding="@dimen/padding_size_m"
-                android:hint="@string/search_anywhere"
-                android:textColorHint="@color/md_grey_400"
-                android:textSize="@dimen/font_text_size_m"
-                android:textColor="@color/md_blue_grey_900"
-                android:inputType="textAutoComplete|textAutoCorrect"
-                android:imeOptions="actionDone"
-                android:completionThreshold="1"
-                android:background="@drawable/background_search_text"/>
+                android:paddingLeft="@dimen/padding_size_xxl"
+                android:paddingStart="@dimen/padding_size_xxl"
+                android:paddingRight="@dimen/padding_size_super"
+                android:paddingEnd="@dimen/padding_size_super"
+                android:paddingTop="@dimen/padding_size_l">
 
-        </FrameLayout>
-        
+                <AutoCompleteTextView
+                    android:id="@+id/edit_searchText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@android:drawable/ic_menu_search"
+                    android:drawableStart="@android:drawable/ic_menu_search"
+                    android:drawablePadding="@dimen/padding_size_m"
+                    android:hint="@string/search_anywhere"
+                    android:textColorHint="@color/md_grey_400"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_blue_grey_900"
+                    android:inputType="textAutoComplete|textAutoCorrect"
+                    android:imeOptions="actionDone"
+                    android:completionThreshold="1"
+                    android:background="@drawable/background_search_text"/>
+
+            </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/polylineInfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/searchTextLayout"
+                android:layout_marginTop="@dimen/padding_size_m"
+                android:padding="@dimen/padding_size_l"
+                android:background="@color/transparent_quarter_black"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/text_polylineName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/md_amber_A400"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:id="@+id/text_polylineLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/padding_size_m"
+                    android:layout_marginEnd="@dimen/padding_size_m"
+                    android:layout_marginTop="@dimen/padding_size_m"
+                    android:textColor="@color/md_grey_200"
+                    android:layout_below="@+id/text_polylineName"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/text_polylineDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/md_grey_200"
+                    android:layout_below="@+id/text_polylineLocation"
+                    android:layout_marginTop="@dimen/padding_size_s"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/markerBtnLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:paddingBottom="@dimen/padding_size_super"
+                android:layout_marginBottom="@dimen/padding_size_super"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/markerBtn_edit"
+                    android:layout_width="@dimen/icon_common_size_xl"
+                    android:layout_height="@dimen/icon_common_size_xl"
+                    android:layout_marginRight="@dimen/padding_size_xl"
+                    android:layout_marginEnd="@dimen/padding_size_xl"
+                    android:padding="1dp"
+                    android:background="@drawable/background_button_shadow"
+                    android:src="@drawable/selector_button_add_poi"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"/>
+
+                <ImageButton
+                    android:id="@+id/markerBtn_navigation"
+                    android:layout_width="@dimen/icon_common_size_xl"
+                    android:layout_height="@dimen/icon_common_size_xl"
+                    android:padding="1dp"
+                    android:background="@drawable/background_button_shadow"
+                    android:src="@drawable/selector_button_navigation"
+                    android:scaleType="centerCrop"/>
+
+                <ImageButton
+                    android:id="@+id/markerBtn_routePath"
+                    android:layout_width="@dimen/icon_common_size_xl"
+                    android:layout_height="@dimen/icon_common_size_xl"
+                    android:layout_marginLeft="@dimen/padding_size_xl"
+                    android:layout_marginStart="@dimen/padding_size_xl"
+                    android:padding="-2dp"
+                    android:background="@drawable/background_button_shadow"
+                    android:src="@drawable/selector_button_directions"
+                    android:scaleType="centerCrop"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/footerImage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/font_text_size_xxl"
+                android:layout_alignParentBottom="true"
+                android:contentDescription="@string/img_bottom_background"
+                android:scaleType="fitXY"
+                android:src="@drawable/bottom_background" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/transparent_half_black"/>
+
         <LinearLayout
-            android:id="@+id/markerBtnLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:paddingBottom="@dimen/padding_size_xxl"
-            android:layout_marginBottom="@dimen/padding_size_super"
+            android:id="@+id/pathInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/padding_size_m"
+            android:paddingStart="@dimen/padding_size_m"
+            android:paddingRight="@dimen/padding_size_m"
+            android:paddingEnd="@dimen/padding_size_m"
+            android:background="@color/md_blue_grey_50"
             android:visibility="gone">
 
-            <ImageButton
-                android:id="@+id/markerBtn_edit"
-                android:layout_width="@dimen/icon_common_size_xl"
-                android:layout_height="@dimen/icon_common_size_xl"
-                android:layout_marginRight="@dimen/padding_size_l"
-                android:layout_marginEnd="@dimen/padding_size_l"
-                android:background="@drawable/background_marker_button"
-                android:padding="@dimen/padding_size_s"
-                android:src="@drawable/ic_edit_off"
-                android:scaleType="centerCrop"
-                android:visibility="visible"/>
+            <android.support.design.widget.TabLayout
+                android:id="@+id/directionModeTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabGravity="fill"/>
 
-            <ImageButton
-                android:id="@+id/markerBtn_routePath"
-                android:layout_width="@dimen/icon_common_size_xl"
-                android:layout_height="@dimen/icon_common_size_xl"
-                android:background="@drawable/background_marker_button"
-                android:padding="@dimen/padding_size_s"
-                android:src="@drawable/ic_directions_off"
-                android:scaleType="centerCrop"/>
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pathListPager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-            <ImageButton
-                android:id="@+id/markerBtn_navigation"
-                android:layout_width="@dimen/icon_common_size_xl"
-                android:layout_height="@dimen/icon_common_size_xl"
-                android:layout_marginLeft="@dimen/padding_size_l"
-                android:layout_marginStart="@dimen/padding_size_l"
-                android:background="@drawable/background_marker_button"
-                android:padding="@dimen/padding_size_s"
-                android:src="@drawable/ic_navigation_off"
-                android:scaleType="centerCrop"/>
-            
         </LinearLayout>
 
-        <ImageView
+        <LinearLayout
+            android:id="@+id/planTitleLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:contentDescription="@string/img_bottom_background"
-            android:scaleType="fitXY"
-            android:src="@drawable/bottom_background" />
+            android:layout_height="@dimen/actionbar_height"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/padding_size_m"
+            android:paddingBottom="@dimen/padding_size_m"
+            android:paddingLeft="@dimen/padding_size_xl"
+            android:paddingStart="@dimen/padding_size_xl"
+            android:paddingRight="@dimen/padding_size_l"
+            android:paddingEnd="@dimen/padding_size_l"
+            android:background="@color/md_grey_200"
+            android:visibility="gone">
 
-    </RelativeLayout>
+            <ImageView
+                android:layout_width="@dimen/icon_common_size"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_planning"/>
+
+            <TextView
+                android:id="@+id/text_planTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/padding_size_xl"
+                android:layout_marginStart="@dimen/padding_size_xl"
+                android:textSize="@dimen/font_text_size_l"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:theme="@style/MyNavigationDrawerStyle"
+        app:theme="@style/MyNavigationDrawerStyle"
         app:itemBackground="@drawable/background_drawer_item"
-        app:itemTextColor="@color/selector_drawer_text_color"
-        app:itemIconTint="@color/selector_drawer_text_color"
-        app:headerLayout="@layout/drawer_header"
+        app:itemTextColor="@color/selector_drawer_item_color"
+        app:itemIconTint="@color/selector_drawer_item_color"
         app:menu="@menu/drawer" />
 
 </android.support.v4.widget.DrawerLayout>

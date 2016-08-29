@@ -6,6 +6,7 @@ package com.kingwaytek.cpami.bykingTablet.app.model.items;
 public class ItemsPathStep {
 
     public String DISTANCE;
+    public String DURATION;
     public String INSTRUCTIONS;
     public String GO_ON_PATH;
     public String POLY_LINE;
@@ -16,6 +17,19 @@ public class ItemsPathStep {
 
     public ItemsPathStep(String distance, String instructions, String goOnPath, String polyLine, double startLat, double startLng, double endLat, double endLng) {
         this.DISTANCE = distance;
+        this.INSTRUCTIONS = instructions;
+        this.GO_ON_PATH = goOnPath;
+        this.POLY_LINE = polyLine;
+        this.START_LAT = startLat;
+        this.START_LNG = startLng;
+        this.END_LAT = endLat;
+        this.END_LNG = endLng;
+    }
+
+    public ItemsPathStep(String distance, String duration, String instructions, String goOnPath, String polyLine,
+                         double startLat, double startLng, double endLat, double endLng) {
+        this.DISTANCE = distance;
+        this.DURATION = duration;
         this.INSTRUCTIONS = instructions;
         this.GO_ON_PATH = goOnPath;
         this.POLY_LINE = polyLine;

@@ -8,6 +8,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,6 +47,22 @@ public abstract class BaseGoogleApiActivity extends BaseMapActivity implements
     @Override
     protected void init() {
         Log.i(TAG, "BaseGoogleApiActivity Init!!!");
+    }
+
+    @Override
+    protected int getMapLayout() {
+        return R.layout.activity_base_map;
+    }
+
+    @Override
+    protected void findViews() {
+        mapRootLayout = (RelativeLayout) findViewById(R.id.mapRootLayout);
+        searchTextLayout = (FrameLayout) findViewById(R.id.searchTextLayout);
+        searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
+        markerBtnLayout = (LinearLayout) findViewById(R.id.markerBtnLayout);
+        markerBtn_edit = (ImageButton) findViewById(R.id.markerBtn_edit);
+        markerBtn_direction = (ImageButton) findViewById(R.id.markerBtn_routePath);
+        markerBtn_navigation = (ImageButton) findViewById(R.id.markerBtn_navigation);
     }
 
     @Override

@@ -8,10 +8,12 @@ import java.util.ArrayList;
 public class ItemsPlans {
 
     public String NAME;
+    public String DATE;
     public ArrayList<ItemsPlanItem> PLAN_ITEMS;
 
-    public ItemsPlans(String name, ArrayList<ItemsPlanItem> planItems) {
+    public ItemsPlans(String name, String date, ArrayList<ItemsPlanItem> planItems) {
         this.NAME = name;
+        this.DATE = date;
         this.PLAN_ITEMS = planItems;
     }
 }

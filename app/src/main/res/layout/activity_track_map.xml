@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/mapRootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:animateLayoutChanges="true">
+
+        <fragment
+            android:id="@+id/googleMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".app.ui.track.UiTrackMapActivity"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:contentDescription="@string/img_bottom_background"
+            android:scaleType="fitXY"
+            android:src="@drawable/bottom_background" />
+
+        <LinearLayout
+            android:id="@+id/gpsStateLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_size_super"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/trackButtonLayout"
+            android:gravity="center"
+            android:paddingTop="@dimen/padding_size_s"
+            android:paddingBottom="@dimen/padding_size_s"
+            android:paddingLeft="@dimen/padding_size_l"
+            android:paddingStart="@dimen/padding_size_l"
+            android:paddingRight="@dimen/padding_size_l"
+            android:paddingEnd="@dimen/padding_size_l"
+            android:background="@drawable/background_common_button_2"
+            android:animateLayoutChanges="true"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/gpsStateLoadingCircle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/padding_size_s"
+                android:layout_marginEnd="@dimen/padding_size_s" />
+
+            <TextView
+                android:id="@+id/text_gpsState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_l"
+                android:text="@string/track_gps_locating"
+                android:textColor="@color/md_grey_100"/>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/trackButtonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingTop="@dimen/padding_size_m"
+            android:paddingBottom="@dimen/padding_size_m"
+            android:background="@color/transparent_little_black">
+
+            <ImageButton
+                android:id="@+id/trackButton"
+                android:layout_width="@dimen/icon_common_size_xl"
+                android:layout_height="@dimen/icon_common_size_xl"
+                android:layout_gravity="center"
+                android:src="@drawable/selector_button_start"
+                android:background="@null"
+                android:scaleType="centerCrop"/>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/trackInfoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_size_xl"
+            android:paddingStart="@dimen/padding_size_xl"
+            android:paddingRight="@dimen/padding_size_l"
+            android:paddingEnd="@dimen/padding_size_l"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_common_size_l"
+                    android:layout_height="@dimen/icon_common_size_l"
+                    android:padding="@dimen/padding_size_s"
+                    android:src="@drawable/ic_tracking"/>
+
+                <TextView
+                    android:id="@+id/text_trackName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding_size_l"
+                    android:layout_marginStart="@dimen/padding_size_l"
+                    android:text="軌跡錄製"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_black_1000"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/track_difficulty"
+                android:textColor="@color/md_grey_700"/>
+
+            <RatingBar
+                android:id="@+id/trackRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:stepSize="1"
+                android:rating="0"
+                android:isIndicator="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/track_description"
+                android:textColor="@color/md_grey_700"/>
+
+            <TextView
+                android:id="@+id/text_trackDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_m"
+                android:textColor="@color/md_grey_900"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/track_length"
+                android:textColor="@color/md_grey_700"/>
+
+            <TextView
+                android:id="@+id/text_trackLength"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_s"
+                android:textColor="@color/md_grey_900"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

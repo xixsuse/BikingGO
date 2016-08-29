@@ -3,26 +3,25 @@ package com.kingwaytek.cpami.bykingTablet.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * This is the first activity for launching. Shows splash screen and do
@@ -39,6 +38,7 @@ import java.io.IOException;
 public class StartupActivity extends Activity {
 
     private static final long SPLASH_SCREEN_DURATION = 1000;
+    private static final long PERMISSION_REQUIREMENT_TIPS = 3500;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -55,6 +55,17 @@ public class StartupActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
+    private void checkStoragePermissionAndInit() {
+        if (PermissionCheckHelper.checkFileStoragePermissions(this))
+            init();
+    }
+
+    private void init() {
+        Util.initUserDatabase();
+        FavoriteHelper.initPoiFavorite(true);
+        goToMain();
+    }
+
     private void showAnnouncementIfNecessary() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -62,14 +73,14 @@ public class StartupActivity extends Activity {
                 if (SettingManager.isAnnouncementNecessary())
                     showAnnouncement();
                 else
-                    goToMain();
+                    checkStoragePermissionAndInit();
             }
         }, SPLASH_SCREEN_DURATION);
     }
 
     private void showAnnouncement() {
         View transparentView = findViewById(R.id.transparentView);
-        LinearLayout announceLayout = (LinearLayout) findViewById(R.id.announceLayout);
+        final ScrollView announceLayout = (ScrollView) findViewById(R.id.announceLayout);
 
         Button confirmButton = (Button) findViewById(R.id.startup_terms_of_use_summit);
         final CheckBox checkbox = (CheckBox) findViewById(R.id.checkbox_terms_of_use_summit);
@@ -90,7 +101,7 @@ public class StartupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 SettingManager.setAnnouncementNecessary(!checkbox.isChecked());
-                goToMain();
+                checkStoragePermissionAndInit();
             }
         });
     }
@@ -98,6 +109,30 @@ public class StartupActivity extends Activity {
     private void goToMain() {
         startActivity(new Intent(this, UiMainMapActivity.class));
         finish();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionCheckHelper.PERMISSION_REQUEST_CODE_STORAGE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                {
+                    init();
+                }
+                else {
+                    Utility.toastLong(getString(R.string.storage_permission_denied_force_require));
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkStoragePermissionAndInit();
+                        }
+                    }, PERMISSION_REQUIREMENT_TIPS);
+                }
+                break;
+        }
     }
 
     /**
@@ -111,30 +146,5 @@ public class StartupActivity extends Activity {
         }
         else
             return keyCode == KeyEvent.KEYCODE_MENU;
-    }
-
-    /**
-     * 每次啟動時把myloc檔裡的內容清空
-     */
-    private void clear_myloc() {
-        final String DIR_DATA = "/BikingData/myloc";
-
-        File file = new File(Environment.getExternalStorageDirectory().getPath() + DIR_DATA);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file, false);
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (fos != null)
-                fos.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }

@@ -23,14 +23,14 @@
                     android:id="@+id/text_pathInstruction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/popWindowCloseBtn"
-                    android:layout_toStartOf="@+id/popWindowCloseBtn"
+                    android:layout_toLeftOf="@+id/pathWindowCloseBtn"
+                    android:layout_toStartOf="@+id/pathWindowCloseBtn"
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/font_text_size_m"
                     android:textColor="@color/md_white_1000"/>
 
                 <ImageButton
-                    android:id="@+id/popWindowCloseBtn"
+                    android:id="@+id/pathWindowCloseBtn"
                     android:layout_width="@dimen/icon_common_size"
                     android:layout_height="@dimen/icon_common_size"
                     android:layout_alignParentRight="true"

@@ -9,11 +9,6 @@
             android:title="@string/menu_home"/>
 
         <item
-            android:id="@+id/menu_bike_track"
-            android:icon="@drawable/menu_icon_bike_tracking"
-            android:title="@string/menu_bike_track"/>
-
-        <item
             android:id="@+id/menu_my_poi"
             android:icon="@drawable/menu_icon_poi"
             android:title="@string/menu_my_poi"/>
@@ -22,6 +17,11 @@
             android:id="@+id/menu_planning"
             android:icon="@drawable/menu_icon_planning"
             android:title="@string/menu_planning"/>
+
+        <item
+            android:id="@+id/menu_bike_track"
+            android:icon="@drawable/menu_icon_bike_tracking"
+            android:title="@string/menu_bike_track"/>
 
         <item
             android:id="@+id/menu_poi_book"

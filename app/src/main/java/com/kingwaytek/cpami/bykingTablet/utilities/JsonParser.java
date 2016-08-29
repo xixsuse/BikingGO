@@ -2,20 +2,31 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsGeoLines;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Parse JSON 並建立 Items，搭配 DataArray使用！
@@ -26,11 +37,21 @@ public class JsonParser {
 
     private static final String TAG = "JsonParser";
 
-    static JSONObject JO;
-    static JSONArray JA;
+    private static JSONObject JO;
+    private static JSONArray JA;
 
     public interface JSONParseResult {
         void onParseFinished();
+        void onParseFail(String errorMessage);
+    }
+
+    public interface GeoJsonParseResult {
+        void onParseFinished(ArrayList<ItemsGeoLines> geoLines);
+        void onParseFail(String errorMessage);
+    }
+
+    public interface YouBikeParseResult {
+        void onParseFinished(ArrayList<ItemsYouBike> uBikeItems);
         void onParseFail(String errorMessage);
     }
 
@@ -82,7 +103,12 @@ public class JsonParser {
         try {
             ArrayList<ItemsMyPOI> myPoiList = new ArrayList<>();
 
-            JA = new JSONArray(SettingManager.Favorite.getMyPoi());
+            String poiJsonString = Util.readPoiFile();
+
+            if (poiJsonString == null)
+                return null;
+
+            JA = new JSONArray(poiJsonString);
 
             String title;
             String address;
@@ -107,7 +133,7 @@ public class JsonParser {
             releaseObjects();
             return myPoiList;
         }
-        catch(JSONException e) {
+        catch (JSONException e) {
             e.printStackTrace();
             releaseObjects();
             return null;
@@ -141,23 +167,25 @@ public class JsonParser {
         return null;
     }
 
-    public static ArrayList<String> getMyPlanNameList() {
+    public static ArrayList<String[]> getMyPlanNameAndDateList() {
         try {
             if (Util.isPlanFileNotExistOrEmpty())
                 return null;
 
             JA = new JSONArray(Util.readPlanFile());
 
-            ArrayList<String> planNameList = new ArrayList<>();
-            String planName;
+            ArrayList<String[]> planPairList = new ArrayList<>();
 
             for (int i = 0; i < JA.length(); i++) {
-                planName = JA.getJSONObject(i).getString(FavoriteHelper.PLAN_NAME);
-                planNameList.add(planName);
+                String[] pair = new String[] {
+                        JA.getJSONObject(i).getString(FavoriteHelper.PLAN_NAME),
+                        JA.getJSONObject(i).getString(FavoriteHelper.PLAN_DATE)
+                };
+                planPairList.add(pair);
             }
 
             releaseObjects();
-            return planNameList;
+            return planPairList;
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -179,6 +207,7 @@ public class JsonParser {
             JSONObject jo;
 
             String planName;
+            String planDate;
             ArrayList<ItemsPlanItem> planItems;
 
             String title;
@@ -188,6 +217,7 @@ public class JsonParser {
             for (int i = 0; i < JA.length(); i++) {
                 JO = JA.getJSONObject(i);
                 planName = JO.getString(FavoriteHelper.PLAN_NAME);
+                planDate = JO.getString(FavoriteHelper.PLAN_DATE);
 
                 ja = JO.getJSONArray(FavoriteHelper.PLAN_ITEMS);
 
@@ -203,13 +233,58 @@ public class JsonParser {
                     planItems.add(new ItemsPlanItem(title, lat, lng));
                 }
 
-                plansList.add(new ItemsPlans(planName, planItems));
+                plansList.add(new ItemsPlans(planName, planDate, planItems));
 
                 Log.i(TAG, planName + " planItems size: " + planItems.size());
             }
 
             releaseObjects();
             return plansList;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ArrayList<ItemsPathStep> parseAnGetDirectionItems(String jsonString) {
+        try {
+            ArrayList<ItemsPathStep> dirItemList = new ArrayList<>();
+
+            String distance;
+            String duration;
+            String[] instructionAndGoOnPath;
+            double startLat;
+            double startLng;
+            double endLat;
+            double endLng;
+            String polyLine;
+
+            JO = new JSONObject(jsonString);
+            JA = JO.getJSONArray("routes");
+            JSONObject route = JA.getJSONObject(0);
+            JSONArray stepArr = route.getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+
+            for (int i = 0; i < stepArr.length(); i++) {
+                JSONObject singleStep = stepArr.getJSONObject(i);
+
+                distance = getDistanceString(singleStep.getJSONObject("distance"));
+                duration = singleStep.getJSONObject("duration").getString("text");
+                instructionAndGoOnPath = getInstructionPath(singleStep.getString("html_instructions"));
+                polyLine = singleStep.getJSONObject("polyline").getString("points");
+                startLat = singleStep.getJSONObject("start_location").getDouble("lat");
+                startLng = singleStep.getJSONObject("start_location").getDouble("lng");
+                endLat = singleStep.getJSONObject("end_location").getDouble("lat");
+                endLng = singleStep.getJSONObject("end_location").getDouble("lng");
+
+                dirItemList.add(new ItemsPathStep(distance, duration, instructionAndGoOnPath[0], instructionAndGoOnPath[1],
+                        polyLine, startLat, startLng, endLat, endLng));
+            }
+
+            releaseObjects();
+
+            return dirItemList;
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -335,5 +410,347 @@ public class JsonParser {
             instruction = originPath;
 
         return new String[]{instruction, goOnPath};
+    }
+
+    public static void parseEventsDataThenAddToList(String jsonString, JSONParseResult parseResult) {
+        ArrayList<ItemsEvents> eventList = new ArrayList<>();
+
+        try {
+            JO = new JSONObject(jsonString);
+            JA = JO.getJSONObject("Infos").getJSONArray("Info");
+
+            String name;
+            String description;
+            String location;
+            String address;
+            String organization;
+            String startTime;
+            String endTime;
+            String website;
+            String pic1Url;
+            String pic1Name;
+            String pic2Url;
+            String pic2Name;
+            String pic3Url;
+            String pic3Name;
+            double lat;
+            double lng;
+            String travelInfo;
+            String parkingInfo;
+
+            for (int i = 0; i < JA.length(); i++) {
+                JSONObject jo = JA.getJSONObject(i);
+
+                name = jo.getString("Name");
+                description = jo.getString("Description");
+                location = jo.getString("Location");
+                address = jo.getString("Add");
+                organization = jo.getString("Org");
+                startTime = jo.getString("Start");
+                endTime = jo.getString("End");
+                website = jo.getString("Website");
+                pic1Url = jo.getString("Picture1");
+                pic1Name = jo.getString("Picdescribe1");
+                pic2Url = jo.getString("Picture2");
+                pic2Name = jo.getString("Picdescribe2");
+                pic3Url = jo.getString("Picture3");
+                pic3Name = jo.getString("Picdescribe3");
+                lat = jo.getDouble("Py");
+                lng = jo.getDouble("Px");
+                travelInfo = jo.getString("Travellinginfo");
+                parkingInfo = jo.getString("Parkinginfo");
+
+                eventList.add((new ItemsEvents(name, description, location, address, organization, startTime, endTime, website,
+                        pic1Url, pic1Name, pic2Url, pic2Name, pic3Url, pic3Name, lat, lng, travelInfo, parkingInfo)));
+            }
+
+            if (DataArray.list_events != null)
+                DataArray.list_events.clear();
+            DataArray.list_events = new SoftReference<>(eventList);
+
+            parseResult.onParseFinished();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            parseResult.onParseFail(e.getMessage());
+        }
+        releaseObjects();
+    }
+
+    public static ArrayList<ItemsTrackRecord> getTrackList() {
+        try {
+            String trackJsonString = TrackingFileUtil.readTrackFile();
+
+            if (trackJsonString != null) {
+                JA = new JSONArray(trackJsonString);
+
+                ArrayList<ItemsTrackRecord> trackNameList = new ArrayList<>();
+
+                for (int i = 0; i < JA.length(); i++) {
+                    JO = JA.getJSONObject(i);
+                    trackNameList.add(new ItemsTrackRecord(
+                            JO.getString(FavoriteHelper.TRACK_TIME),
+                            JO.getString(FavoriteHelper.TRACK_NAME),
+                            JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
+                            JO.getString(FavoriteHelper.TRACK_DISTANCE)));
+                }
+                releaseObjects();
+
+                return trackNameList;
+            }
+            else
+                return null;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ItemsTrackRecord getTrackRecord(int index) {
+        try {
+            String trackJsonString = TrackingFileUtil.readTrackFile();
+
+            if (trackJsonString != null) {
+                JA = new JSONArray(trackJsonString);
+
+                JO = JA.getJSONObject(index);
+
+                ItemsTrackRecord trackItem = new ItemsTrackRecord(
+                        JO.getString(FavoriteHelper.TRACK_TIME),
+                        JO.getString(FavoriteHelper.TRACK_NAME),
+                        JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
+                        JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
+                        JO.getString(FavoriteHelper.TRACK_POLYLINE),
+                        JO.getString(FavoriteHelper.TRACK_DISTANCE));
+
+                releaseObjects();
+
+                return trackItem;
+            }
+            else
+                return null;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static void parseGeoJsonCoordinates(int rawGeoJson, boolean nestedCoordinates, GeoJsonParseResult parseResult) {
+        InputStream is = AppController.getInstance().getResources().openRawResource(rawGeoJson);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder sb = new StringBuilder();
+        String eachLine;
+
+        try {
+            while ((eachLine = reader.readLine()) != null) {
+                sb.append(eachLine);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                ArrayList<ItemsGeoLines> geoLines = new ArrayList<>();
+
+                JO = new JSONObject(sb.toString());
+                JA = JO.getJSONArray("features");
+
+                JSONArray coordinates;
+                JSONArray coordinateArray;
+
+                ArrayList<LatLng> latLngList;
+
+                for (int i = 0; i < JA.length(); i++) {
+                    coordinates = JA.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+
+                    latLngList = new ArrayList<>();
+
+                    for (int j = 0; j < coordinates.length(); j++) {
+
+                        coordinateArray = coordinates.getJSONArray(j);
+
+                        if (nestedCoordinates) {
+                            for (int k = 0; k < coordinateArray.length(); k++) {
+                                latLngList.add(new LatLng(coordinateArray.getJSONArray(k).getDouble(1), coordinateArray.getJSONArray(k).getDouble(0)));
+                            }
+                        }
+                        else
+                            latLngList.add(new LatLng(coordinateArray.getDouble(1), coordinateArray.getDouble(0)));
+                    }
+
+                    geoLines.add(new ItemsGeoLines(latLngList));
+                }
+                parseResult.onParseFinished(geoLines);
+
+                is.close();
+                reader.close();
+                releaseObjects();
+            }
+            catch (IOException | JSONException e) {
+                e.printStackTrace();
+                parseResult.onParseFail(e.getMessage());
+                releaseObjects();
+            }
+        }
+    }
+
+    public static void parseGeoJsonProperty(int rawGeoJson, GeoJsonParseResult parseResult) {
+        InputStream is = AppController.getInstance().getResources().openRawResource(rawGeoJson);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder sb = new StringBuilder();
+        String eachLine;
+
+        try {
+            while ((eachLine = reader.readLine()) != null) {
+                sb.append(eachLine);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                ArrayList<ItemsGeoLines> geoLines = new ArrayList<>();
+
+                JO = new JSONObject(sb.toString());
+                JA = JO.getJSONArray("features");
+
+                JSONObject jo;
+                JSONObject jo_properties;
+
+                String name;
+                String description;
+                String location = "";
+
+                for (int i = 0; i < JA.length(); i++) {
+                    jo = JA.getJSONObject(i);
+                    jo_properties = jo.getJSONObject("properties");
+
+                    name = jo_properties.getString("Name");
+
+                    description = jo_properties.getString("description");
+                    if (description.equals("null"))
+                        description = "";
+
+                    if (jo_properties.has("Location"))
+                        location = jo_properties.getString("Location");
+
+                    geoLines.add(new ItemsGeoLines(name, description, location));
+                }
+                parseResult.onParseFinished(geoLines);
+
+                is.close();
+                reader.close();
+                releaseObjects();
+            }
+            catch (IOException | JSONException e) {
+                e.printStackTrace();
+                parseResult.onParseFail(e.getMessage());
+                releaseObjects();
+            }
+        }
+    }
+
+    public static void parseTaipeiYouBikeData(YouBikeParseResult parseResult) {
+        try {
+            ArrayList<ItemsYouBike> uBikeItems = new ArrayList<>();
+
+            JSONObject jo = new JSONObject(Util.readYouBikeTPData());
+
+            JSONObject jo_stations = jo.getJSONObject("retVal");
+            JSONObject jo_eachStation;
+
+            String name;
+            int totals;
+            int availableBike;
+            int availableSpace;
+            String area;
+            String address;
+            double lat;
+            double lng;
+            String updateTime;
+            int status;
+
+            int index = 0;
+
+            for (int i = 0; i < jo_stations.length(); i++) {
+                String sno;
+                do {
+                    index++;
+                    sno = String.format(Locale.TAIWAN, "%04d", index);
+                }
+                while (!jo_stations.has(sno));
+
+                jo_eachStation = jo_stations.getJSONObject(sno);
+
+                name = jo_eachStation.getString("sna");
+                totals = jo_eachStation.getInt("tot");
+                availableBike = jo_eachStation.getInt("sbi");
+                availableSpace = jo_eachStation.getInt("bemp");
+                area = jo_eachStation.getString("sarea");
+                address = jo_eachStation.getString("ar");
+                lat = jo_eachStation.getDouble("lat");
+                lng = jo_eachStation.getDouble("lng");
+                updateTime = jo_eachStation.getString("mday");
+                status = jo_eachStation.getInt("act");
+
+                uBikeItems.add(new ItemsYouBike(name, totals, availableBike, availableSpace, area, address, lat, lng, updateTime, status));
+            }
+            parseResult.onParseFinished(uBikeItems);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            parseResult.onParseFail(e.getMessage());
+        }
+    }
+
+    public static void parseNewTaipeiYouBikeData(String jsonString, YouBikeParseResult parseResult) {
+        try {
+            ArrayList<ItemsYouBike> uBikeItems = new ArrayList<>();
+
+            JSONArray ja = new JSONArray(jsonString);
+
+            String name;
+            int totals;
+            int availableBike;
+            int availableSpace;
+            String area;
+            String address;
+            double lat;
+            double lng;
+            String updateTime;
+            int status;
+
+            JSONObject jo_eachStation;
+
+            for (int i = 0; i < ja.length(); i++) {
+                jo_eachStation = ja.getJSONObject(i);
+
+                name = jo_eachStation.getString("sna");
+                totals = jo_eachStation.getInt("tot");
+                availableBike = jo_eachStation.getInt("sbi");
+                availableSpace = jo_eachStation.getInt("bemp");
+                area = jo_eachStation.getString("sarea");
+                address = jo_eachStation.getString("ar");
+                lat = jo_eachStation.getDouble("lat");
+                lng = jo_eachStation.getDouble("lng");
+                updateTime = jo_eachStation.getString("mday");
+                status = jo_eachStation.getInt("act");
+
+                uBikeItems.add(new ItemsYouBike(name, totals, availableBike, availableSpace, area, address, lat, lng, updateTime, status));
+            }
+            parseResult.onParseFinished(uBikeItems);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            parseResult.onParseFail(e.getMessage());
+        }
     }
 }

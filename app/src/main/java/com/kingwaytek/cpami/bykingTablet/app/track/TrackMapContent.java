@@ -48,8 +48,6 @@ import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.TrackMenu;
 import com.sonavtek.sonav.MapView;
 import com.sonavtek.sonav.sonav;
 
-import facebook.FacebookActivity;
-
 public class TrackMapContent extends Activity implements OnClickListener {
 
     private sonav engine;
@@ -771,12 +769,11 @@ public class TrackMapContent extends Activity implements OnClickListener {
     private Runnable run = new Runnable() {
         public void run() {
             engine.savescr2bmp(newFileName);
-
+            /*
             Intent intent = new Intent(TrackMapContent.this, FacebookActivity.class);
-
             intent.putExtra("FILEPATH", newFileName);
-
             TrackMapContent.this.startActivity(intent);
+            */
         }
     };
 

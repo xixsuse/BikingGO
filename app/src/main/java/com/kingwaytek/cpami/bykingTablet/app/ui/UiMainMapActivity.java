@@ -9,17 +9,25 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -45,6 +53,9 @@ import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
+import com.kingwaytek.cpami.bykingTablet.app.ui.fragment.UiDirectionModeFragment;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
@@ -58,6 +69,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.DirectionModePagerAdapter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -69,7 +81,7 @@ import java.util.ArrayList;
  * @author Vincent (2016/4/15).
  */
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
-        OnPhotoRemovedCallBack {
+        OnPhotoRemovedCallBack, MapLayerHandler.OnLayerChangedCallback, View.OnTouchListener {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
@@ -85,9 +97,33 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private ImageView poiImageView;
     private String photoPath;
 
+    private MapLayerHandler layerHandler;
+    private static final String NAME_OF_HANDLER_THREAD = "LayerHandlerThread";
+    private static HandlerThread handlerThread;
+
+    private String currentOrigin;
+    private String currentDestination;
+
+    private DirectionModePagerAdapter pagerAdapter;
+    private LinearLayout pathInfoLayout;
+    private TabLayout modeTab;
+    private ViewPager pathListPager;
+    private Polyline highLightPoly;
+
+    private TextView polylineName;
+    private TextView polylineLocation;
+    private TextView polylineDescription;
+
+    private ImageView footerImage;
+    private static final int FOOTER_TAG_BACKGROUND_LIGHT = 0;
+    private static final int FOOTER_TAG_BACKGROUND_DARK = 1;
+
+    private final int screenWidth = Utility.getScreenWidth();
+    private final int screenHeight = Utility.getScreenHeight();
+    private int pathInfoLayoutMaxHeight;
+
     @Override
     protected void onApiReady() {
-        //showRightButtons(true);
         checkIntentAndDoActions();
         registerPreferenceChangedListener();
         Log.i(TAG, "onApiReady!!!");
@@ -95,7 +131,22 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     protected String getActionBarTitle() {
-        return getString(R.string.poi_search_location);
+        return getString(R.string.app_name);
+    }
+
+    @Override
+    protected void findViews() {
+        super.findViews();
+        pathInfoLayout = (LinearLayout) findViewById(R.id.pathInfoLayout);
+        modeTab = (TabLayout) findViewById(R.id.directionModeTabLayout);
+        pathListPager = (ViewPager) findViewById(R.id.pathListPager);
+
+        polylineInfoLayout = (RelativeLayout) findViewById(R.id.polylineInfoLayout);
+        polylineName = (TextView) findViewById(R.id.text_polylineName);
+        polylineLocation = (TextView) findViewById(R.id.text_polylineLocation);
+        polylineDescription = (TextView) findViewById(R.id.text_polylineDescription);
+
+        footerImage = (ImageView) findViewById(R.id.footerImage);
     }
 
     @Override
@@ -113,9 +164,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     public void onDestroy() {
         super.onDestroy();
         map.setOnMapLongClickListener(null);
+        closeAllLayerFlag();
     }
 
-    private void checkIntentAndDoActions() {
+    void checkIntentAndDoActions() {
         if (isFirstTimeRun)
         {
             switch (ENTRY_TYPE) {
@@ -123,7 +175,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                     map.setOnMapLongClickListener(this);
                     map.setOnMarkerClickListener(this);
 
-                    if (SettingManager.MarkerFlag.getMyPoiFlag())
+                    if (SettingManager.MapLayer.getMyPoiFlag())
                         new PutAllMyPoiMarkers().execute();
 
                     break;
@@ -131,7 +183,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 case ENTRY_TYPE_LOCATION_SELECT:
                     map.setOnMapLongClickListener(this);
 
-                    if (SettingManager.MarkerFlag.getMyPoiFlag())
+                    if (SettingManager.MapLayer.getMyPoiFlag())
                         new PutAllMyPoiMarkers().execute();
 
                     break;
@@ -139,6 +191,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             isFirstTimeRun = false;
         }
     }
+
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -195,7 +248,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 if (markerTypeMap.containsKey(key)) {
                     switch (markerTypeMap.get(key)) {
                         case R.drawable.ic_end:
-                            editMyPoi(marker.getPosition(), null, null);
+                            //editMyPoi(marker.getPosition(), null, null);
                             break;
 
                         case R.drawable.ic_my_poi:
@@ -214,7 +267,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                         case R.drawable.ic_search_result:
                         case R.drawable.ic_around_poi:
-                            editMyPoi(marker.getPosition(), marker.getTitle(), marker.getSnippet());
+                            //editMyPoi(marker.getPosition(), marker.getTitle(), marker.getSnippet());
                             break;
                     }
                 }
@@ -277,16 +330,127 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     private void showSwitchPopView() {
-        View view = PopWindowHelper.getMarkerSwitchWindowView(searchTextLayout);
+        View view = PopWindowHelper.getMarkerSwitchWindowView(mapRootLayout);
 
-        Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
+        final Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
+        final Switch switch_layerCycling = (Switch) view.findViewById(R.id.switch_layer_cycling_1);
+        final Switch switch_layerTopTen = (Switch) view.findViewById(R.id.switch_layer_top_ten);
+        final Switch switch_layerRecommended = (Switch) view.findViewById(R.id.switch_layer_recommended);
+        final Switch switch_layerAllOfTaiwan = (Switch) view.findViewById(R.id.switch_layer_all_of_taiwan);
+        final Switch switch_layerRentStation = (Switch) view.findViewById(R.id.switch_layer_rent_station);
+        final Switch switch_layerYouBike = (Switch) view.findViewById(R.id.switch_layer_you_bike);
 
-        switch_myPoi.setChecked(SettingManager.MarkerFlag.getMyPoiFlag());
+        final ImageButton closeBtn = (ImageButton) view.findViewById(R.id.switchWindowCloseBtn);
 
-        switch_myPoi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switch_myPoi.setChecked(SettingManager.MapLayer.getMyPoiFlag());
+        switch_layerCycling.setChecked(SettingManager.MapLayer.getCyclingLayer());
+        switch_layerTopTen.setChecked(SettingManager.MapLayer.getTopTenLayer());
+        switch_layerRecommended.setChecked(SettingManager.MapLayer.getRecommendedLayer());
+        switch_layerAllOfTaiwan.setChecked(SettingManager.MapLayer.getAllOfTaiwanLayer());
+        switch_layerRentStation.setChecked(SettingManager.MapLayer.getRentStationLayer());
+        switch_layerYouBike.setChecked(SettingManager.MapLayer.getYouBikeLayer());
+
+        switch_myPoi.setTag(switch_myPoi.getId());
+        switch_layerCycling.setTag(switch_layerCycling.getId());
+        switch_layerTopTen.setTag(switch_layerTopTen.getId());
+        switch_layerRecommended.setTag(switch_layerRecommended.getId());
+        switch_layerAllOfTaiwan.setTag(switch_layerAllOfTaiwan.getId());
+        switch_layerRentStation.setTag(switch_layerRentStation.getId());
+        switch_layerYouBike.setTag(switch_layerYouBike.getId());
+
+        CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SettingManager.MarkerFlag.setMyPoiFlag(isChecked);
+                switch ((int)buttonView.getTag()) {
+                    case R.id.switch_my_poi:
+                        switch_myPoi.setChecked(isChecked);
+                        SettingManager.MapLayer.setMyPoiFlag(isChecked);
+                        break;
+
+                    case R.id.switch_layer_cycling_1:
+                        if (isChecked) {
+                            switch_layerAllOfTaiwan.setChecked(false);
+                            switch_layerRentStation.setChecked(false);
+                            switch_layerYouBike.setChecked(false);
+                        }
+                        switch_layerCycling.setChecked(isChecked);
+                        SettingManager.MapLayer.setCyclingLayer(isChecked);
+                        break;
+
+                    case R.id.switch_layer_top_ten:
+                        if (isChecked) {
+                            switch_layerAllOfTaiwan.setChecked(false);
+                            switch_layerRentStation.setChecked(false);
+                            switch_layerYouBike.setChecked(false);
+                        }
+                        switch_layerTopTen.setChecked(isChecked);
+                        SettingManager.MapLayer.setTopTenLayer(isChecked);
+                        break;
+
+                    case R.id.switch_layer_recommended:
+                        if (isChecked) {
+                            switch_layerAllOfTaiwan.setChecked(false);
+                            switch_layerRentStation.setChecked(false);
+                            switch_layerYouBike.setChecked(false);
+                        }
+                        switch_layerRecommended.setChecked(isChecked);
+                        SettingManager.MapLayer.setRecommendedLayer(isChecked);
+                        break;
+
+                    case R.id.switch_layer_all_of_taiwan:
+                        switch_layerCycling.setChecked(false);
+                        switch_layerTopTen.setChecked(false);
+                        switch_layerRecommended.setChecked(false);
+                        switch_layerRentStation.setChecked(false);
+                        switch_layerYouBike.setChecked(false);
+                        switch_layerAllOfTaiwan.setChecked(isChecked);
+                        SettingManager.MapLayer.setAllOfTaiwanLayer(isChecked);
+                        break;
+
+                    case R.id.switch_layer_rent_station:
+                        switch_layerCycling.setChecked(false);
+                        switch_layerTopTen.setChecked(false);
+                        switch_layerRecommended.setChecked(false);
+                        switch_layerAllOfTaiwan.setChecked(false);
+                        switch_layerYouBike.setChecked(false);
+                        switch_layerRentStation.setChecked(isChecked);
+                        SettingManager.MapLayer.setRentStationLayer(isChecked);
+                        break;
+
+                    case R.id.switch_layer_you_bike:
+                        switch_layerCycling.setChecked(false);
+                        switch_layerTopTen.setChecked(false);
+                        switch_layerRecommended.setChecked(false);
+                        switch_layerAllOfTaiwan.setChecked(false);
+                        switch_layerRentStation.setChecked(false);
+                        switch_layerYouBike.setChecked(isChecked);
+                        SettingManager.MapLayer.setYouBikeLayer(isChecked);
+                        break;
+                }
+            }
+        };
+
+        switch_myPoi.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerCycling.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerTopTen.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerRecommended.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerAllOfTaiwan.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerRentStation.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerYouBike.setOnCheckedChangeListener(checkedChangeListener);
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopWindowHelper.dismissPopWindow();
+
+                switch_myPoi.setOnCheckedChangeListener(null);
+                switch_layerCycling.setOnCheckedChangeListener(null);
+                switch_layerTopTen.setOnCheckedChangeListener(null);
+                switch_layerRecommended.setOnCheckedChangeListener(null);
+                switch_layerAllOfTaiwan.setOnCheckedChangeListener(null);
+                switch_layerRentStation.setOnCheckedChangeListener(null);
+                switch_layerYouBike.setOnCheckedChangeListener(null);
+                closeBtn.setOnClickListener(null);
             }
         });
     }
@@ -337,6 +501,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 case REQUEST_RELOAD_MARKER:
                     double[] latLng = data.getDoubleArrayExtra(BUNDLE_DELETE_POI);
                     removePoiAndMarker(latLng[0], latLng[1]);
+                    break;
+
+                case REQUEST_RELOAD_ALL_MARKER:
+                    new PutAllMyPoiMarkers().execute();
                     break;
             }
         }
@@ -546,7 +714,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             if (marker.getPosition().latitude == lat && marker.getPosition().longitude == lng) {
                 marker.remove();
                 myPoiMarkerList.remove(i);
-                Utility.toastShort(getString(R.string.poi_delete_done));
+                Utility.toastShort(getString(R.string.poi_remove_done));
 
                 showMarkerButtonLayout(false, false);
                 break;
@@ -559,11 +727,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             selectedMarker.setTitle(title);
             selectedMarker.setSnippet(snippet);
 
-            InputStream is = this.getResources().openRawResource(+R.drawable.ic_my_poi);
-            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            Bitmap bitmap = getBitmapFromMemCache(BITMAP_KEY_MY_POI);
 
+            if (bitmap == null) {
+                InputStream is = this.getResources().openRawResource(+R.drawable.ic_my_poi);
+                bitmap = BitmapFactory.decodeStream(is);
+                addBitmapToMemoryCache(BITMAP_KEY_MY_POI, bitmap);
+                closeInputStream(is);
+            }
             selectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
-            closeInputStream(is);
 
             /**
              * 如果正要 Reload的 Marker是搜尋結果打上來的(ic_search_result)，<br>
@@ -584,7 +756,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             if (addToList)
                 myPoiMarkerList.add(selectedMarker);
 
-            SettingManager.MarkerFlag.setMyPoiFlag(true);
+            SettingManager.MapLayer.setMyPoiFlag(true);
 
             Log.i(TAG, "PoiListSize: " + myPoiMarkerList.size());
         }
@@ -610,7 +782,23 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     protected void onMarkerEditClick() {
-        editMyPoi(selectedMarker.getPosition(), null, null);
+        String title = null;
+        String address = null;
+
+        /** 判斷 Marker title是經緯度還是一般的名子，
+         *  先假設如果 title多於 15個數字的話，就是經緯度！ */
+        if (notNull(selectedMarker.getTitle())) {
+            if (Utility.getNumericCount(selectedMarker.getTitle()) < 15)
+                title = selectedMarker.getTitle();
+        }
+
+        if (notNull(selectedMarker.getSnippet())) {
+            if (!selectedMarker.getSnippet().equals(getString(R.string.poi_edit_this_point)) &&
+                    !selectedMarker.getSnippet().equals(getString(R.string.poi_select_this_point)))
+                address = selectedMarker.getSnippet();
+        }
+
+        editMyPoi(selectedMarker.getPosition(), title, address);
     }
 
     private class PutAllMyPoiMarkers extends AsyncTask<Void, Void, Void> {
@@ -627,9 +815,16 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         protected Void doInBackground(Void... params) {
             ArrayList<ItemsMyPOI> myPoiList = DataArray.getMyPOI();
 
-            if (notNull(myPoiList)) {
-                InputStream is = getResources().openRawResource(+R.drawable.ic_my_poi);
-                BitmapDescriptor iconBitmap = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is));
+            if (notNull(myPoiList) && !myPoiList.isEmpty()) {
+                Bitmap bitmap = getBitmapFromMemCache(BITMAP_KEY_MY_POI);
+
+                if (bitmap == null) {
+                    InputStream is = getResources().openRawResource(+R.drawable.ic_my_poi);
+                    bitmap = BitmapFactory.decodeStream(is);
+                    closeInputStream(is);
+                    addBitmapToMemoryCache(BITMAP_KEY_MY_POI, bitmap);
+                }
+                BitmapDescriptor iconBitmap = BitmapDescriptorFactory.fromBitmap(bitmap);
 
                 for (ItemsMyPOI poiItem : myPoiList) {
                     final MarkerOptions marker = new MarkerOptions();
@@ -648,7 +843,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                     setMarkerTypeMap(poiItem.LAT, poiItem.LNG, R.drawable.ic_my_poi);
                 }
-                closeInputStream(is);
             }
             else
                 Utility.showToastOnNewThread(getString(R.string.poi_empty));
@@ -679,10 +873,14 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case SettingManager.PREFS_MARKER_MY_POI:
-                if (SettingManager.MarkerFlag.getMyPoiFlag())
+                if (SettingManager.MapLayer.getMyPoiFlag())
                     new PutAllMyPoiMarkers().execute();
                 else
                     removeAllMyPoiMarkers();
+                break;
+
+            default:
+                setLayersByPrefKey(key);
                 break;
         }
     }
@@ -720,15 +918,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         DialogHelper.showLoadingDialog(this);
 
-        String origin = location.getLatitude() + "," + location.getLongitude();
-        String destination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
+        currentOrigin = location.getLatitude() + "," + location.getLongitude();
+        currentDestination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
 
         String avoidOption = getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS);
 
-        WebAgent.getDirectionsData(origin, destination, DIR_MODE_WALKING, avoidOption, new WebAgent.WebResultImplement() {
+        WebAgent.getDirectionsData(currentOrigin, currentDestination, DIR_MODE_WALKING, avoidOption, new WebAgent.WebResultImplement() {
             @Override
             public void onResultSucceed(String response) {
-                getPolyLineAndDrawLine(response);
+                getPolylineAndDrawLine(response);
             }
 
             @Override
@@ -741,6 +939,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private String getAvoidOptions(String... avoidOptions) {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("&avoid=");
+
         for (int i = 0; i < avoidOptions.length; i++) {
             if (i != 0)
                 sb.append("|");
@@ -749,7 +949,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         return sb.toString();
     }
 
-    private void getPolyLineAndDrawLine(String jsonString) {
+    private void getPolylineAndDrawLine(String jsonString) {
         String polyOverview = JsonParser.getPolyLineOverview(jsonString);
 
         if (notNull(polyOverview)) {
@@ -781,7 +981,379 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             PopWindowHelper.dismissPopWindow();
             moveCamera(linePoints.get(0));
 
+            if (notNull(myNewMarker))
+                myNewMarker.hideInfoWindow();
+            if (notNull(selectedMarker))
+                selectedMarker.hideInfoWindow();
+
+            showMarkerButtonLayout(false, false);
+
             closeInputStream(is);
+
+            footerImage.setOnTouchListener(this);
+            footerImage.setImageResource(R.drawable.ic_drag_sort);
+            footerImage.setTag(FOOTER_TAG_BACKGROUND_LIGHT);
+            footerImage.setBackgroundResource(R.drawable.background_footer_gradient_light);
+            footerImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+            openPathInfoLayout();
         }
+    }
+
+    private void openPathInfoLayout() {
+        showPathInfoLayout(true);
+
+        if (pagerAdapter == null) {
+            pagerAdapter = new DirectionModePagerAdapter(getSupportFragmentManager(), currentOrigin, currentDestination);
+            pathListPager.setAdapter(pagerAdapter);
+        }
+        else {
+            UiDirectionModeFragment directionFragment = pagerAdapter.getDirectionFragmentInstance(modeTab.getSelectedTabPosition());
+            directionFragment.updateData(currentOrigin, currentDestination);
+        }
+
+        final int height = (int) (screenHeight * 0.4);
+
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        pathInfoLayout.setLayoutParams(params);
+
+        if (modeTab.getTabCount() == 0) {
+            modeTab.setupWithViewPager(pathListPager);
+            modeTab.setTabMode(TabLayout.MODE_FIXED);
+            modeTab.setTabGravity(TabLayout.GRAVITY_FILL);
+
+            modeTab.getTabAt(0).setIcon(R.drawable.ic_directions_walk);
+            //modeTab.getTabAt(1).setIcon(R.drawable.ic_directions_transit);
+        }
+        setPathInfoLayoutMaxHeight();
+    }
+
+    private void showPathInfoLayout(boolean isShow) {
+        pathInfoLayout.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    public void onPathStepClick(ItemsPathStep pathStepItem) {
+        showMarkerButtonLayout(false, false);
+        selectedMarker.hideInfoWindow();
+        moveCameraAndDrawHighlight(pathStepItem);
+
+        int layoutMinHeight = (int) (screenHeight * 0.7);
+        int layoutDefaultHeight = (int) (screenHeight * 0.4);
+
+        if (pathInfoLayout.getLayoutParams().height > layoutMinHeight) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, layoutDefaultHeight);
+            pathInfoLayout.setLayoutParams(params);
+            setFooterBackground(true);
+        }
+    }
+
+    private void moveCameraAndDrawHighlight(ItemsPathStep pathStepItem) {
+        moveCameraAndZoom(new LatLng(pathStepItem.START_LAT, pathStepItem.START_LNG), 17);
+
+        ArrayList<LatLng> latLngList = PolyHelper.decodePolyLine(pathStepItem.POLY_LINE);
+
+        PolylineOptions polyLine = new PolylineOptions();
+
+        for (LatLng latLng : latLngList) {
+            polyLine.add(latLng);
+        }
+        polyLine.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_deep_purple_A400));
+        polyLine.width(18);
+        polyLine.zIndex(1000);
+
+        if (highLightPoly != null)
+            highLightPoly.remove();
+
+        highLightPoly = map.addPolyline(polyLine);
+    }
+
+    private void setLayersByPrefKey(String key) {
+        if (handlerThread == null) {
+            handlerThread = new HandlerThread(NAME_OF_HANDLER_THREAD);
+            handlerThread.start();
+        }
+
+        if (layerHandler == null)
+            layerHandler = new MapLayerHandler(handlerThread.getLooper(), new Handler(), this);
+
+        switch (key) {
+            case SettingManager.PREFS_LAYER_CYCLING_1:
+                if (SettingManager.MapLayer.getCyclingLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_CYCLING);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_CYCLING);
+                break;
+
+            case SettingManager.PREFS_LAYER_TOP_TEN:
+                if (SettingManager.MapLayer.getTopTenLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_TOP_TEN);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_TOP_TEN);
+
+                break;
+
+            case SettingManager.PREFS_LAYER_RECOMMENDED:
+                if (SettingManager.MapLayer.getRecommendedLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_RECOMMENDED);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_RECOMMENDED);
+                break;
+
+            case SettingManager.PREFS_LAYER_ALL_OF_TAIWAN:
+                if (SettingManager.MapLayer.getAllOfTaiwanLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                break;
+
+            case SettingManager.PREFS_LAYER_RENT_STATION:
+                if (SettingManager.MapLayer.getRentStationLayer()) {
+                    layerHandler.addLayer(map, MapLayerHandler.LAYER_RENT_STATION);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_RENT_STATION);
+                break;
+
+            case SettingManager.PREFS_LAYER_YOU_BIKE:
+                if (SettingManager.MapLayer.getYouBikeLayer()) {
+                    showLoadingCircle(true);
+
+                    DataArray.getYouBikeData(new Handler(), new DataArray.OnYouBikeDataGetCallback() {
+                        @Override
+                        public void onTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
+
+                        }
+
+                        @Override
+                        public void onNewTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
+
+                        }
+                    });
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onPolylinePrepared(final int layerCode, final PolylineOptions polyLine) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (layerCode) {
+                    case MapLayerHandler.LAYER_CYCLING:
+                        layerHandler.polyLineCyclingList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_TOP_TEN:
+                        layerHandler.polyLineTopTenList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_RECOMMENDED:
+                        layerHandler.polyLineRecommendList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_ALL_OF_TAIWAN:
+                        layerHandler.polyLineTaiwanList.add(map.addPolyline(polyLine));
+                        break;
+                }
+
+                map.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+                    @Override
+                    public void onPolylineClick(Polyline polyline) {
+                        int zIndex;
+                        Log.i(TAG, "zIndex: " + polyline.getZIndex() + " LayerCode: " + getLayerCodeByZIndex((int) polyline.getZIndex()));
+                        switch (getLayerCodeByZIndex((int) polyline.getZIndex())) {
+                            case MapLayerHandler.LAYER_CYCLING:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_CYCLING);
+                                showPolylineInfo(R.raw.layer_cycling_route_line, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_TOP_TEN:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_TOP_TEN);
+                                showPolylineInfo(R.raw.layer_top10, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_RECOMMENDED:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_RECOMMENDED);
+                                showPolylineInfo(R.raw.layer_recommend, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_ALL_OF_TAIWAN:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                                showPolylineInfo(R.raw.layer_biking_route_taiwan, zIndex);
+                                break;
+                        }
+                        showMarkerButtonLayout(false, false);
+                    }
+                });
+            }
+        });
+    }
+
+    private int getLayerCodeByZIndex(int zIndex) {
+        if (zIndex - MapLayerHandler.LAYER_CYCLING < 100 && zIndex - MapLayerHandler.LAYER_CYCLING >= 0)
+            return MapLayerHandler.LAYER_CYCLING;
+
+        else if (zIndex - MapLayerHandler.LAYER_TOP_TEN < 100 && zIndex - MapLayerHandler.LAYER_TOP_TEN >= 0)
+            return MapLayerHandler.LAYER_TOP_TEN;
+
+        else if (zIndex - MapLayerHandler.LAYER_RECOMMENDED < 100 && zIndex - MapLayerHandler.LAYER_RECOMMENDED >= 0)
+            return MapLayerHandler.LAYER_RECOMMENDED;
+
+        else if (zIndex - MapLayerHandler.LAYER_ALL_OF_TAIWAN >= 0)
+            return MapLayerHandler.LAYER_ALL_OF_TAIWAN;
+
+        else
+            return 0;
+    }
+
+    private void showPolylineInfo(int geoJsonData, final int zIndex) {
+        showLoadingCircle(true);
+
+        layerHandler.getLayerProperties(geoJsonData, zIndex);
+    }
+
+    @Override
+    public void onPolylineClick(String name, String location, String description) {
+        polylineInfoLayout.setVisibility(View.VISIBLE);
+
+        polylineName.setText(name);
+
+        if (!location.isEmpty()) {
+            polylineLocation.setVisibility(View.VISIBLE);
+            polylineLocation.setText(location);
+        }
+        else
+            polylineLocation.setVisibility(View.GONE);
+
+        if (!description.isEmpty()) {
+            polylineDescription.setVisibility(View.VISIBLE);
+            polylineDescription.setText(description);
+        }
+        else
+            polylineDescription.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLayerAdded(int layerCode) {
+        showLoadingCircle(false);
+    }
+
+    @Override
+    public void onLayersAllGone() {
+        if (notNull(handlerThread)) {
+            handlerThread.quit();
+            handlerThread.interrupt();
+            handlerThread = null;
+        }
+        if (notNull(layerHandler))
+            layerHandler = null;
+
+        map.setOnPolylineClickListener(null);
+        polylineInfoLayout.setVisibility(View.GONE);
+    }
+
+    private void closeAllLayerFlag() {
+        SettingManager.MapLayer.setCyclingLayer(false);
+        SettingManager.MapLayer.setTopTenLayer(false);
+        SettingManager.MapLayer.setRecommendedLayer(false);
+        SettingManager.MapLayer.setAllOfTaiwanLayer(false);
+        SettingManager.MapLayer.setRentStationLayer(false);
+        SettingManager.MapLayer.setYouBikeLayer(false);
+    }
+
+    private void setPathInfoLayoutMaxHeight() {
+        if (pathInfoLayoutMaxHeight == 0) {
+            pathInfoLayoutMaxHeight = (screenHeight - (
+                    Utility.getActionbarHeight() + getApplicationContext().getResources().getDimensionPixelSize(R.dimen.font_text_size_xxl)
+            ));
+        }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        final float X = event.getRawX();
+        final float Y = event.getRawY();
+        //Log.i(TAG, "onTouch - RawX: " + X + " RawY: " + Y);
+
+        float xDown;
+        float yDown;
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                xDown = screenWidth - X;
+                yDown = screenHeight - Y;
+                Log.i(TAG, "ACTION_MOVE - xDown: " + xDown + " yDown: " + yDown);
+
+                if (yDown > (screenHeight / 10)) {
+                    showPathInfoLayout(true);
+                    setPathInfoLayoutHeight((int)yDown);
+                }
+                else
+                    showPathInfoLayout(false);
+
+                break;
+
+            case MotionEvent.ACTION_UP:
+
+                break;
+        }
+
+        return true;
+    }
+
+    private void setPathInfoLayoutHeight(int height) {
+        if (isNotReachedMaxHeight() || height < pathInfoLayoutMaxHeight) {
+            final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+            pathInfoLayout.setLayoutParams(params);
+            setFooterBackground(true);
+        }
+        else
+            setFooterBackground(false);
+    }
+
+    private boolean isNotReachedMaxHeight() {
+        if (pathInfoLayout.getLayoutParams().height > (pathInfoLayoutMaxHeight * 0.9)) {
+            final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, pathInfoLayoutMaxHeight);
+            pathInfoLayout.setLayoutParams(params);
+            setFooterBackground(false);
+        }
+        return pathInfoLayout.getLayoutParams().height < pathInfoLayoutMaxHeight;
+    }
+
+    private void setFooterBackground(boolean lightBackground) {
+        if (notNull(footerImage.getTag())) {
+            if (lightBackground && (int)footerImage.getTag() != FOOTER_TAG_BACKGROUND_LIGHT) {
+                footerImage.setBackgroundResource(R.drawable.background_footer_gradient_light);
+                footerImage.setTag(FOOTER_TAG_BACKGROUND_LIGHT);
+            }
+            else if (!lightBackground) {
+                footerImage.setBackgroundResource(R.drawable.background_footer_gradient_dark);
+                footerImage.setTag(FOOTER_TAG_BACKGROUND_DARK);
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (pathInfoLayout.getVisibility() == View.VISIBLE) {
+            showPathInfoLayout(false);
+            setFooterBackground(true);
+        }
+        else
+            super.onBackPressed();
     }
 }

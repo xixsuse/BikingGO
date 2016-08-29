@@ -34,12 +34,12 @@
             android:textSize="@dimen/font_text_size_m" />
 
     </LinearLayout>
-
+<!--
     <ImageButton
         android:id="@+id/marker_infoBtn"
         android:layout_width="@dimen/actionbar_item_height"
         android:layout_height="@dimen/actionbar_item_height"
         android:layout_weight="0"
         android:background="@drawable/ic_right_arrow" />
-
+-->
 </LinearLayout>

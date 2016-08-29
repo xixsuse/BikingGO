@@ -3,10 +3,10 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@color/md_grey_800" />
+        android:drawable="@color/md_grey_400" />
 
     <item
         android:state_checked="true"
-        android:drawable="@color/md_grey_900" />
+        android:drawable="@drawable/layer_list_menu_item_selected_background" />
 
 </selector>

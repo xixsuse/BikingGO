@@ -56,6 +56,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     protected abstract void onMapReady();
+    protected abstract int getMapLayout();
     protected abstract void onLocateMyPosition(Location location);
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -79,6 +80,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected ImageButton markerBtn_direction;
     protected ImageButton markerBtn_navigation;
 
+    protected RelativeLayout polylineInfoLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,23 +91,18 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         if (locationPermissionChecked)
             buildMap();
 
-        initDrawer();
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
+            initDrawer();
+    }
+
+    @Override
+    protected void init() {
+
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_base_map;
-    }
-
-    @Override
-    protected void findViews() {
-        mapRootLayout = (RelativeLayout) findViewById(R.id.mapRootLayout);
-        searchTextLayout = (FrameLayout) findViewById(R.id.searchTextLayout);
-        searchText = (AutoCompleteTextView) findViewById(R.id.edit_searchText);
-        markerBtnLayout = (LinearLayout) findViewById(R.id.markerBtnLayout);
-        markerBtn_edit = (ImageButton) findViewById(R.id.markerBtn_edit);
-        markerBtn_direction = (ImageButton) findViewById(R.id.markerBtn_routePath);
-        markerBtn_navigation = (ImageButton) findViewById(R.id.markerBtn_navigation);
+        return getMapLayout();
     }
 
     @Override
@@ -120,14 +118,18 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         removeLocationUpdate();
     }
 
-    private void requestLocationUpdate() {
-        if (locationPermissionChecked)
-            AppController.getInstance().initLocationManager();
+    protected void requestLocationUpdate() {
+        if (locationPermissionChecked) {
+            if (!isTrackingServiceRunning())
+                AppController.getInstance().initLocationManager();
+        }
     }
 
-    private void removeLocationUpdate() {
-        if (locationPermissionChecked)
-            AppController.getInstance().removeLocationManager();
+    protected void removeLocationUpdate() {
+        if (locationPermissionChecked) {
+            if (!isTrackingServiceRunning())
+                AppController.getInstance().removeLocationManager();
+        }
     }
 
     private void checkLocationPermissions() {
@@ -183,12 +185,15 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                 }
             });
 
-            map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    showMarkerButtonLayout(false, false);
-                }
-            });
+            if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
+                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        showMarkerButtonLayout(false, false);
+                        polylineInfoLayout.setVisibility(View.GONE);
+                    }
+                });
+            }
 
             map.setInfoWindowAdapter(this);
             map.setOnInfoWindowClickListener(this);
@@ -229,6 +234,11 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     @Override
     public View getInfoContents(Marker marker) {
         return null;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
     }
 
     @Override
@@ -279,15 +289,17 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     }
 
     private void turnOnSearchKeyListener(boolean isOn) {
-        if (isOn) {
-            searchText.setOnKeyListener(getOnKeyListener());
-            searchText.setText("");
-            searchText.setSingleLine();
-            searchText.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-        }
-        else {
-            searchText.setOnKeyListener(null);
-            searchText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        if (ENTRY_TYPE != ENTRY_TYPE_TRACKING && ENTRY_TYPE != ENTRY_TYPE_TRACK_VIEWING) {
+            if (isOn) {
+                searchText.setOnKeyListener(getOnKeyListener());
+                searchText.setText("");
+                searchText.setSingleLine();
+                searchText.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+            }
+            else {
+                searchText.setOnKeyListener(null);
+                searchText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            }
         }
     }
 
@@ -352,22 +364,15 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         if (isShow) {
             markerBtnLayout.setVisibility(View.VISIBLE);
 
-            if (showEditBtn) {
-                markerBtn_edit.setVisibility(View.VISIBLE);
-                markerBtn_edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onMarkerEditClick();
-                    }
-                });
-            }
+            if (showEditBtn)
+                markerBtn_edit.setImageResource(R.drawable.selector_button_edit);
             else
-                markerBtn_edit.setVisibility(View.GONE);
+                markerBtn_edit.setImageResource(R.drawable.selector_button_add_poi);
 
-            markerBtn_direction.setOnClickListener(new View.OnClickListener() {
+            markerBtn_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onMarkerDirectionClick();
+                    onMarkerEditClick();
                 }
             });
 
@@ -377,12 +382,19 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                     onMarkerNavigationClick();
                 }
             });
+
+            markerBtn_direction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onMarkerDirectionClick();
+                }
+            });
         }
         else {
             markerBtnLayout.setVisibility(View.GONE);
             markerBtn_edit.setOnClickListener(null);
-            markerBtn_direction.setOnClickListener(null);
             markerBtn_navigation.setOnClickListener(null);
+            markerBtn_direction.setOnClickListener(null);
         }
     }
 
@@ -394,11 +406,11 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     }
 
-    protected void onMarkerDirectionClick() {
+    protected void onMarkerNavigationClick() {
 
     }
 
-    protected void onMarkerNavigationClick() {
+    protected void onMarkerDirectionClick() {
 
     }
 

@@ -18,7 +18,7 @@
     <string name="Track_Export_Path">/sdcard/_BikingData/track/</string>
 
     <!-- namespace for the application -->
-    <string name="app_namespace">		http://schemas.android.com/apk/res/com.kingwaytek.cpami.bykingTablet</string>
+    <string name="app_namespace">		http://schemas.android.com/apk/res-auto</string>
     <!-- for check version -->
     <string name="CodeVersion">2.0.0</string>
     <string name="DataVersion">20140620</string>
@@ -55,7 +55,7 @@
     <string name="gps_no_last_location">查無上次定位記錄</string>
     <string name="gps_position_finish">GPS定位完成</string>
     <string name="gps_unable_to_get_location">無法取得您目前的位置</string>
-    <string name="gps_is_not_enabled">您尚未開啟系統GPS功能,請先開啟。</string>
+    <string name="gps_is_not_enabled">您尚未開啟系統GPS功能，請先開啟。</string>
 
     <!-- AP Functions -->
     <string name="byking_function_address_search_title">地址查詢</string>
@@ -238,7 +238,7 @@
 
     <!-- 軟體使用聲明 -->
     <string name="announce_title">軟體使用聲明</string>
-    <string name="announce_warnning">提醒您, 騎乘自行車上路請注意交通安全, 並務必遵守交通法規與標誌號誌指示</string>
+    <string name="announce_warning">提醒您, 騎乘自行車上路請注意交通安全, 並務必遵守交通法規與標誌號誌指示</string>
     <string name="announce_description">下載, 安裝或使用本應用程式及其所屬的任何原件(以下簡稱"本應用程式")時, 即表示您同意以下聲明 :</string>
     <string name="announce_description1">您明確了解並同意, "本應用程式"提供之所有資訊, 僅供您參考應用, 建議您仍須根據實際道路或地點狀況進行判斷。</string>
     <string name="announce_description2">使用"本應用程式"必須自行承擔所有風險, "本應用程式"不提供任何形式之擔保</string>
@@ -290,6 +290,7 @@
     <string name="google_api_places_unavailable">The Google Places API was UNAVAILABLE!!</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="update_done">更新完成！</string>
 
     <!-- Permission Request -->
     <string name="location_permission_rationale_title">允許裝置存取目前位置</string>
@@ -301,13 +302,14 @@
     <string name="storage_permission_rationale_title">允許裝置讀取與寫入檔案至儲存空間</string>
     <string name="storage_permission_rationale_content">允許以將使用者自訂內容儲存至本機上，如行程規劃。</string>
     <string name="storage_permission_denied">儲存空間讀取或寫入權限未開啟</string>
+    <string name="storage_permission_denied_force_require">儲存空間讀取或寫入權限必須開啟，程式才可繼續使用！</string>
 
     <!-- Menu Options -->
     <string name="menu_home">首頁</string>
     <string name="menu_bike_track">單車軌跡</string>
     <string name="menu_my_poi">我的景點</string>
     <string name="menu_planning">行程規劃</string>
-    <string name="menu_poi_book">景點書(需下載)</string>
+    <string name="menu_poi_book">景點書</string>
     <string name="menu_events">活動訊息</string>
     <string name="menu_report">車友通報</string>
     <string name="menu_settings">設定</string>
@@ -315,12 +317,24 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
 
+    <!-- Layer Switch -->
+    <string name="layer_cycling_1">環島一號線</string>
+    <string name="layer_top_ten">十大經典自行車道</string>
+    <string name="layer_recommended">推薦自行車道</string>
+    <string name="layer_all_of_taiwan">全臺自行車道</string>
+    <string name="layer_rent_station">自行車租借站</string>
+    <string name="layer_biking_lines">自行車車道</string>
+    <string name="layer_you_bike">YouBike租借站</string>
+
     <string name="actionbar_switch_button">圖層開關</string>
     <string name="actionbar_around_button">附近景點</string>
     <string name="actionbar_add_poi">新增景點</string>
     <string name="actionbar_save">儲存</string>
     <string name="actionbar_edit">編輯</string>
     <string name="actionbar_path_list">路徑清單</string>
+    <string name="actionbar_upload">上傳</string>
+    <string name="actionbar_info">資訊</string>
+    <string name="actionbar_more">更多</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -330,10 +344,12 @@
     <string name="poi_location_is">位置：</string>
     <string name="poi_save">儲存</string>
     <string name="poi_delete">刪除</string>
+    <string name="poi_share">分享</string>
+    <string name="poi_fb_share">Facebook分享</string>
     <string name="poi_require_title">景點名稱不得為空值</string>
     <string name="poi_save_done">景點新增成功</string>
     <string name="poi_update_done">景點更新成功</string>
-    <string name="poi_delete_done">景點刪除完成</string>
+    <string name="poi_remove_done">景點刪除完成</string>
     <string name="poi_empty">尚未新增任何景點！</string>
     <string name="poi_confirm_to_delete">是否確認刪除「%s」?</string>
     <string name="poi_add_a_new_one_instruction">可從附近景點、地點搜尋或在地圖上長按新增點位來新增景點。</string>
@@ -356,17 +372,99 @@
     <string name="plan_distance_is">距離：%s</string>
     <string name="plan_duration_is">ETA：%s</string>
     <string name="confirm_to_delete_selected_items">是否刪除選取的項目?</string>
+    <string name="plan_browse_shared">查看車友分享的行程</string>
+    <string name="plan_upload">上傳行程</string>
+    <string name="plan_delete">刪除行程</string>
 
     <!-- Marker switch window -->
     <string name="marker_my_poi">我的景點</string>
 
     <!-- File Storage -->
-    <string name="file_path_my_plan">_BikingData/plans.json</string>
+    <string name="file_biking_data_directory">/_BikingData/</string>
+    <string name="file_user_data_directory">_BikingData/userData/</string>
+    <string name="file_path_my_plan">_BikingData/userData/plans.json</string>
+    <string name="file_path_my_poi">_BikingData/userData/poi.json</string>
+    <string name="file_path_track_folder">_BikingData/userData/track/</string>
+    <string name="file_path_track_location">_BikingData/userData/track/trackingLocation.txt</string>
+    <string name="file_path_track_saved">_BikingData/userData/track/myTrack.json</string>
+    <string name="file_path_you_bike_data">_BikingData/YouBikeTP.json</string>
 
     <!-- Location Select -->
     <string name="location_current">目前位置</string>
     <string name="location_from_map">從地圖上點選</string>
     <string name="location_from_my_poi">從我的景點選擇</string>
+
+    <!-- Events -->
+    <string name="events_more_text">&#8230;more</string>
+    <string name="events_less_text">less</string>
+    <string name="events_start_time">開始時間：%s</string>
+    <string name="events_end_time">結束時間：%s</string>
+    <string name="events_website">網站：%s</string>
+    <string name="events_location">地點：</string>
+    <string name="events_traffic_info">交通資訊：</string>
+    <string name="events_parking_info">停車資訊：</string>
+
+    <!-- User Report -->
+    <string name="report_name">姓名</string>
+    <string name="report_type">類型</string>
+    <string name="report_title">標題</string>
+    <string name="report_start_time">起始</string>
+    <string name="report_end_time">終止</string>
+    <string name="report_location">地點</string>
+    <string name="report_email">信箱</string>
+    <string name="report_description">簡述</string>
+    <string name="report_result_ok">回報成功</string>
+    <string name="report_result_failed">回報失敗!</string>
+    <string name="report_require_name">請輸入姓名</string>
+    <string name="report_require_title">請輸入標題</string>
+    <string name="report_require_description">請輸入簡短描述</string>
+
+    <!-- About -->
+    <string name="about_copy_right">版權所有：內政部營建署</string>
+    <string name="about_app_version">程式版本：</string>
+    <string name="about_map_version">圖資版本：</string>
+    <string name="about_data_source">資料來源：</string>
+    <string name="about_units_1">內政部營建署</string>
+    <string name="about_units_2">內政部資訊中心</string>
+    <string name="about_units_3">台北市政府交通局</string>
+    <string name="about_units_4">新北市政府</string>
+    <string name="about_units_5">交通部</string>
+    <string name="about_units_6">交通部觀光局</string>
+    <string name="about_units_7">環保署</string>
+    <string name="about_units_8">氣象局</string>
+
+    <!-- Health -->
+    <string name="health_gender">性別</string>
+    <string name="health_gender_male">男</string>
+    <string name="health_gender_female">女</string>
+    <string name="health_age">年齡</string>
+    <string name="health_years_old">%d歲</string>
+    <string name="health_height">身高</string>
+    <string name="health_centimeter">%d公分</string>
+    <string name="health_weight">體重</string>
+    <string name="health_kilogram">%d公斤</string>
+
+    <!-- Tracking -->
+    <string name="track_gps_locating">GPS定位中&#8230;</string>
+    <string name="track_gps_locate_done">GPS定位完成！</string>
+    <string name="track_waiting_for_gps_located">GPS尚未定未完成，請稍候</string>
+    <string name="track_tracking_right_now">軌跡錄製中..</string>
+    <string name="track_confirm_to_override">是否要覆寫尚未儲存的軌跡記錄?</string>
+    <string name="track_name">軌跡名稱：</string>
+    <string name="track_difficulty">困難度：</string>
+    <string name="track_description">軌跡描述：</string>
+    <string name="track_require_name">請輸入軌跡名稱</string>
+    <string name="track_require_star">請選擇困難度</string>
+    <string name="track_save_done">軌跡儲存完成！</string>
+    <string name="track_delete_completed">軌跡刪除完成</string>
+    <string name="track_browse_shared">查看車友分享的軌跡</string>
+    <string name="track_upload">上傳軌跡</string>
+    <string name="track_delete">刪除軌跡</string>
+    <string name="track_length">軌跡長度：</string>
+    <string name="track_in_background">軌跡錄製背景執行中</string>
+    <string name="track_done_and_total_length">軌跡錄製完成！\n總長度：%s</string>
+    <string name="track_total_length">軌跡總長度：%s</string>
+
 
     <string-array name="dialog_photo_menu">
         <item>@string/dialog_menu_photo_from_camera</item>
@@ -384,5 +482,10 @@
         <item>@string/location_from_map</item>
         <item>@string/location_from_my_poi</item>
     </string-array>
+
+    <!-- Brack Facebook ids -->
+    <string name="facebook_app_id">269446120083470</string>
+    <string name="facebook_test_user_id">110635599367783</string>
+    <string name="facebook_test_user_access_token">EAAD1D1BGEA4BAPl6RS4oRYrcJpZAhhtbJgMhIvl0uaDXdA9v8ixINyrc6PSe76iAS4tgP5SDJmoLab7lq6Y04oTgZBbL80xj9B0JppPbxxCH2RHEAbmcmqEG4IhZCYZBl7uQZA0TaAGaBD8NfszpGwYbbztQK7uoey5N5w1QOFZBV63s6fI74I</string>
 
 </resources>

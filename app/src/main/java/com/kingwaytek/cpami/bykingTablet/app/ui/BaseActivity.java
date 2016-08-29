@@ -1,9 +1,11 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,15 +29,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.model.ActionbarMenu;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
+import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
+import com.kingwaytek.cpami.bykingTablet.app.ui.events.UiEventListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.planning.UiMyPlanListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.report.UiReportActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.settings.UiSettingMenuActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.track.UiTrackListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
-import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.NotifyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
@@ -68,6 +77,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     protected NavigationView drawerView;
 
     private ProgressBar loadingCircle;
+    private TextView trackingText;
+
+    private final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+    private final int bitmapCacheSize = maxMemory / 8;
+    protected LruCache<String, Bitmap> bitmapCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +90,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         //setWindowFeatures();
         setContentView(getLayoutId());
 
+        initLruCache();
+
         getEntryType();
 
         setActionBar();
@@ -83,7 +99,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
         findViews();
         setListener();
-        FavoriteHelper.checkAndReplaceAllPhotoPathIfNotExists();
+
         init();
     }
 
@@ -95,9 +111,40 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         }
     }
 
+    private void initLruCache() {
+        bitmapCache = new LruCache<String, Bitmap>(bitmapCacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null)
+            bitmapCache.put(key, bitmap);
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return bitmapCache.get(key);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isTrackingServiceRunning()) {
+            NotifyHelper.showServiceNotification();
+            Log.i(TAG, "ServiceRunning, show notification!");
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        showTrackingText();
+        NotifyHelper.clearServiceNotification();
         Log.i(TAG, "onResume!!!");
     }
 
@@ -188,6 +235,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
     private void findActionbarWidgetViewAndSetListener() {
         loadingCircle = (ProgressBar) actionbar.getCustomView().findViewById(R.id.loadingCircle);
+        trackingText = (TextView) actionbar.getCustomView().findViewById(R.id.text_tracking);
 
         if (windowView == null)
             windowView = getWindow().getDecorView();
@@ -197,7 +245,21 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         if (isShow)
             loadingCircle.setVisibility(View.VISIBLE);
         else
-            loadingCircle.setVisibility(View.GONE);
+            loadingCircle.setVisibility(View.INVISIBLE);
+    }
+
+    private void showTrackingText() {
+        if (notNull(AppController.getInstance().getTrackManager()) && AppController.getInstance().getTrackManager().isTrackingRightNow())
+            trackingText.setVisibility(View.VISIBLE);
+        else
+            trackingText.setVisibility(View.GONE);
+    }
+
+    protected void showTrackingText(boolean isShow) {
+        if (isShow)
+            trackingText.setVisibility(View.VISIBLE);
+        else
+            trackingText.setVisibility(View.GONE);
     }
 
     protected void initDrawer() {
@@ -241,7 +303,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     }
 
     protected void setDrawerWidth() {
-        int width = (int) (Utility.getScreenWidth() / 1.6);
+        int width = (int) (Utility.getScreenWidth() / 1.4);
 
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawerView.getLayoutParams();
         params.width = width;
@@ -254,25 +316,28 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             for (int i = 0; i < drawerView.getMenu().size(); i++) {
                 drawerView.getMenu().getItem(i).setChecked(false);
             }
+            drawerView.getMenu().getItem(0).setChecked(true);
         }
     }
 
     private void onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
+
             case R.id.menu_home:
                 goTo(MainActivity.class, false);
                 break;
 
-            case R.id.menu_bike_track:
-
-                break;
-
             case R.id.menu_my_poi:
-                goTo(UiMyPoiListActivity.class, false);
+                Intent intent = new Intent(this, UiMyPoiListActivity.class);
+                startActivityForResult(intent, REQUEST_RELOAD_ALL_MARKER);
                 break;
 
             case R.id.menu_planning:
                 goTo(UiMyPlanListActivity.class, false);
+                break;
+
+            case R.id.menu_bike_track:
+                goTo(UiTrackListActivity.class, false);
                 break;
 
             case R.id.menu_poi_book:
@@ -280,15 +345,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                 break;
 
             case R.id.menu_events:
-
+                goTo(UiEventListActivity.class, false);
                 break;
 
             case R.id.menu_report:
-
+                goTo(UiReportActivity.class, false);
                 break;
 
             case R.id.menu_settings:
-
+                goTo(UiSettingMenuActivity.class, false);
                 break;
         }
     }
@@ -375,6 +440,18 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                     Utility.toastShort(getString(R.string.camera_permission_denied));
                 break;
         }
+    }
+
+    protected boolean isTrackingServiceRunning() {
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo runningService : am.getRunningServices(Integer.MAX_VALUE)) {
+            if (TrackingService.class.getName().equals(runningService.service.getClassName())) {
+                Log.i(TAG, "ServiceRunning! Return true.");
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

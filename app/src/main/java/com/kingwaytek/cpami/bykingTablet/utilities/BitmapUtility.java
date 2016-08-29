@@ -2,7 +2,9 @@ package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
@@ -20,6 +22,8 @@ import java.io.IOException;
  * @author Vincent (2016/5/27)
  */
 public class BitmapUtility {
+
+    private static final String TAG = "BitmapUtility";
 
     public static Bitmap getDecodedBitmapInFullWidth(String imgPath, int imageViewHeight) {
         if (Utility.isFileNotExists(imgPath))
@@ -195,5 +199,20 @@ public class BitmapUtility {
         srcBitmap.recycle();
 
         return photoBitmap;
+    }
+
+    public static Bitmap convertDrawableToBitmap(Drawable drawable, int iconSize) {
+        Log.i(TAG, "iconSize: " + iconSize);
+
+        Bitmap bitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+        Log.i(TAG, "drawableIntrinsicWidth: " + drawable.getIntrinsicWidth() + " drawableIntrinsicHeight: " + drawable.getIntrinsicHeight());
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, iconSize, iconSize);
+        Log.i(TAG, "canvasWidth: " + canvas.getWidth() + " canvasHeight: " + canvas.getHeight());
+
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 }

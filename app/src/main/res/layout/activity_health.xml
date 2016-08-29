@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_xl"
+                android:layout_marginBottom="@dimen/padding_size_l"
+                android:layout_marginLeft="@dimen/padding_size_xxl"
+                android:layout_marginStart="@dimen/padding_size_xxl"
+                android:text="@string/health_gender"
+                android:textSize="@dimen/font_text_size_l"/>
+
+            <RadioGroup
+                android:id="@+id/radio_genderGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_size_super"
+                android:layout_marginStart="@dimen/padding_size_super"
+                android:layout_marginRight="@dimen/padding_size_super"
+                android:layout_marginEnd="@dimen/padding_size_super"
+                android:layout_marginBottom="@dimen/padding_size_l"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_male"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/health_gender_male"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_black_1000"/>
+
+                <RadioButton
+                    android:id="@+id/radio_female"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/health_gender_female"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_black_1000"/>
+
+            </RadioGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_grey_400" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_xl"
+                android:layout_marginBottom="@dimen/padding_size_s"
+                android:layout_marginLeft="@dimen/padding_size_xxl"
+                android:layout_marginStart="@dimen/padding_size_xxl"
+                android:text="@string/health_age"
+                android:textSize="@dimen/font_text_size_l"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_size_xl"
+                android:layout_marginStart="@dimen/padding_size_xl"
+                android:layout_marginRight="@dimen/padding_size_xl"
+                android:layout_marginEnd="@dimen/padding_size_xl"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_xl"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <SeekBar
+                    android:id="@+id/seekBar_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="80"/>
+
+                <TextView
+                    android:id="@+id/text_yearsOld"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_marginLeft="@dimen/padding_size_s"
+                    android:layout_marginStart="@dimen/padding_size_s"
+                    android:gravity="end"
+                    android:text="@string/health_years_old"
+                    android:textColor="@color/md_blue_A700"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_grey_400" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_xl"
+                android:layout_marginBottom="@dimen/padding_size_s"
+                android:layout_marginLeft="@dimen/padding_size_xxl"
+                android:layout_marginStart="@dimen/padding_size_xxl"
+                android:text="@string/health_height"
+                android:textSize="@dimen/font_text_size_l"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_size_xl"
+                android:layout_marginStart="@dimen/padding_size_xl"
+                android:layout_marginRight="@dimen/padding_size_xl"
+                android:layout_marginEnd="@dimen/padding_size_xl"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_xl"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <SeekBar
+                    android:id="@+id/seekBar_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="210"/>
+
+                <TextView
+                    android:id="@+id/text_cm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_marginLeft="@dimen/padding_size_s"
+                    android:layout_marginStart="@dimen/padding_size_s"
+                    android:gravity="end"
+                    android:text="@string/health_centimeter"
+                    android:textColor="@color/md_blue_A700"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_grey_400" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_xl"
+                android:layout_marginBottom="@dimen/padding_size_s"
+                android:layout_marginLeft="@dimen/padding_size_xxl"
+                android:layout_marginStart="@dimen/padding_size_xxl"
+                android:text="@string/health_weight"
+                android:textSize="@dimen/font_text_size_l"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_size_xl"
+                android:layout_marginStart="@dimen/padding_size_xl"
+                android:layout_marginRight="@dimen/padding_size_xl"
+                android:layout_marginEnd="@dimen/padding_size_xl"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_xl"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <SeekBar
+                    android:id="@+id/seekBar_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="120"/>
+
+                <TextView
+                    android:id="@+id/text_kg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_marginLeft="@dimen/padding_size_s"
+                    android:layout_marginStart="@dimen/padding_size_s"
+                    android:gravity="end"
+                    android:text="@string/health_kilogram"
+                    android:textColor="@color/md_blue_A700"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_grey_400" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

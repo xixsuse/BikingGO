@@ -1,12 +1,16 @@
 package com.kingwaytek.cpami.bykingTablet.app.model;
 
+import android.os.Handler;
 import android.util.Log;
 
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
+import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -29,9 +33,15 @@ public class DataArray implements ApiUrls {
 
     public static SoftReference<ArrayList<ItemsSearchResult>> list_searchResult;
     public static SoftReference<ArrayList<ItemsPathList>> list_pathList;
+    public static SoftReference<ArrayList<ItemsEvents>> list_events;
 
     public interface OnDataGetCallBack {
         void onDataGet();
+    }
+
+    public interface OnYouBikeDataGetCallback {
+        void onTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems);
+        void onNewTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems);
     }
 
     public static void getLocationSearchResult(final String locationName, final OnDataGetCallBack dataGet) {
@@ -49,6 +59,7 @@ public class DataArray implements ApiUrls {
 
                     @Override
                     public void onParseFail(String errorMessage) {
+                        DialogHelper.dismissDialog();
                         Log.e(TAG, "Geocode_ParseError: " + errorMessage);
                     }
                 });
@@ -56,6 +67,7 @@ public class DataArray implements ApiUrls {
 
             @Override
             public void onResultFail(String errorMessage) {
+                DialogHelper.dismissDialog();
                 Log.e(TAG, "Geocode_WebError: " + errorMessage);
             }
         });
@@ -65,8 +77,8 @@ public class DataArray implements ApiUrls {
         return JsonParser.parseMyPoiAndGetList();
     }
 
-    public static ArrayList<String> getPlanNameList() {
-        return JsonParser.getMyPlanNameList();
+    public static ArrayList<String[]> getPlanNameAndDateList() {
+        return JsonParser.getMyPlanNameAndDateList();
     }
 
     public static ArrayList<ItemsPlans> getPlansData() {
@@ -91,6 +103,89 @@ public class DataArray implements ApiUrls {
             public void onParseFail(String errorMessage) {
                 Utility.toastLong("ParseError: " + errorMessage);
                 Log.e(TAG, "Direction_ParseError: " + errorMessage);
+            }
+        });
+    }
+
+    public static void checkAndGetEventsData(final OnDataGetCallBack dataGet) {
+        if (list_events == null || list_events.get() == null || list_events.get().isEmpty()) {
+
+            //String apiUrl = MessageFormat.format(API_EVENTS, MD5Util.getMD5Code(MD5Util.SERVICE_NUMBER_EVENTS));
+
+            WebAgent.getStringByUrl(API_EVENTS, new WebAgent.WebResultImplement() {
+                @Override
+                public void onResultSucceed(String response) {
+                    JsonParser.parseEventsDataThenAddToList(response, new JsonParser.JSONParseResult() {
+                        @Override
+                        public void onParseFinished() {
+                            dataGet.onDataGet();
+                        }
+
+                        @Override
+                        public void onParseFail(String errorMessage) {
+                            DialogHelper.dismissDialog();
+                            Log.e(TAG, "Events_parseError: " + errorMessage);
+                        }
+                    });
+                }
+
+                @Override
+                public void onResultFail(String errorMessage) {
+                    DialogHelper.dismissDialog();
+                    Log.e(TAG, "Events_webError: " + errorMessage);
+                }
+            });
+        }
+        else
+            dataGet.onDataGet();
+    }
+
+    public static void getYouBikeData(Handler uiHandler, final OnYouBikeDataGetCallback youBikeDataGetCallback) {
+        WebAgent.downloadTaipeiYouBikeData(uiHandler, new WebAgent.FileDownloadCallback() {
+            @Override
+            public void onDownloadFinished() {
+                Log.i(TAG, "YouBikeTP download completed!");
+
+                JsonParser.parseTaipeiYouBikeData(new JsonParser.YouBikeParseResult() {
+                    @Override
+                    public void onParseFinished(ArrayList<ItemsYouBike> uBikeItems) {
+                        youBikeDataGetCallback.onTaipeiYouBikeGet(uBikeItems);
+                    }
+
+                    @Override
+                    public void onParseFail(String errorMessage) {
+                        Log.e(TAG, errorMessage);
+                    }
+                });
+            }
+
+            @Override
+            public void onDownloadFailed(String errorMessage) {
+                Log.e(TAG, errorMessage);
+            }
+        });
+
+        WebAgent.getStringByUrl(API_UBIKE_NEW_TAIPEI, new WebAgent.WebResultImplement() {
+            @Override
+            public void onResultSucceed(String response) {
+                Log.i(TAG, "YouBikeNewTP Get!!!");
+
+                JsonParser.parseNewTaipeiYouBikeData(response, new JsonParser.YouBikeParseResult() {
+                    @Override
+                    public void onParseFinished(ArrayList<ItemsYouBike> uBikeItems) {
+                        youBikeDataGetCallback.onNewTaipeiYouBikeGet(uBikeItems);
+                    }
+
+                    @Override
+                    public void onParseFail(String errorMessage) {
+                        Log.e(TAG, "NewTaipeiYouBikeParseError: " + errorMessage);
+                    }
+                });
+            }
+
+            @Override
+            public void onResultFail(String errorMessage) {
+                Log.e(TAG, "NewTaipeiYouBikeWebError: " + errorMessage);
             }
         });
     }

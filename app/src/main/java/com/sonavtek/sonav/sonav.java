@@ -202,7 +202,7 @@ public class sonav extends Handler {
 			synchronized (sonav.class) {
 				if (instance == null) {
 					// load the native library
-					System.loadLibrary("sonav");
+                    System.loadLibrary("sonav");
 					Log.i("eeego", "native library loaded");
 
 					instance = new sonav();

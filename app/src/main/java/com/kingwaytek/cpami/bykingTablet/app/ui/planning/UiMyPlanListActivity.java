@@ -4,11 +4,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
@@ -33,6 +37,7 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     private ListView planListView;
     private PlanListAdapter planAdapter;
+    private FloatingActionButton floatingBtn_addPlan;
 
     @Override
     protected void init() {
@@ -58,6 +63,7 @@ public class UiMyPlanListActivity extends BaseActivity {
     @Override
     protected void findViews() {
         planListView = (ListView) findViewById(R.id.myPlanListView);
+        floatingBtn_addPlan = (FloatingActionButton) findViewById(R.id.floatingBtn_addPlan);
     }
 
     @Override
@@ -65,21 +71,32 @@ public class UiMyPlanListActivity extends BaseActivity {
         planListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
-                intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                if (position != parent.getCount() -1) {
+                    Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
+                    intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
             }
         });
 
         planListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                planAdapter.showCheckBox(true);
-                planAdapter.setBoxChecked(position);
-                setMenuOption(ACTION_DELETE);
+                if (position != parent.getCount() - 1) {
+                    planAdapter.showCheckBox(true);
+                    planAdapter.setBoxChecked(position);
+                    setMenuOption(ACTION_DELETE);
+                    return true;
+                }
+                return false;
+            }
+        });
 
-                return true;
+        floatingBtn_addPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goTo(UiMyPlanEditActivity.class, true);
             }
         });
     }
@@ -91,17 +108,22 @@ public class UiMyPlanListActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_ADD);
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_MORE);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
         switch (item.getItemId()) {
-            case ACTION_ADD:
-                goTo(UiMyPlanEditActivity.class, true);
+            case android.R.id.home:
+                if (notNull(planAdapter) && planAdapter.isCheckBoxShowing())
+                    unCheckBoxAndResumeMenu();
+                else
+                    super.onOptionsItemSelected(item);
+                break;
+
+            case ACTION_MORE:
+                showPlanMenuDialog();
                 break;
 
             case ACTION_DELETE:
@@ -113,17 +135,71 @@ public class UiMyPlanListActivity extends BaseActivity {
     }
 
     private void setPlanList() {
-        if (PermissionCheckHelper.checkFileStoragePermissions(this, PermissionCheckHelper.PERMISSION_REQUEST_CODE_STORAGE)) {
-            ArrayList<String> planNameList = DataArray.getPlanNameList();
+        if (PermissionCheckHelper.checkFileStoragePermissions(this)) {
+            ArrayList<String[]> planPairList = DataArray.getPlanNameAndDateList();
 
-            if (notNull(planNameList)) {
+            if (notNull(planPairList)) {
                 if (planAdapter == null) {
-                    planAdapter = new PlanListAdapter(this, planNameList);
+                    planAdapter = new PlanListAdapter(this, planPairList);
                     planListView.setAdapter(planAdapter);
+
+                    // Add an empty footer view, to prevent the final row of ListView get blocked by FloatingButton.
+                    View view = LayoutInflater.from(this).inflate(R.layout.inflate_empty_footer_view, null);
+                    planListView.addFooterView(view);
                 }
                 else
-                    planAdapter.refreshList(planNameList);
+                    planAdapter.refreshList(planPairList);
             }
+        }
+    }
+
+    private void showPlanMenuDialog() {
+        View view = DialogHelper.getListMenuDialogView(this, true);
+        final TextView planBrowse = (TextView) view.findViewById(R.id.planMenu_browse);
+        final LinearLayout planUpload = (LinearLayout) view.findViewById(R.id.planMenu_upload);
+        final LinearLayout planDelete = (LinearLayout) view.findViewById(R.id.planMenu_delete);
+
+        planBrowse.setTag(planBrowse.getId());
+        planUpload.setTag(planUpload.getId());
+        planDelete.setTag(planDelete.getId());
+
+        View.OnClickListener menuClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch ((int)v.getTag()) {
+                    case R.id.planMenu_browse:
+                        DialogHelper.dismissDialog();
+                        break;
+
+                    case R.id.planMenu_upload:
+                        DialogHelper.dismissDialog();
+                        break;
+
+                    case R.id.planMenu_delete:
+                        if (notNull(planAdapter)) {
+                            planAdapter.showCheckBox(true);
+                            planAdapter.notifyDataSetChanged();
+                        }
+                        setMenuOption(ACTION_DELETE);
+
+                        DialogHelper.dismissDialog();
+                        break;
+                }
+                planBrowse.setOnClickListener(null);
+                planUpload.setOnClickListener(null);
+                planDelete.setOnClickListener(null);
+            }
+        };
+
+        planBrowse.setOnClickListener(menuClick);
+
+        if (planAdapter == null || planAdapter.isEmpty()) {
+            planUpload.setVisibility(View.GONE);
+            planDelete.setVisibility(View.GONE);
+        }
+        else {
+            planUpload.setOnClickListener(menuClick);
+            planDelete.setOnClickListener(menuClick);
         }
     }
 
@@ -136,10 +212,15 @@ public class UiMyPlanListActivity extends BaseActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     FavoriteHelper.removeMultiPlan(checkedList);
                     setPlanList();
-                    onBackPressed();
+                    unCheckBoxAndResumeMenu();
                 }
             });
         }
+    }
+
+    private void unCheckBoxAndResumeMenu() {
+        planAdapter.unCheckAllBox();
+        setMenuOption(ACTION_MORE);
     }
 
     @Override
@@ -162,10 +243,8 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (notNull(planAdapter) && planAdapter.isCheckBoxShowing()) {
-            planAdapter.unCheckAllBox();
-            setMenuOption(ACTION_ADD);
-        }
+        if (notNull(planAdapter) && planAdapter.isCheckBoxShowing())
+            unCheckBoxAndResumeMenu();
         else
             super.onBackPressed();
     }

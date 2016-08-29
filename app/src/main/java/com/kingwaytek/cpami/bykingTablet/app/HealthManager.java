@@ -13,7 +13,6 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 
 public class HealthManager extends Activity {
-	private HealthManager instance = this;
 	private SeekBar SeekBar_age;
 	private SeekBar SeekBar_height;
 	private SeekBar SeekBar_weight;
@@ -70,8 +69,7 @@ public class HealthManager extends Activity {
 		SeekBar_age.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			int IntAge = 0;
 
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromTouch) {
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
 				if (progress < SeekBar_age_min_vaule) {
 					SeekBar_age.setProgress(SeekBar_age_min_vaule);
 				} else {

@@ -2,7 +2,8 @@ package com.kingwaytek.cpami.bykingTablet.app.ui.planning;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -31,13 +32,13 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseGoogleApiActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListPagerAdapter;
-import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListViewAdapter;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathStepsAdapter;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -64,9 +65,19 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
     private boolean moveCameraWhilePageSelected;
 
+    private LinearLayout planTitleLayout;
+    private TextView text_planTitle;
+
     @Override
     protected void onApiReady() {
         getBundleAndDraw();
+    }
+
+    @Override
+    protected void findViews() {
+        super.findViews();
+        planTitleLayout = (LinearLayout) findViewById(R.id.planTitleLayout);
+        text_planTitle = (TextView) findViewById(R.id.text_planTitle);
     }
 
     @Override
@@ -114,6 +125,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         int planIndex = bundle.getInt(BUNDLE_PLAN_EDIT_INDEX);
 
         drawMultiPointsLine(jsonString, planIndex);
+        showPlanTitleLayout(planIndex);
     }
 
     private void drawMultiPointsLine(String jsonString, int planIndex) {
@@ -131,33 +143,32 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
             polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_light_blue_300));
             polyOptions.width(15);
 
+            checkBitmapCache(R.drawable.ic_pin_place);
             MarkerOptions marker = new MarkerOptions();
 
             marker.position(linePoints.get(0));
             marker.title("1." + planItems.get(0).TITLE);
-            InputStream is = getResources().openRawResource(+ R.drawable.ic_start);
-            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+            marker.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromMemCache(BITMAP_KEY_PIN_PLACE)));
 
             map.addMarker(marker);
 
             marker.position(linePoints.get(linePoints.size() - 1));
             marker.title(planItems.size() + "." + planItems.get(planItems.size() - 1).TITLE);
-            is = getResources().openRawResource(+ R.drawable.ic_end);
-            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
 
             map.addMarker(marker);
 
             if (planItems.size() > 2) {
-                is = getResources().openRawResource(+ R.drawable.ic_search_result);
-                BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is));
+                checkBitmapCache(R.drawable.ic_pin_point);
+                BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromBitmap(getBitmapFromMemCache(BITMAP_KEY_PIN_POINT));
 
                 MarkerOptions waypointsMarker = new MarkerOptions();
+                waypointsMarker.icon(markerIcon);
+                waypointsMarker.anchor(0.5f, 0.5f);
 
                 for (int i = 0; i < planItems.size(); i ++) {
                     if (i != 0 && i != planItems.size() -1) {
                         waypointsMarker.position(new LatLng(planItems.get(i).LAT, planItems.get(i).LNG));
                         waypointsMarker.title((i + 1) + "." + planItems.get(i).TITLE);
-                        waypointsMarker.icon(markerIcon);
                         map.addMarker(waypointsMarker);
                     }
                 }
@@ -167,9 +178,32 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
             PopWindowHelper.dismissPopWindow();
             moveCameraAndZoom(linePoints.get(0), 16);
-
-            closeInputStream(is);
         }
+    }
+
+    private void checkBitmapCache(int iconRes) {
+        switch (iconRes) {
+            case R.drawable.ic_pin_place:
+                if (getBitmapFromMemCache(BITMAP_KEY_PIN_PLACE) == null) {
+                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_pin_place);
+                    Bitmap bitmap = BitmapUtility.convertDrawableToBitmap(drawable, getResources().getDimensionPixelSize(R.dimen.icon_common_size));
+                    addBitmapToMemoryCache(BITMAP_KEY_PIN_PLACE, bitmap);
+                }
+                break;
+
+            case R.drawable.ic_pin_point:
+                if (getBitmapFromMemCache(BITMAP_KEY_PIN_POINT) == null) {
+                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_pin_point);
+                    Bitmap bitmap = BitmapUtility.convertDrawableToBitmap(drawable, getResources().getDimensionPixelSize(R.dimen.font_text_size_l));
+                    addBitmapToMemoryCache(BITMAP_KEY_PIN_POINT, bitmap);
+                }
+                break;
+        }
+    }
+
+    private void showPlanTitleLayout(int planIndex) {
+        planTitleLayout.setVisibility(View.VISIBLE);
+        text_planTitle.setText(DataArray.getPlansData().get(planIndex).NAME);
     }
 
     private void showPathListView() {
@@ -329,7 +363,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
         drawStepsHighLight(position);
 
-        pathListView.setAdapter(new PathListViewAdapter(this, pathList.PATH_STEPS));
+        pathListView.setAdapter(new PathStepsAdapter(this, pathList.PATH_STEPS, true));
 
         pathListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

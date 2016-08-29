@@ -32,6 +32,7 @@ import com.kingwaytek.cpami.bykingTablet.app.poi.POIMethodSelection;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackEngine;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackEngine.TrackRecordingStatus;
 import com.kingwaytek.cpami.bykingTablet.app.track.TrackRecord;
+import com.kingwaytek.cpami.bykingTablet.app.ui.EngineCheckActivity;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransportList;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.hardware.BatteryNotifier;
@@ -83,7 +84,7 @@ import java.util.TimerTask;
  * 2016/04/13
  * Rewritten by Vincent.
  */
-public class MapActivity extends FlowNodeActivity implements OnClickListener {
+public class MapActivity extends EngineCheckActivity implements OnClickListener {
 
     /** Event code for routing path planning done. */
     private static final int ROUTING_PLAN_END = 1;
@@ -629,7 +630,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         }
 
     }
-
+/*
     @Override
     public int getMenuResource() {
         int mode = mapView.getControlMode();
@@ -637,7 +638,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         return mode == MapView.STATE_NAVI || mode == MapView.STATE_NAVI_PAUSE || mode == MapView.STATE_EMU ?
                 R.layout.map_navi_menu : R.layout.main_menu;
     }
-
+*/
     private void setMapButtonListener() {
         ImageButton ibUserLocation = (ImageButton) findViewById(R.id.to_user_location);
         ImageButton ibFavorite = (ImageButton) findViewById(R.id.to_favorite);
@@ -678,17 +679,20 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
         }
 
         // 我的位置
-        ibUserLocation.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myLocation();
-            }
-        });
+        if (notNull(ibUserLocation)) {
+            ibUserLocation.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myLocation();
+                }
+            });
+        }
 
         ibFavorite.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToForResult(MyFavorite.class, false, ActivityCaller.FAVORITE.getValue());
+                Intent intent = new Intent(MapActivity.this, MyFavorite.class);
+                startActivityForResult(intent, ActivityCaller.FAVORITE.getValue());
             }
         });
 
@@ -715,7 +719,8 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                goToForResult(POIMethodSelection.class, false, ActivityCaller.POI.getValue());
+                Intent intent = new Intent(MapActivity.this, POIMethodSelection.class);
+                startActivityForResult(intent, ActivityCaller.POI.getValue());
             }
         });
 
@@ -1986,7 +1991,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                     }
                     // Internet Connect
                     Date date = new Date();
-                    String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date.getMonth() + 1)
+                    String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1)
                             + date.getHours()) * (1102 + date.getDate())) + "Kingway").getBytes());
 
                     // String WeatherURL =
@@ -2272,7 +2277,7 @@ public class MapActivity extends FlowNodeActivity implements OnClickListener {
                 // Internet Connect
                 try {
                     Date date = new Date();
-                    String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date
+                    String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date
                             .getMonth() + 1) + date.getHours())
                             * (1207 + date.getDate())) + "Kingway").getBytes());
                     // String TrafficAlertUploadURL =

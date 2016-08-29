@@ -3,13 +3,18 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:padding="@dimen/padding_size_l"
+              android:paddingTop="@dimen/padding_size_l"
+              android:paddingBottom="@dimen/padding_size_l"
+              android:paddingLeft="@dimen/padding_size_xxl"
+              android:paddingStart="@dimen/padding_size_xxl"
+              android:paddingRight="@dimen/padding_size_l"
+              android:paddingEnd="@dimen/padding_size_l"
               android:background="@drawable/background_photo_select_options">
 
     <ImageView
         android:id="@+id/options_icon"
-        android:layout_width="@dimen/icon_common_size_xl"
-        android:layout_height="@dimen/icon_common_size_xl"
+        android:layout_width="@dimen/icon_common_size_l"
+        android:layout_height="@dimen/icon_common_size_l"
         android:src="@drawable/ic_planning"/>
 
     <TextView

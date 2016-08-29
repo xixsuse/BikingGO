@@ -1,18 +1,18 @@
 package com.kingwaytek.cpami.bykingTablet.TrafficCondition;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.SMSMapContent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TrafficDetail extends Activity {
 	Bundle trafficDetailBundle;
@@ -28,7 +28,7 @@ public class TrafficDetail extends Activity {
 		setDataAarray();
 		setAllInfo();
 
-		Button toMapButton = (Button) findViewById(R.id.to_map);
+		ImageButton toMapButton = (ImageButton) findViewById(R.id.to_map);
 		toMapButton.setOnClickListener(new OnClickListener() {
 
 			@Override

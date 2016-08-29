@@ -10,6 +10,7 @@ import android.widget.GridView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.VersionUpdate.Update;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 
 /**
  * Activity for reading/editing preferences.
@@ -17,7 +18,7 @@ import com.kingwaytek.cpami.bykingTablet.app.VersionUpdate.Update;
  * @author Harvey Cheng(harvey@kingwaytek.com)
  *
  *
- * All preferences were moved to SettingManager.
+ * All preferences were moved to {@link SettingManager}.
  * (樓上寫的根本在鬧)
  *
  * @author Vincent (2016/04/14).

@@ -1,21 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.TrafficCondition;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,9 +14,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.CreatMD5Code;
-import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
+import com.kingwaytek.cpami.bykingTablet.app.CreateMD5Code;
 import com.kingwaytek.cpami.bykingTablet.bus.PublicTransportList;
+import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TrafficUpdate extends ListActivity {
 	private Handler updataHandler = null;
@@ -112,41 +112,37 @@ public class TrafficUpdate extends ListActivity {
 
 					// Internet Connect
 					Date date = new Date();
-					String MD5Code = CreatMD5Code.getMD5((String.valueOf(((date
-							.getMonth() + 1) + date.getHours())
+					String MD5Code = CreateMD5Code.getMD5((String.valueOf(((date.getMonth() + 1) + date.getHours())
 							* (1207 + date.getDate())) + "Kingway").getBytes());
+
 					String TrafficAlertUploadURL = getResources().getString(
 							R.string.cpamiURL)
-							+ "TrafficAlertList?AlertStartTime=201111111334&AlertEndTime=201111111334&Code="
-							+ MD5Code;
-					Log.i("TrafficUpdata.java", "TrafficAlertUpdataURL="
-							+ TrafficAlertUploadURL);
+							+ "TrafficAlertList?AlertStartTime=201601010000&AlertEndTime=201612312359&Code=" + MD5Code;
+
+					Log.i("TrafficUpdata.java", "TrafficAlertUpdataURL=" + TrafficAlertUploadURL);
+
 					HttpClient cliente = new DefaultHttpClient();
 					HttpResponse response;
 					HttpPost httpPost = new HttpPost(TrafficAlertUploadURL);
 					response = cliente.execute(httpPost);
 					HttpEntity entity = response.getEntity();
+
 					if (entity != null) {
 						InputStream instream = entity.getContent();
-						result = PublicTransportList
-								.convertStreamToString(instream);
+						result = PublicTransportList.convertStreamToString(instream);
 						instream.close();
 					}
-					Log.i("TrafficUpdate.java", "TrafficAlertUpload result="
-							+ result);
+					Log.i("TrafficUpdate.java", "TrafficAlertUpload result=" + result);
 //					WaitDialog.dismiss();
 					progressDialog.dismiss();
-					updataHandler.sendMessage(updataHandler.obtainMessage(
-							GET_WEB_FINISH, String.valueOf(0)));
-				} catch (Exception e) {
+					updataHandler.sendMessage(updataHandler.obtainMessage(GET_WEB_FINISH, String.valueOf(0)));
+				}
+                catch (Exception e) {
 					e.printStackTrace();
 //					WaitDialog.dismiss();
 					progressDialog.dismiss();
-					updataHandler.sendMessage(updataHandler.obtainMessage(
-							GET_WEB_FAIL, "更新路況失敗"));
-
+					updataHandler.sendMessage(updataHandler.obtainMessage(GET_WEB_FAIL, "更新路況失敗"));
 				}
-
 			}
 		}.start();
 	}
@@ -159,16 +155,13 @@ public class TrafficUpdate extends ListActivity {
 					int r = setListArrayData(result);
 					if (r == SUCESS) {
 						showList();
-						// Toast.makeText(TrafficUpdate.this,"下載成功"
-						// ,3000).show();
-					} else if (r == FAIL) {
-						Toast.makeText(TrafficUpdate.this, "更新路況失敗", 3000)
-								.show();
+						// Toast.makeText(TrafficUpdate.this,"下載成功", 3000).show();
 					}
-
-				} else if (msg.what == GET_WEB_FAIL) {
-					Toast.makeText(TrafficUpdate.this, "更新路況失敗", 3000).show();
+                    else if (r == FAIL)
+						Toast.makeText(TrafficUpdate.this, "更新路況失敗", Toast.LENGTH_LONG).show();
 				}
+                else if (msg.what == GET_WEB_FAIL)
+					Toast.makeText(TrafficUpdate.this, "更新路況失敗", Toast.LENGTH_LONG).show();
 			}
 		};
 	}
@@ -252,10 +245,11 @@ public class TrafficUpdate extends ListActivity {
 			data.add(item);
 		}
 
-		ListAdapter adapter = new SimpleAdapter(this,// Context.
-				data, R.layout.roadconditon_list_item, new String[] { "title",
-						"area", "describe", "town" }, new int[] { R.id.title,
-						R.id.area, R.id.trafficState_describe, R.id.zone });
+		ListAdapter adapter = new SimpleAdapter(
+                this, data, R.layout.roadconditon_list_item,
+                new String[] {"title", "area", "describe", "town"},
+                new int[] { R.id.title, R.id.area, R.id.trafficState_describe, R.id.zone }
+        );
 		this.setListAdapter(adapter);
 	}
 
@@ -277,8 +271,7 @@ public class TrafficUpdate extends ListActivity {
 		reportBundle.putString("reviewed", Reviewed[position]);
 		reportBundle.putString("review_detail", ReviewDetail[position]);
 		reportBundle.putString("source", Source[position]);
-		Intent ReportIntent = new Intent(TrafficUpdate.this,
-				TrafficDetail.class);
+		Intent ReportIntent = new Intent(TrafficUpdate.this, TrafficDetail.class);
 		ReportIntent.putExtras(reportBundle);
 		startActivity(ReportIntent);
 	}

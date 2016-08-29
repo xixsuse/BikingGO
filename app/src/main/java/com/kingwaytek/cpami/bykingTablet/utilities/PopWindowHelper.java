@@ -80,19 +80,16 @@ public class PopWindowHelper {
         dismissPopWindow();
 
         inflater = LayoutInflater.from(appContext());
-        View view = inflater.inflate(R.layout.popup_marker_switch_window, null);
+        View view = inflater.inflate(R.layout.popup_layer_switch_window, null);
 
-        double popWidth = Utility.getScreenWidth() / 1.4;
-        double popHeight = Utility.getScreenHeight() / 1.5;
+        double popWidth = Utility.getScreenWidth();
+        double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight);
 
         setPopWindowCancelable(true);
 
-        double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
-        int yPos = appContext().getResources().getDimensionPixelSize(R.dimen.padding_size_xl);
-
-        popWindow.showAsDropDown(anchorView, (int) xPos, yPos);
+        popWindow.showAtLocation(anchorView, Gravity.BOTTOM, 0, 0);
 
         return view;
     }
@@ -153,7 +150,7 @@ public class PopWindowHelper {
         TextView text_instruction = (TextView) view.findViewById(R.id.text_pathInstruction);
         TextView text_distance = (TextView) view.findViewById(R.id.text_distance);
         TextView text_goOnPath = (TextView) view.findViewById(R.id.text_goOnPath);
-        ImageButton closeBtn = (ImageButton) view.findViewById(R.id.popWindowCloseBtn);
+        ImageButton closeBtn = (ImageButton) view.findViewById(R.id.pathWindowCloseBtn);
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
