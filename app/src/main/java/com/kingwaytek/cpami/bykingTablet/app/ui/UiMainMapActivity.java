@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -122,6 +123,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private final int screenHeight = Utility.getScreenHeight();
     private int pathInfoLayoutMaxHeight;
 
+    private ArrayList<ItemsYouBike> tempYouBikeList;
+
     @Override
     protected void onApiReady() {
         checkIntentAndDoActions();
@@ -214,7 +217,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             if (markerTypeMap.containsKey(key)) {
                 switch (markerTypeMap.get(key)) {
-                    case R.drawable.ic_my_poi:
+                    case R.drawable.ic_marker_my_poi:
                         view = getPoiInfoWindowView(marker.getPosition());
                         break;
 
@@ -247,11 +250,11 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                 if (markerTypeMap.containsKey(key)) {
                     switch (markerTypeMap.get(key)) {
-                        case R.drawable.ic_end:
+                        case R.drawable.ic_marker_end:
                             //editMyPoi(marker.getPosition(), null, null);
                             break;
 
-                        case R.drawable.ic_my_poi:
+                        case R.drawable.ic_marker_my_poi:
                             if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude)) {
                                 Intent intent = new Intent(this, UiMyPoiInfoActivity.class);
                                 Bundle bundle = new Bundle();
@@ -265,8 +268,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                             }
                             break;
 
-                        case R.drawable.ic_search_result:
-                        case R.drawable.ic_around_poi:
+                        case R.drawable.ic_marker_search_result:
+                        case R.drawable.ic_marker_around:
                             //editMyPoi(marker.getPosition(), marker.getTitle(), marker.getSnippet());
                             break;
                     }
@@ -523,10 +526,17 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         marker.title(place.getName().toString());
         marker.snippet(place.getAddress().toString());
 
-        InputStream is = getResources().openRawResource(+R.drawable.ic_around_poi);
-        marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+        Bitmap bitmap = getBitmapFromMemCache(BITMAP_KEY_AROUND_POI);
+        if (bitmap == null) {
+            Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_marker_around);
+            bitmap = BitmapUtility.convertDrawableToBitmap(drawable, getResources().getDimensionPixelSize(R.dimen.icon_marker_common_size));
+            addBitmapToMemoryCache(BITMAP_KEY_AROUND_POI, bitmap);
+        }
+        //InputStream is = getResources().openRawResource(+R.drawable.ic_around_poi);
+        //marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+        marker.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
 
-        setMarkerTypeMap(place.getLatLng().latitude, place.getLatLng().longitude, R.drawable.ic_around_poi);
+        setMarkerTypeMap(place.getLatLng().latitude, place.getLatLng().longitude, R.drawable.ic_marker_around);
 
         lastAroundPoiMarker = map.addMarker(marker);
 
@@ -535,7 +545,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         if (notNull(lastAroundPoiMarker))
             lastAroundPoiMarker.showInfoWindow();
 
-        closeInputStream(is);
+        //closeInputStream(is);
     }
 
     // TODO 這裡尚未實際應用到!!!
@@ -576,10 +586,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         else
             marker.snippet(getString(R.string.poi_edit_this_point));
 
-        InputStream is = getResources().openRawResource(+R.drawable.ic_end);
+        InputStream is = getResources().openRawResource(+R.drawable.ic_marker_end);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
 
-        setMarkerTypeMap(latLng.latitude, latLng.longitude, R.drawable.ic_end);
+        setMarkerTypeMap(latLng.latitude, latLng.longitude, R.drawable.ic_marker_end);
 
         if (notNull(myNewMarker))
             myNewMarker.remove();
@@ -730,7 +740,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             Bitmap bitmap = getBitmapFromMemCache(BITMAP_KEY_MY_POI);
 
             if (bitmap == null) {
-                InputStream is = this.getResources().openRawResource(+R.drawable.ic_my_poi);
+                InputStream is = this.getResources().openRawResource(+R.drawable.ic_marker_my_poi);
                 bitmap = BitmapFactory.decodeStream(is);
                 addBitmapToMemoryCache(BITMAP_KEY_MY_POI, bitmap);
                 closeInputStream(is);
@@ -744,11 +754,11 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
              */
             String key = String.valueOf(selectedMarker.getPosition().latitude) + String.valueOf(selectedMarker.getPosition().longitude);
             if (notNull(markerTypeMap) && markerTypeMap.containsKey(key)) {
-                if (markerTypeMap.get(key) == R.drawable.ic_search_result)
+                if (markerTypeMap.get(key) == R.drawable.ic_marker_search_result)
                     searchMarker = null;
             }
 
-            setMarkerTypeMap(selectedMarker.getPosition().latitude, selectedMarker.getPosition().longitude, R.drawable.ic_my_poi);
+            setMarkerTypeMap(selectedMarker.getPosition().latitude, selectedMarker.getPosition().longitude, R.drawable.ic_marker_my_poi);
 
             selectedMarker.showInfoWindow();
             onMarkerClick(selectedMarker);
@@ -819,7 +829,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 Bitmap bitmap = getBitmapFromMemCache(BITMAP_KEY_MY_POI);
 
                 if (bitmap == null) {
-                    InputStream is = getResources().openRawResource(+R.drawable.ic_my_poi);
+                    InputStream is = getResources().openRawResource(+R.drawable.ic_marker_my_poi);
                     bitmap = BitmapFactory.decodeStream(is);
                     closeInputStream(is);
                     addBitmapToMemoryCache(BITMAP_KEY_MY_POI, bitmap);
@@ -841,7 +851,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         }
                     });
 
-                    setMarkerTypeMap(poiItem.LAT, poiItem.LNG, R.drawable.ic_my_poi);
+                    setMarkerTypeMap(poiItem.LAT, poiItem.LNG, R.drawable.ic_marker_my_poi);
                 }
             }
             else
@@ -960,7 +970,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             for (LatLng latLng : linePoints) {
                 polyOptions.add(latLng);
             }
-            polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_blue_600));
+            polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_grey_700));
             polyOptions.width(15);
 
             if (notNull(myPositionMarker))
@@ -969,10 +979,13 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             if (notNull(polyLine))
                 polyLine.remove();
 
+            if (notNull(highLightPoly))
+                highLightPoly.remove();
+
             MarkerOptions marker = new MarkerOptions();
             marker.position(linePoints.get(0));
 
-            InputStream is = getResources().openRawResource(+ R.drawable.ic_start);
+            InputStream is = getResources().openRawResource(+ R.drawable.ic_marker_start);
             marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
 
             myPositionMarker = map.addMarker(marker);
@@ -1057,7 +1070,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         for (LatLng latLng : latLngList) {
             polyLine.add(latLng);
         }
-        polyLine.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_deep_purple_A400));
+        polyLine.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_blue_A700));
         polyLine.width(18);
         polyLine.zIndex(1000);
 
@@ -1067,7 +1080,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         highLightPoly = map.addPolyline(polyLine);
     }
 
-    private void setLayersByPrefKey(String key) {
+    private void setLayersByPrefKey(final String key) {
         if (handlerThread == null) {
             handlerThread = new HandlerThread(NAME_OF_HANDLER_THREAD);
             handlerThread.start();
@@ -1079,7 +1092,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         switch (key) {
             case SettingManager.PREFS_LAYER_CYCLING_1:
                 if (SettingManager.MapLayer.getCyclingLayer()) {
-                    layerHandler.addLayer(map, MapLayerHandler.LAYER_CYCLING);
+                    checkBitmapCache(BITMAP_KEY_SUPPLY_STATION);
+                    layerHandler.addLayer(map, getBitmapFromMemCache(BITMAP_KEY_SUPPLY_STATION), MapLayerHandler.LAYER_CYCLING);
                     showLoadingCircle(true);
                 }
                 else
@@ -1088,7 +1102,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             case SettingManager.PREFS_LAYER_TOP_TEN:
                 if (SettingManager.MapLayer.getTopTenLayer()) {
-                    layerHandler.addLayer(map, MapLayerHandler.LAYER_TOP_TEN);
+                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_TOP_TEN);
                     showLoadingCircle(true);
                 }
                 else
@@ -1098,7 +1112,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             case SettingManager.PREFS_LAYER_RECOMMENDED:
                 if (SettingManager.MapLayer.getRecommendedLayer()) {
-                    layerHandler.addLayer(map, MapLayerHandler.LAYER_RECOMMENDED);
+                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_RECOMMENDED);
                     showLoadingCircle(true);
                 }
                 else
@@ -1107,7 +1121,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             case SettingManager.PREFS_LAYER_ALL_OF_TAIWAN:
                 if (SettingManager.MapLayer.getAllOfTaiwanLayer()) {
-                    layerHandler.addLayer(map, MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_ALL_OF_TAIWAN);
                     showLoadingCircle(true);
                 }
                 else
@@ -1116,7 +1130,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             case SettingManager.PREFS_LAYER_RENT_STATION:
                 if (SettingManager.MapLayer.getRentStationLayer()) {
-                    layerHandler.addLayer(map, MapLayerHandler.LAYER_RENT_STATION);
+                    checkBitmapCache(BITMAP_KEY_BIKE_RENT_STATION);
+                    layerHandler.addLayer(map, getBitmapFromMemCache(BITMAP_KEY_BIKE_RENT_STATION), MapLayerHandler.LAYER_RENT_STATION);
                     showLoadingCircle(true);
                 }
                 else
@@ -1124,20 +1139,47 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 break;
 
             case SettingManager.PREFS_LAYER_YOU_BIKE:
+            case MARKERS_YOU_BIKE_REFRESH:
                 if (SettingManager.MapLayer.getYouBikeLayer()) {
                     showLoadingCircle(true);
 
-                    DataArray.getYouBikeData(new Handler(), new DataArray.OnYouBikeDataGetCallback() {
+                    setYouBikeRefreshButtonStatus(false);
+
+                    final MapLayerHandler.YouBikeMarkerAddTask uBikeTask = layerHandler.new YouBikeMarkerAddTask(this, map);
+
+                    DataArray.getYouBikeData(new DataArray.OnYouBikeDataGetCallback() {
+                        @SuppressWarnings("unchecked")
                         @Override
                         public void onTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
-
+                            if (tempYouBikeList == null || tempYouBikeList.isEmpty())
+                                tempYouBikeList = uBikeItems;
+                            else {
+                                tempYouBikeList.addAll(uBikeItems);
+                                if (key.equals(MARKERS_YOU_BIKE_REFRESH))
+                                    layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
+                                else
+                                    uBikeTask.execute(tempYouBikeList);
+                            }
                         }
 
+                        @SuppressWarnings("unchecked")
                         @Override
                         public void onNewTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
-
+                            if (tempYouBikeList == null || tempYouBikeList.isEmpty())
+                                tempYouBikeList = uBikeItems;
+                            else {
+                                tempYouBikeList.addAll(uBikeItems);
+                                if (key.equals(MARKERS_YOU_BIKE_REFRESH))
+                                    layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
+                                else
+                                    uBikeTask.execute(tempYouBikeList);
+                            }
                         }
                     });
+                }
+                else {
+                    setYouBikeRefreshButtonStatus(false);
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_YOU_BIKE);
                 }
                 break;
         }
@@ -1246,6 +1288,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     @Override
     public void onLayerAdded(int layerCode) {
         showLoadingCircle(false);
+
+        if (layerCode == MapLayerHandler.LAYER_YOU_BIKE) {
+            Utility.toastShort(getString(R.string.you_bike_all_data_get));
+            if (notNull(tempYouBikeList)) {
+                tempYouBikeList.clear();
+                tempYouBikeList = null;
+            }
+            setYouBikeRefreshButtonStatus(true);
+        }
     }
 
     @Override
@@ -1269,6 +1320,22 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         SettingManager.MapLayer.setAllOfTaiwanLayer(false);
         SettingManager.MapLayer.setRentStationLayer(false);
         SettingManager.MapLayer.setYouBikeLayer(false);
+    }
+
+    private void setYouBikeRefreshButtonStatus(boolean enabled) {
+        if (enabled) {
+            uBikeRefreshBtn.setVisibility(View.VISIBLE);
+            uBikeRefreshBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setLayersByPrefKey(MARKERS_YOU_BIKE_REFRESH);
+                }
+            });
+        }
+        else {
+            uBikeRefreshBtn.setVisibility(View.GONE);
+            uBikeRefreshBtn.setOnClickListener(null);
+        }
     }
 
     private void setPathInfoLayoutMaxHeight() {

@@ -65,11 +65,16 @@ public interface CommonBundle {
 
     // LruCache bitmap key
     String BITMAP_KEY_MY_POI = "MyPoi";
+    String BITMAP_KEY_AROUND_POI = "AroundPoi";
     String BITMAP_KEY_BIKE_RENT_STATION = "BikeRentStation";
     String BITMAP_KEY_YOU_BIKE_NORMAL = "YouBikeNormal";
-    String BITMAP_KEY_YOU_BIKE_FULL = "YouBikeNormal";
-    String BITMAP_KEY_YOU_BIKE_EMPTY = "YouBikeNormal";
+    String BITMAP_KEY_YOU_BIKE_FULL = "YouBikeFull";
+    String BITMAP_KEY_YOU_BIKE_EMPTY = "YouBikeEmpty";
     String BITMAP_KEY_YOU_BIKE_OUT_OF_SERVICE = "YouBikeOutOfService";
+    String BITMAP_KEY_SUPPLY_STATION = "SupplyStation";
     String BITMAP_KEY_PIN_PLACE = "PinPlace";
     String BITMAP_KEY_PIN_POINT = "PinPoint";
+
+    // Other keys
+    String MARKERS_YOU_BIKE_REFRESH = "YouBikeMarkersRefresh";
 }

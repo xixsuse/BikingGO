@@ -6,9 +6,9 @@
             <solid android:color="@color/transparent_quarter_black" />
             <corners android:radius="8dp" />
             <padding
-                android:left="2dp"
+                android:left="0dp"
                 android:top="@dimen/padding_size_s"
-                android:right="2dp"
+                android:right="0dp"
                 android:bottom="@dimen/padding_size_m" />
         </shape>
     </item>

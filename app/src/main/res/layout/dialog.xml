@@ -61,7 +61,7 @@
                 android:textColor="#61a2f7"
                 android:textSize="15sp" />
 
-            <ImageView
+            <View
                 android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"

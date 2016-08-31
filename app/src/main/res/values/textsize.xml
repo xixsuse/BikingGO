@@ -28,6 +28,8 @@
     <dimen name="normal_icon_common_size_l">45dp</dimen>
     <dimen name="normal_icon_common_size_xl">54dp</dimen>
 
+    <dimen name="normal_icon_marker_common_size">40dp</dimen>
+
     <dimen name="normal_poi_photo_edit_view">120dp</dimen>
     <dimen name="normal_poi_photo_edit_view_l">180dp</dimen>
     <dimen name="normal_poi_photo_edit_view_xl">235dp</dimen>
@@ -58,6 +60,8 @@
     <dimen name="sw600dp_icon_common_size_l">60dp</dimen>
     <dimen name="sw600dp_icon_common_size_xl">72dp</dimen>
 
+    <dimen name="sw600dp_icon_marker_common_size">53dp</dimen>
+
     <dimen name="sw600dp_poi_photo_edit_view">180dp</dimen>
     <dimen name="sw600dp_poi_photo_edit_view_l">270dp</dimen>
     <dimen name="sw600dp_poi_photo_edit_view_xl">350dp</dimen>
@@ -86,6 +90,8 @@
     <dimen name="sw800dp_icon_common_size">60dp</dimen>
     <dimen name="sw800dp_icon_common_size_l">75dp</dimen>
     <dimen name="sw800dp_icon_common_size_xl">90dp</dimen>
+
+    <dimen name="sw800dp_icon_marker_common_size">67dp</dimen>
 
     <dimen name="sw800dp_kiosk_main_menu_width">180dp</dimen>
     <dimen name="sw800dp_kiosk_icon_common_size">80dp</dimen>

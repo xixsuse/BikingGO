@@ -341,10 +341,10 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         marker.title(title);
         marker.snippet(snippet);
 
-        InputStream is = getResources().openRawResource(+ R.drawable.ic_search_result);
+        InputStream is = getResources().openRawResource(+ R.drawable.ic_marker_search_result);
         marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
 
-        setMarkerTypeMap(latLng.latitude, latLng.longitude, R.drawable.ic_search_result);
+        setMarkerTypeMap(latLng.latitude, latLng.longitude, R.drawable.ic_marker_search_result);
 
         searchMarker = map.addMarker(marker);
         searchMarker.showInfoWindow();

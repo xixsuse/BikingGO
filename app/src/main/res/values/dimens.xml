@@ -18,8 +18,6 @@
     <dimen name="font_text_xxlarge_size">@dimen/font_text_size_xxl</dimen>
     <dimen name="font_text_super_size">@dimen/font_text_size_super</dimen>
 
-    <dimen name="icon_marker_common_size">@dimen/icon_common_size</dimen>
-
     <dimen name="list_item_poi_icon_padding">5dp</dimen>
     <dimen name="list_item_poi_name_padding">5dp</dimen>
     <dimen name="div_line_padding">4dp</dimen>
@@ -70,6 +68,8 @@
     <dimen name="icon_common_size">@dimen/normal_icon_common_size</dimen>
     <dimen name="icon_common_size_l">@dimen/normal_icon_common_size_l</dimen>
     <dimen name="icon_common_size_xl">@dimen/normal_icon_common_size_xl</dimen>
+
+    <dimen name="icon_marker_common_size">@dimen/normal_icon_marker_common_size</dimen>
 
     <dimen name="padding_size_s">@dimen/normal_padding_size_s</dimen>
     <dimen name="padding_size_m">@dimen/normal_padding_size_m</dimen>

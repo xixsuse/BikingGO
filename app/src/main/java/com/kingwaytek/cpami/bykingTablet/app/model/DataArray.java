@@ -1,6 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app.model;
 
-import android.os.Handler;
 import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
@@ -140,8 +139,8 @@ public class DataArray implements ApiUrls {
             dataGet.onDataGet();
     }
 
-    public static void getYouBikeData(Handler uiHandler, final OnYouBikeDataGetCallback youBikeDataGetCallback) {
-        WebAgent.downloadTaipeiYouBikeData(uiHandler, new WebAgent.FileDownloadCallback() {
+    public static void getYouBikeData(final OnYouBikeDataGetCallback youBikeDataGetCallback) {
+        WebAgent.downloadTaipeiYouBikeData(new WebAgent.FileDownloadCallback() {
             @Override
             public void onDownloadFinished() {
                 Log.i(TAG, "YouBikeTP download completed!");

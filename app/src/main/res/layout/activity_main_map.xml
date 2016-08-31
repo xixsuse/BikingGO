@@ -148,6 +148,19 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/bottom_background" />
 
+            <ImageButton
+                android:id="@+id/uBikeRefreshBtn"
+                android:layout_width="@dimen/icon_common_size_l"
+                android:layout_height="@dimen/icon_common_size_l"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/padding_size_xxl"
+                android:layout_marginLeft="@dimen/padding_size_l"
+                android:layout_marginStart="@dimen/padding_size_l"
+                android:src="@drawable/selector_button_refresh"
+                android:scaleType="centerCrop"
+                android:background="@null"
+                android:visibility="gone"/>
+
         </RelativeLayout>
 
         <View

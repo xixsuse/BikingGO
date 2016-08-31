@@ -25,6 +25,8 @@
     <dimen name="icon_common_size_l">@dimen/normal_icon_common_size_l</dimen>
     <dimen name="icon_common_size_xl">@dimen/normal_icon_common_size_xl</dimen>
 
+    <dimen name="icon_marker_common_size">@dimen/sw800dp_icon_marker_common_size</dimen>
+
     <dimen name="kiosk_main_menu_width">@dimen/sw800dp_kiosk_main_menu_width</dimen>
     <dimen name="kiosk_icon_common_size">@dimen/sw800dp_kiosk_icon_common_size</dimen>
 

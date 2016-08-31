@@ -102,20 +102,16 @@ public abstract class EngineCheckActivity extends BaseActivity implements OnEngi
     }
 
     private void engineInitialize() {
-        if (!isInit) {
-            try {
-                engine = sonav.getInstance();
-                engine.setIconSize(1);
-                engine.setresizefont(2);// xhdpis
-                engine.init(getApplicationContext(), SettingManager.getDataDirectory(), this);
-            }
-            catch (Throwable t) {
-                Log.e(getClass().toString(), t.getMessage(), t);
-                engine.callOnEngineInitFailed(this);
-            }
+        try {
+            engine = sonav.getInstance();
+            engine.setIconSize(1);
+            engine.setresizefont(2);// xhdpis
+            engine.init(getApplicationContext(), SettingManager.getDataDirectory(), this);
         }
-        else
-            doneOfCheck();
+        catch (Throwable t) {
+            Log.e(getClass().toString(), t.getMessage(), t);
+            engine.callOnEngineInitFailed(this);
+        }
     }
 
     @Override

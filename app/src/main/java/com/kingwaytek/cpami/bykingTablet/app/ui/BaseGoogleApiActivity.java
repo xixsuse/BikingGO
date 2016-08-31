@@ -44,6 +44,8 @@ public abstract class BaseGoogleApiActivity extends BaseMapActivity implements
 
     private boolean isMapReady;
 
+    protected ImageButton uBikeRefreshBtn;
+
     @Override
     protected void init() {
         Log.i(TAG, "BaseGoogleApiActivity Init!!!");
@@ -51,7 +53,7 @@ public abstract class BaseGoogleApiActivity extends BaseMapActivity implements
 
     @Override
     protected int getMapLayout() {
-        return R.layout.activity_base_map;
+        return R.layout.activity_main_map;
     }
 
     @Override
@@ -63,6 +65,7 @@ public abstract class BaseGoogleApiActivity extends BaseMapActivity implements
         markerBtn_edit = (ImageButton) findViewById(R.id.markerBtn_edit);
         markerBtn_direction = (ImageButton) findViewById(R.id.markerBtn_routePath);
         markerBtn_navigation = (ImageButton) findViewById(R.id.markerBtn_navigation);
+        uBikeRefreshBtn = (ImageButton) findViewById(R.id.uBikeRefreshBtn);
     }
 
     @Override

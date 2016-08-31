@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -42,6 +44,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.report.UiReportActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.settings.UiSettingMenuActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.track.UiTrackListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
+import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.NotifyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
@@ -130,6 +133,46 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         return bitmapCache.get(key);
     }
 
+    public void checkBitmapCache(String bitmapKey) {
+        if (getBitmapFromMemCache(bitmapKey) == null) {
+            int iconId;
+            switch (bitmapKey) {
+                case BITMAP_KEY_SUPPLY_STATION:
+                    iconId = R.drawable.ic_marker_supply_station;
+                    break;
+
+                case BITMAP_KEY_BIKE_RENT_STATION:
+                    iconId = R.drawable.ic_marker_bike_rent_station;
+                    break;
+
+                case BITMAP_KEY_YOU_BIKE_NORMAL:
+                    iconId = R.drawable.ic_marker_you_bike_normal;
+                    break;
+
+                case BITMAP_KEY_YOU_BIKE_FULL:
+                    iconId = R.drawable.ic_marker_you_bike_full;
+                    break;
+
+                case BITMAP_KEY_YOU_BIKE_EMPTY:
+                    iconId = R.drawable.ic_marker_you_bike_empty;
+                    break;
+
+                case BITMAP_KEY_YOU_BIKE_OUT_OF_SERVICE:
+                    iconId = R.drawable.ic_marker_you_bike_unavailable;
+                    break;
+
+                default:
+                    iconId = R.drawable.ic_marker_start;
+                    break;
+            }
+
+            Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), iconId);
+            addBitmapToMemoryCache(bitmapKey, BitmapUtility.convertDrawableToBitmap(
+                    drawable, getResources().getDimensionPixelSize(R.dimen.icon_marker_common_size)));
+
+            Log.i(TAG, "BitmapAddedToLruCache: " + bitmapKey);
+        }
+    }
 
     @Override
     protected void onPause() {
@@ -177,7 +220,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     }
 
     private void setActionbarIcon() {
-        if (getLayoutId() == R.layout.activity_base_map)
+        if (getLayoutId() == R.layout.activity_main_map)
             actionbar.setIcon(R.drawable.selector_toolbar_list);
         else
             actionbar.setIcon(R.drawable.selector_toolbar_back_arrow);
@@ -188,7 +231,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         switch (ENTRY_TYPE) {
             case ENTRY_TYPE_DEFAULT:
             case ENTRY_TYPE_LOCATION_SELECT:
-                if (getLayoutId() == R.layout.activity_base_map) {
+                if (getLayoutId() == R.layout.activity_main_map) {
                     MenuInflater menuInflater = getMenuInflater();
                     menuInflater.inflate(R.menu.options_menu, menu);
                 }
@@ -206,7 +249,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (getLayoutId() == R.layout.activity_base_map && ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
+                if (getLayoutId() == R.layout.activity_main_map && ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
                     if (drawer.isDrawerOpen(GravityCompat.START))
                         drawer.closeDrawers();
                     else

@@ -317,6 +317,9 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
 
+    <!-- Marker switch window -->
+    <string name="marker_my_poi">我的景點</string>
+
     <!-- Layer Switch -->
     <string name="layer_cycling_1">環島一號線</string>
     <string name="layer_top_ten">十大經典自行車道</string>
@@ -335,6 +338,13 @@
     <string name="actionbar_upload">上傳</string>
     <string name="actionbar_info">資訊</string>
     <string name="actionbar_more">更多</string>
+
+    <!-- YouBike Information -->
+    <string name="you_bike_location">站點位置：%s\n</string>
+    <string name="you_bike_available_bike">可借車輛：%d輛\n</string>
+    <string name="you_bike_available_space">可停空位：%s輛\n</string>
+    <string name="you_bike_update_time">時　　間：%s</string>
+    <string name="you_bike_all_data_get">資料更新完成</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -375,9 +385,6 @@
     <string name="plan_browse_shared">查看車友分享的行程</string>
     <string name="plan_upload">上傳行程</string>
     <string name="plan_delete">刪除行程</string>
-
-    <!-- Marker switch window -->
-    <string name="marker_my_poi">我的景點</string>
 
     <!-- File Storage -->
     <string name="file_biking_data_directory">/_BikingData/</string>

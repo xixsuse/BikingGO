@@ -1,6 +1,5 @@
 package com.kingwaytek.cpami.bykingTablet.app.web;
 
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -243,12 +242,13 @@ public class WebAgent {
         AppController.getInstance().getRequestQueue().add(request);
     }
 
-    public static void downloadTaipeiYouBikeData(final Handler uiHandler, final FileDownloadCallback downloadCallback) {
+    public static void downloadTaipeiYouBikeData(final FileDownloadCallback downloadCallback) {
         new Thread() {
             @Override
             public void run() {
                 try {
                     final URL url = new URL(ApiUrls.API_UBIKE_TAIPEI);
+                    Log.i(TAG, "YouBikeTP Url: " + url.toString());
 
                     final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
@@ -275,16 +275,10 @@ public class WebAgent {
                     is.close();
                     connection.disconnect();
 
-                    uiHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            downloadCallback.onDownloadFinished();
-                        }
-                    });
+                    downloadCallback.onDownloadFinished();
                 }
                 catch (IOException e) {
                     e.printStackTrace();
-
                     downloadCallback.onDownloadFailed(e.getMessage());
                 }
             }

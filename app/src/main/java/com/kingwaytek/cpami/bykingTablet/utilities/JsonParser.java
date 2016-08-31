@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.SoftReference;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -678,6 +680,9 @@ public class JsonParser {
             String updateTime;
             int status;
 
+            SimpleDateFormat rawDateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.TAIWAN);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.TAIWAN);
+
             int index = 0;
 
             for (int i = 0; i < jo_stations.length(); i++) {
@@ -701,11 +706,13 @@ public class JsonParser {
                 updateTime = jo_eachStation.getString("mday");
                 status = jo_eachStation.getInt("act");
 
+                updateTime = dateFormat.format(rawDateFormat.parse(updateTime));
+
                 uBikeItems.add(new ItemsYouBike(name, totals, availableBike, availableSpace, area, address, lat, lng, updateTime, status));
             }
             parseResult.onParseFinished(uBikeItems);
         }
-        catch (JSONException e) {
+        catch (JSONException | ParseException e) {
             e.printStackTrace();
             parseResult.onParseFail(e.getMessage());
         }
@@ -728,6 +735,9 @@ public class JsonParser {
             String updateTime;
             int status;
 
+            SimpleDateFormat rawDateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.TAIWAN);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.TAIWAN);
+
             JSONObject jo_eachStation;
 
             for (int i = 0; i < ja.length(); i++) {
@@ -744,11 +754,13 @@ public class JsonParser {
                 updateTime = jo_eachStation.getString("mday");
                 status = jo_eachStation.getInt("act");
 
+                updateTime = dateFormat.format(rawDateFormat.parse(updateTime));
+
                 uBikeItems.add(new ItemsYouBike(name, totals, availableBike, availableSpace, area, address, lat, lng, updateTime, status));
             }
             parseResult.onParseFinished(uBikeItems);
         }
-        catch (JSONException e) {
+        catch (JSONException | ParseException e) {
             e.printStackTrace();
             parseResult.onParseFail(e.getMessage());
         }

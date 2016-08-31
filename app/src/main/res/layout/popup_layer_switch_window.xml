@@ -15,10 +15,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_size_l"
-        android:paddingStart="@dimen/padding_size_l"
-        android:paddingRight="@dimen/padding_size_l"
-        android:paddingEnd="@dimen/padding_size_l"
         android:background="@drawable/background_layer_switch_window">
 
         <LinearLayout
@@ -30,6 +26,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
                 android:paddingTop="@dimen/padding_size_m"
                 android:paddingBottom="@dimen/padding_size_m">
 
@@ -58,6 +58,10 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
                 android:paddingTop="@dimen/padding_size_s"
                 android:paddingBottom="@dimen/padding_size_s">
 
@@ -65,7 +69,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/icon_common_size"
                     android:layout_weight="2.1"
-                    android:src="@drawable/ic_my_poi"/>
+                    android:src="@drawable/ic_marker_my_poi"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -90,6 +94,10 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_m"
+                android:paddingStart="@dimen/padding_size_m"
+                android:paddingRight="@dimen/padding_size_m"
+                android:paddingEnd="@dimen/padding_size_m"
                 android:layout_marginTop="@dimen/padding_size_s"
                 android:layout_marginBottom="@dimen/padding_size_l" >
 
@@ -102,7 +110,14 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
+                android:paddingTop="@dimen/padding_size_s"
+                android:paddingBottom="@dimen/padding_size_s"
+                android:background="@color/transparent_half_white">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -117,14 +132,19 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
                 android:paddingTop="@dimen/padding_size_m"
-                android:paddingBottom="@dimen/padding_size_s">
+                android:paddingBottom="@dimen/padding_size_m">
 
-                <ImageView
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_height="@dimen/padding_size_m"
                     android:layout_weight="2.1"
-                    android:src="@drawable/ic_my_poi"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/polyline_cycling"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -150,14 +170,19 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_size_s"
-                android:paddingBottom="@dimen/padding_size_s">
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m">
 
-                <ImageView
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_height="@dimen/padding_size_m"
                     android:layout_weight="2.1"
-                    android:src="@drawable/ic_my_poi"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/polyline_top_ten"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -183,14 +208,19 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_size_s"
-                android:paddingBottom="@dimen/padding_size_s">
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m">
 
-                <ImageView
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_height="@dimen/padding_size_m"
                     android:layout_weight="2.1"
-                    android:src="@drawable/ic_my_poi"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/polyline_recommended"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -215,6 +245,10 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_m"
+                android:paddingStart="@dimen/padding_size_m"
+                android:paddingRight="@dimen/padding_size_m"
+                android:paddingEnd="@dimen/padding_size_m"
                 android:layout_marginTop="@dimen/padding_size_s"
                 android:layout_marginBottom="@dimen/padding_size_s" >
 
@@ -229,14 +263,19 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_size_s"
-                android:paddingBottom="@dimen/padding_size_s">
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m">
 
-                <ImageView
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/icon_common_size"
+                    android:layout_height="@dimen/padding_size_m"
                     android:layout_weight="2.1"
-                    android:src="@drawable/ic_my_poi"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/polyline_all_of_taiwan"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -261,6 +300,10 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_m"
+                android:paddingStart="@dimen/padding_size_m"
+                android:paddingRight="@dimen/padding_size_m"
+                android:paddingEnd="@dimen/padding_size_m"
                 android:layout_marginTop="@dimen/padding_size_s"
                 android:layout_marginBottom="@dimen/padding_size_l" >
 
@@ -273,7 +316,14 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
+                android:paddingTop="@dimen/padding_size_s"
+                android:paddingBottom="@dimen/padding_size_s"
+                android:background="@color/transparent_half_white">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -288,6 +338,10 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
                 android:paddingTop="@dimen/padding_size_m"
                 android:paddingBottom="@dimen/padding_size_s">
 
@@ -295,7 +349,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/icon_common_size"
                     android:layout_weight="2.1"
-                    android:src="@drawable/ic_my_poi"/>
+                    android:src="@drawable/ic_marker_bike_rent_station"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -321,6 +375,10 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_l"
+                android:paddingStart="@dimen/padding_size_l"
+                android:paddingRight="@dimen/padding_size_l"
+                android:paddingEnd="@dimen/padding_size_l"
                 android:paddingTop="@dimen/padding_size_s"
                 android:paddingBottom="@dimen/padding_size_s">
 
@@ -328,7 +386,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/icon_common_size"
                     android:layout_weight="2.1"
-                    android:src="@drawable/ic_my_poi"/>
+                    android:src="@drawable/ic_marker_you_bike_normal"/>
 
                 <TextView
                     android:layout_width="match_parent"
