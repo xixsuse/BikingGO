@@ -13,6 +13,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsShared;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 
@@ -491,7 +492,7 @@ public class JsonParser {
                 for (int i = 0; i < JA.length(); i++) {
                     JO = JA.getJSONObject(i);
                     trackNameList.add(new ItemsTrackRecord(
-                            JO.getString(FavoriteHelper.TRACK_TIME),
+                            JO.getString(FavoriteHelper.TRACK_DATE),
                             JO.getString(FavoriteHelper.TRACK_NAME),
                             JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
                             JO.getString(FavoriteHelper.TRACK_DISTANCE)));
@@ -520,7 +521,7 @@ public class JsonParser {
                 JO = JA.getJSONObject(index);
 
                 ItemsTrackRecord trackItem = new ItemsTrackRecord(
-                        JO.getString(FavoriteHelper.TRACK_TIME),
+                        JO.getString(FavoriteHelper.TRACK_DATE),
                         JO.getString(FavoriteHelper.TRACK_NAME),
                         JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
                         JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
@@ -763,6 +764,38 @@ public class JsonParser {
         catch (JSONException | ParseException e) {
             e.printStackTrace();
             parseResult.onParseFail(e.getMessage());
+        }
+    }
+
+    public static ArrayList<ItemsShared> parseAndGetSharedItems(String jsonString) {
+        try {
+            ArrayList<ItemsShared> sharedItemList = new ArrayList<>();
+
+            JA = new JSONArray(jsonString);
+
+            int id;
+            String date;
+            String name;
+            int count;
+
+            for (int i = 0; i < JA.length(); i++) {
+                JO = JA.getJSONObject(i);
+
+                id = JO.getInt("id");
+                date = JO.getString("date");
+                name = JO.getString("name");
+                count = JO.getInt("count");
+
+                sharedItemList.add(new ItemsShared(id, date, name, count));
+            }
+
+            releaseObjects();
+            return sharedItemList;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
         }
     }
 }

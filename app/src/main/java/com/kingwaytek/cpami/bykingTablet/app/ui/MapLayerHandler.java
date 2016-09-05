@@ -45,6 +45,9 @@ import java.util.List;
  * {1} HandlerThread搭配 this Handler可單線程循序，並且執行緒安全地在背景作業，<br>
  * 背景作業完後需更新 UI時，再交給 {2} UI Handler。
  *
+ * 2016/08/29 Updated:
+ * YouBike markers 使用 AsyncTask來新增。
+ *
  * @author Vincent (2016/7/27)
  */
 public class MapLayerHandler extends Handler {
@@ -75,7 +78,19 @@ public class MapLayerHandler extends Handler {
     public ArrayList<Polyline> polyLineTopTenList;
     public ArrayList<Polyline> polyLineRecommendList;
     public ArrayList<Polyline> polyLineTaiwanList;
+
+    private Context context;
+
     public ArrayList<Marker> markerYouBikeList;
+
+    private BitmapDescriptor you_bike_icon_normal;
+    private BitmapDescriptor you_bike_icon_empty;
+    private BitmapDescriptor you_bike_icon_full;
+    private BitmapDescriptor you_bike_icon_unavailable;
+    private final int YOU_BIKE_ICON_CODE_NORMAL = 0;
+    private final int YOU_BIKE_ICON_CODE_EMPTY = 1;
+    private final int YOU_BIKE_ICON_CODE_FULL = 2;
+    private final int YOU_BIKE_ICON_CODE_UNAVAILABLE = 3;
 
     private boolean isLayerChanging;
 
@@ -387,6 +402,12 @@ public class MapLayerHandler extends Handler {
                     }
                     markerYouBikeList.clear();
                     markerYouBikeList = null;
+
+                    context = null;
+                    you_bike_icon_normal = null;
+                    you_bike_icon_empty = null;
+                    you_bike_icon_full = null;
+                    you_bike_icon_unavailable = null;
                 }
                 break;
         }
@@ -406,21 +427,10 @@ public class MapLayerHandler extends Handler {
 
     public class YouBikeMarkerAddTask extends AsyncTask<List<ItemsYouBike>, MarkerOptions, Void> {
 
-        private Context context;
         private GoogleMap map;
 
-        private final int ICON_CODE_NORMAL = 0;
-        private final int ICON_CODE_EMPTY = 1;
-        private final int ICON_CODE_FULL = 2;
-        private final int ICON_CODE_UNAVAILABLE = 3;
-
-        private BitmapDescriptor icon_normal;
-        private BitmapDescriptor icon_empty;
-        private BitmapDescriptor icon_full;
-        private BitmapDescriptor icon_unavailable;
-
         public YouBikeMarkerAddTask(Context context, GoogleMap map) {
-            this.context = context;
+            MapLayerHandler.this.context = context;
             this.map = map;
         }
 
@@ -439,20 +449,21 @@ public class MapLayerHandler extends Handler {
                 marker.position(new LatLng(youBikeItem.LAT, youBikeItem.LNG));
 
                 switch (getIconCode(youBikeItem)) {
-                    case ICON_CODE_NORMAL:
-                        marker.icon(icon_normal);
+                    case YOU_BIKE_ICON_CODE_NORMAL:
+                        marker.icon(you_bike_icon_normal);
                         break;
 
-                    case ICON_CODE_EMPTY:
-                        marker.icon(icon_empty);
+                    case YOU_BIKE_ICON_CODE_EMPTY:
+                        marker.icon(you_bike_icon_empty);
                         break;
 
-                    case ICON_CODE_FULL:
-                        marker.icon(icon_full);
+                    case YOU_BIKE_ICON_CODE_FULL:
+                        marker.icon(you_bike_icon_full);
                         break;
 
-                    case ICON_CODE_UNAVAILABLE:
-                        marker.icon(icon_unavailable);
+                    case YOU_BIKE_ICON_CODE_UNAVAILABLE:
+                        marker.icon(you_bike_icon_unavailable);
+                        marker.snippet(appContext().getString(R.string.you_bike_service_unavailable));
                         break;
                 }
                 publishProgress(marker);
@@ -463,43 +474,45 @@ public class MapLayerHandler extends Handler {
 
         @Override
         protected void onProgressUpdate(MarkerOptions... markers) {
-            markerYouBikeList.add(map.addMarker(markers[0]));
+            Marker marker = map.addMarker(markers[0]);
+            markerYouBikeList.add(marker);
+            ((BaseMapActivity) context).setMarkerTypeMap(marker.getPosition().latitude, marker.getPosition().longitude, R.drawable.ic_marker_you_bike_normal);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             layerChangedCallback.onLayerAdded(LAYER_YOU_BIKE);
         }
+    }
 
-        private int getIconCode(ItemsYouBike youBikeItem) {
-            if (youBikeItem.AVAILABLE_BIKE == 0) {
-                if (icon_empty == null) {
-                    ((BaseActivity) context).checkBitmapCache(CommonBundle.BITMAP_KEY_YOU_BIKE_EMPTY);
-                    icon_empty = BitmapDescriptorFactory.fromBitmap(((BaseActivity) context).getBitmapFromMemCache(CommonBundle.BITMAP_KEY_YOU_BIKE_EMPTY));
-                }
-                return ICON_CODE_EMPTY;
+    private int getIconCode(ItemsYouBike youBikeItem) {
+        if (youBikeItem.STATUS != 1) {
+            if (you_bike_icon_unavailable == null) {
+                ((BaseActivity) context).checkBitmapCache(CommonBundle.BITMAP_KEY_YOU_BIKE_OUT_OF_SERVICE);
+                you_bike_icon_unavailable = BitmapDescriptorFactory.fromBitmap(((BaseActivity) context).getBitmapFromMemCache(CommonBundle.BITMAP_KEY_YOU_BIKE_OUT_OF_SERVICE));
             }
-            else if (youBikeItem.AVAILABLE_SPACE == 0) {
-                if (icon_full == null) {
-                    ((BaseActivity) context).checkBitmapCache(CommonBundle.BITMAP_KEY_YOU_BIKE_FULL);
-                    icon_full = BitmapDescriptorFactory.fromBitmap(((BaseActivity) context).getBitmapFromMemCache(CommonBundle.BITMAP_KEY_YOU_BIKE_FULL));
-                }
-                return ICON_CODE_FULL;
+            return YOU_BIKE_ICON_CODE_UNAVAILABLE;
+        }
+        else if (youBikeItem.AVAILABLE_BIKE == 0) {
+            if (you_bike_icon_empty == null) {
+                ((BaseActivity) context).checkBitmapCache(CommonBundle.BITMAP_KEY_YOU_BIKE_EMPTY);
+                you_bike_icon_empty = BitmapDescriptorFactory.fromBitmap(((BaseActivity) context).getBitmapFromMemCache(CommonBundle.BITMAP_KEY_YOU_BIKE_EMPTY));
             }
-            else if (youBikeItem.STATUS != 1) {
-                if (icon_unavailable == null) {
-                    ((BaseActivity) context).checkBitmapCache(CommonBundle.BITMAP_KEY_YOU_BIKE_OUT_OF_SERVICE);
-                    icon_unavailable = BitmapDescriptorFactory.fromBitmap(((BaseActivity) context).getBitmapFromMemCache(CommonBundle.BITMAP_KEY_YOU_BIKE_OUT_OF_SERVICE));
-                }
-                return ICON_CODE_UNAVAILABLE;
+            return YOU_BIKE_ICON_CODE_EMPTY;
+        }
+        else if (youBikeItem.AVAILABLE_SPACE == 0) {
+            if (you_bike_icon_full == null) {
+                ((BaseActivity) context).checkBitmapCache(CommonBundle.BITMAP_KEY_YOU_BIKE_FULL);
+                you_bike_icon_full = BitmapDescriptorFactory.fromBitmap(((BaseActivity) context).getBitmapFromMemCache(CommonBundle.BITMAP_KEY_YOU_BIKE_FULL));
             }
-            else {
-                if (icon_normal == null) {
-                    ((BaseActivity) context).checkBitmapCache(CommonBundle.BITMAP_KEY_YOU_BIKE_NORMAL);
-                    icon_normal = BitmapDescriptorFactory.fromBitmap(((BaseActivity) context).getBitmapFromMemCache(CommonBundle.BITMAP_KEY_YOU_BIKE_NORMAL));
-                }
-                return ICON_CODE_NORMAL;
+            return YOU_BIKE_ICON_CODE_FULL;
+        }
+        else {
+            if (you_bike_icon_normal == null) {
+                ((BaseActivity) context).checkBitmapCache(CommonBundle.BITMAP_KEY_YOU_BIKE_NORMAL);
+                you_bike_icon_normal = BitmapDescriptorFactory.fromBitmap(((BaseActivity) context).getBitmapFromMemCache(CommonBundle.BITMAP_KEY_YOU_BIKE_NORMAL));
             }
+            return YOU_BIKE_ICON_CODE_NORMAL;
         }
     }
 
@@ -517,6 +530,28 @@ public class MapLayerHandler extends Handler {
                 public void run() {
                     for (int i = 0; i < markerYouBikeList.size(); i++) {
                         markerYouBikeList.get(i).setSnippet(getYouBikeSnippet(youBikeItems.get(i)));
+
+                        switch(getIconCode(youBikeItems.get(i))) {
+                            case YOU_BIKE_ICON_CODE_NORMAL:
+                                markerYouBikeList.get(i).setIcon(you_bike_icon_normal);
+                                break;
+
+                            case YOU_BIKE_ICON_CODE_EMPTY:
+                                markerYouBikeList.get(i).setIcon(you_bike_icon_empty);
+                                break;
+
+                            case YOU_BIKE_ICON_CODE_FULL:
+                                markerYouBikeList.get(i).setIcon(you_bike_icon_full);
+                                break;
+
+                            case YOU_BIKE_ICON_CODE_UNAVAILABLE:
+                                markerYouBikeList.get(i).setIcon(you_bike_icon_unavailable);
+                                markerYouBikeList.get(i).setSnippet(appContext().getString(R.string.you_bike_service_unavailable));
+                                break;
+                        }
+
+                        if (markerYouBikeList.get(i).isInfoWindowShown())
+                            markerYouBikeList.get(i).showInfoWindow();
                     }
                     layerChangedCallback.onLayerAdded(LAYER_YOU_BIKE);
                 }

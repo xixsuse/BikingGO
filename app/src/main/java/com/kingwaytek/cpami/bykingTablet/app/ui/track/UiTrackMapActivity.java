@@ -34,9 +34,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
 import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseMapActivity;
+import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
@@ -159,7 +161,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 break;
 
             case ENTRY_TYPE_TRACK_VIEWING:
-                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_UPLOAD, ACTION_EDIT);
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_UPLOAD, ACTION_DELETE, ACTION_EDIT);
                 break;
         }
         return true;
@@ -179,7 +181,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 break;
 
             case ACTION_UPLOAD:
-
+                uploadTrack();
                 break;
 
             case ACTION_DELETE:
@@ -473,6 +475,36 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 trackItem = JsonParser.getTrackRecord(trackIndex);
                 setInfoLayout();
                 Utility.toastShort(getString(R.string.update_done));
+            }
+        });
+    }
+
+    private void uploadTrack() {
+        DialogHelper.showUploadConfirmDialog(this, trackItem.NAME, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                int index = getIntent().getIntExtra(BUNDLE_TRACK_INDEX, INVALIDATED_INDEX);
+                final String trackContent = DataArray.getTrackObjectString(index);
+
+                if (notNull(trackContent)) {
+                    DialogHelper.showLoadingDialog(UiTrackMapActivity.this);
+
+                    WebAgent.uploadDataToBikingService(POST_VALUE_TYPE_TRACK, trackItem.NAME, trackContent, new WebAgent.WebResultImplement() {
+                        @Override
+                        public void onResultSucceed(String response) {
+                            Utility.toastShort(getString(R.string.upload_done));
+                            DialogHelper.dismissDialog();
+                        }
+
+                        @Override
+                        public void onResultFail(String errorMessage) {
+                            Utility.toastLong(errorMessage);
+                            DialogHelper.dismissDialog();
+                        }
+                    });
+                }
             }
         });
     }

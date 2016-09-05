@@ -76,7 +76,7 @@ public class DialogHelper {
 
     public static void showDeleteConfirmDialog(Context context, String name, DialogInterface.OnClickListener confirmClick) {
         dialogBuilder = new AlertDialog.Builder(context);
-        dialogBuilder.setTitle(context.getString(R.string.poi_confirm_to_delete, name));
+        dialogBuilder.setTitle(context.getString(R.string.confirm_to_delete, name));
         dialogBuilder.setCancelable(true);
         dialogBuilder.setPositiveButton(context.getString(R.string.yes), confirmClick);
         dialogBuilder.setNegativeButton(context.getString(R.string.no), null);
@@ -89,6 +89,18 @@ public class DialogHelper {
     public static void showDeleteConfirmDialog(Context context, DialogInterface.OnClickListener confirmClick) {
         dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setTitle(context.getString(R.string.confirm_to_delete_selected_items));
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.setPositiveButton(context.getString(R.string.yes), confirmClick);
+        dialogBuilder.setNegativeButton(context.getString(R.string.no), null);
+
+        dialog = dialogBuilder.create();
+        dialog.show();
+        changeDialogTitleColor();
+    }
+
+    public static void showUploadConfirmDialog(Context context, String name, DialogInterface.OnClickListener confirmClick) {
+        dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setTitle(context.getString(R.string.confirm_to_upload, name));
         dialogBuilder.setCancelable(true);
         dialogBuilder.setPositiveButton(context.getString(R.string.yes), confirmClick);
         dialogBuilder.setNegativeButton(context.getString(R.string.no), null);

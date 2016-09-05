@@ -1,7 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:paddingTop="@dimen/padding_size_l"
+              android:paddingBottom="@dimen/padding_size_l"
+              android:gravity="center">
+
+    <ImageView
+        android:id="@+id/popularityImageView"
+        android:layout_width="@dimen/icon_common_size_l"
+        android:layout_height="@dimen/icon_common_size_l"
+        android:layout_weight="0"
+        android:src="@drawable/ic_popular_item"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/padding_size_xxl"
+        android:layout_marginStart="@dimen/padding_size_xxl" >
+        
+        <TextView
+            android:id="@+id/text_sharedItemName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00000000000000"
+            android:textSize="@dimen/font_text_size_l"
+            android:textColor="@color/md_grey_900"/>
+
+        <TextView
+            android:id="@+id/text_sharedItemDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_size_s"
+            android:text="00000000000000"
+            android:textSize="@dimen/font_text_size_s"
+            android:textColor="@color/md_grey_600"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="@dimen/icon_common_size"
+        android:layout_height="@dimen/icon_common_size"
+        android:layout_weight="0"
+        android:src="@drawable/ic_right_arrow_grey"/>
 
 </LinearLayout>

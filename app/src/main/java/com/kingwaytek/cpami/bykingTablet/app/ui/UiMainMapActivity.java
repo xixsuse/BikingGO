@@ -167,7 +167,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     public void onDestroy() {
         super.onDestroy();
         map.setOnMapLongClickListener(null);
-        closeAllLayerFlag();
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
+            closeAllLayerFlag();
     }
 
     void checkIntentAndDoActions() {
@@ -201,10 +202,17 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
             selectedMarker = marker;
 
-            if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude))
-                showMarkerButtonLayout(true, true);
-            else
-                showMarkerButtonLayout(true, false);
+            String key = String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude);
+
+            if (markerTypeMap.containsKey(key) && markerTypeMap.get(key) == R.drawable.ic_marker_you_bike_normal) {
+                showMarkerButtonLayout(false, false);
+            }
+            else {
+                if (FavoriteHelper.isPoiExisted(marker.getPosition().latitude, marker.getPosition().longitude))
+                    showMarkerButtonLayout(true, true);
+                else
+                    showMarkerButtonLayout(true, false);
+            }
         }
         return false;
     }
@@ -374,7 +382,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         if (isChecked) {
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
-                            switch_layerYouBike.setChecked(false);
                         }
                         switch_layerCycling.setChecked(isChecked);
                         SettingManager.MapLayer.setCyclingLayer(isChecked);
@@ -384,7 +391,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         if (isChecked) {
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
-                            switch_layerYouBike.setChecked(false);
                         }
                         switch_layerTopTen.setChecked(isChecked);
                         SettingManager.MapLayer.setTopTenLayer(isChecked);
@@ -394,7 +400,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         if (isChecked) {
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
-                            switch_layerYouBike.setChecked(false);
                         }
                         switch_layerRecommended.setChecked(isChecked);
                         SettingManager.MapLayer.setRecommendedLayer(isChecked);
@@ -421,9 +426,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         break;
 
                     case R.id.switch_layer_you_bike:
-                        switch_layerCycling.setChecked(false);
-                        switch_layerTopTen.setChecked(false);
-                        switch_layerRecommended.setChecked(false);
                         switch_layerAllOfTaiwan.setChecked(false);
                         switch_layerRentStation.setChecked(false);
                         switch_layerYouBike.setChecked(isChecked);
@@ -1145,8 +1147,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                     setYouBikeRefreshButtonStatus(false);
 
-                    final MapLayerHandler.YouBikeMarkerAddTask uBikeTask = layerHandler.new YouBikeMarkerAddTask(this, map);
-
                     DataArray.getYouBikeData(new DataArray.OnYouBikeDataGetCallback() {
                         @SuppressWarnings("unchecked")
                         @Override
@@ -1154,11 +1154,11 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                             if (tempYouBikeList == null || tempYouBikeList.isEmpty())
                                 tempYouBikeList = uBikeItems;
                             else {
-                                tempYouBikeList.addAll(uBikeItems);
+                                tempYouBikeList.addAll(0, uBikeItems);
                                 if (key.equals(MARKERS_YOU_BIKE_REFRESH))
                                     layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
                                 else
-                                    uBikeTask.execute(tempYouBikeList);
+                                    layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(tempYouBikeList);
                             }
                         }
 
@@ -1172,8 +1172,20 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                                 if (key.equals(MARKERS_YOU_BIKE_REFRESH))
                                     layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
                                 else
-                                    uBikeTask.execute(tempYouBikeList);
+                                    layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(tempYouBikeList);
                             }
+                        }
+
+                        @Override
+                        public void onDataGetFailed() {
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showLoadingCircle(false);
+                                    Utility.toastShort(getString(R.string.network_connection_error_please_retry));
+                                    SettingManager.MapLayer.setYouBikeLayer(false);
+                                }
+                            });
                         }
                     });
                 }

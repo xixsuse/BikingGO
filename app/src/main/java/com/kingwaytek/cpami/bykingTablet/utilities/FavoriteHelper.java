@@ -36,7 +36,7 @@ public class FavoriteHelper {
     public static final String PLAN_DATE = "planDate";
     public static final String PLAN_ITEMS = "planItems";
 
-    public static final String TRACK_TIME = "time";
+    public static final String TRACK_DATE = "time";
     public static final String TRACK_NAME = "name";
     public static final String TRACK_DIFFICULTY = "difficulty";
     public static final String TRACK_DESCRIPTION = "description";
@@ -390,7 +390,7 @@ public class FavoriteHelper {
                 ja_track = new JSONArray(ja_string);
 
             JSONObject jo = new JSONObject();
-            jo.put(TRACK_TIME, time);
+            jo.put(TRACK_DATE, time);
             jo.put(TRACK_NAME, name);
             jo.put(TRACK_DIFFICULTY, difficulty);
             jo.put(TRACK_DESCRIPTION, description);

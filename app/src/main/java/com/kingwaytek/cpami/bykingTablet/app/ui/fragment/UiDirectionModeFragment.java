@@ -114,7 +114,7 @@ public class UiDirectionModeFragment extends Fragment implements CommonBundle, A
                         break;
 
                     case MODE_TRANSIT:
-
+                        // TODO Get the transit data from Google directions API if needed.
                         break;
                 }
             }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
+import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
@@ -38,6 +39,8 @@ public class UiMyPlanListActivity extends BaseActivity {
     private ListView planListView;
     private PlanListAdapter planAdapter;
     private FloatingActionButton floatingBtn_addPlan;
+
+    private boolean isUploadMode;
 
     @Override
     protected void init() {
@@ -72,10 +75,16 @@ public class UiMyPlanListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position != parent.getCount() -1) {
-                    Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
-                    intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    if (isUploadMode) {
+                        String name = ((String[]) parent.getItemAtPosition(position))[0];
+                        uploadPlan(name, position);
+                    }
+                    else {
+                        Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
+                        intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
                 }
             }
         });
@@ -83,7 +92,7 @@ public class UiMyPlanListActivity extends BaseActivity {
         planListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                if (position != parent.getCount() - 1) {
+                if (position != parent.getCount() - 1 && !isUploadMode) {
                     planAdapter.showCheckBox(true);
                     planAdapter.setBoxChecked(position);
                     setMenuOption(ACTION_DELETE);
@@ -118,6 +127,8 @@ public class UiMyPlanListActivity extends BaseActivity {
             case android.R.id.home:
                 if (notNull(planAdapter) && planAdapter.isCheckBoxShowing())
                     unCheckBoxAndResumeMenu();
+                else if (isUploadMode)
+                    setUploadMode(false);
                 else
                     super.onOptionsItemSelected(item);
                 break;
@@ -168,10 +179,12 @@ public class UiMyPlanListActivity extends BaseActivity {
             public void onClick(View v) {
                 switch ((int)v.getTag()) {
                     case R.id.planMenu_browse:
+                        goToSharedList();
                         DialogHelper.dismissDialog();
                         break;
 
                     case R.id.planMenu_upload:
+                        setUploadMode(true);
                         DialogHelper.dismissDialog();
                         break;
 
@@ -201,6 +214,61 @@ public class UiMyPlanListActivity extends BaseActivity {
             planUpload.setOnClickListener(menuClick);
             planDelete.setOnClickListener(menuClick);
         }
+    }
+
+    private void goToSharedList() {
+        Intent intent = new Intent(this, UiSharedListActivity.class);
+
+        intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_VIEW_SHARED);
+        intent.putExtra(BUNDLE_SHARED_LIST_TYPE, SHARED_LIST_TYPE_PLAN);
+
+        startActivity(intent);
+    }
+
+    private void setUploadMode(boolean isUploadMode) {
+        this.isUploadMode = isUploadMode;
+        if (isUploadMode) {
+            menu.clear();
+            planListView.setBackgroundResource(R.drawable.background_search_text);
+            floatingBtn_addPlan.setVisibility(View.GONE);
+            Utility.toastLong(getString(R.string.plan_chose_a_plan_to_upload));
+        }
+        else {
+            setMenuOption(ACTION_MORE);
+            planListView.setBackgroundResource(0);
+            floatingBtn_addPlan.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void uploadPlan(final String planName, final int planIndex) {
+        DialogHelper.showUploadConfirmDialog(this, planName, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                final String planContent = DataArray.getPlanObjectString(planIndex);
+
+                if (notNull(planContent)) {
+                    DialogHelper.showLoadingDialog(UiMyPlanListActivity.this);
+
+                    WebAgent.uploadDataToBikingService(POST_VALUE_TYPE_PLAN, planName, planContent, new WebAgent.WebResultImplement() {
+                        @Override
+                        public void onResultSucceed(String response) {
+                            Utility.toastShort(getString(R.string.upload_done));
+                            DialogHelper.dismissDialog();
+                            setUploadMode(false);
+                        }
+
+                        @Override
+                        public void onResultFail(String errorMessage) {
+                            Utility.toastLong(errorMessage);
+                            DialogHelper.dismissDialog();
+                            setUploadMode(false);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void deleteSelectedItems() {
@@ -245,6 +313,8 @@ public class UiMyPlanListActivity extends BaseActivity {
     public void onBackPressed() {
         if (notNull(planAdapter) && planAdapter.isCheckBoxShowing())
             unCheckBoxAndResumeMenu();
+        else if (isUploadMode)
+            setUploadMode(false);
         else
             super.onBackPressed();
     }

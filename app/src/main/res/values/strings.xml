@@ -291,6 +291,13 @@
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="update_done">更新完成！</string>
+    <string name="upload_done">Upload Completed!</string>
+    <string name="confirm_to_delete">是否確認刪除「%s」?</string>
+    <string name="confirm_to_delete_selected_items">是否刪除選取的項目?</string>
+    <string name="confirm_to_upload">是否要上傳「%s」?</string>
+    <string name="network_connection_error_please_retry">連線異常！請稍後再重試</string>
+    <string name="enter_keywords_to_search">輸入關鍵字搜尋</string>
+    <string name="page_shared_list">車友分享</string>
 
     <!-- Permission Request -->
     <string name="location_permission_rationale_title">允許裝置存取目前位置</string>
@@ -345,6 +352,7 @@
     <string name="you_bike_available_space">可停空位：%s輛\n</string>
     <string name="you_bike_update_time">時　　間：%s</string>
     <string name="you_bike_all_data_get">資料更新完成</string>
+    <string name="you_bike_service_unavailable">暫停營運</string>
 
     <!-- My POI -->
     <string name="poi_add_a_new_one">新增我的景點</string>
@@ -361,7 +369,6 @@
     <string name="poi_update_done">景點更新成功</string>
     <string name="poi_remove_done">景點刪除完成</string>
     <string name="poi_empty">尚未新增任何景點！</string>
-    <string name="poi_confirm_to_delete">是否確認刪除「%s」?</string>
     <string name="poi_add_a_new_one_instruction">可從附近景點、地點搜尋或在地圖上長按新增點位來新增景點。</string>
     <string name="poi_select_this_point">選擇此點位</string>
     <string name="poi_edit_this_point">編輯此點位</string>
@@ -381,10 +388,10 @@
     <string name="plan_start_name_and_end_name">%1$s\t==>\t%2$s</string>
     <string name="plan_distance_is">距離：%s</string>
     <string name="plan_duration_is">ETA：%s</string>
-    <string name="confirm_to_delete_selected_items">是否刪除選取的項目?</string>
     <string name="plan_browse_shared">查看車友分享的行程</string>
     <string name="plan_upload">上傳行程</string>
     <string name="plan_delete">刪除行程</string>
+    <string name="plan_chose_a_plan_to_upload">請選擇要上傳的行程</string>
 
     <!-- File Storage -->
     <string name="file_biking_data_directory">/_BikingData/</string>
@@ -471,6 +478,7 @@
     <string name="track_in_background">軌跡錄製背景執行中</string>
     <string name="track_done_and_total_length">軌跡錄製完成！\n總長度：%s</string>
     <string name="track_total_length">軌跡總長度：%s</string>
+    <string name="track_chose_a_track_to_upload">請選擇要上傳的軌跡</string>
 
 
     <string-array name="dialog_photo_menu">

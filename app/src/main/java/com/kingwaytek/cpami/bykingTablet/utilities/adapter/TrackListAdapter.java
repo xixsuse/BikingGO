@@ -75,7 +75,7 @@ public class TrackListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
 
         holder.trackName.setText(trackNameList.get(position).NAME);
-        holder.trackTime.setText(trackNameList.get(position).TIME);
+        holder.trackTime.setText(trackNameList.get(position).DATE);
         holder.trackDistance.setText(trackNameList.get(position).DISTANCE);
 
         if (!checkedMap.containsKey(position))

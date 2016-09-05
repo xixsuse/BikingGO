@@ -7,11 +7,17 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsShared;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
+import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
+import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.lang.ref.SoftReference;
 import java.text.MessageFormat;
@@ -41,6 +47,7 @@ public class DataArray implements ApiUrls {
     public interface OnYouBikeDataGetCallback {
         void onTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems);
         void onNewTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems);
+        void onDataGetFailed();
     }
 
     public static void getLocationSearchResult(final String locationName, final OnDataGetCallBack dataGet) {
@@ -82,6 +89,40 @@ public class DataArray implements ApiUrls {
 
     public static ArrayList<ItemsPlans> getPlansData() {
         return JsonParser.getPlansData();
+    }
+
+    /**
+     * @return JSONObject's string of the plan
+     */
+    public static String getPlanObjectString(int index) {
+        try {
+            JSONArray ja = new JSONArray(Util.readPlanFile());
+
+            return ja.getJSONObject(index).toString();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * @return JSONObject's string of the track
+     */
+    public static String getTrackObjectString(int index) {
+        try {
+            JSONArray ja = new JSONArray(TrackingFileUtil.readTrackFile());
+
+            return ja.getJSONObject(index).toString();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ArrayList<ItemsShared> getSharedList(String jsonString) {
+        return JsonParser.parseAndGetSharedItems(jsonString);
     }
 
     /**
@@ -154,6 +195,7 @@ public class DataArray implements ApiUrls {
                     @Override
                     public void onParseFail(String errorMessage) {
                         Log.e(TAG, errorMessage);
+                        youBikeDataGetCallback.onDataGetFailed();
                     }
                 });
             }
@@ -161,6 +203,7 @@ public class DataArray implements ApiUrls {
             @Override
             public void onDownloadFailed(String errorMessage) {
                 Log.e(TAG, errorMessage);
+                youBikeDataGetCallback.onDataGetFailed();
             }
         });
 
@@ -178,6 +221,7 @@ public class DataArray implements ApiUrls {
                     @Override
                     public void onParseFail(String errorMessage) {
                         Log.e(TAG, "NewTaipeiYouBikeParseError: " + errorMessage);
+                        youBikeDataGetCallback.onDataGetFailed();
                     }
                 });
             }
@@ -185,6 +229,7 @@ public class DataArray implements ApiUrls {
             @Override
             public void onResultFail(String errorMessage) {
                 Log.e(TAG, "NewTaipeiYouBikeWebError: " + errorMessage);
+                youBikeDataGetCallback.onDataGetFailed();
             }
         });
     }

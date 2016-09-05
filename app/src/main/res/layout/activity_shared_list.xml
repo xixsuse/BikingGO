@@ -2,6 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:paddingTop="@dimen/padding_size_l"
+              android:paddingBottom="@dimen/padding_size_s"
+              android:paddingLeft="@dimen/padding_size_l"
+              android:paddingStart="@dimen/padding_size_l"
+              android:paddingRight="@dimen/padding_size_l"
+              android:paddingEnd="@dimen/padding_size_l" >
+
+    <EditText
+        android:id="@+id/edit_listFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_size_m"
+        android:drawableRight="@android:drawable/ic_menu_search"
+        android:drawableEnd="@android:drawable/ic_menu_search"
+        android:drawablePadding="@dimen/padding_size_s"
+        android:textColor="@color/md_black_1000"
+        android:textSize="@dimen/font_text_size_m"
+        android:hint="@string/enter_keywords_to_search"
+        android:textColorHint="@color/md_grey_600"/>
+
+    <ListView
+        android:id="@+id/sharedListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/md_grey_500"
+        android:dividerHeight="0.5dp"/>
 
 </LinearLayout>

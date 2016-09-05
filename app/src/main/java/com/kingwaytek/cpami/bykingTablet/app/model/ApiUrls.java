@@ -34,4 +34,6 @@ public interface ApiUrls {
             "Code={11}";
 
     String API_EVENTS = "http://gis.taiwan.net.tw/XMLReleaseALL_public/activity_C_f.json";
+
+    String API_BIKING_SERVICE = "http://192.168.6.75/bikerec/db1.ashx";
 }

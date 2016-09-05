@@ -33,6 +33,7 @@ public interface CommonBundle {
     String BUNDLE_TRACK_INDEX = "TrackIndex";
     String BUNDLE_DIRECTION_MODE = "DirectionMode";
     String BUNDLE_FRAGMENT_DEFAULT_ARG = "FragmentDefaultArgument";
+    String BUNDLE_SHARED_LIST_TYPE = "SharedListType";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;
@@ -40,6 +41,7 @@ public interface CommonBundle {
     int ENTRY_TYPE_DIRECTIONS = 2;
     int ENTRY_TYPE_TRACKING = 3;
     int ENTRY_TYPE_TRACK_VIEWING = 4;
+    int ENTRY_TYPE_VIEW_SHARED = 5;
 
     // Direction Options
     String DIR_MODE_DRIVING = "driving";
@@ -77,4 +79,21 @@ public interface CommonBundle {
 
     // Other keys
     String MARKERS_YOU_BIKE_REFRESH = "YouBikeMarkersRefresh";
+
+    // Post Keys & Values
+    String POST_KEY_MODE = "mode";
+    String POST_KEY_TYPE = "type";
+    String POST_KEY_NAME = "name";
+    String POST_KEY_CONTENT = "content";
+    String POST_KEY_ID = "id";
+
+    String POST_VALUE_MODE_UPLOAD = "upload";
+    String POST_VALUE_MODE_DOWNLOAD = "download";
+    String POST_VALUE_MODE_LIST = "list";
+    String POST_VALUE_TYPE_PLAN = "01";
+    String POST_VALUE_TYPE_TRACK = "02";
+
+    // Shared List Type
+    int SHARED_LIST_TYPE_PLAN = 1;
+    int SHARED_LIST_TYPE_TRACK = 2;
 }

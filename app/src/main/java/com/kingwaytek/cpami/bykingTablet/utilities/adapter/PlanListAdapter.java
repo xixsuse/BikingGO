@@ -31,6 +31,9 @@ public class PlanListAdapter extends BaseAdapter {
     private boolean showCheckBox;
     private HashMap<Integer, Boolean> checkedMap;
 
+    /**
+     * @param planPairList The list contains name and updated time of each plans.
+     */
     public PlanListAdapter(Context context, ArrayList<String[]> planPairList) {
         this.planPairList = planPairList;
         inflater = LayoutInflater.from(context);
