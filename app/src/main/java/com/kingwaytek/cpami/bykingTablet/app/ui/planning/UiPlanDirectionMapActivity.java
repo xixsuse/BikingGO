@@ -8,7 +8,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -31,11 +34,16 @@ import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseGoogleApiActivity;
+import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
+import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
+import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathListPagerAdapter;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathStepsAdapter;
 
@@ -68,6 +76,11 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     private LinearLayout planTitleLayout;
     private TextView text_planTitle;
 
+    private boolean entryTypeIsDirection;
+
+    private int planIndex;
+    private ItemsPlans planItem;
+
     @Override
     protected void onApiReady() {
         getBundleAndDraw();
@@ -85,6 +98,8 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         super.onDestroy();
         if (notNull(pathListPager))
             pathListPager.removeOnPageChangeListener(this);
+
+        planItem = null;
     }
 
     @Override
@@ -105,12 +120,30 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {}
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        switch (ENTRY_TYPE) {
+            case ENTRY_TYPE_VIEW_SHARED_PLAN:
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_LIST, ACTION_LIKE);
+                break;
+
+            default:
+                super.onCreateOptionsMenu(menu);
+                break;
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
         switch (item.getItemId()) {
             case ACTION_LIST:
                 showPathListView();
+                break;
+
+            case ACTION_LIKE:
+                showRatingWindow();
                 break;
         }
 
@@ -120,20 +153,33 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     private void getBundleAndDraw() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
+        entryTypeIsDirection = ENTRY_TYPE == ENTRY_TYPE_DIRECTIONS;
 
         String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
-        int planIndex = bundle.getInt(BUNDLE_PLAN_EDIT_INDEX);
 
-        drawMultiPointsLine(jsonString, planIndex);
-        showPlanTitleLayout(planIndex);
+        if (entryTypeIsDirection)
+            planIndex = bundle.getInt(BUNDLE_PLAN_EDIT_INDEX);
+        else if (getIntent().hasExtra(BUNDLE_SHARED_ITEM))
+            planItem = JsonParser.parseAndGetSharedPlan(getIntent().getStringExtra(BUNDLE_SHARED_ITEM));
+
+        drawMultiPointsLine(jsonString);
+        showPlanTitleLayout();
     }
 
-    private void drawMultiPointsLine(String jsonString, int planIndex) {
+    private void drawMultiPointsLine(String jsonString) {
         String polyOverview = JsonParser.getPolyLineOverview(jsonString);
 
         if (notNull(polyOverview)) {
             ArrayList<LatLng> linePoints = PolyHelper.decodePolyLine(polyOverview);
-            ArrayList<ItemsPlanItem> planItems = DataArray.getPlansData().get(planIndex).PLAN_ITEMS;
+
+            ArrayList<ItemsPlanItem> planItems = new ArrayList<>();
+
+            if (!entryTypeIsDirection && getIntent().hasExtra(BUNDLE_SHARED_ITEM)) {
+                if (notNull(planItem))
+                    planItems = planItem.PLAN_ITEMS;
+            }
+            else
+                planItems = DataArray.getPlansData().get(planIndex).PLAN_ITEMS;
 
             PolylineOptions polyOptions = new PolylineOptions();
 
@@ -201,9 +247,18 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         }
     }
 
-    private void showPlanTitleLayout(int planIndex) {
+    private void showPlanTitleLayout() {
         planTitleLayout.setVisibility(View.VISIBLE);
-        text_planTitle.setText(DataArray.getPlansData().get(planIndex).NAME);
+
+        String planName = "";
+        if (entryTypeIsDirection) {
+            Log.i(TAG, "planIndex: " + planIndex);
+            planName = DataArray.getPlansData().get(planIndex).NAME;
+        }
+        else if (notNull(planItem))
+            planName = planItem.NAME;
+
+        text_planTitle.setText(planName);
     }
 
     private void showPathListView() {
@@ -219,7 +274,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
             if (notNull(view) && notNull(bundle)) {
                 String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
-                ArrayList<String[]> namePairList = getNamePairs(bundle.getInt(BUNDLE_PLAN_EDIT_INDEX));
+                ArrayList<String[]> namePairList = getNamePairs();
 
                 DataArray.getDirectionPathListData(jsonString, namePairList, new DataArray.OnDataGetCallBack() {
                     @Override
@@ -231,8 +286,14 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         }
     }
 
-    private ArrayList<String[]> getNamePairs(int index) {
-        ArrayList<ItemsPlanItem> planItems = DataArray.getPlansData().get(index).PLAN_ITEMS;
+    private ArrayList<String[]> getNamePairs() {
+        ArrayList<ItemsPlanItem> planItems = new ArrayList<>();
+
+        if (entryTypeIsDirection)
+            planItems = DataArray.getPlansData().get(planIndex).PLAN_ITEMS;
+        else if (notNull(planItem))
+            planItems = planItem.PLAN_ITEMS;
+
         int size = planItems.size();
 
         ArrayList<String[]> namePairList = new ArrayList<>(size - 1);
@@ -342,7 +403,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         if (DataArray.list_pathList == null || DataArray.list_pathList.get() == null || DataArray.list_pathList.get().isEmpty()) {
             Bundle bundle = getIntent().getExtras();
             String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
-            ArrayList<String[]> namePairList = getNamePairs(bundle.getInt(BUNDLE_PLAN_EDIT_INDEX));
+            ArrayList<String[]> namePairList = getNamePairs();
 
             DataArray.getDirectionPathListData(jsonString, namePairList, new DataArray.OnDataGetCallBack() {
                 @Override
@@ -412,6 +473,56 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         }
         else
             highLightPolyList = new ArrayList<>();
+    }
+
+    private void showRatingWindow() {
+        View view = PopWindowHelper.getSharedRatingWindow(this, mapRootLayout, true);
+
+        final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.sharedRatingBar);
+        final TextView cancel = (TextView) view.findViewById(R.id.sharedCancel);
+        final TextView send = (TextView) view.findViewById(R.id.sharedSend);
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int rating = (int) ratingBar.getRating();
+                if (rating != 0) {
+                    sendRatingToService(rating);
+                    cancel.callOnClick();
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopWindowHelper.dismissPopWindow();
+                cancel.setOnClickListener(null);
+                send.setOnClickListener(null);
+            }
+        });
+    }
+
+    private void sendRatingToService(int rating) {
+        DialogHelper.showLoadingDialog(this);
+
+        String id = String.valueOf(getIntent().getIntExtra(BUNDLE_SHARED_ITEM_ID, 0));
+        Log.i(TAG, "ItemID: " + getIntent().getIntExtra(BUNDLE_SHARED_ITEM_ID, 0) + " Rating: " + rating);
+
+        WebAgent.sendRatingToBikingService(id, rating, new WebAgent.WebResultImplement() {
+            @Override
+            public void onResultSucceed(String response) {
+                Utility.toastShort(getString(R.string.rating_completed));
+                PopWindowHelper.dismissPopWindow();
+                DialogHelper.dismissDialog();
+            }
+
+            @Override
+            public void onResultFail(String errorMessage) {
+                Utility.toastShort(errorMessage);
+                DialogHelper.dismissDialog();
+            }
+        });
     }
 
     @Override

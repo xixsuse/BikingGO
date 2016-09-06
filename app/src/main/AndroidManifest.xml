@@ -584,6 +584,14 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
+        <activity
+            android:name=".app.ui.poi_book.UiPoiCityListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".app.ui.poi_book.UiPoiDetailActivity"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".app.service.TrackingService"
             android:enabled="true"

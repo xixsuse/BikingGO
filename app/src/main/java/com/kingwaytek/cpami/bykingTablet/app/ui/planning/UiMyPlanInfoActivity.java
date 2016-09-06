@@ -20,6 +20,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PlanInfoListAdapter;
@@ -83,12 +84,27 @@ public class UiMyPlanInfoActivity extends BaseActivity {
     }
 
     private void getIndexAndItems() {
-        Intent intent = getIntent();
+        if (ENTRY_TYPE != ENTRY_TYPE_VIEW_SHARED_PLAN) {
+            Intent intent = getIntent();
 
-        if (intent.hasExtra(BUNDLE_PLAN_EDIT_INDEX)) {
-            PLAN_EDIT_INDEX = intent.getIntExtra(BUNDLE_PLAN_EDIT_INDEX, 0);
+            if (intent.hasExtra(BUNDLE_PLAN_EDIT_INDEX)) {
+                PLAN_EDIT_INDEX = intent.getIntExtra(BUNDLE_PLAN_EDIT_INDEX, 0);
 
-            ItemsPlans planAndItems = DataArray.getPlansData().get(PLAN_EDIT_INDEX);
+                ItemsPlans planAndItems = DataArray.getPlansData().get(PLAN_EDIT_INDEX);
+
+                if (notNull(planAndItems)) {
+                    name = planAndItems.NAME;
+                    setPlanContent(planAndItems);
+                }
+            }
+        }
+        else
+            getItemsFromBundle();
+    }
+
+    private void getItemsFromBundle() {
+        if (getIntent().hasExtra(BUNDLE_SHARED_ITEM)) {
+            ItemsPlans planAndItems = JsonParser.parseAndGetSharedPlan(getIntent().getStringExtra(BUNDLE_SHARED_ITEM));
 
             if (notNull(planAndItems)) {
                 name = planAndItems.NAME;
@@ -110,7 +126,8 @@ public class UiMyPlanInfoActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_UPLOAD, ACTION_DELETE, ACTION_EDIT);
+        if (ENTRY_TYPE != ENTRY_TYPE_VIEW_SHARED_PLAN)
+            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_UPLOAD, ACTION_DELETE, ACTION_EDIT);
         return true;
     }
 
@@ -261,11 +278,19 @@ public class UiMyPlanInfoActivity extends BaseActivity {
                 @Override
                 public void onResultSucceed(String response) {
                     Intent intent = new Intent(UiMyPlanInfoActivity.this, UiPlanDirectionMapActivity.class);
-                    intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_DIRECTIONS);
-
                     Bundle bundle = new Bundle();
+
                     bundle.putString(BUNDLE_PLAN_DIRECTION_JSON, response);
-                    bundle.putInt(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX);
+
+                    if (ENTRY_TYPE != ENTRY_TYPE_VIEW_SHARED_PLAN) {
+                        bundle.putInt(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_DIRECTIONS);
+                        bundle.putInt(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX);
+                    }
+                    else {
+                        bundle.putInt(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_VIEW_SHARED_PLAN);
+                        bundle.putInt(BUNDLE_SHARED_ITEM_ID, getIntent().getIntExtra(BUNDLE_SHARED_ITEM_ID, 0));
+                        bundle.putString(BUNDLE_SHARED_ITEM, getIntent().getStringExtra(BUNDLE_SHARED_ITEM));
+                    }
 
                     intent.putExtras(bundle);
                     startActivity(intent);

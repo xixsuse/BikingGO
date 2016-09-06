@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00000000000000"
-            android:textSize="@dimen/font_text_size_l"
+            android:textSize="@dimen/font_text_size_m"
             android:textColor="@color/md_grey_900"/>
 
         <TextView

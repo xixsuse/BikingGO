@@ -47,6 +47,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.NotifyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -80,7 +81,6 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
     private ItemsTrackRecord trackItem;
     private static final int INVALIDATED_INDEX = -1;
-    private boolean isInfoInEditing;
 
     private Context appContext() {
         return AppController.getInstance().getAppContext();
@@ -163,6 +163,10 @@ public class UiTrackMapActivity extends BaseMapActivity {
             case ENTRY_TYPE_TRACK_VIEWING:
                 MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_UPLOAD, ACTION_DELETE, ACTION_EDIT);
                 break;
+
+            case ENTRY_TYPE_VIEW_SHARED_TRACK:
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_LIKE);
+                break;
         }
         return true;
     }
@@ -186,6 +190,10 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
             case ACTION_DELETE:
                 deleteTrack();
+                break;
+
+            case ACTION_LIKE:
+                showRatingWindow();
                 break;
         }
 
@@ -230,11 +238,16 @@ public class UiTrackMapActivity extends BaseMapActivity {
     }
 
     private void getRecordDataAndDrawLine() {
-        if (ENTRY_TYPE == ENTRY_TYPE_TRACK_VIEWING) {
+        if (ENTRY_TYPE == ENTRY_TYPE_TRACK_VIEWING || ENTRY_TYPE == ENTRY_TYPE_VIEW_SHARED_TRACK) {
             triggerBtnLayout.setVisibility(View.GONE);
 
-            int trackIndex = getIntent().getIntExtra(BUNDLE_TRACK_INDEX, INVALIDATED_INDEX);
-            trackItem = JsonParser.getTrackRecord(trackIndex);
+            if (ENTRY_TYPE == ENTRY_TYPE_TRACK_VIEWING) {
+                int trackIndex = getIntent().getIntExtra(BUNDLE_TRACK_INDEX, INVALIDATED_INDEX);
+                trackItem = JsonParser.getTrackRecord(trackIndex);
+            }
+            else if (getIntent().hasExtra(BUNDLE_SHARED_ITEM)) {
+                trackItem = JsonParser.parseAndGetSharedTrack(getIntent().getStringExtra(BUNDLE_SHARED_ITEM));
+            }
 
             if (notNull(trackItem)) {
                 ArrayList<LatLng> latLngList = PolyHelper.decodePolyLine(trackItem.POLY_LINE);
@@ -275,7 +288,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
     }
 
     private void setInfoLayout() {
-        trackInfoLayout.setVisibility(ENTRY_TYPE == ENTRY_TYPE_TRACK_VIEWING ? View.VISIBLE : View.GONE);
+        trackInfoLayout.setVisibility(View.VISIBLE);
 
         text_trackName.setText(trackItem.NAME);
         trackRating.setRating(trackItem.DIFFICULTY);
@@ -520,6 +533,55 @@ public class UiTrackMapActivity extends BaseMapActivity {
         });
     }
 
+    private void showRatingWindow() {
+        View view = PopWindowHelper.getSharedRatingWindow(this, mapRootLayout, false);
+
+        final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.sharedRatingBar);
+        final TextView cancel = (TextView) view.findViewById(R.id.sharedCancel);
+        final TextView send = (TextView) view.findViewById(R.id.sharedSend);
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int rating = (int) ratingBar.getRating();
+                if (rating != 0) {
+                    sendRatingToService(rating);
+                    cancel.callOnClick();
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopWindowHelper.dismissPopWindow();
+                cancel.setOnClickListener(null);
+                send.setOnClickListener(null);
+            }
+        });
+    }
+
+    private void sendRatingToService(int rating) {
+        DialogHelper.showLoadingDialog(this);
+
+        String id = String.valueOf(getIntent().getIntExtra(BUNDLE_SHARED_ITEM_ID, 0));
+        Log.i(TAG, "ItemID: " + getIntent().getIntExtra(BUNDLE_SHARED_ITEM_ID, 0) + " Rating: " + rating);
+
+        WebAgent.sendRatingToBikingService(id, rating, new WebAgent.WebResultImplement() {
+            @Override
+            public void onResultSucceed(String response) {
+                Utility.toastShort(getString(R.string.rating_completed));
+                DialogHelper.dismissDialog();
+            }
+
+            @Override
+            public void onResultFail(String errorMessage) {
+                Utility.toastShort(errorMessage);
+                DialogHelper.dismissDialog();
+            }
+        });
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -532,6 +594,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
             }
             NotifyHelper.clearServiceNotification();
             showTrackingText(false);
+            trackItem = null;
             finish();
         }
         Log.i(TAG, "IsServiceRunning: " + isTrackingServiceRunning());

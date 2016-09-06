@@ -21,4 +21,5 @@ public interface ActionbarMenu {
     int ACTION_FB_SHARE = 1 << 8;
     int ACTION_INFO = 1 << 9;
     int ACTION_MORE = 1 << 10;
+    int ACTION_LIKE = 1 << 11;
 }

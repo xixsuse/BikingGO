@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsCitiesAndPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsGeoLines;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
@@ -791,6 +792,112 @@ public class JsonParser {
 
             releaseObjects();
             return sharedItemList;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ItemsPlans parseAndGetSharedPlan(String jsonString) {
+        try {
+            String contentString = new JSONObject(jsonString).getString("content");
+            JO = new JSONObject(contentString);
+
+            String planName;
+            String planDate;
+            ArrayList<ItemsPlanItem> planItems;
+
+            String title;
+            double lat;
+            double lng;
+
+            planName = JO.getString(FavoriteHelper.PLAN_NAME);
+            planDate = JO.getString(FavoriteHelper.PLAN_DATE);
+
+            JA = JO.getJSONArray(FavoriteHelper.PLAN_ITEMS);
+
+            planItems = new ArrayList<>();
+
+            for (int j = 0; j < JA.length(); j++) {
+                JSONObject jo = JA.getJSONObject(j);
+
+                title = jo.getString(FavoriteHelper.POI_TITLE);
+                lat = jo.getDouble(FavoriteHelper.POI_LAT);
+                lng = jo.getDouble(FavoriteHelper.POI_LNG);
+
+                planItems.add(new ItemsPlanItem(title, lat, lng));
+            }
+
+            releaseObjects();
+            return new ItemsPlans(planName, planDate, planItems);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ItemsTrackRecord parseAndGetSharedTrack(String jsonString) {
+        try {
+            String contentString = new JSONObject(jsonString).getString("content");
+            JO = new JSONObject(contentString);
+
+            ItemsTrackRecord trackItem = new ItemsTrackRecord(
+                    JO.getString(FavoriteHelper.TRACK_DATE),
+                    JO.getString(FavoriteHelper.TRACK_NAME),
+                    JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
+                    JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
+                    JO.getString(FavoriteHelper.TRACK_POLYLINE),
+                    JO.getString(FavoriteHelper.TRACK_DISTANCE)
+            );
+
+            releaseObjects();
+            return trackItem;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ArrayList<ItemsCitiesAndPOI> parseAndGetCityList(String jsonString) {
+        try {
+            JA = new JSONArray(jsonString);
+
+            ArrayList<ItemsCitiesAndPOI> cityList = new ArrayList<>();
+
+            for (int i = 0; i < JA.length(); i++) {
+                JO = JA.getJSONObject(i);
+                cityList.add(new ItemsCitiesAndPOI(JO.getString("City")));
+            }
+
+            releaseObjects();
+            return cityList;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
+            return null;
+        }
+    }
+
+    public static ArrayList<ItemsCitiesAndPOI> parseAndGetCityPoiList(String jsonString) {
+        try {
+            JA = new JSONArray(jsonString);
+
+            ArrayList<ItemsCitiesAndPOI> cityList = new ArrayList<>();
+
+            for (int i = 0; i < JA.length(); i++) {
+                JO = JA.getJSONObject(i);
+                cityList.add(new ItemsCitiesAndPOI(JO.getInt("Id"), JO.getString("Name")));
+            }
+
+            releaseObjects();
+            return cityList;
         }
         catch (JSONException e) {
             e.printStackTrace();

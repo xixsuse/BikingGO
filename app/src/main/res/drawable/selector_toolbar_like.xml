@@ -3,9 +3,9 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/ic_nav_list_on_2" />
+        android:drawable="@drawable/ic_nav_like_on" />
     <item
-        android:drawable="@drawable/ic_nav_list_off_2" />
+        android:drawable="@drawable/ic_nav_like_off" />
 
 
 </selector>

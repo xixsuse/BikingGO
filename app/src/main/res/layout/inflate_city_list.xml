@@ -13,10 +13,10 @@
         android:layout_weight="0"
         android:layout_marginLeft="@dimen/padding_size_s"
         android:layout_marginStart="@dimen/padding_size_s"
-        android:src="@drawable/ic_events"/>
+        android:src="@drawable/ic_poi_book"/>
 
     <TextView
-        android:id="@+id/text_eventName"
+        android:id="@+id/text_cityName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

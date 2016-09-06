@@ -298,6 +298,10 @@
     <string name="network_connection_error_please_retry">連線異常！請稍後再重試</string>
     <string name="enter_keywords_to_search">輸入關鍵字搜尋</string>
     <string name="page_shared_list">車友分享</string>
+    <string name="rating_for_plan">為這個行程評分</string>
+    <string name="rating_for_track">為這個軌跡評分</string>
+    <string name="send_out">送出</string>
+    <string name="rating_completed">評分完成！</string>
 
     <!-- Permission Request -->
     <string name="location_permission_rationale_title">允許裝置存取目前位置</string>
@@ -345,6 +349,7 @@
     <string name="actionbar_upload">上傳</string>
     <string name="actionbar_info">資訊</string>
     <string name="actionbar_more">更多</string>
+    <string name="actionbar_like">評分</string>
 
     <!-- YouBike Information -->
     <string name="you_bike_location">站點位置：%s\n</string>

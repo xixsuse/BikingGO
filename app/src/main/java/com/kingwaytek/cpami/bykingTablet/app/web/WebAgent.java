@@ -297,18 +297,35 @@ public class WebAgent implements ApiUrls, CommonBundle {
     }
 
     public static void getListFromBikingService(@NonNull String type, WebResultImplement webResult) {
-        sendPostToBikingService(POST_VALUE_MODE_LIST, type, null, null, null, webResult);
+        sendPostToBikingService(POST_VALUE_MODE_LIST, type, null, null, null, null, null, webResult);
     }
 
     public static void uploadDataToBikingService(@NonNull String type, @NonNull String name, @NonNull String content, WebResultImplement webResult) {
-        sendPostToBikingService(POST_VALUE_MODE_UPLOAD, type, name, content, null, webResult);
+        sendPostToBikingService(POST_VALUE_MODE_UPLOAD, type, name, content, null, null, null, webResult);
     }
 
-    public static void downloadDataFromBikingService(@NonNull String id, WebResultImplement webResult) {
-        sendPostToBikingService(POST_VALUE_MODE_DOWNLOAD, null, null, null, id, webResult);
+    public static void downloadDataFromBikingService(int id, WebResultImplement webResult) {
+        sendPostToBikingService(POST_VALUE_MODE_DOWNLOAD, null, null, null, String.valueOf(id), null, null, webResult);
     }
 
-    private static void sendPostToBikingService(final String mode, final String type, final String name, final String content, final String id,
+    public static void sendRatingToBikingService(@NonNull String id, int rating, WebResultImplement webResult) {
+        sendPostToBikingService(POST_VALUE_MODE_STAR, null, null, null, id, String.valueOf(rating), null, webResult);
+    }
+
+    public static void getCityListFromBikingService(WebResultImplement webResult) {
+        sendPostToBikingService(POST_VALUE_MODE_CITY_LIST, null, null, null, null, null, null, webResult);
+    }
+
+    public static void getCityPoiFromBikingService(@NonNull String city, WebResultImplement webResult) {
+        sendPostToBikingService(POST_VALUE_MODE_CITY_POI, null, null, null, null, null, city, webResult);
+    }
+
+    public static void getPoiDetailFromBikingService(int id, WebResultImplement webResult) {
+        sendPostToBikingService(POST_VALUE_MODE_CITY_POI_DETAIL, null, null, null, String.valueOf(id), null, null, webResult);
+    }
+
+    private static void sendPostToBikingService(@NonNull final String mode, final String type, final String name, final String content,
+                                                final String id, final String rating, final String city,
                                                 final WebResultImplement webResult)
     {
         final StringRequest request = new StringRequest(Request.Method.POST, API_BIKING_SERVICE,
@@ -333,8 +350,8 @@ public class WebAgent implements ApiUrls, CommonBundle {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
 
-                if (mode != null)
-                    params.put(POST_KEY_MODE, mode);
+                params.put(POST_KEY_MODE, mode);
+
                 if (type != null)
                     params.put(POST_KEY_TYPE, type);
                 if (name != null)
@@ -343,6 +360,10 @@ public class WebAgent implements ApiUrls, CommonBundle {
                     params.put(POST_KEY_CONTENT, content);
                 if (id != null)
                     params.put(POST_KEY_ID, id);
+                if (rating != null)
+                    params.put(POST_KEY_STAR, rating);
+                if (city != null)
+                    params.put(POST_KEY_CITY, city);
 
                 return params;
             }

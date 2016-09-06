@@ -40,6 +40,7 @@ import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
 import com.kingwaytek.cpami.bykingTablet.app.ui.events.UiEventListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.planning.UiMyPlanListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.poi_book.UiPoiCityListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.report.UiReportActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.settings.UiSettingMenuActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.track.UiTrackListActivity;
@@ -193,6 +194,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
     private void getEntryType() {
         ENTRY_TYPE = getIntent().getIntExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_DEFAULT);
+        Log.i(TAG, "ENTRY_TYPE: " + ENTRY_TYPE);
     }
 
     private void setActionBar() {
@@ -384,7 +386,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                 break;
 
             case R.id.menu_poi_book:
-
+                goTo(UiPoiCityListActivity.class, false);
                 break;
 
             case R.id.menu_events:

@@ -18,12 +18,26 @@ import java.util.ArrayList;
  */
 public class SharedListAdapter extends BaseAdapter {
 
+    private boolean isPlanType;
     private ArrayList<ItemsShared> sharedItemList;
     private LayoutInflater inflater;
 
-    public SharedListAdapter(Context context, ArrayList<ItemsShared> sharedItemList) {
+    private ArrayList<ItemsShared> originalList;
+    private boolean showPopularityIcon = true;
+
+    public SharedListAdapter(Context context, boolean isPlanType, ArrayList<ItemsShared> sharedItemList) {
+        this.isPlanType = isPlanType;
         this.sharedItemList = sharedItemList;
         this.inflater = LayoutInflater.from(context);
+        originalList = new ArrayList<>();
+        originalList.addAll(sharedItemList);
+    }
+
+    public void refreshData(ArrayList<ItemsShared> sharedItemList) {
+        this.sharedItemList = sharedItemList;
+        originalList.clear();
+        originalList.addAll(sharedItemList);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -38,7 +52,7 @@ public class SharedListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return sharedItemList.get(position).ID;
     }
 
     @Override
@@ -61,6 +75,11 @@ public class SharedListAdapter extends BaseAdapter {
         holder.name.setText(sharedItemList.get(position).NAME);
         holder.date.setText(sharedItemList.get(position).DATE);
 
+        if (showPopularityIcon && position < 5)
+            holder.popularityIcon.setImageResource(R.drawable.ic_popular_item);
+        else
+            holder.popularityIcon.setImageResource(isPlanType ? R.drawable.ic_planning : R.drawable.ic_tracking);
+
         return convertView;
     }
 
@@ -68,5 +87,22 @@ public class SharedListAdapter extends BaseAdapter {
         ImageView popularityIcon;
         TextView name;
         TextView date;
+    }
+
+    public void filterData(String queryString) {
+        sharedItemList.clear();
+
+        if (queryString.isEmpty()) {
+            sharedItemList.addAll(originalList);
+            showPopularityIcon = true;
+        }
+        else {
+            for (ItemsShared sharedItem : originalList) {
+                if (sharedItem.NAME.contains(queryString))
+                    sharedItemList.add(sharedItem);
+            }
+            showPopularityIcon = false;
+        }
+        notifyDataSetChanged();
     }
 }

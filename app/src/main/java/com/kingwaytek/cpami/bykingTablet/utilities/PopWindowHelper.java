@@ -170,7 +170,27 @@ public class PopWindowHelper {
 
         setPopWindowUnCancelableAndOutsideTouchable(secondPopWindow);
 
+        int height = appContext().getResources().getDimensionPixelSize(R.dimen.actionbar_height);
         secondPopWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 0);
+    }
+
+    public static View getSharedRatingWindow(Context context, View anchorView, boolean isPlan) {
+        inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.popup_shared_rating_window, null);
+
+        TextView text_ratingFor = (TextView) view.findViewById(R.id.text_ratingForThis);
+        text_ratingFor.setText(isPlan ? appContext().getString(R.string.rating_for_plan) : appContext().getString(R.string.rating_for_track));
+
+        int popWidth = Utility.getScreenWidth();
+        int popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
+
+        popWindow = new PopupWindow(view, popWidth, popHeight);
+
+        setPopWindowCancelable(true);
+
+        popWindow.showAtLocation(anchorView, Gravity.BOTTOM, 0, 0);
+
+        return view;
     }
 
     private static void setPopWindowCancelable(boolean isCancelable) {

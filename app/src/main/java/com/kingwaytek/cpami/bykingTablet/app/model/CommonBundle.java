@@ -34,6 +34,8 @@ public interface CommonBundle {
     String BUNDLE_DIRECTION_MODE = "DirectionMode";
     String BUNDLE_FRAGMENT_DEFAULT_ARG = "FragmentDefaultArgument";
     String BUNDLE_SHARED_LIST_TYPE = "SharedListType";
+    String BUNDLE_SHARED_ITEM_ID = "SharedItemID";
+    String BUNDLE_SHARED_ITEM = "SharedItem";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;
@@ -41,7 +43,8 @@ public interface CommonBundle {
     int ENTRY_TYPE_DIRECTIONS = 2;
     int ENTRY_TYPE_TRACKING = 3;
     int ENTRY_TYPE_TRACK_VIEWING = 4;
-    int ENTRY_TYPE_VIEW_SHARED = 5;
+    int ENTRY_TYPE_VIEW_SHARED_PLAN = 5;
+    int ENTRY_TYPE_VIEW_SHARED_TRACK = 6;
 
     // Direction Options
     String DIR_MODE_DRIVING = "driving";
@@ -86,10 +89,16 @@ public interface CommonBundle {
     String POST_KEY_NAME = "name";
     String POST_KEY_CONTENT = "content";
     String POST_KEY_ID = "id";
+    String POST_KEY_STAR = "star";
+    String POST_KEY_CITY = "city";
 
     String POST_VALUE_MODE_UPLOAD = "upload";
     String POST_VALUE_MODE_DOWNLOAD = "download";
+    String POST_VALUE_MODE_STAR = "star";
     String POST_VALUE_MODE_LIST = "list";
+    String POST_VALUE_MODE_CITY_LIST = "bookcity";
+    String POST_VALUE_MODE_CITY_POI = "booklist";
+    String POST_VALUE_MODE_CITY_POI_DETAIL = "book";
     String POST_VALUE_TYPE_PLAN = "01";
     String POST_VALUE_TYPE_TRACK = "02";
 

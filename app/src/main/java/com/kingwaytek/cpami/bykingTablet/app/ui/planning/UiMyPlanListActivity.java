@@ -219,7 +219,7 @@ public class UiMyPlanListActivity extends BaseActivity {
     private void goToSharedList() {
         Intent intent = new Intent(this, UiSharedListActivity.class);
 
-        intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_VIEW_SHARED);
+        intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_VIEW_SHARED_PLAN);
         intent.putExtra(BUNDLE_SHARED_LIST_TYPE, SHARED_LIST_TYPE_PLAN);
 
         startActivity(intent);

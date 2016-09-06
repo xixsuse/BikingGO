@@ -89,6 +89,12 @@ public class MenuHelper implements ActionbarMenu {
                             .setIcon(R.drawable.selector_toolbar_more)
                             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
+
+                case ACTION_LIKE:
+                    menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_like)
+                            .setIcon(R.drawable.selector_toolbar_like)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                    break;
             }
         }
     }

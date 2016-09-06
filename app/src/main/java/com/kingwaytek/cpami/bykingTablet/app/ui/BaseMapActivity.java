@@ -289,7 +289,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     }
 
     private void turnOnSearchKeyListener(boolean isOn) {
-        if (ENTRY_TYPE != ENTRY_TYPE_TRACKING && ENTRY_TYPE != ENTRY_TYPE_TRACK_VIEWING) {
+        if (ENTRY_TYPE != ENTRY_TYPE_TRACKING && ENTRY_TYPE != ENTRY_TYPE_TRACK_VIEWING && ENTRY_TYPE != ENTRY_TYPE_VIEW_SHARED_TRACK) {
             if (isOn) {
                 searchText.setOnKeyListener(getOnKeyListener());
                 searchText.setText("");

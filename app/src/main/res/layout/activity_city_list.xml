@@ -6,7 +6,7 @@
               android:padding="@dimen/padding_size_m">
 
     <ListView
-        android:id="@+id/events_listView"
+        android:id="@+id/cities_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/md_blue_grey_300"
