@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -30,6 +31,8 @@ import java.util.ArrayList;
  * @author Vincent (2016/5/20)
  */
 public class UiMyPoiListActivity extends BaseActivity {
+
+    private LinearLayout listRootLayout;
 
     private ListView poiListView;
     private MyPoiListAdapter poiListAdapter;
@@ -58,6 +61,7 @@ public class UiMyPoiListActivity extends BaseActivity {
 
     @Override
     protected void findViews() {
+        listRootLayout = (LinearLayout) findViewById(R.id.poiListRootLayout);
         poiListView = (ListView) findViewById(R.id.myPoiListView);
     }
 
@@ -106,6 +110,10 @@ public class UiMyPoiListActivity extends BaseActivity {
                 return true;
             }
         });
+    }
+
+    public View getRootView() {
+        return listRootLayout;
     }
 
     public void goToPoiInfo(ItemsMyPOI poiItem) {

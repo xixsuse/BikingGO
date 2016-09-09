@@ -416,12 +416,13 @@
     <!-- Events -->
     <string name="events_more_text">&#8230;more</string>
     <string name="events_less_text">less</string>
-    <string name="events_start_time">開始時間：%s</string>
-    <string name="events_end_time">結束時間：%s</string>
-    <string name="events_website">網站：%s</string>
-    <string name="events_location">地點：</string>
-    <string name="events_traffic_info">交通資訊：</string>
-    <string name="events_parking_info">停車資訊：</string>
+    <string name="events_start_time">開始時間</string>
+    <string name="events_end_time">結束時間</string>
+    <string name="events_website">活動網址</string>
+    <string name="events_description">活動描述</string>
+    <string name="events_location">活動地點</string>
+    <string name="events_traffic_info">交通資訊</string>
+    <string name="events_parking_info">停車資訊</string>
 
     <!-- User Report -->
     <string name="report_name">姓名</string>

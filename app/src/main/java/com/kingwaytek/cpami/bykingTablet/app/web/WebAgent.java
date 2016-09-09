@@ -3,6 +3,7 @@ package com.kingwaytek.cpami.bykingTablet.app.web;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -12,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
@@ -378,6 +380,10 @@ public class WebAgent implements ApiUrls, CommonBundle {
         AppController.getInstance().getRequestQueue().add(request);
     }
 
+    public static void getImageByUrl(String url, ImageLoader.ImageListener loaderCallback, int width, int height) {
+        AppController.getInstance().getImageLoader().get(url, loaderCallback, width, height, ImageView.ScaleType.CENTER_CROP);
+    }
+
     public static void sendPostByURLConnection(final String mode, final String type, final WebResultImplement webResult) {
         new Thread() {
             @Override
@@ -415,7 +421,6 @@ public class WebAgent implements ApiUrls, CommonBundle {
                     }
                     else
                         webResult.onResultFail("PostConnectionFailed!!!");
-
                 }
                 catch (IOException e) {
                     e.printStackTrace();

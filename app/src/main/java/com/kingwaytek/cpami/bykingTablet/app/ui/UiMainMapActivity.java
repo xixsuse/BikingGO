@@ -42,10 +42,13 @@ import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -89,6 +92,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private Marker myNewMarker;
     private Marker lastAroundPoiMarker;
     private Marker selectedMarker;
+    private Marker poiBookMarker;
 
     private Marker myPositionMarker;
     private Polyline polyLine;
@@ -101,9 +105,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private MapLayerHandler layerHandler;
     private static final String NAME_OF_HANDLER_THREAD = "LayerHandlerThread";
     private static HandlerThread handlerThread;
-
-    private String currentOrigin;
-    private String currentDestination;
 
     private DirectionModePagerAdapter pagerAdapter;
     private LinearLayout pathInfoLayout;
@@ -192,6 +193,12 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                     break;
             }
+
+            if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK)) {
+                putMarkerFromPoiBook();
+                getPolylineAndDrawLine(getIntent().getStringExtra(BUNDLE_DIRECTION_FROM_POI_BOOK));
+            }
+
             isFirstTimeRun = false;
         }
     }
@@ -204,7 +211,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             String key = String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude);
 
-            if (markerTypeMap.containsKey(key) && markerTypeMap.get(key) == R.drawable.ic_marker_you_bike_normal) {
+            if (markerTypeMap.containsKey(key) && (
+                    markerTypeMap.get(key) == R.drawable.ic_marker_you_bike_normal || markerTypeMap.get(key) == R.drawable.ic_pin_place)) {
                 showMarkerButtonLayout(false, false);
             }
             else {
@@ -315,7 +323,17 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         if (notNull(photoPath) && !photoPath.isEmpty()) {
             int imgSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
-            markerPoiPhoto.setImageBitmap(BitmapUtility.getDecodedBitmap(photoPath, imgSize, imgSize));
+
+            Bitmap bitmap = getBitmapFromMemCache(photoPath);
+
+            if (bitmap == null) {
+                bitmap = BitmapUtility.getDecodedBitmap(photoPath, imgSize, imgSize);
+                addBitmapToMemoryCache(photoPath, bitmap);
+                markerPoiPhoto.setImageBitmap(bitmap);
+            }
+            else
+                markerPoiPhoto.setImageBitmap(bitmap);
+
         }
         else
             markerPoiPhoto.setVisibility(View.GONE);
@@ -372,6 +390,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                boolean checked = isLayerChanging() != isChecked;
+
                 switch ((int)buttonView.getTag()) {
                     case R.id.switch_my_poi:
                         switch_myPoi.setChecked(isChecked);
@@ -383,8 +403,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
                         }
-                        switch_layerCycling.setChecked(isChecked);
-                        SettingManager.MapLayer.setCyclingLayer(isChecked);
+                        switch_layerCycling.setChecked(checked);
+                        SettingManager.MapLayer.setCyclingLayer(checked);
                         break;
 
                     case R.id.switch_layer_top_ten:
@@ -392,8 +412,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
                         }
-                        switch_layerTopTen.setChecked(isChecked);
-                        SettingManager.MapLayer.setTopTenLayer(isChecked);
+                        switch_layerTopTen.setChecked(checked);
+                        SettingManager.MapLayer.setTopTenLayer(checked);
                         break;
 
                     case R.id.switch_layer_recommended:
@@ -401,35 +421,41 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
                         }
-                        switch_layerRecommended.setChecked(isChecked);
-                        SettingManager.MapLayer.setRecommendedLayer(isChecked);
+                        switch_layerRecommended.setChecked(checked);
+                        SettingManager.MapLayer.setRecommendedLayer(checked);
                         break;
 
                     case R.id.switch_layer_all_of_taiwan:
-                        switch_layerCycling.setChecked(false);
-                        switch_layerTopTen.setChecked(false);
-                        switch_layerRecommended.setChecked(false);
-                        switch_layerRentStation.setChecked(false);
-                        switch_layerYouBike.setChecked(false);
-                        switch_layerAllOfTaiwan.setChecked(isChecked);
-                        SettingManager.MapLayer.setAllOfTaiwanLayer(isChecked);
+                        if (checked) {
+                            switch_layerCycling.setChecked(false);
+                            switch_layerTopTen.setChecked(false);
+                            switch_layerRecommended.setChecked(false);
+                            switch_layerRentStation.setChecked(false);
+                            switch_layerYouBike.setChecked(false);
+                        }
+                        switch_layerAllOfTaiwan.setChecked(checked);
+                        SettingManager.MapLayer.setAllOfTaiwanLayer(checked);
                         break;
 
                     case R.id.switch_layer_rent_station:
-                        switch_layerCycling.setChecked(false);
-                        switch_layerTopTen.setChecked(false);
-                        switch_layerRecommended.setChecked(false);
-                        switch_layerAllOfTaiwan.setChecked(false);
-                        switch_layerYouBike.setChecked(false);
-                        switch_layerRentStation.setChecked(isChecked);
-                        SettingManager.MapLayer.setRentStationLayer(isChecked);
+                        if (checked) {
+                            switch_layerCycling.setChecked(false);
+                            switch_layerTopTen.setChecked(false);
+                            switch_layerRecommended.setChecked(false);
+                            switch_layerAllOfTaiwan.setChecked(false);
+                            switch_layerYouBike.setChecked(false);
+                        }
+                        switch_layerRentStation.setChecked(checked);
+                        SettingManager.MapLayer.setRentStationLayer(checked);
                         break;
 
                     case R.id.switch_layer_you_bike:
-                        switch_layerAllOfTaiwan.setChecked(false);
-                        switch_layerRentStation.setChecked(false);
-                        switch_layerYouBike.setChecked(isChecked);
-                        SettingManager.MapLayer.setYouBikeLayer(isChecked);
+                        if (checked) {
+                            switch_layerAllOfTaiwan.setChecked(false);
+                            switch_layerRentStation.setChecked(false);
+                        }
+                        switch_layerYouBike.setChecked(checked);
+                        SettingManager.MapLayer.setYouBikeLayer(checked);
                         break;
                 }
             }
@@ -782,7 +808,16 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private void setPoiImageView(String photoPath) {
         int reqSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
-        poiImageView.setImageBitmap(BitmapUtility.getDecodedBitmap(photoPath, reqSize, reqSize));
+
+        Bitmap bitmap = getBitmapFromMemCache(photoPath);
+
+        if (bitmap == null) {
+            bitmap = BitmapUtility.getDecodedBitmap(photoPath, reqSize, reqSize);
+            addBitmapToMemoryCache(photoPath, bitmap);
+            poiImageView.setImageBitmap(bitmap);
+        }
+        else
+            poiImageView.setImageBitmap(bitmap);
     }
 
     @Override
@@ -930,8 +965,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         DialogHelper.showLoadingDialog(this);
 
-        currentOrigin = location.getLatitude() + "," + location.getLongitude();
-        currentDestination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
+        String currentOrigin = location.getLatitude() + "," + location.getLongitude();
+        String currentDestination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
 
         String avoidOption = getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS);
 
@@ -946,19 +981,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 Utility.toastShort(errorMessage);
             }
         });
-    }
-
-    private String getAvoidOptions(String... avoidOptions) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("&avoid=");
-
-        for (int i = 0; i < avoidOptions.length; i++) {
-            if (i != 0)
-                sb.append("|");
-            sb.append(avoidOptions[i]);
-        }
-        return sb.toString();
     }
 
     private void getPolylineAndDrawLine(String jsonString) {
@@ -994,7 +1016,11 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             polyLine = map.addPolyline(polyOptions);
 
             PopWindowHelper.dismissPopWindow();
-            moveCamera(linePoints.get(0));
+
+            if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK))
+                zoomToFitsBetweenTwoMarkers(linePoints.get(0));
+            else
+                moveCamera(linePoints.get(0));
 
             if (notNull(myNewMarker))
                 myNewMarker.hideInfoWindow();
@@ -1011,23 +1037,31 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             footerImage.setBackgroundResource(R.drawable.background_footer_gradient_light);
             footerImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-            openPathInfoLayout();
+            openPathInfoLayout(jsonString);
         }
     }
 
-    private void openPathInfoLayout() {
+    private void openPathInfoLayout(String jsonString) {
         showPathInfoLayout(true);
 
         if (pagerAdapter == null) {
-            pagerAdapter = new DirectionModePagerAdapter(getSupportFragmentManager(), currentOrigin, currentDestination);
+            pagerAdapter = new DirectionModePagerAdapter(getSupportFragmentManager(), jsonString);
             pathListPager.setAdapter(pagerAdapter);
         }
         else {
             UiDirectionModeFragment directionFragment = pagerAdapter.getDirectionFragmentInstance(modeTab.getSelectedTabPosition());
-            directionFragment.updateData(currentOrigin, currentDestination);
+            directionFragment.updateData(jsonString);
         }
 
-        final int height = (int) (screenHeight * 0.4);
+        final int height;
+
+        if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK)) {
+            height = (int) (screenHeight * 0.2);
+            getIntent().removeExtra(BUNDLE_DIRECTION_FROM_POI_BOOK);
+        }
+        else
+            height = (int) (screenHeight * 0.4);
+
 
         final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
         pathInfoLayout.setLayoutParams(params);
@@ -1063,7 +1097,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     private void moveCameraAndDrawHighlight(ItemsPathStep pathStepItem) {
-        moveCameraAndZoom(new LatLng(pathStepItem.START_LAT, pathStepItem.START_LNG), 17);
+        moveCameraAndZoom(new LatLng(pathStepItem.START_LAT, pathStepItem.START_LNG), 18);
 
         ArrayList<LatLng> latLngList = PolyHelper.decodePolyLine(pathStepItem.POLY_LINE);
 
@@ -1146,6 +1180,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                     showLoadingCircle(true);
 
                     setYouBikeRefreshButtonStatus(false);
+                    layerHandler.setIsLayerChanging(true);
 
                     DataArray.getYouBikeData(new DataArray.OnYouBikeDataGetCallback() {
                         @SuppressWarnings("unchecked")
@@ -1178,12 +1213,19 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                         @Override
                         public void onDataGetFailed() {
-                            new Handler().post(new Runnable() {
+                            runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     showLoadingCircle(false);
                                     Utility.toastShort(getString(R.string.network_connection_error_please_retry));
-                                    SettingManager.MapLayer.setYouBikeLayer(false);
+                                    if (notNull(tempYouBikeList)) {
+                                        tempYouBikeList.clear();
+                                        tempYouBikeList = null;
+                                    }
+                                    if (notNull(layerHandler) && layerHandler.isYouBikeMarkerAdded())
+                                        setYouBikeRefreshButtonStatus(true);
+
+                                    layerHandler.setIsLayerChanging(false);
                                 }
                             });
                         }
@@ -1195,6 +1237,10 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 }
                 break;
         }
+    }
+
+    private boolean isLayerChanging() {
+        return notNull(layerHandler) && layerHandler.isLayerChanging();
     }
 
     @Override
@@ -1424,6 +1470,61 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 footerImage.setTag(FOOTER_TAG_BACKGROUND_DARK);
             }
         }
+    }
+
+    private void putMarkerFromPoiBook() {
+        String title = getIntent().getStringExtra(BUNDLE_PUT_MARKER_TITLE);
+        String snippet = getIntent().getStringExtra(BUNDLE_PUT_MARKER_SNIPPET);
+        double[] coordinates = getIntent().getDoubleArrayExtra(BUNDLE_PUT_MARKER_COORDINATES);
+
+        setMarkerTypeMap(coordinates[0], coordinates[1], R.drawable.ic_pin_place);
+
+        MarkerOptions marker = new MarkerOptions();
+        marker.title(title);
+        marker.snippet(snippet);
+        marker.position(new LatLng(coordinates[0], coordinates[1]));
+
+        Bitmap bitmap = getBitmapFromMemCache(BITMAP_KEY_PIN_PLACE);
+        if (bitmap == null) {
+            Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_pin_place);
+            bitmap = BitmapUtility.convertDrawableToBitmap(drawable, getResources().getDimensionPixelSize(R.dimen.icon_marker_common_size));
+            addBitmapToMemoryCache(BITMAP_KEY_PIN_PLACE, bitmap);
+        }
+        marker.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+
+        if (notNull(poiBookMarker))
+            poiBookMarker.remove();
+
+        poiBookMarker = map.addMarker(marker);
+        onMarkerClick(poiBookMarker);
+    }
+
+    private void zoomToFitsBetweenTwoMarkers(LatLng origin) {
+        double[] coordinates = getIntent().getDoubleArrayExtra(BUNDLE_PUT_MARKER_COORDINATES);
+        LatLng destination = new LatLng(coordinates[0], coordinates[1]);
+
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+
+        boundsBuilder.include(origin);
+        boundsBuilder.include(destination);
+
+        LatLngBounds bounds = boundsBuilder.build();
+
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 200);
+        map.animateCamera(cu);
+        /*
+        map.animateCamera(cu, new GoogleMap.CancelableCallback() {
+            @Override
+            public void onFinish() {
+                CameraUpdate zoomOut = CameraUpdateFactory.zoomBy(-3.0f);
+                map.animateCamera(zoomOut);
+                Log.i(TAG, "MapZoomBounds!!!!!");
+            }
+
+            @Override
+            public void onCancel() {}
+        });
+        */
     }
 
     @Override

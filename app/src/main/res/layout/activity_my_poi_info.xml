@@ -21,8 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/poi_photo_edit_view_xl"
                 android:clickable="true"
-                android:background="@drawable/background_poi_photo"
-                android:src="@drawable/selector_add_photo"
+                android:src="@drawable/ic_empty_image"
                 android:scaleType="center"/>
 
             <TextView

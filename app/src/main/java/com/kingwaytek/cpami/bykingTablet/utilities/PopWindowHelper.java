@@ -1,22 +1,28 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
+
+import java.io.File;
 
 /**
  * 使用 PopupWindow的方法統一在這裡做！
@@ -170,7 +176,7 @@ public class PopWindowHelper {
 
         setPopWindowUnCancelableAndOutsideTouchable(secondPopWindow);
 
-        int height = appContext().getResources().getDimensionPixelSize(R.dimen.actionbar_height);
+        //int height = appContext().getResources().getDimensionPixelSize(R.dimen.actionbar_height);
         secondPopWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 0);
     }
 
@@ -191,6 +197,63 @@ public class PopWindowHelper {
         popWindow.showAtLocation(anchorView, Gravity.BOTTOM, 0, 0);
 
         return view;
+    }
+
+    public static void showImageViewWindow(View anchorView, final Context context, final String title, final String photoPath) {
+        inflater = LayoutInflater.from(context);
+
+        View view = inflater.inflate(R.layout.popup_image_view, null);
+
+        int popWidth = Utility.getScreenWidth();
+        int popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
+
+        popWindow = new PopupWindow(view, popWidth, popHeight);
+
+        TextView poiTitle = (TextView) view.findViewById(R.id.dialogPoiTitle);
+        final ImageButton closeBtn = (ImageButton) view.findViewById(R.id.dialogCloseBtn);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.dialogImageView);
+
+        poiTitle.setText(title);
+
+        Uri imageUri = Uri.fromFile(new File(photoPath));
+        Glide.with(context)
+                .load(imageUri)
+                .placeholder(R.drawable.ic_empty_image)
+                .fitCenter()
+                .into(imageView);
+
+        /*
+        int imageHeight = popHeight - (
+                context.getResources().getDimensionPixelSize(R.dimen.padding_size_l) +
+                        context.getResources().getDimensionPixelSize(R.dimen.padding_size_m) +
+                        context.getResources().getDimensionPixelSize(R.dimen.icon_common_size));
+
+        final Bitmap bitmap = BitmapUtility.getDecodedBitmapInFullWidth(photoPath, imageHeight);
+        imageView.setImageBitmap(bitmap);
+        */
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File(photoPath)), "image/*");
+                context.startActivity(intent);
+            }
+        });
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeBtn.setOnClickListener(null);
+                //if (bitmap != null)
+                //    bitmap.recycle();
+                dismissPopWindow();
+            }
+        });
+
+        setPopWindowCancelable(true);
+        popWindow.showAtLocation(anchorView, Gravity.BOTTOM, 0, 0);
     }
 
     private static void setPopWindowCancelable(boolean isCancelable) {

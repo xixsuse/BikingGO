@@ -36,6 +36,11 @@ public interface CommonBundle {
     String BUNDLE_SHARED_LIST_TYPE = "SharedListType";
     String BUNDLE_SHARED_ITEM_ID = "SharedItemID";
     String BUNDLE_SHARED_ITEM = "SharedItem";
+    String BUNDLE_POI_DETAIL = "PoiDetail";
+    String BUNDLE_DIRECTION_FROM_POI_BOOK = "DirectionFromPoiBook";
+    String BUNDLE_PUT_MARKER_TITLE = "PutMarkerTitle";
+    String BUNDLE_PUT_MARKER_SNIPPET = "PutMarkerSnippet";
+    String BUNDLE_PUT_MARKER_COORDINATES = "PutMarkerCoordinates";
 
     // Entry Type
     int ENTRY_TYPE_DEFAULT = 0;

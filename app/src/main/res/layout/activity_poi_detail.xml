@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/poiTitleAndPhotoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/poiPhotoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/poiPhotoPager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/poi_photo_edit_view_xl"/>
+
+            <LinearLayout
+                android:id="@+id/pageDotLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_size_l"
+                android:layout_marginBottom="@dimen/padding_size_xxl"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_alignBottom="@+id/poiPhotoPager"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/md_grey_400"
+                android:layout_alignBottom="@+id/poiPhotoPager"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingBtn_poiDirection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/padding_size_l"
+                android:layout_marginEnd="@dimen/padding_size_l"
+                android:layout_marginTop="@dimen/padding_size_m"
+                android:layout_alignTop="@+id/pageDotLayout"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_nav_around_off"
+                android:clickable="true"
+                app:backgroundTint="@color/md_orange_800"
+                app:rippleColor="@color/md_orange_500" />
+
+            <LinearLayout
+                android:id="@+id/poiTitleLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/poiPhotoPager"
+                android:paddingTop="@dimen/padding_size_l"
+                android:paddingBottom="@dimen/padding_size_l"
+                android:paddingLeft="@dimen/padding_size_xl"
+                android:paddingStart="@dimen/padding_size_xl"
+                android:paddingRight="@dimen/padding_size_m"
+                android:paddingEnd="@dimen/padding_size_m" >
+
+
+                <TextView
+                    android:id="@+id/text_poiTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="台北後車站商圈"
+                    android:textSize="@dimen/font_text_size_l"
+                    android:textColor="@color/md_black_1000"/>
+
+                <TextView
+                    android:id="@+id/text_poiAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_size_s"
+                    android:text="台北市大同區"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_blue_A400"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dp"
+        android:background="@color/md_grey_300"
+        android:layout_below="@+id/poiTitleAndPhotoLayout"
+        android:layout_marginLeft="@dimen/padding_size_l"
+        android:layout_marginStart="@dimen/padding_size_l"
+        android:layout_marginRight="@dimen/padding_size_l"
+        android:layout_marginEnd="@dimen/padding_size_l" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/poiTitleAndPhotoLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_size_l">
+
+            <TextView
+                android:id="@+id/text_poiDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="000000000000000000000000"
+                android:textSize="@dimen/font_text_size_m"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

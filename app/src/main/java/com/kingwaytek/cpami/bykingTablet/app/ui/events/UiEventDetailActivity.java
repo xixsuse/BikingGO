@@ -121,9 +121,9 @@ public class UiEventDetailActivity extends BaseActivity implements ViewTreeObser
         String location = eventItem.LOCATION + " - " + eventItem.ADDRESS;
 
         text_title.setText(eventItem.NAME);
-        text_startTime.setText(getString(R.string.events_start_time, eventItem.START_TIME));
-        text_endTime.setText(getString(R.string.events_end_time, eventItem.END_TIME));
-        text_website.setText(getString(R.string.events_website, eventItem.WEBSITE));
+        text_startTime.setText(eventItem.START_TIME);
+        text_endTime.setText(eventItem.END_TIME);
+        text_website.setText(eventItem.WEBSITE);
 
         eventItem.DESCRIPTION = eventItem.DESCRIPTION.replaceAll("&amp;", "&").replaceAll("nbsp;", " ");
         text_description.setText(eventItem.DESCRIPTION);

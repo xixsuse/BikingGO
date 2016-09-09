@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -32,6 +31,7 @@ import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
+import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.DialogItemsAdapter;
 
 import java.io.File;
@@ -119,7 +119,7 @@ public class DialogHelper {
         int width = Utility.getScreenWidth();
         int height = Utility.getScreenHeight() - Utility.getActionbarHeight();
 
-        View view = LayoutInflater.from(context).inflate(R.layout.inflate_dialog_image_view, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.popup_image_view, null);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
         view.setLayoutParams(params);
@@ -135,20 +135,27 @@ public class DialogHelper {
         windowParams.height = height;
         windowParams.gravity = Gravity.CENTER;
 
+        dialogWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
 
         TextView poiTitle = (TextView) view.findViewById(R.id.dialogPoiTitle);
-        ImageButton closeBtn = (ImageButton) view.findViewById(R.id.dialogCloseBtn);
+        final ImageButton closeBtn = (ImageButton) view.findViewById(R.id.dialogCloseBtn);
 
         poiTitle.setText(title);
 
-        final ImageView image = (ImageView) view.findViewById(R.id.dialogImageView);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.dialogImageView);
 
-        final Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-        image.setImageBitmap(bitmap);
+        int imageHeight = height - (context.getResources().getDimensionPixelSize(R.dimen.padding_size_xxl));
 
-        image.setOnClickListener(new View.OnClickListener() {
+        BitmapUtility.getDecodedBitmapInFullWidth(photoPath, imageHeight, ((BaseActivity)context).getUiHandler(), new BitmapUtility.OnBitmapDecodedCallback() {
+            @Override
+            public void onDecodeCompleted(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+        });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -161,15 +168,9 @@ public class DialogHelper {
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageView.setOnClickListener(null);
+                closeBtn.setOnClickListener(null);
                 dialog.dismiss();
-            }
-        });
-
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                image.setOnClickListener(null);
-                bitmap.recycle();
             }
         });
     }

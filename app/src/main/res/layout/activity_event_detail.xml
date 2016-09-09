@@ -11,50 +11,100 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/padding_size_l"
+            android:paddingStart="@dimen/padding_size_l"
+            android:paddingRight="@dimen/padding_size_l"
+            android:paddingEnd="@dimen/padding_size_l" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginLeft="@dimen/padding_size_m"
-                android:layout_marginStart="@dimen/padding_size_m"
-                android:layout_marginRight="@dimen/padding_size_m"
-                android:layout_marginEnd="@dimen/padding_size_m"
                 android:layout_marginBottom="@dimen/padding_size_m">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingTop="@dimen/padding_size_xl"
+                    android:paddingBottom="@dimen/padding_size_l" >
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_common_size"
+                        android:layout_height="@dimen/icon_common_size"
+                        android:layout_marginRight="@dimen/padding_size_xxl"
+                        android:layout_marginEnd="@dimen/padding_size_xxl"
+                        android:src="@drawable/ic_events"/>
+
+                    <TextView
+                        android:id="@+id/text_eventTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="台江黑琵季"
+                        android:textSize="@dimen/font_text_size_l"
+                        android:textColor="@color/md_green_A700"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/md_grey_300" />
+
+
                 <TextView
-                    android:id="@+id/text_eventTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padding_size_l"
-                    android:layout_marginBottom="@dimen/padding_size_m"
-                    android:text="台江黑琵季"
-                    android:textSize="@dimen/font_text_size_l"
-                    android:textColor="@color/md_blue_A700"
-                    android:layout_gravity="center_horizontal"/>
+                    android:layout_marginBottom="@dimen/padding_size_s"
+                    android:text="@string/events_start_time"
+                    android:textSize="@dimen/font_text_size_s"
+                    android:textColor="@color/md_grey_700"/>
 
                 <TextView
                     android:id="@+id/text_eventStartTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/events_start_time"
-                    android:textSize="@dimen/font_text_size_s"/>
+                    android:text="0000000000"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_900"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_size_l"
+                    android:layout_marginBottom="@dimen/padding_size_s"
+                    android:text="@string/events_end_time"
+                    android:textSize="@dimen/font_text_size_s"
+                    android:textColor="@color/md_grey_700"/>
 
                 <TextView
                     android:id="@+id/text_eventEndTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/events_end_time"
-                    android:textSize="@dimen/font_text_size_s"/>
+                    android:text="00000000000"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_900"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_size_l"
+                    android:layout_marginBottom="@dimen/padding_size_s"
+                    android:text="@string/events_website"
+                    android:textSize="@dimen/font_text_size_s"
+                    android:textColor="@color/md_grey_700"/>
 
                 <TextView
                     android:id="@+id/text_eventWebsite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padding_size_m"
                     android:autoLink="web"
-                    android:text="@string/events_website"/>
+                    android:text="000000000000000000000"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_blue_A400"/>
 
             </LinearLayout>
 
@@ -62,21 +112,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="@dimen/padding_size_m"
-                android:background="@drawable/background_description_text"
-                android:padding="@dimen/padding_size_m"
-                android:layout_marginLeft="@dimen/padding_size_m"
-                android:layout_marginStart="@dimen/padding_size_m"
-                android:layout_marginRight="@dimen/padding_size_m"
-                android:layout_marginEnd="@dimen/padding_size_m"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_l"
                 android:animateLayoutChanges="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_size_s"
+                    android:text="@string/events_description"
+                    android:textSize="@dimen/font_text_size_s"
+                    android:textColor="@color/md_grey_700"/>
 
                 <TextView
                     android:id="@+id/text_eventDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="位於臺南的台江國家公園境內擁有魚塭、廢棄鹽田、泥灘地、河口沙洲等多樣的濕地。園區內不僅包含兩處國家級濕地-鹽水溪口濕地及七股鹽田濕地，另外曾文溪口濕地及四草濕地更是臺灣唯二的國際級濕地。除了豐富的潮間帶生物及紅樹林生態，每年秋冬開始並陸續有鷸鴴、雁鴨及黑面琵鷺、反嘴鴴、高蹺鴴等水鳥在此度冬，其中黑面琵鷺更屬於國際自然資源保育聯盟列為瀕危的保育動物。&amp;nbsp;台江國家公園管理處為服務廣大愛好自然生態的遊客及賞鳥人士，並藉此推廣國家公園生態保育及環境教育的價值與理念，每年於10月至翌年3月，除了在曾文溪口黑面琵鷺賞鳥亭每日派駐專人架設望遠鏡提供民眾賞鳥及解說服務外，並於期間舉辦「台江黑琵季」系列活動。活動內容包羅萬象，包括曾經辦理過的黑面琵鷺普查、生態影片觀賞、生態解說與觀星、闖關遊戲、友善養殖行動體驗、國際研討會、單車小旅行、生態人文互動教習劇場、漂流木地景藝術創作、工作假期、魚塭生態之旅…，各式各樣活潑生動、寓教於樂的活動，每每吸引民眾踴躍報名參加，台江國家公園也歡迎您在每年秋冬一起來參加這場飛羽的盛宴。"
-                    android:textSize="@dimen/font_text_size_m"/>
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_900"/>
 
                 <TextView
                     android:id="@+id/text_continueReading"
@@ -100,53 +154,58 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/padding_size_l"
-                android:layout_marginLeft="@dimen/padding_size_m"
-                android:layout_marginStart="@dimen/padding_size_m"
-                android:layout_marginRight="@dimen/padding_size_m"
-                android:layout_marginEnd="@dimen/padding_size_m">
+                android:layout_marginTop="@dimen/padding_size_m" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_size_s"
                     android:text="@string/events_location"
-                    android:textColor="@color/md_grey_900"
-                    android:textStyle="bold"/>
+                    android:textSize="@dimen/font_text_size_s"
+                    android:textColor="@color/md_grey_700"/>
 
                 <TextView
                     android:id="@+id/text_eventLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_size_m"/>
+                    android:layout_marginBottom="@dimen/padding_size_l"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_900"/>
 
                 <TextView
                     android:id="@+id/trafficInfoText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_size_s"
                     android:text="@string/events_traffic_info"
-                    android:textColor="@color/md_grey_900"
-                    android:textStyle="bold"/>
+                    android:textSize="@dimen/font_text_size_s"
+                    android:textColor="@color/md_grey_700"/>
 
                 <TextView
                     android:id="@+id/text_eventTraffic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_size_m"
+                    android:layout_marginBottom="@dimen/padding_size_l"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_900"
                     android:autoLink="web|phone"/>
 
                 <TextView
                     android:id="@+id/parkingInfoText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_size_s"
                     android:text="@string/events_parking_info"
-                    android:textColor="@color/md_grey_900"
-                    android:textStyle="bold"/>
+                    android:textSize="@dimen/font_text_size_s"
+                    android:textColor="@color/md_grey_700"/>
 
                 <TextView
                     android:id="@+id/text_eventParking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_size_m"
+                    android:layout_marginBottom="@dimen/padding_size_l"
+                    android:textSize="@dimen/font_text_size_m"
+                    android:textColor="@color/md_grey_900"
                     android:autoLink="web|phone"/>
 
             </LinearLayout>

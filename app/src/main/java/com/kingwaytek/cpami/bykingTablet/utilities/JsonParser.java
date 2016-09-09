@@ -13,6 +13,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPoiDetail;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsShared;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
@@ -902,6 +903,38 @@ public class JsonParser {
         catch (JSONException e) {
             e.printStackTrace();
             releaseObjects();
+            return null;
+        }
+    }
+
+    public static ItemsPoiDetail parseAndGetPoiDetail(String jsonString) {
+        try {
+            JO = new JSONArray(jsonString).getJSONObject(0);
+
+            String name = JO.getString("Name");
+            String address = JO.getString("Address");
+            String description = JO.getString("Introduction");
+            double lat = JO.getDouble("Coly");
+            double lng = JO.getDouble("Colx");
+            ArrayList<String> photoPath = new ArrayList<>();
+
+            String photo_1 = JO.getString("Photo_1");
+            String photo_2 = JO.getString("Photo_2");
+            String photo_3 = JO.getString("Photo_3");
+
+
+            if (!photo_1.isEmpty())
+                photoPath.add(photo_1);
+            if (!photo_2.isEmpty())
+                photoPath.add(photo_2);
+            if (!photo_3.isEmpty())
+                photoPath.add(photo_3);
+
+            releaseObjects();
+            return new ItemsPoiDetail(name, address, description, photoPath, lat, lng);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
             return null;
         }
     }

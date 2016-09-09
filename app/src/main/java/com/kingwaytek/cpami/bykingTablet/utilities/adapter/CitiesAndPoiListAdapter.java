@@ -1,6 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.utilities.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,24 @@ public class CitiesAndPoiListAdapter extends BaseAdapter {
     private ArrayList<ItemsCitiesAndPOI> citiesAndPoiList;
     private LayoutInflater inflater;
 
+    private ArrayList<ItemsCitiesAndPOI> originalList;
+
     public CitiesAndPoiListAdapter(Context context, boolean isViewingCities, ArrayList<ItemsCitiesAndPOI> citiesAndPoiList) {
         this.isViewingCities = isViewingCities;
         this.citiesAndPoiList = citiesAndPoiList;
         inflater = LayoutInflater.from(context);
+
+        originalList = new ArrayList<>();
+        originalList.addAll(citiesAndPoiList);
     }
 
     public void resetList(boolean isViewingCities, ArrayList<ItemsCitiesAndPOI> citiesAndPoiList) {
         this.isViewingCities = isViewingCities;
         this.citiesAndPoiList = citiesAndPoiList;
+
+        originalList.clear();
+        originalList.addAll(citiesAndPoiList);
+
         notifyDataSetChanged();
     }
 
@@ -81,5 +91,22 @@ public class CitiesAndPoiListAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView name;
+    }
+
+    public void filterData(String queryString) {
+        citiesAndPoiList.clear();
+
+        if (queryString.isEmpty()) {
+            citiesAndPoiList.addAll(originalList);
+        }
+        else {
+            for (ItemsCitiesAndPOI citiesAndPOI : originalList) {
+                if (citiesAndPOI.POI_NAME != null && citiesAndPOI.POI_NAME.contains(queryString)) {
+                    citiesAndPoiList.add(citiesAndPOI);
+                    Log.i("CitiesAndPoiListAdapter", "ListAdded: " + citiesAndPOI.POI_NAME);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

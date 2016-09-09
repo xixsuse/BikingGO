@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -433,6 +434,24 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /** For Google directions */
+    public String getAvoidOptions(String... avoidOptions) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("&avoid=");
+
+        for (int i = 0; i < avoidOptions.length; i++) {
+            if (i != 0)
+                sb.append("|");
+            sb.append(avoidOptions[i]);
+        }
+        return sb.toString();
+    }
+
+    public Handler getUiHandler() {
+        return new Handler();
     }
 
     public static void launchCamera(Activity activity) {

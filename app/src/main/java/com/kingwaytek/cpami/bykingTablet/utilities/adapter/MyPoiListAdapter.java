@@ -1,7 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.utilities.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,14 +14,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
-import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
-import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
-import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -70,7 +70,7 @@ public class MyPoiListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.inflate_my_poi_list, null);
@@ -94,6 +94,19 @@ public class MyPoiListAdapter extends BaseAdapter {
 
         String photoPath = poiList.get(position).PHOTO_PATH;
 
+        Uri imageUri = Uri.fromFile(new File(photoPath));
+
+        Glide.with(context)
+                .load(imageUri)
+                .error(R.drawable.ic_empty_image)
+                .placeholder(R.drawable.ic_empty_image)
+                .into(holder.poiPhoto);
+
+        /*
+         *  2016/09/09 Updated:
+         *  上面那段 Glide完全屌打我自己寫的 getDecodedBitmap(...)，
+         *  已崩潰 (ˊ_>ˋ)
+         *
         if (!photoPath.isEmpty()) {
             Bitmap cachedPhoto = ((BaseActivity) context).getBitmapFromMemCache(photoPath);
 
@@ -107,6 +120,7 @@ public class MyPoiListAdapter extends BaseAdapter {
         }
         else
             holder.poiPhoto.setImageResource(R.drawable.ic_empty_image);
+        */
 
         holder.poiTitle.setText(poiList.get(position).TITLE);
         holder.poiInfo.setOnClickListener(getInfoButtonClick(position));
@@ -150,7 +164,13 @@ public class MyPoiListAdapter extends BaseAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogHelper.showImageViewDialog(context, poiList.get(position).TITLE, poiList.get(position).PHOTO_PATH);
+                /**
+                 * Use PopupWindow instead of Dialog, it's better to control width and height of the appeared view.
+                 */
+                //DialogHelper.showImageViewDialog(context, poiList.get(position).TITLE, poiList.get(position).PHOTO_PATH);
+                PopWindowHelper.showImageViewWindow(
+                        ((UiMyPoiListActivity)context).getRootView(), context,
+                        poiList.get(position).TITLE, poiList.get(position).PHOTO_PATH);
             }
         };
     }

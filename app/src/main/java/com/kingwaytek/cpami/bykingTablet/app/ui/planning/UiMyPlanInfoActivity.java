@@ -229,17 +229,6 @@ public class UiMyPlanInfoActivity extends BaseActivity {
         return sb.toString();
     }
 
-    private String getAvoidOptions(String... avoidOptions) {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < avoidOptions.length; i++) {
-            if (i != 0)
-                sb.append("|");
-            sb.append(avoidOptions[i]);
-        }
-        return sb.toString();
-    }
-
     private String getCombinedApiUrl(boolean useOptimize) {
         ArrayList<String> latLngArray = getLatLngArray();
         Log.i(TAG, "latLngArray: " + latLngArray.toString());

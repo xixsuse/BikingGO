@@ -13,19 +13,19 @@ public class DirectionModePagerAdapter extends FragmentPagerAdapter {
 
     private static final int PAGE_COUNT = 1;
 
-    private String[] fromTo;
+    private String jsonString;
 
-    public DirectionModePagerAdapter(FragmentManager fm, String origin, String destination) {
+    public DirectionModePagerAdapter(FragmentManager fm, String jsonString) {
         super(fm);
-        this.fromTo = new String[]{origin, destination};
+        this.jsonString = jsonString;
     }
 
     @Override
     public Fragment getItem(int position) {
         if (position == 0)
-            return UiDirectionModeFragment.getInstance(UiDirectionModeFragment.MODE_WALK, fromTo);
+            return UiDirectionModeFragment.getInstance(UiDirectionModeFragment.MODE_WALK, jsonString);
         else
-            return UiDirectionModeFragment.getInstance(UiDirectionModeFragment.MODE_TRANSIT, fromTo);
+            return UiDirectionModeFragment.getInstance(UiDirectionModeFragment.MODE_TRANSIT, jsonString);
     }
 
     public UiDirectionModeFragment getDirectionFragmentInstance(int position) {

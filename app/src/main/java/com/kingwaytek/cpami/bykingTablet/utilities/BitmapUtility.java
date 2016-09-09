@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 
 import com.kingwaytek.cpami.bykingTablet.AppController;
@@ -25,60 +26,76 @@ public class BitmapUtility {
 
     private static final String TAG = "BitmapUtility";
 
-    public static Bitmap getDecodedBitmapInFullWidth(String imgPath, int imageViewHeight) {
-        if (Utility.isFileNotExists(imgPath))
-            return null;
-
-        int rotation = getPhotoOrientation(imgPath);
-        Log.i("DecodeBitmap", "rotation: " + rotation);
-
-        int reqWidth = Utility.getScreenWidth();
-        Log.i("DecodeBitmapInFullWidth", "screenWidth: " + reqWidth + " ImageViewHeight: " + imageViewHeight);
-
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(imgPath, options);
-
-        int imgWidth = options.outWidth;
-        int imgHeight = options.outHeight;
-        String imgType = options.outMimeType;
-        Log.i("ImageInfo", imgType + " " + imgWidth + " x " + imgHeight);
-/*
-        if (isRotateNeeded(rotation)) {
-            options.outWidth = imgHeight;
-            options.outHeight = imgWidth;
-        }
-*/
-        if (imgHeight > imageViewHeight) {
-            double multiple = (double) imgHeight / (double) imageViewHeight;
-            reqWidth = (int) ((double) imgWidth / multiple);
-            Log.i("DecodeBitmapInFullWidth", "multiple: " + multiple + " reqWidth: " + reqWidth);
-        }
-        else if (imgWidth < reqWidth)
-            reqWidth = imgWidth;
-
-        options.inSampleSize = getInSampleSize(options, reqWidth, imageViewHeight);
-
-        options.inJustDecodeBounds = false;
-        Bitmap imageInSampleSize = BitmapFactory.decodeFile(imgPath, options);
-
-        Log.i("DecodedImage", "SampleSize: " + options.inSampleSize);
-
-        Bitmap photoBitmap;
-
-        if (imageInSampleSize == null)
-            photoBitmap = BitmapFactory.decodeResource(AppController.getInstance().getResources(), R.drawable.ic_add_photo_off);
-        else {
-            photoBitmap = createScaleBitmap(imageInSampleSize, reqWidth, imageViewHeight);
-            if (isRotateNeeded(rotation))
-                photoBitmap = getRotatedPhoto(photoBitmap, rotation, reqWidth, imageViewHeight);
-        }
-
-        return photoBitmap;
+    public interface OnBitmapDecodedCallback {
+        void onDecodeCompleted(Bitmap bitmap);
     }
 
-    // TODO LruCache
+    public static void getDecodedBitmapInFullWidth(final String imgPath, final int imageViewHeight, final Handler uiHandler,
+                                                   final OnBitmapDecodedCallback decodeCallback)
+    {
+        if (Utility.isFileNotExists(imgPath))
+            return;
+
+        new Thread() {
+            @Override
+            public void run() {
+                int rotation = getPhotoOrientation(imgPath);
+                Log.i("DecodeBitmap", "rotation: " + rotation);
+
+                int reqWidth = Utility.getScreenWidth();
+                Log.i("DecodeBitmapInFullWidth", "screenWidth: " + reqWidth + " ImageViewHeight: " + imageViewHeight);
+
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+
+                BitmapFactory.decodeFile(imgPath, options);
+
+                int imgWidth = options.outWidth;
+                int imgHeight = options.outHeight;
+                String imgType = options.outMimeType;
+                Log.i("ImageInfo", imgType + " " + imgWidth + " x " + imgHeight);
+
+                if (imgHeight > imageViewHeight) {
+                    double multiple = (double) imgHeight / (double) imageViewHeight;
+                    reqWidth = (int) ((double) imgWidth / multiple);
+                    Log.i("DecodeBitmapInFullWidth", "multiple: " + multiple + " reqWidth: " + reqWidth);
+                }
+                else if (imgWidth < reqWidth)
+                    reqWidth = imgWidth;
+
+                options.inSampleSize = getInSampleSize(options, reqWidth, imageViewHeight);
+
+                options.inJustDecodeBounds = false;
+                Bitmap imageInSampleSize = BitmapFactory.decodeFile(imgPath, options);
+
+                Log.i("DecodedImage", "SampleSize: " + options.inSampleSize);
+
+                Bitmap photoBitmap;
+
+                if (imageInSampleSize == null)
+                    photoBitmap = BitmapFactory.decodeResource(AppController.getInstance().getResources(), R.drawable.ic_empty_image);
+                else {
+                    photoBitmap = createScaleBitmap(imageInSampleSize, reqWidth, imageViewHeight);
+                    if (isRotateNeeded(rotation))
+                        photoBitmap = getRotatedPhoto(photoBitmap, rotation, reqWidth, imageViewHeight);
+                }
+
+                final Bitmap finalPhotoBitmap = photoBitmap;
+
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        decodeCallback.onDecodeCompleted(finalPhotoBitmap);
+                    }
+                });
+            }
+        }.start();
+    }
+
+    /**
+     * 2016/09/09 Updated:
+     * LruCache used, that has applied in Activities.
+     */
     public static Bitmap  getDecodedBitmap(String imgPath, int reqWidth, int reqHeight) {
         Log.i("DecodeBitmap", "reqWidth: " + reqWidth + " reqHeight: " + reqHeight);
 
@@ -113,7 +130,7 @@ public class BitmapUtility {
         Bitmap photoBitmap;
 
         if (imageInSampleSize == null)
-            photoBitmap = BitmapFactory.decodeResource(AppController.getInstance().getResources(), R.drawable.ic_add_photo_off);
+            photoBitmap = BitmapFactory.decodeResource(AppController.getInstance().getResources(), R.drawable.ic_empty_image);
         else {
             photoBitmap = createScaleBitmap(imageInSampleSize, reqWidth, reqHeight);
             if (isRotateNeeded(rotation))

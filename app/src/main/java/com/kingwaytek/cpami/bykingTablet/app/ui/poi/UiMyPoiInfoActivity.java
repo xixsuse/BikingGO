@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.bykingTablet.app.ui.poi;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
@@ -139,7 +140,13 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
             int imageViewHeight = poiBigPhotoView.getLayoutParams().height;
 
             poiBigPhotoView.setVisibility(View.VISIBLE);
-            poiBigPhotoView.setImageBitmap(BitmapUtility.getDecodedBitmapInFullWidth(poiItem.PHOTO_PATH, imageViewHeight));
+
+            BitmapUtility.getDecodedBitmapInFullWidth(poiItem.PHOTO_PATH, imageViewHeight, getUiHandler(), new BitmapUtility.OnBitmapDecodedCallback() {
+                @Override
+                public void onDecodeCompleted(Bitmap bitmap) {
+                    poiBigPhotoView.setImageBitmap(bitmap);
+                }
+            });
         }
         else {
             poiBigPhotoView.setVisibility(View.GONE);
@@ -221,7 +228,16 @@ public class UiMyPoiInfoActivity extends BaseActivity implements OnPhotoRemovedC
 
     private void setPoiEditImageView(String photoPath) {
         int reqSize = getResources().getDimensionPixelSize(R.dimen.poi_photo_edit_view);
-        poiImageView.setImageBitmap(BitmapUtility.getDecodedBitmap(photoPath, reqSize, reqSize));
+
+        Bitmap bitmap = getBitmapFromMemCache(photoPath);
+
+        if (bitmap == null) {
+            bitmap = BitmapUtility.getDecodedBitmap(photoPath, reqSize, reqSize);
+            addBitmapToMemoryCache(photoPath, bitmap);
+            poiImageView.setImageBitmap(bitmap);
+        }
+        else
+            poiImageView.setImageBitmap(bitmap);
     }
 
     @Override

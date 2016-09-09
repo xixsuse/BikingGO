@@ -118,14 +118,12 @@ public class UiSharedListActivity extends BaseActivity implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         if (isFilterable) {
-            if (s.toString().isEmpty()) {
-                sharedListView.smoothScrollToPosition(0);
+            if (s.toString().isEmpty())
                 sharedAdapter.filterData("");
-            }
-            else {
-                sharedListView.smoothScrollToPosition(0);
+            else
                 sharedAdapter.filterData(s.toString());
-            }
+
+            sharedListView.smoothScrollToPosition(0);
         }
     }
 

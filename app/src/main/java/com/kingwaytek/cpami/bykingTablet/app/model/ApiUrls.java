@@ -17,7 +17,7 @@ public interface ApiUrls {
 
     String API_GOOGLE_DIRECTION_MULTI_POINT =
             "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&waypoints=optimize:{2}|{3}" +
-                    "&mode={4}&avoid={5}&language={6}&key={7}";
+                    "&mode={4}{5}&language={6}&key={7}";
 
     String API_REPORT = "http://biking.cpami.gov.tw/Service/TrafficAlertUpload?" +
             "Reporter={0}&" +
@@ -36,4 +36,5 @@ public interface ApiUrls {
     String API_EVENTS = "http://gis.taiwan.net.tw/XMLReleaseALL_public/activity_C_f.json";
 
     String API_BIKING_SERVICE = "http://192.168.6.75/bikerec/db1.ashx";
+    String API_POI_URL = "http://192.168.6.75/bikerec/pic/{0}.jpg";
 }

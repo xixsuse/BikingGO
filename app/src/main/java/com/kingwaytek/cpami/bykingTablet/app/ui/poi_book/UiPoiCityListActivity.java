@@ -1,8 +1,13 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.poi_book;
 
+import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
@@ -23,15 +28,19 @@ import java.util.ArrayList;
  *
  * @author Vincent (2016/9/6)
  */
-public class UiPoiCityListActivity extends BaseActivity {
+public class UiPoiCityListActivity extends BaseActivity implements TextWatcher {
 
+    private EditText edit_filter;
     private ListView cityListView;
     private CitiesAndPoiListAdapter cityAdapter;
 
     private ArrayList<ItemsCitiesAndPOI> cityList;
 
+    private boolean isFilterable;
+
     @Override
     protected void init() {
+        setEditText();
         getCityList();
     }
 
@@ -47,6 +56,7 @@ public class UiPoiCityListActivity extends BaseActivity {
 
     @Override
     protected void findViews() {
+        edit_filter = (EditText) findViewById(R.id.edit_listFilter);
         cityListView = (ListView) findViewById(R.id.cities_listView);
     }
 
@@ -63,6 +73,11 @@ public class UiPoiCityListActivity extends BaseActivity {
                     getPoiDetail((int) id);
             }
         });
+    }
+
+    private void setEditText() {
+        edit_filter.setSingleLine();
+        edit_filter.setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
     private void getCityList() {
@@ -107,7 +122,7 @@ public class UiPoiCityListActivity extends BaseActivity {
         WebAgent.getPoiDetailFromBikingService(id, new WebAgent.WebResultImplement() {
             @Override
             public void onResultSucceed(String response) {
-                // TODO POI DETAIL!!!
+                goToPoiDetail(response);
                 DialogHelper.dismissDialog();
             }
 
@@ -120,9 +135,15 @@ public class UiPoiCityListActivity extends BaseActivity {
     }
 
     private void setCityListView(String jsonString, boolean isViewingCities) {
+        isFilterable = !isViewingCities;
+
         ArrayList<ItemsCitiesAndPOI> citiesAndPOIs;
 
         if (isViewingCities) {
+            edit_filter.setVisibility(View.GONE);
+            edit_filter.removeTextChangedListener(this);
+            edit_filter.setText("");
+
             if (cityList == null) {
                 citiesAndPOIs = JsonParser.parseAndGetCityList(jsonString);
                 cityList = citiesAndPOIs;
@@ -130,8 +151,11 @@ public class UiPoiCityListActivity extends BaseActivity {
             else
                 citiesAndPOIs = cityList;
         }
-        else
+        else {
+            edit_filter.setVisibility(View.VISIBLE);
+            edit_filter.addTextChangedListener(this);
             citiesAndPOIs = JsonParser.parseAndGetCityPoiList(jsonString);
+        }
 
         if (cityAdapter == null) {
             cityAdapter = new CitiesAndPoiListAdapter(this, isViewingCities, citiesAndPOIs);
@@ -139,6 +163,30 @@ public class UiPoiCityListActivity extends BaseActivity {
         }
         else
             cityAdapter.resetList(isViewingCities, citiesAndPOIs);
+    }
+
+    private void goToPoiDetail(String jsonString) {
+        Intent intent = new Intent(this, UiPoiDetailActivity.class);
+        intent.putExtra(BUNDLE_POI_DETAIL, jsonString);
+        startActivity(intent);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (isFilterable) {
+            if (s.toString().isEmpty())
+                cityAdapter.filterData("");
+            else
+                cityAdapter.filterData(s.toString());
+
+            cityListView.smoothScrollToPosition(0);
+        }
     }
 
     @Override

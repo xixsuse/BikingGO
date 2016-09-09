@@ -112,11 +112,14 @@ public class MapLayerHandler extends Handler {
     }
 
     public void addLayer(final GoogleMap map, @Nullable final Bitmap markerBitmap, final int layerCode) {
+        if (isLayerChanging)
+            return;
+
+        setIsLayerChanging(true);
+
         this.post(new Runnable() {
             @Override
             public void run() {
-                isLayerChanging = true;
-
                 try {
                     switch (layerCode) {
                         case LAYER_CYCLING:
@@ -335,7 +338,7 @@ public class MapLayerHandler extends Handler {
 
                         break;
                 }
-                isLayerChanging = false;
+                setIsLayerChanging(false);
                 layerChangedCallback.onLayerAdded(layerCode);
             }
         });
@@ -425,6 +428,14 @@ public class MapLayerHandler extends Handler {
         System.gc();
     }
 
+    public void setIsLayerChanging(boolean isChanging) {
+        isLayerChanging = isChanging;
+    }
+
+    public boolean isLayerChanging() {
+        return isLayerChanging;
+    }
+
     public class YouBikeMarkerAddTask extends AsyncTask<List<ItemsYouBike>, MarkerOptions, Void> {
 
         private GoogleMap map;
@@ -481,6 +492,7 @@ public class MapLayerHandler extends Handler {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            setIsLayerChanging(false);
             layerChangedCallback.onLayerAdded(LAYER_YOU_BIKE);
         }
     }
@@ -553,9 +565,14 @@ public class MapLayerHandler extends Handler {
                         if (markerYouBikeList.get(i).isInfoWindowShown())
                             markerYouBikeList.get(i).showInfoWindow();
                     }
+                    setIsLayerChanging(false);
                     layerChangedCallback.onLayerAdded(LAYER_YOU_BIKE);
                 }
             });
         }
+    }
+
+    public boolean isYouBikeMarkerAdded() {
+        return markerYouBikeList != null;
     }
 }
