@@ -10,6 +10,8 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseFragment;
 import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
+import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
+import com.kingwaytek.cpami.bykingTablet.app.widget.TransitOverviewLayout;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathStepsAdapter;
 
@@ -24,6 +26,7 @@ public class UiDirectionModeFragment extends BaseFragment {
     private int directionMode;
     private String jsonString;
 
+    private TransitOverviewLayout overviewLayout;
     private ListView pathListView;
     private ProgressBar loadingCircle;
 
@@ -35,12 +38,13 @@ public class UiDirectionModeFragment extends BaseFragment {
     public static UiDirectionModeFragment getInstance(int directionMode, String jsonString) {
         UiDirectionModeFragment instance;
 
+        Bundle arg = new Bundle();
+
         if (directionMode == MODE_WALK)
             instance = SingleInstance.INSTANCE_WALK;
         else
             instance = SingleInstance.INSTANCE_TRANSIT;
 
-        Bundle arg = new Bundle();
         arg.putInt(BUNDLE_DIRECTION_MODE, directionMode);
         arg.putString(BUNDLE_FRAGMENT_DEFAULT_ARG, jsonString);
         instance.setArguments(arg);
@@ -71,7 +75,7 @@ public class UiDirectionModeFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_direction_mode;
+        return directionMode == MODE_WALK ? R.layout.fragment_direction_mode_walk : R.layout.fragment_direction_mode_transit;
     }
 
     @Override
@@ -81,6 +85,7 @@ public class UiDirectionModeFragment extends BaseFragment {
 
     @Override
     protected void findRootViews(View rootView) {
+        overviewLayout = (TransitOverviewLayout) rootView.findViewById(R.id.transitOverviewLayoutWidget);
         pathListView = (ListView) rootView.findViewById(R.id.pathListView);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.pathLoadingCircle);
     }
@@ -96,7 +101,7 @@ public class UiDirectionModeFragment extends BaseFragment {
                         break;
 
                     case MODE_TRANSIT:
-                        // TODO Get the transit data from Google directions API if needed.
+
                         break;
                 }
             }
@@ -115,7 +120,7 @@ public class UiDirectionModeFragment extends BaseFragment {
                 break;
 
             case MODE_TRANSIT:
-
+                getTransitData();
                 break;
         }
     }
@@ -132,6 +137,21 @@ public class UiDirectionModeFragment extends BaseFragment {
 
     private void showLoadingCircle(boolean isShow) {
         loadingCircle.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    private void getTransitData() {
+        String[] fromTo = jsonString.split("&");
+        WebAgent.getDirectionsData(fromTo[0], fromTo[1], DIR_MODE_TRANSIT, null, new WebAgent.WebResultImplement() {
+            @Override
+            public void onResultSucceed(String response) {
+
+            }
+
+            @Override
+            public void onResultFail(String errorMessage) {
+
+            }
+        });
     }
 
     @Override

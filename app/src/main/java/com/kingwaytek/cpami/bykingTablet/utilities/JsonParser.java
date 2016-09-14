@@ -17,6 +17,8 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPoiDetail;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsShared;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTransitOverview;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTransitStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 
 import org.json.JSONArray;
@@ -935,6 +937,80 @@ public class JsonParser {
         }
         catch (JSONException e) {
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ItemsTransitOverview parseAndGetTransitData(String jsonString) {
+        try {
+            JSONObject jo_routes = new JSONObject(jsonString).getJSONArray("routes").getJSONObject(0);
+
+            JSONObject jo_bounds = jo_routes.getJSONObject("bounds");
+
+            String fare = jo_routes.getJSONObject("fare").getString("text");
+            LatLng northLatLng = new LatLng(jo_bounds.getJSONObject("northeast").getDouble("lat"), jo_bounds.getJSONObject("northeast").getDouble("lng"));
+            LatLng southLatLng = new LatLng(jo_bounds.getJSONObject("southwest").getDouble("lat"), jo_bounds.getJSONObject("southwest").getDouble("lng"));
+            String polyLineOverview = jo_routes.getJSONObject("overview_polyline").getString("points");
+
+            JSONObject jo_legs = jo_routes.getJSONArray("legs").getJSONObject(0);
+
+            String totalDistance = jo_legs.getJSONObject("distance").getString("text");
+            String totalDuration = jo_legs.getJSONObject("duration").getString("text");
+
+            JA = jo_legs.getJSONArray("steps");
+
+            ArrayList<ItemsTransitStep> stepItems = new ArrayList<>();
+
+            String distance;
+            String duration;
+            String polyline;
+            String instructions;
+            LatLng startLatLng;
+            LatLng endLatLng;
+            String travelMode;
+
+            for (int i = 0; i < JA.length(); i++) {
+                JO = JA.getJSONObject(i);
+
+                distance = JO.getJSONObject("distance").getString("text");
+                duration = JO.getJSONObject("duration").getString("text");
+                polyline = JO.getJSONObject("polyline").getString("points");
+                instructions = JO.getString("html_instructions");
+                startLatLng = new LatLng(JO.getJSONObject("start_location").getDouble("lat"), JO.getJSONObject("start_location").getDouble("lng"));
+                endLatLng = new LatLng(JO.getJSONObject("end_location").getDouble("lat"), JO.getJSONObject("end_location").getDouble("lng"));
+                travelMode = JO.getString("travel_mode");
+
+                String transitDepartureStop = "";
+                String transitArrivalStop = "";
+                String transitHeadSign = "";
+                int transitHeadWay = 0;
+                String transitShortName = "";
+                String transitVehicleType = "";
+                int transitNumStops = 0;
+
+                if (JO.has("transit_details")) {
+                    JSONObject jo_transit = JO.getJSONObject("transit_details");
+
+                    transitDepartureStop = jo_transit.getJSONObject("departure_stop").getString("name");
+                    transitArrivalStop = jo_transit.getJSONObject("arrival_stop").getString("name");
+                    transitHeadSign = jo_transit.getString("headsign");
+                    transitHeadWay = jo_transit.getInt("headway");
+                    transitShortName = jo_transit.getJSONObject("line").getString("short_name");
+                    transitVehicleType = jo_transit.getJSONObject("line").getJSONObject("vehicle").getString("type");
+                    transitNumStops = jo_transit.getInt("num_stops");
+                }
+
+                stepItems.add(new ItemsTransitStep(distance, duration, polyline, instructions, startLatLng, endLatLng, travelMode,
+                        transitDepartureStop, transitArrivalStop, transitHeadSign, transitHeadWay, transitShortName, transitVehicleType, transitNumStops));
+            }
+
+            releaseObjects();
+            return new ItemsTransitOverview(fare, northLatLng, southLatLng, polyLineOverview, totalDistance, totalDuration, stepItems);
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            releaseObjects();
             return null;
         }
     }

@@ -11,13 +11,15 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.fragment.UiDirectionModeFragment
  */
 public class DirectionModePagerAdapter extends FragmentPagerAdapter {
 
-    private static final int PAGE_COUNT = 1;
+    private static final int PAGE_COUNT = 2;
 
     private String jsonString;
+    private String fromTo;
 
-    public DirectionModePagerAdapter(FragmentManager fm, String jsonString) {
+    public DirectionModePagerAdapter(FragmentManager fm, String jsonString, String fromTo) {
         super(fm);
         this.jsonString = jsonString;
+        this.fromTo = fromTo;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class DirectionModePagerAdapter extends FragmentPagerAdapter {
         if (position == 0)
             return UiDirectionModeFragment.getInstance(UiDirectionModeFragment.MODE_WALK, jsonString);
         else
-            return UiDirectionModeFragment.getInstance(UiDirectionModeFragment.MODE_TRANSIT, jsonString);
+            return UiDirectionModeFragment.getInstance(UiDirectionModeFragment.MODE_TRANSIT, fromTo);
     }
 
     public UiDirectionModeFragment getDirectionFragmentInstance(int position) {

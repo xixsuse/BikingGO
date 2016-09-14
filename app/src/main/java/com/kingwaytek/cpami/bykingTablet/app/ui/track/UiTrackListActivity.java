@@ -219,17 +219,15 @@ public class UiTrackListActivity extends BaseActivity {
 
     private void setUploadMode(boolean isUploadMode) {
         this.isUploadMode = isUploadMode;
+        trackListAdapter.setUploadRowBackground(isUploadMode);
+        floatingBtn_addTrack.setVisibility(isUploadMode ? View.GONE : View.VISIBLE);
+
         if (isUploadMode) {
             menu.clear();
-            trackListView.setBackgroundResource(R.drawable.background_search_text);
-            floatingBtn_addTrack.setVisibility(View.GONE);
             Utility.toastLong(getString(R.string.track_chose_a_track_to_upload));
         }
-        else {
+        else
             MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_MORE);
-            trackListView.setBackgroundResource(0);
-            floatingBtn_addTrack.setVisibility(View.VISIBLE);
-        }
     }
 
     private void uploadTrack(final String trackName, final int trackIndex) {

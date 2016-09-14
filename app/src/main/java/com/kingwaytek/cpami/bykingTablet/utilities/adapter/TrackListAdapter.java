@@ -29,6 +29,8 @@ public class TrackListAdapter extends BaseAdapter {
     private boolean showCheckBox;
     private HashMap<Integer, Boolean> checkedMap;
 
+    private boolean isUploadMode;
+
     public TrackListAdapter(Context context, ArrayList<ItemsTrackRecord> trackNameList) {
         this.trackNameList = trackNameList;
         inflater = LayoutInflater.from(context);
@@ -108,6 +110,8 @@ public class TrackListAdapter extends BaseAdapter {
             holder.checkbox.setChecked(false);
         }
 
+        convertView.setBackgroundResource(isUploadMode ? R.drawable.background_upload_item : 0);
+
         return convertView;
     }
 
@@ -145,6 +149,11 @@ public class TrackListAdapter extends BaseAdapter {
         }
 
         return checkedList;
+    }
+
+    public void setUploadRowBackground(boolean isUploadMode) {
+        this.isUploadMode = isUploadMode;
+        notifyDataSetChanged();
     }
 
     private class ViewHolder {

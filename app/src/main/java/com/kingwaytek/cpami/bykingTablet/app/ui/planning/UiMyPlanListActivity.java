@@ -227,17 +227,15 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     private void setUploadMode(boolean isUploadMode) {
         this.isUploadMode = isUploadMode;
+        planAdapter.setUploadRowBackground(isUploadMode);
+        floatingBtn_addPlan.setVisibility(isUploadMode ? View.GONE : View.VISIBLE);
+
         if (isUploadMode) {
             menu.clear();
-            planListView.setBackgroundResource(R.drawable.background_search_text);
-            floatingBtn_addPlan.setVisibility(View.GONE);
             Utility.toastLong(getString(R.string.plan_chose_a_plan_to_upload));
         }
-        else {
+        else
             setMenuOption(ACTION_MORE);
-            planListView.setBackgroundResource(0);
-            floatingBtn_addPlan.setVisibility(View.VISIBLE);
-        }
     }
 
     private void uploadPlan(final String planName, final int planIndex) {

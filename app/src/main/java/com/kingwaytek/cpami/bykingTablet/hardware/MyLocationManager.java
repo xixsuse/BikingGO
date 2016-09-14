@@ -124,8 +124,10 @@ public class MyLocationManager implements LocationListener {
             if (bestProvider != null) {
                 location = locationManager.getLastKnownLocation(bestProvider);
 
-                if (location != null)
+                if (location != null) {
                     Log.i(TAG, "BestProvider: " + location.getProvider() + " Lat: " + location.getLatitude() + " Lng: " + location.getLongitude());
+                    Log.i(TAG, "Altitude: " + location.getAltitude());
+                }
             }
 
             if (location == null) {
@@ -138,6 +140,7 @@ public class MyLocationManager implements LocationListener {
 
                         if (location != null) {
                             Log.i(TAG, "FirstProvider: " + location.getProvider() + " Lat: " + location.getLatitude() + " Lng: " + location.getLongitude());
+                            Log.i(TAG, "Altitude: " + location.getAltitude());
                             break;
                         }
                     }

@@ -31,6 +31,8 @@ public class PlanListAdapter extends BaseAdapter {
     private boolean showCheckBox;
     private HashMap<Integer, Boolean> checkedMap;
 
+    private boolean isUploadMode;
+
     /**
      * @param planPairList The list contains name and updated time of each plans.
      */
@@ -113,6 +115,8 @@ public class PlanListAdapter extends BaseAdapter {
             holder.checkbox.setChecked(false);
         }
 
+        convertView.setBackgroundResource(isUploadMode ? R.drawable.background_upload_item : 0);
+
         //boolean isThisPositionChecked = checkedMap.containsKey(position) && checkedMap.get(position);
         //Log.i(TAG, "isThisPositionChecked: " + position + " " + isThisPositionChecked);
 
@@ -153,6 +157,11 @@ public class PlanListAdapter extends BaseAdapter {
         }
 
         return checkedList;
+    }
+
+    public void setUploadRowBackground(boolean isUploadMode) {
+        this.isUploadMode = isUploadMode;
+        notifyDataSetChanged();
     }
 
     private class ViewHolder {

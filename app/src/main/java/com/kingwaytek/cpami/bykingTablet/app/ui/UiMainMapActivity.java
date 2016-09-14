@@ -196,13 +196,13 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK)) {
                 putMarkerFromPoiBook();
-                getPolylineAndDrawLine(getIntent().getStringExtra(BUNDLE_DIRECTION_FROM_POI_BOOK));
+                // TODO Modify params from UiPoiDetailActivity
+                //getPolylineAndDrawLine(getIntent().getStringExtra(BUNDLE_DIRECTION_FROM_POI_BOOK));
             }
 
             isFirstTimeRun = false;
         }
     }
-
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -965,15 +965,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         DialogHelper.showLoadingDialog(this);
 
-        String currentOrigin = location.getLatitude() + "," + location.getLongitude();
-        String currentDestination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
+        final String currentOrigin = location.getLatitude() + "," + location.getLongitude();
+        final String currentDestination = selectedMarker.getPosition().latitude + "," + selectedMarker.getPosition().longitude;
 
         String avoidOption = getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS);
 
         WebAgent.getDirectionsData(currentOrigin, currentDestination, DIR_MODE_WALKING, avoidOption, new WebAgent.WebResultImplement() {
             @Override
             public void onResultSucceed(String response) {
-                getPolylineAndDrawLine(response);
+                getPolylineAndDrawLine(response, currentOrigin + "&" + currentDestination);
             }
 
             @Override
@@ -983,7 +983,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         });
     }
 
-    private void getPolylineAndDrawLine(String jsonString) {
+    private void getPolylineAndDrawLine(String jsonString, String fromTo) {
         String polyOverview = JsonParser.getPolyLineOverview(jsonString);
 
         if (notNull(polyOverview)) {
@@ -1037,15 +1037,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             footerImage.setBackgroundResource(R.drawable.background_footer_gradient_light);
             footerImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-            openPathInfoLayout(jsonString);
+            openPathInfoLayout(jsonString, fromTo);
         }
     }
 
-    private void openPathInfoLayout(String jsonString) {
+    private void openPathInfoLayout(String jsonString, String fromTo) {
         showPathInfoLayout(true);
 
         if (pagerAdapter == null) {
-            pagerAdapter = new DirectionModePagerAdapter(getSupportFragmentManager(), jsonString);
+            pagerAdapter = new DirectionModePagerAdapter(getSupportFragmentManager(), jsonString, fromTo);
             pathListPager.setAdapter(pagerAdapter);
         }
         else {
@@ -1072,7 +1072,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             modeTab.setTabGravity(TabLayout.GRAVITY_FILL);
 
             modeTab.getTabAt(0).setIcon(R.drawable.ic_directions_walk);
-            //modeTab.getTabAt(1).setIcon(R.drawable.ic_directions_transit);
+            modeTab.getTabAt(1).setIcon(R.drawable.ic_directions_transit);
         }
         setPathInfoLayoutMaxHeight();
     }
