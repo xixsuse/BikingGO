@@ -1,6 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.app.widget;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 
 /**
@@ -20,14 +23,15 @@ public class TransportationWidget extends LinearLayout {
     private TextView moveTime;
     private ImageView rightArrow;
 
-    public static final int METRO_COLOR_ORANGE = 1;
-    public static final int METRO_COLOR_BLUE = 2;
-    public static final int METRO_COLOR_GREEN = 3;
-    public static final int METRO_COLOR_RED = 4;
+    public static final String VEHICLE_TYPE_METRO = "SUBWAY";
+    public static final String VEHICLE_TYPE_BUS = "BUS";
+    public static final String VEHICLE_TYPE_TRAIN = "HEAVY_RAIL";
 
-    public static final int MOVE_TYPE_WALK = 5;
-    public static final int MOVE_TYPE_BUS = 6;
-    public static final int MOVE_TYPE_RAIL = 7;
+    public static final String METRO_LINE_NAME_ORANGE = "中和新蘆線";
+    public static final String METRO_LINE_NAME_BLUE = "板南線";
+    public static final String METRO_LINE_NAME_GREEN = "松山新店線";
+    public static final String METRO_LINE_NAME_RED = "淡水信義線";
+    public static final String METRO_LINE_NAME_BROWN = "文湖線";
 
     public TransportationWidget(Context context) {
         super(context);
@@ -63,50 +67,53 @@ public class TransportationWidget extends LinearLayout {
         rightArrow = (ImageView) findViewById(R.id.transportationRightArrow);
     }
 
-    public void showMetroStep(int metroColor, String shortName, boolean hasNext) {
+    public void showVehicleStep(String vehicleType, String shortName, String iconUrl, boolean hasNext) {
         moveTime.setVisibility(View.GONE);
+        metroText.setVisibility(View.VISIBLE);
         rightArrow.setVisibility(hasNext ? View.VISIBLE : View.GONE);
 
-        vehicleIcon.setImageResource(R.drawable.ic_taipei_metro);
+        if (vehicleType.equals(VEHICLE_TYPE_METRO)) {
+            switch (shortName) {
+                case METRO_LINE_NAME_ORANGE:
+                    metroText.setBackgroundResource(R.drawable.background_metro_label_orange);
+                    break;
 
-        switch (metroColor) {
-            case METRO_COLOR_ORANGE:
-                metroText.setBackgroundResource(R.drawable.background_metro_orange);
-                break;
+                case METRO_LINE_NAME_BLUE:
+                    metroText.setBackgroundResource(R.drawable.background_metro_label_blue);
+                    break;
 
-            case METRO_COLOR_BLUE:
-                metroText.setBackgroundResource(R.drawable.background_metro_blue);
-                break;
+                case METRO_LINE_NAME_GREEN:
+                    metroText.setBackgroundResource(R.drawable.background_metro_label_green);
+                    break;
 
-            case METRO_COLOR_GREEN:
-                metroText.setBackgroundResource(R.drawable.background_metro_green);
-                break;
+                case METRO_LINE_NAME_RED:
+                    metroText.setBackgroundResource(R.drawable.background_metro_label_red);
+                    break;
 
-            case METRO_COLOR_RED:
-                metroText.setBackgroundResource(R.drawable.background_metro_red);
-                break;
+                case METRO_LINE_NAME_BROWN:
+                    metroText.setBackgroundResource(R.drawable.background_metro_label_brown);
+                    break;
+            }
+            vehicleIcon.setImageResource(R.drawable.ic_taipei_metro);
+            metroText.setTextColor(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_grey_50));
         }
+        else {
+            if (!iconUrl.isEmpty())
+                Glide.with(getContext()).load(iconUrl).into(vehicleIcon);
+
+            metroText.setBackgroundResource(R.drawable.background_common_vehicle_short_name);
+            metroText.setTextColor(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_black_1000));
+        }
+
         metroText.setText(shortName);
     }
 
-    public void showMoveStep(int moveType, int estimateTime, boolean hasNext) {
+    public void showWalkStep(int estimateTime, boolean hasNext) {
         metroText.setVisibility(View.GONE);
         moveTime.setVisibility(View.VISIBLE);
         rightArrow.setVisibility(hasNext ? View.VISIBLE : View.GONE);
 
-        switch (moveType) {
-            case MOVE_TYPE_WALK:
-                vehicleIcon.setImageResource(R.drawable.ic_directions_walk);
-                break;
-
-            case MOVE_TYPE_BUS:
-                vehicleIcon.setImageResource(R.drawable.ic_directions_bus);
-                break;
-
-            case MOVE_TYPE_RAIL:
-                vehicleIcon.setImageResource(R.drawable.ic_directions_transit);
-                break;
-        }
+        vehicleIcon.setImageResource(R.drawable.ic_directions_walk);
         moveTime.setText(String.valueOf(estimateTime));
     }
 }

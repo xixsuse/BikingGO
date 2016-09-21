@@ -1,6 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.app.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -8,12 +9,16 @@ import android.widget.ProgressBar;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTransitOverview;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTransitStep;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseFragment;
 import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.app.widget.TransitOverviewLayout;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathStepsAdapter;
+import com.kingwaytek.cpami.bykingTablet.utilities.adapter.TransitStepAdapter;
 
 /**
  * Created by vincent.chang on 2016/8/15.
@@ -23,12 +28,17 @@ public class UiDirectionModeFragment extends BaseFragment {
     public static final int MODE_WALK = 1;
     public static final int MODE_TRANSIT = 2;
 
+    private static final String TRAVEL_MODE_WALK = "WALKING";
+    private static final String TRAVEL_MODE_TRANSIT = "TRANSIT";
+
     private int directionMode;
     private String jsonString;
 
     private TransitOverviewLayout overviewLayout;
     private ListView pathListView;
     private ProgressBar loadingCircle;
+
+    private TransitStepAdapter transitStepAdapter;
 
     private static class SingleInstance {
         private static final UiDirectionModeFragment INSTANCE_WALK = new UiDirectionModeFragment();
@@ -69,12 +79,12 @@ public class UiDirectionModeFragment extends BaseFragment {
 
     @Override
     protected void init() {
-        getDefaultValue();
         setListByMode();
     }
 
     @Override
     protected int getLayoutId() {
+        getDefaultValue();
         return directionMode == MODE_WALK ? R.layout.fragment_direction_mode_walk : R.layout.fragment_direction_mode_transit;
     }
 
@@ -85,7 +95,8 @@ public class UiDirectionModeFragment extends BaseFragment {
 
     @Override
     protected void findRootViews(View rootView) {
-        overviewLayout = (TransitOverviewLayout) rootView.findViewById(R.id.transitOverviewLayoutWidget);
+        if (directionMode == MODE_TRANSIT)
+            overviewLayout = (TransitOverviewLayout) rootView.findViewById(R.id.transitOverviewLayoutWidget);
         pathListView = (ListView) rootView.findViewById(R.id.pathListView);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.pathLoadingCircle);
     }
@@ -130,8 +141,9 @@ public class UiDirectionModeFragment extends BaseFragment {
         showLoadingCircle(false);
     }
 
-    public void updateData(String jsonString) {
-        this.jsonString = jsonString;
+    public void updateData(String updateString) {
+        this.jsonString = updateString;
+        Log.i(TAG, "DataUpdated!! DirectionMode: " + directionMode + " \nUpdateString: " + updateString);
         setListByMode();
     }
 
@@ -141,17 +153,53 @@ public class UiDirectionModeFragment extends BaseFragment {
 
     private void getTransitData() {
         String[] fromTo = jsonString.split("&");
+        Log.i(TAG, "FromTo: " + jsonString);
+
         WebAgent.getDirectionsData(fromTo[0], fromTo[1], DIR_MODE_TRANSIT, null, new WebAgent.WebResultImplement() {
             @Override
             public void onResultSucceed(String response) {
-
+                setTransitOverviewAndList(response);
+                loadingCircle.setVisibility(View.GONE);
             }
 
             @Override
             public void onResultFail(String errorMessage) {
-
+                Utility.toastShort(getString(R.string.network_connection_error_please_retry));
             }
         });
+    }
+
+    private void setTransitOverviewAndList(String jsonString) {
+        ItemsTransitOverview transitOverview = JsonParser.parseAndGetTransitData(jsonString);
+
+        if (transitOverview != null) {
+            Log.i(TAG, "setTransitOverviewAndList!");
+
+            overviewLayout.removeTransportationWidgets();
+            overviewLayout.setTotalTime(transitOverview.DURATION);
+
+            int len = transitOverview.TRANSIT_STEP_ITEM.size();
+            boolean hasNext;
+
+            for (int i = 0; i < len; i++) {
+                hasNext = i < (len - 1);
+
+                ItemsTransitStep transitStep = transitOverview.TRANSIT_STEP_ITEM.get(i);
+
+                if (transitStep.TRAVEL_MODE.equals(TRAVEL_MODE_WALK))
+                    overviewLayout.addWalkStep(transitStep.DURATION, hasNext);
+                else
+                    overviewLayout.addVehicleStep(transitStep.TRANSIT_VEHICLE_TYPE, transitStep.TRANSIT_SHORT_NAME,
+                            transitStep.TRANSIT_VEHICLE_ICON_URL, hasNext);
+            }
+
+            if (transitStepAdapter == null) {
+                transitStepAdapter = new TransitStepAdapter(getContext(), transitOverview.TRANSIT_STEP_ITEM);
+                pathListView.setAdapter(transitStepAdapter);
+            }
+            else
+                transitStepAdapter.refreshData(transitOverview.TRANSIT_STEP_ITEM);
+        }
     }
 
     @Override

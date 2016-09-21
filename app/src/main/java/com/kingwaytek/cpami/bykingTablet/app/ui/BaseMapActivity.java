@@ -71,6 +71,8 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected FrameLayout searchTextLayout;
     protected LinearLayout markerBtnLayout;
 
+    protected Marker selectedMarker;
+
     protected AutoCompleteTextView searchText;
     protected Marker searchMarker;
 
@@ -350,6 +352,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         searchMarker.showInfoWindow();
 
         onMarkerClick(searchMarker);
+        selectedMarker = searchMarker;
 
         moveCameraAndZoom(latLng, 16);
 

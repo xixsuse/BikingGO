@@ -283,4 +283,8 @@ public class Utility {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm", Locale.TAIWAN);
         return dateFormat.format(new Date());
     }
+
+    public static int getRoundMinutes(int seconds) {
+        return (int) Math.round(((double)seconds) / 60);
+    }
 }

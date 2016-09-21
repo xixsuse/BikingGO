@@ -7,6 +7,7 @@
     <dimen name="actionbar_height_more_higher">@dimen/sw800dp_actionbar_height_more_higher</dimen>
     <dimen name="actionbar_height_higher">@dimen/sw800dp_actionbar_height_higher</dimen>
 
+	<dimen name="font_text_size_xs">@dimen/sw800dp_font_size_xs</dimen>
 	<dimen name="font_text_size_s">@dimen/sw800dp_font_size_s</dimen>
 	<dimen name="font_text_size_m">@dimen/sw800dp_font_size_m</dimen>
 	<dimen name="font_text_size_l">@dimen/sw800dp_font_size_l</dimen>

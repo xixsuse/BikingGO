@@ -283,7 +283,8 @@ public class MyLocationManager implements LocationListener {
                 gpsLocateCallBack.onLocationWritten(new LatLng(location.getLatitude(), location.getLongitude()));
 
                 lastLocation = location;
-                Utility.showToastOnNewThread("Location written!");
+                //Utility.showToastOnNewThread("Location written!");
+                Log.i(TAG, "Location Written!!!");
             }
         }
     }

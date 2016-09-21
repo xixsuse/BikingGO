@@ -59,7 +59,6 @@ import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
-import com.kingwaytek.cpami.bykingTablet.app.ui.fragment.UiDirectionModeFragment;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
@@ -91,7 +90,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private Marker myNewMarker;
     private Marker lastAroundPoiMarker;
-    private Marker selectedMarker;
     private Marker poiBookMarker;
 
     private Marker myPositionMarker;
@@ -1049,8 +1047,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             pathListPager.setAdapter(pagerAdapter);
         }
         else {
-            UiDirectionModeFragment directionFragment = pagerAdapter.getDirectionFragmentInstance(modeTab.getSelectedTabPosition());
-            directionFragment.updateData(jsonString);
+            pagerAdapter.getDirectionFragmentInstance(0).updateData(jsonString);
+            pagerAdapter.getDirectionFragmentInstance(1).updateData(fromTo);
         }
 
         final int height;

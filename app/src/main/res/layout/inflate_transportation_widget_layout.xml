@@ -2,12 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="horizontal">
+              android:orientation="horizontal"
+              android:paddingTop="@dimen/padding_size_l"
+              android:paddingBottom="@dimen/padding_size_l">
 
     <ImageView
         android:id="@+id/vehicleIcon"
-        android:layout_width="@dimen/icon_common_size"
-        android:layout_height="@dimen/icon_common_size"
+        android:layout_width="@dimen/font_text_size_l"
+        android:layout_height="@dimen/font_text_size_l"
         android:src="@drawable/ic_taipei_metro" />
 
     <TextView
@@ -18,7 +20,8 @@
         android:layout_marginStart="@dimen/padding_size_s"
         android:text="中和新爐線"
         android:textColor="@color/md_grey_50"
-        android:background="@drawable/background_metro_orange"
+        android:textSize="@dimen/font_text_size_s"
+        android:background="@drawable/background_metro_label_orange"
         android:layout_gravity="center"
         android:visibility="visible"/>
 
@@ -28,13 +31,13 @@
         android:layout_height="wrap_content"
         android:text="2"
         android:textColor="@color/md_grey_900"
-        android:textSize="@dimen/font_text_size_s"
+        android:textSize="@dimen/font_text_size_xs"
         android:layout_gravity="bottom"
         android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/transportationRightArrow"
-        android:layout_width="@dimen/icon_common_size"
+        android:layout_width="@dimen/font_text_size_xl"
         android:layout_height="match_parent"
         android:padding="@dimen/padding_size_s"
         android:src="@drawable/ic_right_arrow_dark_grey"/>

@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 /**
  * Created by vincent.chang on 2016/9/12.
@@ -53,19 +54,24 @@ public class TransitOverviewLayout extends LinearLayout {
         totalTimeText.setText(totalTime);
     }
 
-    public void addMetroStep(int metroColor, String shortName, boolean hasNext) {
+    public void addVehicleStep(String vehicleType, String shortName, String iconUrl, boolean hasNext) {
         TransportationWidget widget = new TransportationWidget(getContext());
 
-        widget.showMetroStep(metroColor, shortName, hasNext);
+        widget.showVehicleStep(vehicleType, shortName, iconUrl, hasNext);
 
         transportationLayout.addView(widget);
     }
 
-    public void addMoveStep(int moveType, int estimateTime, boolean hasNext) {
+    public void addWalkStep(int estimateTime, boolean hasNext) {
         TransportationWidget widget = new TransportationWidget(getContext());
 
-        widget.showMoveStep(moveType, estimateTime, hasNext);
+        widget.showWalkStep(Utility.getRoundMinutes(estimateTime), hasNext);
 
+        //Log.i("TransitOverviewLayout", "EstimateWalkTime: " + estimateTime);
         transportationLayout.addView(widget);
+    }
+
+    public void removeTransportationWidgets() {
+        transportationLayout.removeAllViews();
     }
 }

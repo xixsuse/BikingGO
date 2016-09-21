@@ -58,6 +58,7 @@
 
     <dimen name="actionbar_item_height">@dimen/normal_actionbar_item_height</dimen>
 
+    <dimen name="font_text_size_xs">@dimen/normal_font_size_xs</dimen>
     <dimen name="font_text_size_s">@dimen/normal_font_size_s</dimen>
     <dimen name="font_text_size_m">@dimen/normal_font_size_m</dimen>
     <dimen name="font_text_size_l">@dimen/normal_font_size_l</dimen>

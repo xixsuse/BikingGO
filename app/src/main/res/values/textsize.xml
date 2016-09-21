@@ -16,7 +16,8 @@
     <dimen name="normal_font_size_l">23dp</dimen>
     <dimen name="normal_font_size_m">18dp</dimen>
     <dimen name="normal_font_size_s">15dp</dimen>
-    
+    <dimen name="normal_font_size_xs">12dp</dimen>
+
     <dimen name="normal_padding_size_super">53dp</dimen>
     <dimen name="normal_padding_size_xxl">23dp</dimen>
     <dimen name="normal_padding_size_xl">18dp</dimen>
@@ -48,7 +49,8 @@
     <dimen name="sw600dp_font_size_l">31dp</dimen>
     <dimen name="sw600dp_font_size_m">28dp</dimen>
     <dimen name="sw600dp_font_size_s">20dp</dimen>
-    
+    <dimen name="sw600dp_font_size_xs">15dp</dimen>
+
     <dimen name="sw600dp_padding_size_super">78dp</dimen>
     <dimen name="sw600dp_padding_size_xxl">38dp</dimen>
     <dimen name="sw600dp_padding_size_xl">30dp</dimen>
@@ -79,7 +81,8 @@
     <dimen name="sw800dp_font_size_l">50dp</dimen>
     <dimen name="sw800dp_font_size_m">44dp</dimen>
     <dimen name="sw800dp_font_size_s">33dp</dimen>
-    
+    <dimen name="sw800dp_font_size_xs">25dp</dimen>
+
     <dimen name="sw800dp_padding_size_super">100dp</dimen>
     <dimen name="sw800dp_padding_size_xxl">50dp</dimen>
     <dimen name="sw800dp_padding_size_xl">40dp</dimen>

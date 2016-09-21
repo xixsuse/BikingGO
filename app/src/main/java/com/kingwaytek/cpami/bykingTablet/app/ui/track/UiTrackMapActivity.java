@@ -26,9 +26,11 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
@@ -280,11 +282,27 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 marker.position(latLngList.get(latLngList.size() - 1));
                 map.addMarker(marker);
 
+                //zoomToFitsStartAndEnd(latLngList.get(0), latLngList.get(latLngList.size() - 1));
                 moveCameraAndZoom(latLngList.get(0), 16);
             }
 
             setInfoLayout();
         }
+    }
+
+    private void zoomToFitsStartAndEnd(LatLng origin, LatLng destination) {
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+
+        boundsBuilder.include(origin);
+        boundsBuilder.include(destination);
+
+        LatLngBounds bounds = boundsBuilder.build();
+
+        int width = Utility.getScreenWidth();
+        int height = Utility.getScreenHeight();
+        int padding = (int) (width * 0.3);
+
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding));
     }
 
     private void setInfoLayout() {

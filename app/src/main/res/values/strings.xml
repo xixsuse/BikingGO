@@ -486,6 +486,12 @@
     <string name="track_total_length">軌跡總長度：%s</string>
     <string name="track_chose_a_track_to_upload">請選擇要上傳的軌跡</string>
 
+    <!-- Transit -->
+    <string name="transit_my_location">您的位置</string>
+    <string name="transit_walking_duration">步行%1$s (約%2$d分鐘)</string>
+    <string name="transit_headway">每 %d 分一班</string>
+    <string name="transit_stops">%1$s\n行經站數：%2$d站 (%3$d分鐘)</string>
+    <string name="transit_destination">目的地</string>
 
     <string-array name="dialog_photo_menu">
         <item>@string/dialog_menu_photo_from_camera</item>

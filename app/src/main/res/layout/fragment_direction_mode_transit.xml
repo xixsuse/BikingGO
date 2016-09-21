@@ -19,7 +19,11 @@
         android:id="@+id/pathListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/transitOverviewLayoutWidget"/>
+        android:paddingTop="@dimen/padding_size_m"
+        android:paddingBottom="@dimen/padding_size_m"
+        android:layout_below="@+id/transitOverviewLayoutWidget"
+        android:divider="@null"
+        android:dividerHeight="0dp"/>
 
     <ProgressBar
         android:id="@+id/pathLoadingCircle"

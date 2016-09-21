@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape>
+
+            <solid android:color="@color/md_teal_A700"/>
+
+            <corners android:topLeftRadius="50dp"
+                     android:topRightRadius="50dp"
+                     android:bottomLeftRadius="20dp"
+                     android:bottomRightRadius="20dp"/>
+
+            <padding android:left="@dimen/padding_size_s"
+                     android:top="@dimen/padding_size_s"
+                     android:right="@dimen/padding_size_s"
+                     android:bottom="@dimen/padding_size_s"/>
+
+        </shape>
+
+    </item>
+
+</selector>
