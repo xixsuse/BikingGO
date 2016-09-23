@@ -430,7 +430,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ItemsPathStep pathStep = (ItemsPathStep) parent.getItemAtPosition(position);
-                moveCameraAndZoom(new LatLng(pathStep.START_LAT, pathStep.START_LNG), 17);
+                moveCameraAndZoom(new LatLng(pathStep.START_LAT, pathStep.START_LNG), 18);
 
                 removeHighLightPolyline();
                 drawHighLight(pathStep.POLY_LINE);

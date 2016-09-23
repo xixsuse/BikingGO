@@ -50,6 +50,11 @@ public class DataArray implements ApiUrls {
         void onDataGetFailed();
     }
 
+    public interface OnAllYouBikeDataGetCallback {
+        void onAllYouBikeGet(ArrayList<ItemsYouBike> uBikeItems);
+        void onDataGetFailed();
+    }
+
     public static void getLocationSearchResult(final String locationName, final OnDataGetCallBack dataGet) {
         String apiUrl = MessageFormat.format(API_GOOGLE_GEOCODE, locationName, Utility.getLocaleLanguage());
         Log.i("GoogleGeo", apiUrl);
@@ -212,7 +217,7 @@ public class DataArray implements ApiUrls {
             public void onResultSucceed(String response) {
                 Log.i(TAG, "YouBikeNewTP Get!!!");
 
-                JsonParser.parseNewTaipeiYouBikeData(response, new JsonParser.YouBikeParseResult() {
+                JsonParser.parseYouBikeData(response, new JsonParser.YouBikeParseResult() {
                     @Override
                     public void onParseFinished(ArrayList<ItemsYouBike> uBikeItems) {
                         youBikeDataGetCallback.onNewTaipeiYouBikeGet(uBikeItems);
@@ -230,6 +235,34 @@ public class DataArray implements ApiUrls {
             public void onResultFail(String errorMessage) {
                 Log.e(TAG, "NewTaipeiYouBikeWebError: " + errorMessage);
                 youBikeDataGetCallback.onDataGetFailed();
+            }
+        });
+    }
+
+    public static void getAllYouBikeData(final OnAllYouBikeDataGetCallback dataGetCallback) {
+        WebAgent.getStringByUrl(API_UBIKE_ALL, new WebAgent.WebResultImplement() {
+            @Override
+            public void onResultSucceed(String response) {
+                Log.i(TAG, "AllYouBike Get!!!");
+
+                JsonParser.parseYouBikeData(response, new JsonParser.YouBikeParseResult() {
+                    @Override
+                    public void onParseFinished(ArrayList<ItemsYouBike> uBikeItems) {
+                        dataGetCallback.onAllYouBikeGet(uBikeItems);
+                    }
+
+                    @Override
+                    public void onParseFail(String errorMessage) {
+                        Log.e(TAG, "AllYouBikeParseError: " + errorMessage);
+                        dataGetCallback.onDataGetFailed();
+                    }
+                });
+            }
+
+            @Override
+            public void onResultFail(String errorMessage) {
+                Log.e(TAG, "AllYouBikeWebError: " + errorMessage);
+                dataGetCallback.onDataGetFailed();
             }
         });
     }

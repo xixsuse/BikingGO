@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
+import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsCitiesAndPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
@@ -723,7 +724,7 @@ public class JsonParser {
         }
     }
 
-    public static void parseNewTaipeiYouBikeData(String jsonString, YouBikeParseResult parseResult) {
+    public static void parseYouBikeData(String jsonString, YouBikeParseResult parseResult) {
         try {
             ArrayList<ItemsYouBike> uBikeItems = new ArrayList<>();
 
@@ -733,12 +734,12 @@ public class JsonParser {
             int totals;
             int availableBike;
             int availableSpace;
-            String area;
+            String area = "";
             String address;
             double lat;
             double lng;
             String updateTime;
-            int status;
+            int status = 1;
 
             SimpleDateFormat rawDateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.TAIWAN);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.TAIWAN);
@@ -752,14 +753,23 @@ public class JsonParser {
                 totals = jo_eachStation.getInt("tot");
                 availableBike = jo_eachStation.getInt("sbi");
                 availableSpace = jo_eachStation.getInt("bemp");
-                area = jo_eachStation.getString("sarea");
+
+                if (jo_eachStation.has("sarea"))
+                    area = jo_eachStation.getString("sarea");
+
                 address = jo_eachStation.getString("ar");
                 lat = jo_eachStation.getDouble("lat");
                 lng = jo_eachStation.getDouble("lng");
-                updateTime = jo_eachStation.getString("mday");
-                status = jo_eachStation.getInt("act");
 
-                updateTime = dateFormat.format(rawDateFormat.parse(updateTime));
+                if (jo_eachStation.has("act"))
+                    status = jo_eachStation.getInt("act");
+
+                if (jo_eachStation.has("mday")) {
+                    updateTime = jo_eachStation.getString("mday");
+                    updateTime = dateFormat.format(rawDateFormat.parse(updateTime));
+                }
+                else
+                    updateTime = AppController.getInstance().getString(R.string.you_bike_no_updated_time);
 
                 uBikeItems.add(new ItemsYouBike(name, totals, availableBike, availableSpace, area, address, lat, lng, updateTime, status));
             }

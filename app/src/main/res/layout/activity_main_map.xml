@@ -31,8 +31,8 @@
                 android:id="@+id/searchTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_size_xxl"
-                android:paddingStart="@dimen/padding_size_xxl"
+                android:paddingLeft="@dimen/padding_size_super"
+                android:paddingStart="@dimen/padding_size_super"
                 android:paddingRight="@dimen/padding_size_super"
                 android:paddingEnd="@dimen/padding_size_super"
                 android:paddingTop="@dimen/padding_size_l">

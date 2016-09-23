@@ -110,4 +110,11 @@ public interface CommonBundle {
     // Shared List Type
     int SHARED_LIST_TYPE_PLAN = 1;
     int SHARED_LIST_TYPE_TRACK = 2;
+
+    // Official Google Maps
+    String GOOGLE_MAPS_PACKAGE = "com.google.android.apps.maps";
+    String GOOGLE_MAPS_URI = "google.navigation:q={0}&mode={1}";
+    String NAVIGATION_MODE_DRIVE = "d";
+    String NAVIGATION_MODE_WALK = "w";
+    String NAVIGATION_MODE_BIKING = "b";
 }

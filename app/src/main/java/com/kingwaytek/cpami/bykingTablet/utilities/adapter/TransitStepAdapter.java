@@ -1,7 +1,9 @@
 package com.kingwaytek.cpami.bykingTablet.utilities.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,19 +27,23 @@ import java.util.ArrayList;
 public class TransitStepAdapter extends BaseAdapter {
 
     private ArrayList<ItemsTransitStep> transitSteps;
+    private String fare;
     private Context context;
 
     private static final String TRAVEL_MODE_WALK = "WALKING";
     private static final String TRAVEL_MODE_TRANSIT = "TRANSIT";
 
-    public TransitStepAdapter(Context context, ArrayList<ItemsTransitStep> transitStepItems) {
+    public TransitStepAdapter(Context context, ArrayList<ItemsTransitStep> transitStepItems, String fare) {
         this.transitSteps = transitStepItems;
+        this.fare = fare;
         this.context = context;
     }
 
-    public void refreshData(ArrayList<ItemsTransitStep> transitSteps) {
+    public void refreshData(ArrayList<ItemsTransitStep> transitSteps, String fare) {
         this.transitSteps = transitSteps;
+        this.fare = fare;
         notifyDataSetChanged();
+        Log.i("UiTransitStepAdapter", "DataRefreshed!!!");
     }
 
     private Context appContext() {
@@ -80,6 +86,7 @@ public class TransitStepAdapter extends BaseAdapter {
             holder.snippetLayout = (LinearLayout) convertView.findViewById(R.id.transitDescriptionLayout);
             holder.snippetIcon = (ImageView) convertView.findViewById(R.id.transitDescriptionIcon);
             holder.snippet = (TextView) convertView.findViewById(R.id.text_transitSpotDescription);
+            holder.fare = (TextView) convertView.findViewById(R.id.text_transitFare);
 
             convertView.setTag(holder);
         }
@@ -182,6 +189,7 @@ public class TransitStepAdapter extends BaseAdapter {
             }
             holder.headSign.setVisibility(View.VISIBLE);
             holder.snippetLayout.setVisibility(View.VISIBLE);
+            holder.fare.setVisibility(View.GONE);
         }
         else {
             holder.spotIcon.setVisibility(View.GONE);
@@ -200,6 +208,11 @@ public class TransitStepAdapter extends BaseAdapter {
             holder.lineIcon.setImageResource(R.drawable.ic_page_dot_off);
             holder.line.setVisibility(View.GONE);
             holder.lineLayout.setBackgroundResource(0);
+
+            if (!fare.isEmpty()) {
+                holder.fare.setVisibility(View.VISIBLE);
+                holder.fare.setText(appContext().getString(R.string.transit_fare, fare));
+            }
         }
 
         return convertView;
@@ -261,6 +274,12 @@ public class TransitStepAdapter extends BaseAdapter {
         line.setVisibility(isNotWalking ? View.GONE : View.VISIBLE);
     }
 
+    public boolean isContextDestroyed() {
+        boolean isDestroyed = context instanceof Activity && ((Activity) context).isFinishing();
+        Log.i("UiTransitStepAdapter", "isContextDestroyed: " + isDestroyed);
+        return isDestroyed;
+    }
+
     private class ViewHolder {
         ImageView spotIcon;
         TextView headWay;
@@ -272,5 +291,6 @@ public class TransitStepAdapter extends BaseAdapter {
         LinearLayout snippetLayout;
         ImageView snippetIcon;
         TextView snippet;
+        TextView fare;
     }
 }

@@ -3,10 +3,12 @@ package com.kingwaytek.cpami.bykingTablet.app.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,6 +66,7 @@ import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
+import com.kingwaytek.cpami.bykingTablet.utilities.DebugHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
@@ -75,6 +78,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.DirectionModePagerAdapter;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 /**
@@ -84,7 +88,7 @@ import java.util.ArrayList;
  * @author Vincent (2016/4/15).
  */
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
-        OnPhotoRemovedCallBack, MapLayerHandler.OnLayerChangedCallback, View.OnTouchListener {
+        OnPhotoRemovedCallBack, MapLayerHandler.OnLayerChangedCallback, View.OnTouchListener, TabLayout.OnTabSelectedListener {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
@@ -94,6 +98,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private Marker myPositionMarker;
     private Polyline polyLine;
+    private String polylineOverview_walk;
+    private String polylineOverview_transit;
 
     private ArrayList<Marker> myPoiMarkerList;
 
@@ -194,8 +200,9 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK)) {
                 putMarkerFromPoiBook();
-                // TODO Modify params from UiPoiDetailActivity
-                //getPolylineAndDrawLine(getIntent().getStringExtra(BUNDLE_DIRECTION_FROM_POI_BOOK));
+
+                String[] jsonStringAndFromTo = getIntent().getStringArrayExtra(BUNDLE_DIRECTION_FROM_POI_BOOK);
+                getPolylineAndDrawLine(jsonStringAndFromTo[0], jsonStringAndFromTo[1]);
             }
 
             isFirstTimeRun = false;
@@ -985,40 +992,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         String polyOverview = JsonParser.getPolyLineOverview(jsonString);
 
         if (notNull(polyOverview)) {
-            ArrayList<LatLng> linePoints = PolyHelper.decodePolyLine(polyOverview);
-
-            PolylineOptions polyOptions = new PolylineOptions();
-
-            for (LatLng latLng : linePoints) {
-                polyOptions.add(latLng);
-            }
-            polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_grey_700));
-            polyOptions.width(15);
-
-            if (notNull(myPositionMarker))
-                myPositionMarker.remove();
-
-            if (notNull(polyLine))
-                polyLine.remove();
-
-            if (notNull(highLightPoly))
-                highLightPoly.remove();
-
-            MarkerOptions marker = new MarkerOptions();
-            marker.position(linePoints.get(0));
-
-            InputStream is = getResources().openRawResource(+ R.drawable.ic_marker_start);
-            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
-
-            myPositionMarker = map.addMarker(marker);
-            polyLine = map.addPolyline(polyOptions);
-
             PopWindowHelper.dismissPopWindow();
-
-            if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK))
-                zoomToFitsBetweenTwoMarkers(linePoints.get(0));
-            else
-                moveCamera(linePoints.get(0));
 
             if (notNull(myNewMarker))
                 myNewMarker.hideInfoWindow();
@@ -1027,8 +1001,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             showMarkerButtonLayout(false, false);
 
-            closeInputStream(is);
-
             footerImage.setOnTouchListener(this);
             footerImage.setImageResource(R.drawable.ic_drag_sort);
             footerImage.setTag(FOOTER_TAG_BACKGROUND_LIGHT);
@@ -1036,6 +1008,71 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             footerImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
             openPathInfoLayout(jsonString, fromTo);
+
+            setPolylineOverviewAndDraw(polyOverview, true);
+        }
+    }
+
+    public void setPolylineOverviewAndDraw(String polylineOverview, boolean isWalking) {
+        if (isWalking)
+            polylineOverview_walk = polylineOverview;
+        else
+            polylineOverview_transit = polylineOverview;
+
+        if (modeTab.getTabCount() > 0)
+            drawPolyline(modeTab.getSelectedTabPosition() == 0);
+    }
+
+    private void drawPolyline(boolean isWalking) {
+        PolylineOptions polyOptions = new PolylineOptions();
+        ArrayList<LatLng> linePoints = new ArrayList<>();
+
+        if (isWalking && notNull(polylineOverview_walk)) {
+            linePoints = PolyHelper.decodePolyLine(polylineOverview_walk);
+
+            for (LatLng latLng : linePoints) {
+                polyOptions.add(latLng);
+            }
+            polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_grey_700));
+            polyOptions.width(15);
+        }
+        else if (!isWalking && notNull(polylineOverview_transit)) {
+            linePoints = PolyHelper.decodePolyLine(polylineOverview_transit);
+
+            for (LatLng latLng : linePoints) {
+                polyOptions.add(latLng);
+            }
+            polyOptions.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_purple_A200));
+            polyOptions.width(18);
+        }
+
+        if (notNull(highLightPoly))
+            highLightPoly.remove();
+
+        if (notNull(polyLine))
+            polyLine.remove();
+
+        polyLine = map.addPolyline(polyOptions);
+
+        if (notNull(myPositionMarker))
+            myPositionMarker.remove();
+
+        if (!linePoints.isEmpty()) {
+            MarkerOptions marker = new MarkerOptions();
+
+            marker.position(linePoints.get(0));
+
+            InputStream is = getResources().openRawResource(+ R.drawable.ic_marker_start);
+            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+
+            myPositionMarker = map.addMarker(marker);
+
+            if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK))
+                zoomToFitsBetweenTwoMarkers(linePoints.get(0));
+            else
+                moveCamera(linePoints.get(0));
+
+            closeInputStream(is);
         }
     }
 
@@ -1051,19 +1088,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             pagerAdapter.getDirectionFragmentInstance(1).updateData(fromTo);
         }
 
-        final int height;
-
-        if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK)) {
-            height = (int) (screenHeight * 0.2);
-            getIntent().removeExtra(BUNDLE_DIRECTION_FROM_POI_BOOK);
-        }
-        else
-            height = (int) (screenHeight * 0.4);
-
-
-        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
-        pathInfoLayout.setLayoutParams(params);
-
         if (modeTab.getTabCount() == 0) {
             modeTab.setupWithViewPager(pathListPager);
             modeTab.setTabMode(TabLayout.MODE_FIXED);
@@ -1071,7 +1095,24 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             modeTab.getTabAt(0).setIcon(R.drawable.ic_directions_walk);
             modeTab.getTabAt(1).setIcon(R.drawable.ic_directions_transit);
+
+            modeTab.setOnTabSelectedListener(this);
         }
+
+        final int height;
+
+        if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK)) {
+            height = (int) (screenHeight * 0.5);
+
+            pathListPager.setCurrentItem(1);
+            getIntent().removeExtra(BUNDLE_DIRECTION_FROM_POI_BOOK);
+        }
+        else
+            height = (int) (screenHeight * 0.4);
+
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        pathInfoLayout.setLayoutParams(params);
+
         setPathInfoLayoutMaxHeight();
     }
 
@@ -1079,10 +1120,24 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         pathInfoLayout.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        Log.i(TAG, "TabSelected!!! " + tab.getPosition());
+        drawPolyline(tab.getPosition() == 0);
+        pathListPager.setCurrentItem(tab.getPosition(), true);
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {}
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {}
+
+
     public void onPathStepClick(ItemsPathStep pathStepItem) {
         showMarkerButtonLayout(false, false);
         selectedMarker.hideInfoWindow();
-        moveCameraAndDrawHighlight(pathStepItem);
+        moveCameraAndDrawHighlight(new LatLng(pathStepItem.START_LAT, pathStepItem.START_LNG), pathStepItem.POLY_LINE, 0);
 
         int layoutMinHeight = (int) (screenHeight * 0.7);
         int layoutDefaultHeight = (int) (screenHeight * 0.4);
@@ -1094,24 +1149,54 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         }
     }
 
-    private void moveCameraAndDrawHighlight(ItemsPathStep pathStepItem) {
-        moveCameraAndZoom(new LatLng(pathStepItem.START_LAT, pathStepItem.START_LNG), 18);
+    public void onTransitStepClick(LatLng location, String polyline, int colorRes) {
+        showMarkerButtonLayout(false, false);
+        selectedMarker.hideInfoWindow();
+        moveCameraAndDrawHighlight(location, polyline, colorRes);
 
-        ArrayList<LatLng> latLngList = PolyHelper.decodePolyLine(pathStepItem.POLY_LINE);
+        int layoutMinHeight = (int) (screenHeight * 0.8);
+        int layoutDefaultHeight = (int) (screenHeight * 0.5);
+
+        if (pathInfoLayout.getLayoutParams().height > layoutMinHeight) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, layoutDefaultHeight);
+            pathInfoLayout.setLayoutParams(params);
+            setFooterBackground(true);
+        }
+    }
+
+    /**
+     * @param colorRes Set to 0 to using default color.
+     */
+    private void moveCameraAndDrawHighlight(LatLng location, String polyline, int colorRes) {
+        ArrayList<LatLng> latLngList = PolyHelper.decodePolyLine(polyline);
 
         PolylineOptions polyLine = new PolylineOptions();
 
         for (LatLng latLng : latLngList) {
             polyLine.add(latLng);
         }
-        polyLine.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_blue_A700));
-        polyLine.width(18);
+
+        int res = R.color.md_blue_A700;
+
+        if (colorRes == 0)
+            polyLine.width(18);
+        else {
+            polyLine.width(22);
+            res = colorRes;
+        }
+
+        polyLine.color(ContextCompat.getColor(AppController.getInstance().getAppContext(), res));
         polyLine.zIndex(1000);
 
-        if (highLightPoly != null)
+        if (notNull(highLightPoly))
             highLightPoly.remove();
 
         highLightPoly = map.addPolyline(polyLine);
+
+        if (colorRes == 0)
+            moveCameraAndZoom(location, 18);
+        else
+            moveCamera(location);
     }
 
     private void setLayersByPrefKey(final String key) {
@@ -1180,54 +1265,80 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                     setYouBikeRefreshButtonStatus(false);
                     layerHandler.setIsLayerChanging(true);
 
-                    DataArray.getYouBikeData(new DataArray.OnYouBikeDataGetCallback() {
-                        @SuppressWarnings("unchecked")
-                        @Override
-                        public void onTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
-                            if (tempYouBikeList == null || tempYouBikeList.isEmpty())
-                                tempYouBikeList = uBikeItems;
-                            else {
-                                tempYouBikeList.addAll(0, uBikeItems);
-                                if (key.equals(MARKERS_YOU_BIKE_REFRESH))
-                                    layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
-                                else
-                                    layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(tempYouBikeList);
-                            }
-                        }
-
-                        @SuppressWarnings("unchecked")
-                        @Override
-                        public void onNewTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
-                            if (tempYouBikeList == null || tempYouBikeList.isEmpty())
-                                tempYouBikeList = uBikeItems;
-                            else {
-                                tempYouBikeList.addAll(uBikeItems);
-                                if (key.equals(MARKERS_YOU_BIKE_REFRESH))
-                                    layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
-                                else
-                                    layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(tempYouBikeList);
-                            }
-                        }
-
-                        @Override
-                        public void onDataGetFailed() {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showLoadingCircle(false);
-                                    Utility.toastShort(getString(R.string.network_connection_error_please_retry));
-                                    if (notNull(tempYouBikeList)) {
-                                        tempYouBikeList.clear();
-                                        tempYouBikeList = null;
-                                    }
-                                    if (notNull(layerHandler) && layerHandler.isYouBikeMarkerAdded())
-                                        setYouBikeRefreshButtonStatus(true);
-
-                                    layerHandler.setIsLayerChanging(false);
+                    if (DebugHelper.GET_YOU_BIKE_FROM_OPEN_DATA)
+                    {
+                        DataArray.getYouBikeData(new DataArray.OnYouBikeDataGetCallback() {
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public void onTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
+                                if (tempYouBikeList == null || tempYouBikeList.isEmpty())
+                                    tempYouBikeList = uBikeItems;
+                                else {
+                                    tempYouBikeList.addAll(0, uBikeItems);
+                                    if (key.equals(MARKERS_YOU_BIKE_REFRESH))
+                                        layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
+                                    else
+                                        layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(tempYouBikeList);
                                 }
-                            });
-                        }
-                    });
+                            }
+
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public void onNewTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
+                                if (tempYouBikeList == null || tempYouBikeList.isEmpty())
+                                    tempYouBikeList = uBikeItems;
+                                else {
+                                    tempYouBikeList.addAll(uBikeItems);
+                                    if (key.equals(MARKERS_YOU_BIKE_REFRESH))
+                                        layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
+                                    else
+                                        layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(tempYouBikeList);
+                                }
+                            }
+
+                            @Override
+                            public void onDataGetFailed() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showLoadingCircle(false);
+                                        Utility.toastShort(getString(R.string.network_connection_error_please_retry));
+                                        if (notNull(tempYouBikeList)) {
+                                            tempYouBikeList.clear();
+                                            tempYouBikeList = null;
+                                        }
+                                        if (notNull(layerHandler) && layerHandler.isYouBikeMarkerAdded())
+                                            setYouBikeRefreshButtonStatus(true);
+
+                                        layerHandler.setIsLayerChanging(false);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        DataArray.getAllYouBikeData(new DataArray.OnAllYouBikeDataGetCallback() {
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public void onAllYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
+                                if (key.equals(MARKERS_YOU_BIKE_REFRESH))
+                                    layerHandler.refreshAllYouBikeMarkers(uBikeItems);
+                                else
+                                    layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(uBikeItems);
+                            }
+
+                            @Override
+                            public void onDataGetFailed() {
+                                showLoadingCircle(false);
+                                Utility.toastShort(getString(R.string.network_connection_error_please_retry));
+
+                                if (notNull(layerHandler) && layerHandler.isYouBikeMarkerAdded())
+                                    setYouBikeRefreshButtonStatus(true);
+
+                                layerHandler.setIsLayerChanging(false);
+                            }
+                        });
+                    }
                 }
                 else {
                     setYouBikeRefreshButtonStatus(false);
@@ -1523,6 +1634,34 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             public void onCancel() {}
         });
         */
+    }
+
+    @Override
+    protected void onMarkerNavigationClick() {
+        if (isOfficialGoogleMapsInstalled()) {
+            String location = String.valueOf(selectedMarker.getPosition().latitude) + "," + String.valueOf(selectedMarker.getPosition().longitude);
+
+            Uri mapUri = Uri.parse(MessageFormat.format(GOOGLE_MAPS_URI, location, NAVIGATION_MODE_WALK));
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapUri);
+
+            mapIntent.setPackage(GOOGLE_MAPS_PACKAGE);
+
+            if (mapIntent.resolveActivity(getPackageManager()) != null)
+                startActivity(mapIntent);
+        }
+        else
+            Utility.toastShort(getString(R.string.google_maps_is_not_installed));
+    }
+
+    private boolean isOfficialGoogleMapsInstalled() {
+        try {
+            getPackageManager().getPackageInfo(GOOGLE_MAPS_PACKAGE, PackageManager.GET_ACTIVITIES);
+            return true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

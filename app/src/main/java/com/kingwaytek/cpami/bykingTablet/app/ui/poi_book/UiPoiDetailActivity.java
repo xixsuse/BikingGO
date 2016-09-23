@@ -151,8 +151,8 @@ public class UiPoiDetailActivity extends BaseActivity implements ViewPager.OnPag
 
         DialogHelper.showLoadingDialog(this);
 
-        String origin = location.getLatitude() + "," + location.getLongitude();
-        String destination = poiItem.LAT + "," + poiItem.LNG;
+        final String origin = location.getLatitude() + "," + location.getLongitude();
+        final String destination = poiItem.LAT + "," + poiItem.LNG;
 
         String avoidOption = getAvoidOptions(DIR_AVOID_TOLLS, DIR_AVOID_HIGHWAYS);
 
@@ -162,7 +162,7 @@ public class UiPoiDetailActivity extends BaseActivity implements ViewPager.OnPag
                 Intent intent = new Intent(UiPoiDetailActivity.this, UiMainMapActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                intent.putExtra(BUNDLE_DIRECTION_FROM_POI_BOOK, response);
+                intent.putExtra(BUNDLE_DIRECTION_FROM_POI_BOOK, new String[]{response, origin + "&" + destination});
                 intent.putExtra(BUNDLE_PUT_MARKER_TITLE, poiItem.NAME);
                 intent.putExtra(BUNDLE_PUT_MARKER_SNIPPET, poiItem.ADDRESS);
                 intent.putExtra(BUNDLE_PUT_MARKER_COORDINATES, new double[]{poiItem.LAT, poiItem.LNG});

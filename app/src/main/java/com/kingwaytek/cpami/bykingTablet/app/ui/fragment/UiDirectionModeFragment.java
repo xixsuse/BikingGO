@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -15,6 +16,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.BaseFragment;
 import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.app.widget.TransitOverviewLayout;
+import com.kingwaytek.cpami.bykingTablet.app.widget.TransportationWidget;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.PathStepsAdapter;
@@ -37,6 +39,7 @@ public class UiDirectionModeFragment extends BaseFragment {
     private TransitOverviewLayout overviewLayout;
     private ListView pathListView;
     private ProgressBar loadingCircle;
+    private Button transitConnectionRetryBtn;
 
     private TransitStepAdapter transitStepAdapter;
 
@@ -95,8 +98,10 @@ public class UiDirectionModeFragment extends BaseFragment {
 
     @Override
     protected void findRootViews(View rootView) {
-        if (directionMode == MODE_TRANSIT)
+        if (directionMode == MODE_TRANSIT) {
             overviewLayout = (TransitOverviewLayout) rootView.findViewById(R.id.transitOverviewLayoutWidget);
+            transitConnectionRetryBtn = (Button) rootView.findViewById(R.id.button_transitConnectRetry);
+        }
         pathListView = (ListView) rootView.findViewById(R.id.pathListView);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.pathLoadingCircle);
     }
@@ -112,6 +117,10 @@ public class UiDirectionModeFragment extends BaseFragment {
                         break;
 
                     case MODE_TRANSIT:
+                        ItemsTransitStep transitStep = (ItemsTransitStep) parent.getItemAtPosition(position);
+
+                        if (transitStep != null)
+                            getColorResAndDrawHighlight(transitStep);
 
                         break;
                 }
@@ -155,16 +164,29 @@ public class UiDirectionModeFragment extends BaseFragment {
         String[] fromTo = jsonString.split("&");
         Log.i(TAG, "FromTo: " + jsonString);
 
+        showLoadingCircle(true);
+        transitConnectionRetryBtn.setVisibility(View.GONE);
+
         WebAgent.getDirectionsData(fromTo[0], fromTo[1], DIR_MODE_TRANSIT, null, new WebAgent.WebResultImplement() {
             @Override
             public void onResultSucceed(String response) {
                 setTransitOverviewAndList(response);
-                loadingCircle.setVisibility(View.GONE);
+                showLoadingCircle(false);
+                transitConnectionRetryBtn.setOnClickListener(null);
             }
 
             @Override
             public void onResultFail(String errorMessage) {
                 Utility.toastShort(getString(R.string.network_connection_error_please_retry));
+                showLoadingCircle(false);
+
+                transitConnectionRetryBtn.setVisibility(View.VISIBLE);
+                transitConnectionRetryBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getTransitData();
+                    }
+                });
             }
         });
     }
@@ -193,13 +215,50 @@ public class UiDirectionModeFragment extends BaseFragment {
                             transitStep.TRANSIT_VEHICLE_ICON_URL, hasNext);
             }
 
-            if (transitStepAdapter == null) {
-                transitStepAdapter = new TransitStepAdapter(getContext(), transitOverview.TRANSIT_STEP_ITEM);
+            if (transitStepAdapter == null || transitStepAdapter.isContextDestroyed()) {
+                transitStepAdapter = new TransitStepAdapter(getContext(), transitOverview.TRANSIT_STEP_ITEM, transitOverview.FARE);
                 pathListView.setAdapter(transitStepAdapter);
             }
             else
-                transitStepAdapter.refreshData(transitOverview.TRANSIT_STEP_ITEM);
+                transitStepAdapter.refreshData(transitOverview.TRANSIT_STEP_ITEM, transitOverview.FARE);
+
+            ((UiMainMapActivity) getContext()).setPolylineOverviewAndDraw(transitOverview.POLY_LINE, false);
         }
+    }
+
+    private void getColorResAndDrawHighlight(ItemsTransitStep transitStep) {
+        int colorRes = 0;
+
+        if (transitStep.TRAVEL_MODE.equals(TRAVEL_MODE_TRANSIT))
+        {
+            if (transitStep.TRANSIT_VEHICLE_TYPE.equals(TransportationWidget.VEHICLE_TYPE_METRO)) {
+                switch (transitStep.TRANSIT_SHORT_NAME) {
+                    case TransportationWidget.METRO_LINE_NAME_BLUE:
+                        colorRes = R.color.metro_blue;
+                        break;
+
+                    case TransportationWidget.METRO_LINE_NAME_BROWN:
+                        colorRes = R.color.metro_brown;
+                        break;
+
+                    case TransportationWidget.METRO_LINE_NAME_GREEN:
+                        colorRes = R.color.metro_green;
+                        break;
+
+                    case TransportationWidget.METRO_LINE_NAME_ORANGE:
+                        colorRes = R.color.metro_orange;
+                        break;
+
+                    case TransportationWidget.METRO_LINE_NAME_RED:
+                        colorRes = R.color.metro_red;
+                        break;
+                }
+            }
+            else
+                colorRes = R.color.md_teal_A700;
+        }
+
+        ((UiMainMapActivity)getContext()).onTransitStepClick(transitStep.START_LAT_LNG, transitStep.POLY_LINE, colorRes);
     }
 
     @Override

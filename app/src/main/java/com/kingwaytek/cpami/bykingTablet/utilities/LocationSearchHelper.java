@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * 搜尋地點的方法：<h1>
- * 1. 會先使用 Geocoder，查無地點的話再使用 Google geocoder api。<br>
+ * 1. 會先使用 Geocoder，查無地點的話再使用 Google Geocoding API。<br>
  * 2. 搭配 OnLocationFoundCallBack使用。<br>
  * 3. 只需呼叫 searchLocation(input, callBack)即可！
  *
