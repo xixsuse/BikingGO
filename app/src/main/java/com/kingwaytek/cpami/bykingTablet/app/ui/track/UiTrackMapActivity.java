@@ -76,6 +76,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
     private TextView text_trackDescription;
     private TextView text_trackLength;
 
+    private Handler textHandler;
+
     private BroadcastReceiver receiver;
 
     private Intent trackingServiceIntent;
@@ -234,7 +236,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
                 map.addPolyline(polyLine);
 
-                moveCameraAndZoom(latLngList.get(0), 16);
+                moveCameraAndZoom(latLngList.get(latLngList.size() - 1), 16);
             }
         }
     }
@@ -308,10 +310,12 @@ public class UiTrackMapActivity extends BaseMapActivity {
     private void setInfoLayout() {
         trackInfoLayout.setVisibility(View.VISIBLE);
 
-        text_trackName.setText(trackItem.NAME);
-        trackRating.setRating(trackItem.DIFFICULTY);
-        text_trackDescription.setText(trackItem.DESCRIPTION);
-        text_trackLength.setText(trackItem.DISTANCE);
+        if (notNull(trackItem)) {
+            text_trackName.setText(trackItem.NAME);
+            trackRating.setRating(trackItem.DIFFICULTY);
+            text_trackDescription.setText(trackItem.DESCRIPTION);
+            text_trackLength.setText(trackItem.DISTANCE);
+        }
     }
 
     private void checkGpsAndServiceState() {
@@ -467,7 +471,10 @@ public class UiTrackMapActivity extends BaseMapActivity {
         gpsStateCircle.setVisibility(View.GONE);
         gpsStateText.setText(getString(R.string.track_gps_locate_done));
 
-        new Handler().postDelayed(new Runnable() {
+        if (textHandler == null)
+            textHandler = new Handler();
+
+        textHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 gpsStateLayout.setVisibility(View.GONE);
@@ -613,6 +620,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
             NotifyHelper.clearServiceNotification();
             showTrackingText(false);
             trackItem = null;
+            textHandler = null;
             finish();
         }
         Log.i(TAG, "IsServiceRunning: " + isTrackingServiceRunning());

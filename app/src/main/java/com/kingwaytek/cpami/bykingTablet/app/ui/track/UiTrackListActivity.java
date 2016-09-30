@@ -172,12 +172,10 @@ public class UiTrackListActivity extends BaseActivity {
                 switch ((int)v.getTag()) {
                     case R.id.trackMenu_browse:
                         goToSharedList();
-                        DialogHelper.dismissDialog();
                         break;
 
                     case R.id.trackMenu_upload:
                         setUploadMode(true);
-                        DialogHelper.dismissDialog();
                         break;
 
                     case R.id.trackMenu_delete:
@@ -186,10 +184,9 @@ public class UiTrackListActivity extends BaseActivity {
                             trackListAdapter.notifyDataSetChanged();
                         }
                         MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE);
-
-                        DialogHelper.dismissDialog();
                         break;
                 }
+                DialogHelper.dismissDialog();
                 trackBrowse.setOnClickListener(null);
                 trackUpload.setOnClickListener(null);
                 trackDelete.setOnClickListener(null);

@@ -338,7 +338,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             }
             else
                 markerPoiPhoto.setImageBitmap(bitmap);
-
         }
         else
             markerPoiPhoto.setVisibility(View.GONE);

@@ -101,15 +101,17 @@ public class UiMyPoiListActivity extends BaseActivity {
             }
         });
 
-        poiListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                poiListAdapter.showCheckBox(true);
-                poiListAdapter.setBoxChecked(position);
-                setMenuOption(ACTION_DELETE);
-                return true;
-            }
-        });
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
+            poiListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    poiListAdapter.showCheckBox(true);
+                    poiListAdapter.setBoxChecked(position);
+                    setMenuOption(ACTION_DELETE);
+                    return true;
+                }
+            });
+        }
     }
 
     public View getRootView() {
@@ -164,8 +166,10 @@ public class UiMyPoiListActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_ADD);
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
+            this.menu = menu;
+            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_ADD);
+        }
         return true;
     }
 

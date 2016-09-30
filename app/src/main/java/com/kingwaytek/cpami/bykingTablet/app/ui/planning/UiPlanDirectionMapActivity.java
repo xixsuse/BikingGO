@@ -65,6 +65,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     private PathListPagerAdapter pagerAdapter;
     private ListView pathListView;
 
+    private int pathListSelectedItem = -1;
     private ArrayList<Polyline> highLightPolyList;
 
     private int pageSize;
@@ -193,7 +194,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
             MarkerOptions marker = new MarkerOptions();
 
             marker.position(linePoints.get(0));
-            marker.title("1." + planItems.get(0).TITLE);
+            marker.title("1.\t" + planItems.get(0).TITLE);
             marker.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromMemCache(BITMAP_KEY_PIN_PLACE)));
 
             map.addMarker(marker);
@@ -386,6 +387,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         moveCameraWhilePageSelected = true;
+        //Log.i(TAG, "positionOffset : " + positionOffset + " positionsOffsetPixels : " + positionOffsetPixels);
     }
 
     @Override
@@ -394,15 +396,18 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         checkPathListData(position);
         setPageDotState(position);
         lastSelectedPage = position;
+        Log.i(TAG, "onPageSelected!!! " + position);
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {}
+    public void onPageScrollStateChanged(int state) {
+        if (state == ViewPager.SCROLL_STATE_SETTLING)
+            pathListSelectedItem = -1; // -1 means unselected!
+    }
 
     private void checkPathListData(final int position) {
         if (DataArray.list_pathList == null || DataArray.list_pathList.get() == null || DataArray.list_pathList.get().isEmpty()) {
-            Bundle bundle = getIntent().getExtras();
-            String jsonString = bundle.getString(BUNDLE_PLAN_DIRECTION_JSON);
+            String jsonString = getIntent().getExtras().getString(BUNDLE_PLAN_DIRECTION_JSON);
             ArrayList<String[]> namePairList = getNamePairs();
 
             DataArray.getDirectionPathListData(jsonString, namePairList, new DataArray.OnDataGetCallBack() {
@@ -426,6 +431,10 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
         pathListView.setAdapter(new PathStepsAdapter(this, pathList.PATH_STEPS, true));
 
+        ((PathStepsAdapter) pathListView.getAdapter()).setSelectedItem(pathListSelectedItem);
+        if (pathListSelectedItem != -1)
+            pathListView.smoothScrollToPosition(pathListSelectedItem);
+
         pathListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -434,8 +443,10 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
                 removeHighLightPolyline();
                 drawHighLight(pathStep.POLY_LINE);
+                pathListSelectedItem = position;
 
-                PopWindowHelper.showPathStepPopWindow(mapRootLayout, pathStep.INSTRUCTIONS, pathStep.DISTANCE, pathStep.GO_ON_PATH);
+                pathListPager.removeOnPageChangeListener(UiPlanDirectionMapActivity.this);
+                PopWindowHelper.showPathStepPopWindow(planTitleLayout, pathStep.INSTRUCTIONS, pathStep.DISTANCE, pathStep.GO_ON_PATH);
             }
         });
     }
@@ -527,8 +538,10 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
     @Override
     public void onBackPressed() {
-        if (PopWindowHelper.isPopWindowShowing())
+        if (PopWindowHelper.isPopWindowShowing()) {
+            pathListPager.removeOnPageChangeListener(this);
             PopWindowHelper.dismissPopWindow();
+        }
         else
             super.onBackPressed();
     }

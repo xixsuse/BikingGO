@@ -43,7 +43,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ui.planning.UiMyPlanListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi_book.UiPoiCityListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.report.UiReportActivity;
-import com.kingwaytek.cpami.bykingTablet.app.ui.settings.UiSettingMenuActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.settings.UiAboutActivity;
 import com.kingwaytek.cpami.bykingTablet.app.ui.track.UiTrackListActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
@@ -75,7 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     protected int ENTRY_TYPE;
 
     private ActionBar actionbar;
-    private static View windowView;
 
     protected DrawerLayout drawer;
     protected ActionBarDrawerToggle drawerToggle;
@@ -100,7 +99,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         getEntryType();
 
         setActionBar();
-        findActionbarWidgetViewAndSetListener();
+        findActionbarWidgets();
 
         findViews();
         setListener();
@@ -266,12 +265,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
         return true;
     }
 
-    public static View getWindowView() {
-        if (notNull(windowView))
-            return windowView;
-        return null;
-    }
-
     public void showActionbar(boolean isShow) {
         if (isShow)
             actionbar.show();
@@ -279,12 +272,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
             actionbar.hide();
     }
 
-    private void findActionbarWidgetViewAndSetListener() {
+    private void findActionbarWidgets() {
         loadingCircle = (ProgressBar) actionbar.getCustomView().findViewById(R.id.loadingCircle);
         trackingText = (TextView) actionbar.getCustomView().findViewById(R.id.text_tracking);
-
-        if (windowView == null)
-            windowView = getWindow().getDecorView();
     }
 
     protected void showLoadingCircle(boolean isShow) {
@@ -398,8 +388,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                 goTo(UiReportActivity.class, false);
                 break;
 
-            case R.id.menu_settings:
-                goTo(UiSettingMenuActivity.class, false);
+            case R.id.menu_about:
+                goTo(UiAboutActivity.class, false);
                 break;
         }
     }

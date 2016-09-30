@@ -48,7 +48,7 @@ public class UiMyPlanEditActivity extends BaseActivity {
     private DragSortListView dragSortListView;
     private PlanEditListAdapter editListAdapter;
 
-    private static final int MAX_POINTS_COUNT = 5;
+    private static final int MAX_POINTS_COUNT = 23;
     private static final int INDEX_ADD_A_NEW_ONE = -1;
     private int INDEX_WHICH_PLAN_ITEM;
 

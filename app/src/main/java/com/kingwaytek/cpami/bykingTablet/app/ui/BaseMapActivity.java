@@ -111,7 +111,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected void onResume() {
         super.onResume();
         requestLocationUpdate();
-        unCheckAllMenuItem();
+        //unCheckAllMenuItem();
     }
 
     @Override

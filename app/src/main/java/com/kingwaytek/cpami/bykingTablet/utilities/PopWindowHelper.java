@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 
 import java.io.File;
 
@@ -55,8 +54,6 @@ public class PopWindowHelper {
         //double xPos = Utility.getScreenWidth() / 2 - popWidth / 2;
         //double yPos = Utility.getScreenHeight() / 2 - popWidth;
 
-        if (BaseActivity.getWindowView() != null)
-            popWindow.showAtLocation(BaseActivity.getWindowView(), Gravity.CENTER, 0, 0);
     }
 
     public static View getPoiEditWindowView(Context context, View anchorView) {
@@ -124,17 +121,20 @@ public class PopWindowHelper {
         inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.popup_path_list, null);
 
+        int planTitleLayoutHeight = appContext().getResources().getDimensionPixelSize(R.dimen.actionbar_height);
+        int actionbarHeight = Utility.getActionbarHeight();
+
         double popWidth = Utility.getScreenWidth();
-        double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();
+        double popHeight = Utility.getScreenHeight() - (actionbarHeight + planTitleLayoutHeight);
 
         RelativeLayout headerLayout = (RelativeLayout) view.findViewById(R.id.pathListHeaderLayout);
-        setHeaderLayoutHeight(headerLayout, (int) (popHeight * 0.15));
+        setHeaderLayoutHeight(headerLayout, (int) (popHeight * 0.18));
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight, true);
 
         setPopWindowUnCancelableAndOutsideTouchable(popWindow);
 
-        popWindow.showAtLocation(anchorView, Gravity.BOTTOM|Gravity.START, 0, 0);
+        popWindow.showAtLocation(anchorView, Gravity.TOP|Gravity.START, 0, actionbarHeight);
 
         return view;
     }
@@ -176,8 +176,9 @@ public class PopWindowHelper {
 
         setPopWindowUnCancelableAndOutsideTouchable(secondPopWindow);
 
-        //int height = appContext().getResources().getDimensionPixelSize(R.dimen.actionbar_height);
-        secondPopWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, 0, 0);
+        int xPos = (int) ((Utility.getScreenWidth() / 2) - (popWidth / 2));
+
+        secondPopWindow.showAsDropDown(anchorView, xPos, 0);
     }
 
     public static View getSharedRatingWindow(Context context, View anchorView, boolean isPlan) {

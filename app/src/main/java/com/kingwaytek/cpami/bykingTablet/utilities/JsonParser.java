@@ -265,8 +265,8 @@ public class JsonParser {
             String[] instructionAndGoOnPath;
             double startLat;
             double startLng;
-            double endLat;
-            double endLng;
+            //double endLat;
+            //double endLng;
             String polyLine;
 
             JO = new JSONObject(jsonString);
@@ -283,11 +283,11 @@ public class JsonParser {
                 polyLine = singleStep.getJSONObject("polyline").getString("points");
                 startLat = singleStep.getJSONObject("start_location").getDouble("lat");
                 startLng = singleStep.getJSONObject("start_location").getDouble("lng");
-                endLat = singleStep.getJSONObject("end_location").getDouble("lat");
-                endLng = singleStep.getJSONObject("end_location").getDouble("lng");
+                //endLat = singleStep.getJSONObject("end_location").getDouble("lat");
+                //endLng = singleStep.getJSONObject("end_location").getDouble("lng");
 
                 dirItemList.add(new ItemsPathStep(distance, duration, instructionAndGoOnPath[0], instructionAndGoOnPath[1],
-                        polyLine, startLat, startLng, endLat, endLng));
+                        polyLine, startLat, startLng));
             }
 
             releaseObjects();
@@ -329,8 +329,8 @@ public class JsonParser {
                 String step_polyLine;
                 double step_startLat;
                 double step_startLng;
-                double step_endLat;
-                double step_endLng;
+                //double step_endLat;
+                //double step_endLng;
 
                 //String polyLineOverview;
 
@@ -358,11 +358,11 @@ public class JsonParser {
                         step_polyLine = singleStep.getJSONObject("polyline").getString("points");
                         step_startLat = singleStep.getJSONObject("start_location").getDouble("lat");
                         step_startLng = singleStep.getJSONObject("start_location").getDouble("lng");
-                        step_endLat = singleStep.getJSONObject("end_location").getDouble("lat");
-                        step_endLng = singleStep.getJSONObject("end_location").getDouble("lng");
+                        //step_endLat = singleStep.getJSONObject("end_location").getDouble("lat");
+                        //step_endLng = singleStep.getJSONObject("end_location").getDouble("lng");
 
                         stepList.add(new ItemsPathStep(step_distance, instructionAndGoOnPath[0], instructionAndGoOnPath[1],
-                                step_polyLine, step_startLat, step_startLng, step_endLat, step_endLng));
+                                step_polyLine, step_startLat, step_startLng));
                     }
 
                     pathList.add(new ItemsPathList(distance, duration, startName, startLat, startLng, endName, endLat, endLng, stepList));

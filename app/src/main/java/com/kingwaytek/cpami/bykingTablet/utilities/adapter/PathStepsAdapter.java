@@ -1,6 +1,7 @@
 package com.kingwaytek.cpami.bykingTablet.utilities.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 
@@ -22,11 +24,17 @@ public class PathStepsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
     private boolean lightText;
+    private int selectedItem;
 
     public PathStepsAdapter(Context context, ArrayList<ItemsPathStep> pathStepList, boolean lightText) {
         this.pathStepList = pathStepList;
         this.lightText = lightText;
         inflater = LayoutInflater.from(context);
+    }
+
+    public void setSelectedItem(int position) {
+        this.selectedItem = position;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -73,6 +81,11 @@ public class PathStepsAdapter extends BaseAdapter {
         }
 
         holder.goOnPath.setText(Html.fromHtml(pathStepList.get(position).GO_ON_PATH));
+
+        if (position == selectedItem && lightText)
+            convertView.setBackgroundColor(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.transparent_crystal_light));
+        else
+            convertView.setBackgroundColor(0);
 
         return convertView;
     }
