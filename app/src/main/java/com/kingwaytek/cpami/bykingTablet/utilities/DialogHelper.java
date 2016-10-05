@@ -6,12 +6,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -32,9 +36,11 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
+import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiListActivity;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.DialogItemsAdapter;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 /**
  * 呼叫 Dialog的方法集中在這裡，<br>
@@ -63,9 +69,11 @@ public class DialogHelper {
         dialogBuilder.setCancelable(false);
 
         dialog = dialogBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setDimAmount(0.0f);
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setDimAmount(0.0f);
+        }
         dialog.show();
     }
 
@@ -110,6 +118,11 @@ public class DialogHelper {
         changeDialogTitleColor();
     }
 
+    /**
+     * 這是原本在 {@link UiMyPoiListActivity}中檢視照片用的方法，現在已改用 PopupWindow (方法在 PopWindowHelper裡)<br>
+     *
+     * by Vincent (2016/09/2X)
+     */
     public static void showImageViewDialog(final Context context, final String title, final String photoPath) {
         if (photoPath.isEmpty())
             return;
@@ -175,7 +188,7 @@ public class DialogHelper {
         });
     }
 
-    public static void showDialogPhotoMenu(Context context, boolean hasRemoveOption, DialogInterface.OnClickListener onClickListener) {
+    static void showDialogPhotoMenu(Context context, boolean hasRemoveOption, DialogInterface.OnClickListener onClickListener) {
         String[] items;
         if (hasRemoveOption)
             items = context.getResources().getStringArray(R.array.dialog_photo_menu_has_remove);
@@ -190,7 +203,10 @@ public class DialogHelper {
         dialogBuilder.setCancelable(true);
 
         dialog = dialogBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         dialog.show();
     }
 
@@ -203,11 +219,14 @@ public class DialogHelper {
         dialogBuilder.setCancelable(true);
 
         dialog = dialogBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         dialog.show();
     }
 
-    public static void showLocationPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
+    static void showLocationPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
         dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setTitle(context.getString(R.string.location_permission_rationale_title));
         dialogBuilder.setMessage(context.getString(R.string.location_permission_rationale_content));
@@ -219,7 +238,7 @@ public class DialogHelper {
         changeDialogTitleColor();
     }
 
-    public static void showPhotoPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
+    static void showPhotoPermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
         dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setTitle(context.getString(R.string.camera_permission_rationale_title));
         dialogBuilder.setMessage(context.getString(R.string.camera_permission_rationale_content));
@@ -231,7 +250,7 @@ public class DialogHelper {
         changeDialogTitleColor();
     }
 
-    public static void showStoragePermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
+    static void showStoragePermissionRationaleDialog(Context context, DialogInterface.OnClickListener positiveClick) {
         dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setTitle(context.getString(R.string.storage_permission_rationale_title));
         dialogBuilder.setMessage(context.getString(R.string.storage_permission_rationale_content));
@@ -280,6 +299,20 @@ public class DialogHelper {
                 timePicker.setCurrentMinute(minutes);
             }
         }
+        /** The HACK WAY to force changing TimePicker's text color */
+        Resources resources = Resources.getSystem();
+        int timePicker_hour_id = resources.getIdentifier("hour", "id", "android");
+        int timePicker_minute_id = resources.getIdentifier("minute", "id", "android");
+        int timePicker_amPm_id = resources.getIdentifier("amPm", "id", "android");
+
+        NumberPicker timePicker_hour = (NumberPicker) timePicker.findViewById(timePicker_hour_id);
+        NumberPicker timePicker_minute = (NumberPicker) timePicker.findViewById(timePicker_minute_id);
+        NumberPicker timePicker_amPm = (NumberPicker) timePicker.findViewById(timePicker_amPm_id);
+
+        setTimePickerTextColors(timePicker_hour);
+        setTimePickerTextColors(timePicker_minute);
+        setTimePickerTextColors(timePicker_amPm);
+        /************************************************************/
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -322,6 +355,29 @@ public class DialogHelper {
 
         dialog = dialogBuilder.create();
         dialog.show();
+    }
+
+    /** The HACK WAY to force changing TimePicker's text color */
+    private static void setTimePickerTextColors(NumberPicker timePicker){
+        try {
+            final int count = timePicker.getChildCount();
+            final int color = ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_grey_50);
+
+            for (int i = 0; i < count; i++) {
+                View child = timePicker.getChildAt(i);
+
+                Field wheelPaint_field = timePicker.getClass().getDeclaredField("mSelectorWheelPaint");
+                wheelPaint_field.setAccessible(true);
+
+                ((Paint) wheelPaint_field.get(timePicker)).setColor(color);
+                ((EditText) child).setTextColor(color);
+
+                timePicker.invalidate();
+            }
+        }
+        catch (NullPointerException | NoSuchFieldException | IllegalAccessException | IllegalArgumentException e) {
+            Log.e("DialogHelper", "setTimePickerTextColors: " + e.getMessage());
+        }
     }
 
     public static void showGpsRequestDialog(final Activity activity, DialogInterface.OnClickListener positiveClick) {
@@ -374,7 +430,9 @@ public class DialogHelper {
         dialogBuilder.setView(view);
 
         dialog = dialogBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
         text_trackLength.setText(AppController.getInstance().getString(R.string.track_done_and_total_length, trackLength));
@@ -426,7 +484,10 @@ public class DialogHelper {
         dialogBuilder.setView(view);
 
         dialog = dialogBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         dialog.show();
 
         text_trackLength.setText(AppController.getInstance().getString(R.string.track_total_length, trackItem.DISTANCE));
@@ -482,7 +543,10 @@ public class DialogHelper {
         dialogBuilder.setView(view);
 
         dialog = dialogBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         dialog.show();
 
         return view;

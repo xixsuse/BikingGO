@@ -58,7 +58,7 @@
                     android:layout_marginRight="@dimen/padding_size_m"
                     android:layout_marginEnd="@dimen/padding_size_m"
                     android:textSize="@dimen/font_text_size_m"
-                    android:textColor="@color/md_grey_900" />
+                    android:textColor="@color/md_grey_900"/>
 
                 <ImageView
                     android:id="@+id/image_poiPhoto"
@@ -123,6 +123,7 @@
                     android:layout_marginRight="@dimen/padding_size_s"
                     android:layout_marginEnd="@dimen/padding_size_s"
                     android:background="@drawable/background_common_button"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:textSize="@dimen/font_text_size_m"
                     android:textColor="@color/md_white_1000"
                     android:text="@string/poi_save"/>
@@ -135,22 +136,10 @@
                     android:layout_marginLeft="@dimen/padding_size_s"
                     android:layout_marginStart="@dimen/padding_size_s"
                     android:background="@drawable/background_common_button"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:textSize="@dimen/font_text_size_m"
                     android:textColor="@color/md_white_1000"
                     android:text="@string/cancel"/>
-
-                <Button
-                    android:id="@+id/btn_poiDelete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.4"
-                    android:layout_marginLeft="@dimen/padding_size_s"
-                    android:layout_marginStart="@dimen/padding_size_s"
-                    android:background="@drawable/background_delete_button"
-                    android:textSize="@dimen/font_text_size_m"
-                    android:textColor="@color/md_white_1000"
-                    android:text="@string/poi_delete"
-                    android:visibility="gone"/>
 
             </LinearLayout>
 

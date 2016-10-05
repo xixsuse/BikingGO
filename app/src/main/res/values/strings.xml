@@ -303,6 +303,7 @@
     <string name="send_out">送出</string>
     <string name="rating_completed">評分完成！</string>
     <string name="google_maps_is_not_installed">Google Maps is not installed!</string>
+    <string name="confirm_to_exit">再按一次Back離開程式</string>
 
     <!-- Permission Request -->
     <string name="location_permission_rationale_title">允許裝置存取目前位置</string>
@@ -351,6 +352,7 @@
     <string name="actionbar_info">資訊</string>
     <string name="actionbar_more">更多</string>
     <string name="actionbar_like">評分</string>
+    <string name="actionbar_send">傳送</string>
 
     <!-- YouBike Information -->
     <string name="you_bike_location">站點位置：%s\n</string>
@@ -440,6 +442,7 @@
     <string name="report_require_name">請輸入姓名</string>
     <string name="report_require_title">請輸入標題</string>
     <string name="report_require_description">請輸入簡短描述</string>
+    <string name="report_require_later_than_start">終止時間不得小於起始時間</string>
 
     <!-- About -->
     <string name="about_copy_right">版權所有：內政部營建署</string>

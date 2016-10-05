@@ -19,6 +19,16 @@ public class MD5Util {
     public static final int SERVICE_NUMBER_REPORT = 1208;
     public static final int SERVICE_NUMBER_EVENTS = 1303;
 
+    public static String getMD5Code(int serviceNumber) {
+        Log.i(TAG, "Month: " + calendar.get(Calendar.MONTH) + " Hours: " + calendar.get(Calendar.HOUR_OF_DAY) + " Date: " + calendar.get(Calendar.DATE));
+
+        return createMD5(
+                (String.valueOf(
+                        ((calendar.get(Calendar.MONTH) + 1) + calendar.get(Calendar.HOUR_OF_DAY)) * (serviceNumber + calendar.get(Calendar.DATE))
+                ) + "Kingway").getBytes()
+        );
+    }
+
     private static String createMD5(byte[] source) {
         String s = null;
 
@@ -52,15 +62,5 @@ public class MD5Util {
             e.printStackTrace();
         }
         return s;
-    }
-
-    public static String getMD5Code(int serviceNumber) {
-        Log.i(TAG, "Month: " + calendar.get(Calendar.MONTH) + " Hours: " + calendar.get(Calendar.HOUR_OF_DAY) + " Date: " + calendar.get(Calendar.DATE));
-
-        return createMD5(
-                (String.valueOf(
-                        ((calendar.get(Calendar.MONTH) + 1) + calendar.get(Calendar.HOUR_OF_DAY)) * (serviceNumber + calendar.get(Calendar.DATE))
-                ) + "Kingway").getBytes()
-        );
     }
 }

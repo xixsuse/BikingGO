@@ -138,7 +138,6 @@ public class UiTrackMapActivity extends BaseMapActivity {
         trackRating = (RatingBar) findViewById(R.id.trackRatingBar);
         text_trackDescription = (TextView) findViewById(R.id.text_trackDescription);
         text_trackLength = (TextView) findViewById(R.id.text_trackLength);
-
     }
 
     @Override

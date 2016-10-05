@@ -133,13 +133,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/track_difficulty"
-                android:textColor="@color/md_grey_700"/>
+                android:textColor="@color/md_grey_600"/>
 
             <RatingBar
                 android:id="@+id/trackRatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:stepSize="1"
+                android:layout_marginBottom="@dimen/padding_size_m"
+                style="@style/MyRatingBar"
                 android:rating="0"
                 android:isIndicator="true"/>
 
@@ -147,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/track_description"
-                android:textColor="@color/md_grey_700"/>
+                android:textColor="@color/md_grey_600"/>
 
             <TextView
                 android:id="@+id/text_trackDescription"
@@ -161,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/track_length"
-                android:textColor="@color/md_grey_700"/>
+                android:textColor="@color/md_grey_600"/>
 
             <TextView
                 android:id="@+id/text_trackLength"

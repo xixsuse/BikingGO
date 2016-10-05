@@ -162,7 +162,7 @@ public class Utility {
         return getShorterId(hardwareId);
     }
 
-    public static String getWifiMac() {
+    private static String getWifiMac() {
         String wifiMac = "";
         try {
             WifiManager wifiMgr = (WifiManager) AppController.getInstance().getAppContext().getSystemService(Context.WIFI_SERVICE);
@@ -188,7 +188,7 @@ public class Utility {
         return wifiMac;
     }
 
-    public static String getDeviceIMEI() {
+    private static String getDeviceIMEI() {
         String imei = null;
         try {
             TelephonyManager telMgr = (TelephonyManager) AppController.getInstance().getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
@@ -251,7 +251,7 @@ public class Utility {
         }
     }
 
-    public static boolean isFileNotExists(String filePath) {
+    static boolean isFileNotExists(String filePath) {
         File file = new File(filePath);
         return !file.exists();
     }

@@ -39,7 +39,8 @@
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
                 android:text="@string/track_name"
-                android:textColor="@color/md_black_1000"/>
+                android:textColor="@color/md_grey_600"
+                android:id="@+id/textView"/>
 
             <EditText
                 android:id="@+id/edit_trackName"
@@ -59,8 +60,9 @@
                 android:layout_marginStart="@dimen/padding_size_l"
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
+                android:layout_marginBottom="@dimen/padding_size_s"
                 android:text="@string/track_difficulty"
-                android:textColor="@color/md_black_1000"/>
+                android:textColor="@color/md_grey_600"/>
 
             <RatingBar
                 android:id="@+id/trackRatingBar"
@@ -70,8 +72,8 @@
                 android:layout_marginStart="@dimen/padding_size_xl"
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
-                android:layout_marginBottom="@dimen/padding_size_m"
-                android:stepSize="1"
+                android:layout_marginBottom="@dimen/padding_size_l"
+                style="@style/MyRatingBar"
                 android:rating="0"/>
 
             <TextView
@@ -82,7 +84,7 @@
                 android:layout_marginRight="@dimen/padding_size_l"
                 android:layout_marginEnd="@dimen/padding_size_l"
                 android:text="@string/track_description"
-                android:textColor="@color/md_black_1000"/>
+                android:textColor="@color/md_grey_600"/>
 
             <EditText
                 android:id="@+id/edit_trackDescription"

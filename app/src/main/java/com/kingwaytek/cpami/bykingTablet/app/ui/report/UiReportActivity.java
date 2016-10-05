@@ -46,6 +46,9 @@ public class UiReportActivity extends BaseActivity {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd  HH:mm", Locale.TAIWAN);
     private SimpleDateFormat sendingFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.TAIWAN);
 
+    private long startTime;
+    private long endTime;
+
     private static final String REPORT_RESULT_OK = "0";
 
     @Override
@@ -71,7 +74,7 @@ public class UiReportActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_UPLOAD);
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SEND);
         return true;
     }
 
@@ -80,7 +83,7 @@ public class UiReportActivity extends BaseActivity {
         super.onOptionsItemSelected(item);
 
         switch (item.getItemId()) {
-            case ACTION_UPLOAD:
+            case ACTION_SEND:
                 uploadReport();
                 break;
         }
@@ -111,8 +114,16 @@ public class UiReportActivity extends BaseActivity {
                         String timeString = year + "/" + month + "/" + day + "  " + hours + ":" + minutes;
 
                         try {
-                            String formattedTime = dateFormat.format(dateFormat.parse(timeString));
+                            Date startDate = dateFormat.parse(timeString);
+                            startTime = startDate.getTime();
+
+                            String formattedTime = dateFormat.format(startDate);
                             text_startTime.setText(formattedTime);
+
+                            if (endTime > 0 && startTime > endTime) {
+                                Utility.toastLong(getString(R.string.report_require_later_than_start));
+                                text_endTime.setText("");
+                            }
                         }
                         catch (ParseException e) {
                             e.printStackTrace();
@@ -131,8 +142,15 @@ public class UiReportActivity extends BaseActivity {
                         String timeString = year + "/" + month + "/" + day + "  " + hours + ":" + minutes;
 
                         try {
-                            String formattedTime = dateFormat.format(dateFormat.parse(timeString));
-                            text_endTime.setText(formattedTime);
+                            Date endDate = dateFormat.parse(timeString);
+                            endTime = endDate.getTime();
+
+                            if (endTime > startTime) {
+                                String formattedTime = dateFormat.format(endDate);
+                                text_endTime.setText(formattedTime);
+                            }
+                            else
+                                Utility.toastLong(getString(R.string.report_require_later_than_start));
                         }
                         catch (ParseException e) {
                             e.printStackTrace();

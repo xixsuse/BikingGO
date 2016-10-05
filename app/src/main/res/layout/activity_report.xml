@@ -107,7 +107,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/padding_size_m">
+                android:layout_marginBottom="@dimen/padding_size_m"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -123,7 +124,12 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_size_m"
                     android:clickable="true"
-                    android:background="@drawable/background_date_and_time_select"/>
+                    android:background="@drawable/background_date_and_time_select"
+                    android:textColorHint="@color/md_grey_500"
+                    android:textColor="@color/md_grey_900"
+                    android:gravity="center_vertical"
+                    android:drawableRight="@drawable/ic_calendar"
+                    android:drawableEnd="@drawable/ic_calendar"/>
 
             </LinearLayout>
 
@@ -131,7 +137,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/padding_size_m">
+                android:layout_marginBottom="@dimen/padding_size_m"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -141,14 +148,18 @@
                     android:text="@string/report_end_time"
                     android:textSize="@dimen/font_text_size_m"/>
 
-
                 <TextView
                     android:id="@+id/text_reportEndTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_size_m"
                     android:clickable="true"
-                    android:background="@drawable/background_date_and_time_select"/>
+                    android:background="@drawable/background_date_and_time_select"
+                    android:textColorHint="@color/md_grey_500"
+                    android:textColor="@color/md_grey_900"
+                    android:gravity="center_vertical"
+                    android:drawableRight="@drawable/ic_calendar"
+                    android:drawableEnd="@drawable/ic_calendar"/>
 
             </LinearLayout>
 

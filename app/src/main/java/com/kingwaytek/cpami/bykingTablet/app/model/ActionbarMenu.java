@@ -22,4 +22,5 @@ public interface ActionbarMenu {
     int ACTION_INFO = 1 << 9;
     int ACTION_MORE = 1 << 10;
     int ACTION_LIKE = 1 << 11;
+    int ACTION_SEND = 1 << 12;
 }

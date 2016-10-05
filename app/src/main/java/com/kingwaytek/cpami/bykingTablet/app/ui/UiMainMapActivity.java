@@ -130,6 +130,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private ArrayList<ItemsYouBike> tempYouBikeList;
 
+    private static long exitTime = 0;
+
     @Override
     protected void onApiReady() {
         checkIntentAndDoActions();
@@ -1669,7 +1671,24 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             showPathInfoLayout(false);
             setFooterBackground(true);
         }
+        else if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
+            finishByDoubleClickBack();
         else
             super.onBackPressed();
+    }
+
+    private void finishByDoubleClickBack() {
+        if (System.currentTimeMillis() - exitTime > 2000) {
+            Utility.toastShort(getString(R.string.confirm_to_exit));
+            exitTime = System.currentTimeMillis();
+        }
+        else if (isTrackingServiceRunning()) {
+            super.onBackPressed();
+        }
+        else {
+            WebAgent.stopRetryThread();
+            PopWindowHelper.dismissPopWindow();
+            Utility.forceCloseTask();
+        }
     }
 }
