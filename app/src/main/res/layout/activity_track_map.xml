@@ -139,6 +139,7 @@
                 android:id="@+id/trackRatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
                 android:layout_marginBottom="@dimen/padding_size_m"
                 style="@style/MyRatingBar"
                 android:rating="0"

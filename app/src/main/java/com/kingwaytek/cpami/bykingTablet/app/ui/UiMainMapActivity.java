@@ -134,9 +134,9 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     protected void onApiReady() {
+        Log.i(TAG, "onApiReady!!!");
         checkIntentAndDoActions();
         registerPreferenceChangedListener();
-        Log.i(TAG, "onApiReady!!!");
     }
 
     @Override
@@ -178,7 +178,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             closeAllLayerFlag();
     }
 
-    void checkIntentAndDoActions() {
+    private void checkIntentAndDoActions() {
         if (isFirstTimeRun)
         {
             switch (ENTRY_TYPE) {
@@ -1104,12 +1104,13 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         if (getIntent().hasExtra(BUNDLE_DIRECTION_FROM_POI_BOOK)) {
             height = (int) (screenHeight * 0.5);
-
             pathListPager.setCurrentItem(1);
-            getIntent().removeExtra(BUNDLE_DIRECTION_FROM_POI_BOOK);
+            setSearchTextTransparent(true);
         }
-        else
+        else {
             height = (int) (screenHeight * 0.4);
+            setSearchTextTransparent(false);
+        }
 
         final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
         pathInfoLayout.setLayoutParams(params);
@@ -1119,6 +1120,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private void showPathInfoLayout(boolean isShow) {
         pathInfoLayout.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        if (!isShow)
+            setSearchTextTransparent(false);
     }
 
     @Override
@@ -1540,6 +1543,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 else
                     showPathInfoLayout(false);
 
+                setSearchTextTransparent(yDown > (screenHeight / 2.5));
+
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -1620,21 +1625,22 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
         LatLngBounds bounds = boundsBuilder.build();
 
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 200);
-        map.animateCamera(cu);
-        /*
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+        //map.animateCamera(cu);
+
         map.animateCamera(cu, new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                CameraUpdate zoomOut = CameraUpdateFactory.zoomBy(-3.0f);
-                map.animateCamera(zoomOut);
+                //CameraUpdate zoomOut = CameraUpdateFactory.zoomBy(-3.0f);
+                //map.animateCamera(zoomOut);
                 Log.i(TAG, "MapZoomBounds!!!!!");
             }
 
             @Override
             public void onCancel() {}
         });
-        */
+
+        getIntent().removeExtra(BUNDLE_DIRECTION_FROM_POI_BOOK);
     }
 
     @Override
@@ -1686,6 +1692,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             super.onBackPressed();
         }
         else {
+            onDestroy();
             WebAgent.stopRetryThread();
             PopWindowHelper.dismissPopWindow();
             Utility.forceCloseTask();

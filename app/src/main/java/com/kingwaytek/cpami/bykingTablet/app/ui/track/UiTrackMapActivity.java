@@ -26,7 +26,9 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -300,10 +302,24 @@ public class UiTrackMapActivity extends BaseMapActivity {
         LatLngBounds bounds = boundsBuilder.build();
 
         int width = Utility.getScreenWidth();
-        int height = Utility.getScreenHeight();
-        int padding = (int) (width * 0.3);
+        //int height = Utility.getScreenHeight();
+        int padding = (int) (width * 0.1);
 
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding));
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+        //map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding));
+
+        map.animateCamera(cu, new GoogleMap.CancelableCallback() {
+            @Override
+            public void onFinish() {
+                //CameraUpdate zoomOut = CameraUpdateFactory.zoomBy(-3.0f);
+                //map.animateCamera(zoomOut);
+                Log.i(TAG, "MapZoomBounds!!!!!");
+            }
+
+            @Override
+            public void onCancel() {}
+        });
     }
 
     private void setInfoLayout() {

@@ -11,7 +11,7 @@ public interface ApiUrls {
     String API_GOOGLE_GEOCODE = "http://maps.google.com/maps/api/geocode/json?address={0}&language={1}";
     String API_UBIKE_TAIPEI = "https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.gz";
     String API_UBIKE_NEW_TAIPEI = "http://data.ntpc.gov.tw/od/data/api/54DDDC93-589C-4858-9C95-18B2046CC1FC?$format=json";
-    String API_UBIKE_ALL = "http://192.168.6.75/bikerec/ubike/all.json";
+    String API_UBIKE_ALL = "http://biking.cpami.gov.tw/bikerec/ubike/all.json";
 
     String API_GOOGLE_DIRECTION =
             "https://maps.googleapis.com/maps/api/directions/json?origin={0}&destination={1}&mode={2}{3}&language={4}&key={5}";
@@ -34,8 +34,8 @@ public interface ApiUrls {
             "ReportEmail={10}&" +
             "Code={11}";
 
-    String API_EVENTS = "http://gis.taiwan.net.tw/XMLReleaseALL_public/activity_C_f.json";
+    String API_EVENTS = "http://biking.cpami.gov.tw/bikerec/ubike/activity_C_f.json";
 
-    String API_BIKING_SERVICE = "http://192.168.6.75/bikerec/db1.ashx";
-    String API_POI_URL = "http://192.168.6.75/bikerec/pic/{0}.jpg";
+    String API_BIKING_SERVICE = "http://biking.cpami.gov.tw/bikerec/db1.ashx";
+    String API_POI_URL = "http://biking.cpami.gov.tw/bikerec/pic/{0}.jpg";
 }

@@ -140,14 +140,17 @@ public class TransitStepAdapter extends BaseAdapter {
                         break;
 
                     case TransportationWidget.METRO_LINE_NAME_GREEN:
+                    case TransportationWidget.KRT_LINE_NAME_LIGHT_RAIL:
                         backgroundRes = R.drawable.background_metro_label_green;
                         break;
 
                     case TransportationWidget.METRO_LINE_NAME_ORANGE:
+                    case TransportationWidget.KRT_LINE_NAME_ORANGE:
                         backgroundRes = R.drawable.background_metro_label_orange;
                         break;
 
                     case TransportationWidget.METRO_LINE_NAME_RED:
+                    case TransportationWidget.KRT_LINE_NAME_RED:
                         backgroundRes = R.drawable.background_metro_label_red;
                         break;
                 }
@@ -249,14 +252,17 @@ public class TransitStepAdapter extends BaseAdapter {
                     break;
 
                 case TransportationWidget.METRO_LINE_NAME_GREEN:
+                case TransportationWidget.KRT_LINE_NAME_LIGHT_RAIL:
                     lineLayout.setBackgroundResource(R.drawable.background_metro_line_green);
                     break;
 
                 case TransportationWidget.METRO_LINE_NAME_ORANGE:
+                case TransportationWidget.KRT_LINE_NAME_ORANGE:
                     lineLayout.setBackgroundResource(R.drawable.background_metro_line_orange);
                     break;
 
                 case TransportationWidget.METRO_LINE_NAME_RED:
+                case TransportationWidget.KRT_LINE_NAME_RED:
                     lineLayout.setBackgroundResource(R.drawable.background_metro_line_red);
                     break;
 

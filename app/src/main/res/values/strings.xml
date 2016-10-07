@@ -291,7 +291,7 @@
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="update_done">更新完成！</string>
-    <string name="upload_done">Upload Completed!</string>
+    <string name="upload_done">上傳成功</string>
     <string name="confirm_to_delete">是否確認刪除「%s」?</string>
     <string name="confirm_to_delete_selected_items">是否刪除選取的項目?</string>
     <string name="confirm_to_upload">是否要上傳「%s」?</string>
@@ -499,6 +499,7 @@
     <string name="transit_destination">目的地</string>
     <string name="transit_fare">費用：%s</string>
     <string name="transit_connection_retry">重試</string>
+    <string name="transit_no_suggestion">無大眾運輸方案</string>
 
     <string-array name="dialog_photo_menu">
         <item>@string/dialog_menu_photo_from_camera</item>

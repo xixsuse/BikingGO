@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -361,6 +362,17 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     protected void clearSearchText() {
         searchText.setText("");
+    }
+
+    protected void setSearchTextTransparent(boolean isTransparent) {
+        if (isTransparent) {
+            searchText.setBackgroundResource(R.drawable.background_search_text_transparent);
+            searchText.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.md_grey_100));
+        }
+        else {
+            searchText.setBackgroundResource(R.drawable.background_search_text);
+            searchText.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.md_grey_400));
+        }
     }
 
     protected void showMarkerButtonLayout(boolean isShow, boolean showEditBtn) {

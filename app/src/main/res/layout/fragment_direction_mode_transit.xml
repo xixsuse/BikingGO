@@ -45,4 +45,13 @@
         android:backgroundTint="@color/md_grey_900"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/text_noTransitSuggestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/transit_no_suggestion"
+        android:textSize="@dimen/font_text_size_l"
+        android:visibility="gone"/>
+
 </RelativeLayout>

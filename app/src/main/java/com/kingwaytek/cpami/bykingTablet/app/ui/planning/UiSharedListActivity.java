@@ -94,7 +94,7 @@ public class UiSharedListActivity extends BaseActivity implements TextWatcher {
                 }
                 else {
                     sharedAdapter.refreshData(DataArray.getSharedList(response));
-                    afterTextChanged(edit_filter.getText());
+                    filterListData(edit_filter.getText().toString());
                 }
 
                 DialogHelper.dismissDialog();
@@ -118,13 +118,16 @@ public class UiSharedListActivity extends BaseActivity implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         if (isFilterable) {
-            if (s.toString().isEmpty())
-                sharedAdapter.filterData("");
-            else
-                sharedAdapter.filterData(s.toString());
-
+            filterListData(s.toString());
             sharedListView.smoothScrollToPosition(0);
         }
+    }
+
+    private void filterListData(String queryText) {
+        if (queryText.isEmpty())
+            sharedAdapter.filterData("");
+        else
+            sharedAdapter.filterData(queryText);
     }
 
     private void getSharedContentAndGoNext(final int id) {

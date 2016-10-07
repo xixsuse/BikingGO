@@ -283,6 +283,9 @@ public class UiMyPlanInfoActivity extends BaseActivity {
 
                     intent.putExtras(bundle);
                     startActivity(intent);
+
+                    if (ENTRY_TYPE == ENTRY_TYPE_VIEW_SHARED_PLAN)
+                        UiMyPlanInfoActivity.this.finish();
                 }
 
                 @Override

@@ -58,7 +58,8 @@ public class WebAgent implements ApiUrls, CommonBundle {
     private static boolean needRetry;
     private static int retryCount;
 
-    private final static int CONNECT_TIME_OUT_MS  = 20 * 1000 ;
+    private final static int CONNECT_TIME_OUT_COMMON = 20 * 1000 ;
+    private final static int CONNECT_TIME_OUT_POST  = 5 * 1000 ;
 
     public interface WebResultImplement {
         void onResultSucceed(String response);
@@ -95,7 +96,8 @@ public class WebAgent implements ApiUrls, CommonBundle {
                         if (error.getMessage() == null) {
                             String retryMessage = String.format(AppController.getInstance().getAppContext().getString(R.string.network_unstable), (retryCount + 1));
                             Utility.toastLong(retryMessage);
-                        } else
+                        }
+                        else
                             Utility.toastLong(error.getMessage() + "\nRetrying.." + (retryCount + 1));
                     }
                     retryConnect(url, webResult);
@@ -132,7 +134,7 @@ public class WebAgent implements ApiUrls, CommonBundle {
         };
 
         commonRequest.setRetryPolicy(new DefaultRetryPolicy(
-                CONNECT_TIME_OUT_MS,
+                CONNECT_TIME_OUT_COMMON,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
@@ -200,7 +202,7 @@ public class WebAgent implements ApiUrls, CommonBundle {
         });
 
         directionRequest.setRetryPolicy(new DefaultRetryPolicy(
-                CONNECT_TIME_OUT_MS,
+                CONNECT_TIME_OUT_COMMON,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
@@ -226,7 +228,7 @@ public class WebAgent implements ApiUrls, CommonBundle {
         });
 
         directionRequest.setRetryPolicy(new DefaultRetryPolicy(
-                CONNECT_TIME_OUT_MS,
+                CONNECT_TIME_OUT_COMMON,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
@@ -265,8 +267,8 @@ public class WebAgent implements ApiUrls, CommonBundle {
 
                     final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
-                    connection.setConnectTimeout(CONNECT_TIME_OUT_MS);
-                    connection.setReadTimeout(CONNECT_TIME_OUT_MS);
+                    connection.setConnectTimeout(CONNECT_TIME_OUT_COMMON);
+                    connection.setReadTimeout(CONNECT_TIME_OUT_COMMON);
                     connection.connect();
 
                     File storagePath = new File(Util.sdPath, AppController.getInstance().getString(R.string.file_path_you_bike_data));
@@ -330,6 +332,9 @@ public class WebAgent implements ApiUrls, CommonBundle {
                                                 final String id, final String rating, final String city,
                                                 final WebResultImplement webResult)
     {
+        Log.i(TAG,"url: " + API_BIKING_SERVICE + "\nmode: " + mode + "\ntype: " + type + "\nname: " + name
+                + "\ncontent: " + content + "\nid: " + id + "\nrating: " + rating + "\ncity: " + city);
+
         final StringRequest request = new StringRequest(Request.Method.POST, API_BIKING_SERVICE,
                 new Response.Listener<String>() {
                     @Override
@@ -372,7 +377,7 @@ public class WebAgent implements ApiUrls, CommonBundle {
         };
 
         request.setRetryPolicy(new DefaultRetryPolicy(
-                CONNECT_TIME_OUT_MS,
+                CONNECT_TIME_OUT_POST,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
@@ -391,8 +396,8 @@ public class WebAgent implements ApiUrls, CommonBundle {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(API_BIKING_SERVICE).openConnection();
                     connection.setRequestMethod("POST");
-                    connection.setConnectTimeout(CONNECT_TIME_OUT_MS);
-                    connection.setReadTimeout(CONNECT_TIME_OUT_MS);
+                    connection.setConnectTimeout(CONNECT_TIME_OUT_COMMON);
+                    connection.setReadTimeout(CONNECT_TIME_OUT_COMMON);
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
 

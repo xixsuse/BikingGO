@@ -32,6 +32,9 @@ public class TransportationWidget extends LinearLayout {
     public static final String METRO_LINE_NAME_GREEN = "松山新店線";
     public static final String METRO_LINE_NAME_RED = "淡水信義線";
     public static final String METRO_LINE_NAME_BROWN = "文湖線";
+    public static final String KRT_LINE_NAME_RED = "紅線";
+    public static final String KRT_LINE_NAME_ORANGE = "橘線";
+    public static final String KRT_LINE_NAME_LIGHT_RAIL = "輕軌";
 
     public TransportationWidget(Context context) {
         super(context);
@@ -75,6 +78,7 @@ public class TransportationWidget extends LinearLayout {
         if (vehicleType.equals(VEHICLE_TYPE_METRO)) {
             switch (shortName) {
                 case METRO_LINE_NAME_ORANGE:
+                case KRT_LINE_NAME_ORANGE:
                     metroText.setBackgroundResource(R.drawable.background_metro_label_orange);
                     break;
 
@@ -83,10 +87,12 @@ public class TransportationWidget extends LinearLayout {
                     break;
 
                 case METRO_LINE_NAME_GREEN:
+                case KRT_LINE_NAME_LIGHT_RAIL:
                     metroText.setBackgroundResource(R.drawable.background_metro_label_green);
                     break;
 
                 case METRO_LINE_NAME_RED:
+                case KRT_LINE_NAME_RED:
                     metroText.setBackgroundResource(R.drawable.background_metro_label_red);
                     break;
 

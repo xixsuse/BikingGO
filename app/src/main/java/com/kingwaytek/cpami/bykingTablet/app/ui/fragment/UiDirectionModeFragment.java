@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
@@ -40,6 +41,7 @@ public class UiDirectionModeFragment extends BaseFragment {
     private ListView pathListView;
     private ProgressBar loadingCircle;
     private Button transitConnectionRetryBtn;
+    private TextView text_noSuggestion;
 
     private TransitStepAdapter transitStepAdapter;
 
@@ -101,6 +103,7 @@ public class UiDirectionModeFragment extends BaseFragment {
         if (directionMode == MODE_TRANSIT) {
             overviewLayout = (TransitOverviewLayout) rootView.findViewById(R.id.transitOverviewLayoutWidget);
             transitConnectionRetryBtn = (Button) rootView.findViewById(R.id.button_transitConnectRetry);
+            text_noSuggestion = (TextView) rootView.findViewById(R.id.text_noTransitSuggestion);
         }
         pathListView = (ListView) rootView.findViewById(R.id.pathListView);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.pathLoadingCircle);
@@ -196,6 +199,7 @@ public class UiDirectionModeFragment extends BaseFragment {
 
         if (transitOverview != null) {
             Log.i(TAG, "setTransitOverviewAndList!");
+            text_noSuggestion.setVisibility(View.GONE);
 
             overviewLayout.removeTransportationWidgets();
             overviewLayout.setTotalTime(transitOverview.DURATION);
@@ -224,6 +228,8 @@ public class UiDirectionModeFragment extends BaseFragment {
 
             ((UiMainMapActivity) getContext()).setPolylineOverviewAndDraw(transitOverview.POLY_LINE, false);
         }
+        else
+            text_noSuggestion.setVisibility(View.VISIBLE);
     }
 
     private void getColorResAndDrawHighlight(ItemsTransitStep transitStep) {
@@ -242,14 +248,17 @@ public class UiDirectionModeFragment extends BaseFragment {
                         break;
 
                     case TransportationWidget.METRO_LINE_NAME_GREEN:
+                    case TransportationWidget.KRT_LINE_NAME_LIGHT_RAIL:
                         colorRes = R.color.metro_green;
                         break;
 
                     case TransportationWidget.METRO_LINE_NAME_ORANGE:
+                    case TransportationWidget.KRT_LINE_NAME_ORANGE:
                         colorRes = R.color.metro_orange;
                         break;
 
                     case TransportationWidget.METRO_LINE_NAME_RED:
+                    case TransportationWidget.KRT_LINE_NAME_RED:
                         colorRes = R.color.metro_red;
                         break;
                 }
