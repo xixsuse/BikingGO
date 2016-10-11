@@ -91,7 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.5"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -167,6 +167,34 @@
 
             <TextView
                 android:id="@+id/text_trackLength"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_m"
+                android:textColor="@color/md_grey_900"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/track_duration"
+                android:textColor="@color/md_grey_600"/>
+
+            <TextView
+                android:id="@+id/text_trackDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_m"
+                android:textColor="@color/md_grey_900"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/track_average_speed"
+                android:textColor="@color/md_grey_600"/>
+
+            <TextView
+                android:id="@+id/text_trackSpeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_size_s"

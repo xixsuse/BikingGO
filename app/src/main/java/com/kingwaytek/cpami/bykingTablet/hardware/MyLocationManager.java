@@ -11,6 +11,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnGpsLocateCallBack;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.sonavtek.sonav.GPSDATA;
@@ -286,6 +287,9 @@ public class MyLocationManager implements LocationListener {
                 //Utility.showToastOnNewThread("Location written!");
                 Log.i(TAG, "Location Written!!!");
             }
+
+            if (SettingManager.TrackingTime.getStartTime() == 0)
+                SettingManager.TrackingTime.setStartTime(System.currentTimeMillis());
         }
     }
 

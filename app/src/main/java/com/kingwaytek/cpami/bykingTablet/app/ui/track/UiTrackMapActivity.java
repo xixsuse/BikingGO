@@ -52,6 +52,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.NotifyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PolyHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
@@ -77,6 +78,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
     private RatingBar trackRating;
     private TextView text_trackDescription;
     private TextView text_trackLength;
+    private TextView text_trackDuration;
+    private TextView text_trackSpeed;
 
     private Handler textHandler;
 
@@ -140,6 +143,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
         trackRating = (RatingBar) findViewById(R.id.trackRatingBar);
         text_trackDescription = (TextView) findViewById(R.id.text_trackDescription);
         text_trackLength = (TextView) findViewById(R.id.text_trackLength);
+        text_trackDuration = (TextView) findViewById(R.id.text_trackDuration);
+        text_trackSpeed = (TextView) findViewById(R.id.text_trackSpeed);
     }
 
     @Override
@@ -330,6 +335,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
             trackRating.setRating(trackItem.DIFFICULTY);
             text_trackDescription.setText(trackItem.DESCRIPTION);
             text_trackLength.setText(trackItem.DISTANCE);
+            text_trackDuration.setText(trackItem.SPEND_TIME);
+            text_trackSpeed.setText(trackItem.AVERAGE_SPEED);
         }
     }
 
@@ -402,6 +409,9 @@ public class UiTrackMapActivity extends BaseMapActivity {
         LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
         TrackingFileUtil.closeWriter();
 
+        SettingManager.TrackingTime.clearStartTime();
+        SettingManager.TrackingTime.setEndTime(System.currentTimeMillis());
+
         if (TrackingFileUtil.isTrackingFileContainsData()) {
             MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SAVE);
             showSaveDialog();
@@ -410,9 +420,14 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
     private void showSaveDialog() {
         final ArrayList<LatLng> latLngList = TrackingFileUtil.readTrackingLatLng();
-        final String trackLength = getTrackDistance(latLngList);
+        final double trackLength = getTrackDistance(latLngList);
+        final long trackDuration = getTrackingDuration();
 
-        DialogHelper.showTrackSaveDialog(this, trackLength, new DialogHelper.OnTrackSavedCallBack() {
+        final String distanceText = Utility.getDistanceText(trackLength);
+        final String durationText = Utility.getDurationText(trackDuration);
+        final String speedText = Utility.getAverageSpeedText(trackLength, trackDuration);
+
+        DialogHelper.showTrackSaveDialog(this, distanceText, durationText, speedText, new DialogHelper.OnTrackSavedCallBack() {
             @Override
             public void onTrackSaved(String name, int difficulty, String description) {
                 if (!TrackingFileUtil.isTrackingFileEmpty()) {
@@ -421,7 +436,9 @@ public class UiTrackMapActivity extends BaseMapActivity {
                             Utility.getCurrentTimeInFormat(),
                             name, difficulty, description,
                             getEncodedPolyline(latLngList),
-                            trackLength);
+                            distanceText,
+                            durationText,
+                            speedText);
 
                     TrackingFileUtil.cleanTrackingFile();
                     menu.clear();
@@ -441,14 +458,18 @@ public class UiTrackMapActivity extends BaseMapActivity {
         return null;
     }
 
-    private String getTrackDistance(ArrayList<LatLng> latLngList) {
+    private double getTrackDistance(ArrayList<LatLng> latLngList) {
         double distance = 0;
 
         for (int i = 0; i < latLngList.size(); i++) {
             if (i + 1 < latLngList.size())
                 distance += Utility.getDistance(latLngList.get(i), latLngList.get(i + 1));
         }
-        return Utility.getDistanceText(distance);
+        return distance;
+    }
+
+    private long getTrackingDuration() {
+        return SettingManager.TrackingTime.getEndTime() - SettingManager.TrackingTime.getStartTime();
     }
 
     private void gettingReceive() {

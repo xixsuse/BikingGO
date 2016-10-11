@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.bykingTablet.AppController;
+import com.kingwaytek.cpami.bykingTablet.R;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -274,9 +275,32 @@ public class Utility {
 
     public static String getDistanceText(double distance) {
         if (distance < 1000)
-            return String.valueOf((int) distance) + "m";
+            return String.valueOf((int) distance) + " m";
         else
-            return new DecimalFormat("#.00").format(distance / 1000) + "km";
+            return new DecimalFormat("#.00").format(distance / 1000) + " km";
+    }
+
+    public static String getDurationText(long duration) {
+        double minutes =  (duration / 1000) / 60;
+
+        if (minutes < 1) {
+            minutes = minutes * 60;
+            return AppController.getInstance().getString(R.string.track_duration_text_seconds, (int) minutes);
+        }
+        else if (minutes < 60)
+            return AppController.getInstance().getString(R.string.track_duration_text, (int) minutes);
+        else {
+            int hours = (int) (minutes / 60);
+            int minutesOfTheHour = (int) (minutes % 60);
+            return AppController.getInstance().getString(R.string.track_duration_text_hours, hours, minutesOfTheHour);
+        }
+    }
+
+    public static String getAverageSpeedText(double distance, long duration) {
+        double minutes = (duration / 1000) / 60;
+        double kmPerHour = (distance / (minutes / 60)) / 1000;
+
+        return new DecimalFormat("#.00").format(kmPerHour) + " km/h";
     }
 
     public static String getCurrentTimeInFormat() {

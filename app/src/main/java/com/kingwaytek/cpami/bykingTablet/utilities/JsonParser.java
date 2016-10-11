@@ -499,7 +499,6 @@ public class JsonParser {
                     trackNameList.add(new ItemsTrackRecord(
                             JO.getString(FavoriteHelper.TRACK_DATE),
                             JO.getString(FavoriteHelper.TRACK_NAME),
-                            JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
                             JO.getString(FavoriteHelper.TRACK_DISTANCE)));
                 }
                 releaseObjects();
@@ -525,13 +524,24 @@ public class JsonParser {
 
                 JO = JA.getJSONObject(index);
 
+                String duration = "";
+                String speed = "";
+
+                if (JO.has(FavoriteHelper.TRACK_DURATION))
+                    duration = JO.getString(FavoriteHelper.TRACK_DURATION);
+
+                if (JO.has(FavoriteHelper.TRACK_SPEED))
+                    speed = JO.getString(FavoriteHelper.TRACK_SPEED);
+
                 ItemsTrackRecord trackItem = new ItemsTrackRecord(
                         JO.getString(FavoriteHelper.TRACK_DATE),
                         JO.getString(FavoriteHelper.TRACK_NAME),
                         JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
                         JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
                         JO.getString(FavoriteHelper.TRACK_POLYLINE),
-                        JO.getString(FavoriteHelper.TRACK_DISTANCE));
+                        JO.getString(FavoriteHelper.TRACK_DISTANCE),
+                        duration,
+                        speed);
 
                 releaseObjects();
 
@@ -858,14 +868,24 @@ public class JsonParser {
             String contentString = new JSONObject(jsonString).getString("content");
             JO = new JSONObject(contentString);
 
+            String duration = "";
+            String speed = "";
+
+            if (JO.has(FavoriteHelper.TRACK_DURATION))
+                duration = JO.getString(FavoriteHelper.TRACK_DURATION);
+
+            if (JO.has(FavoriteHelper.TRACK_SPEED))
+                speed = JO.getString(FavoriteHelper.TRACK_SPEED);
+
             ItemsTrackRecord trackItem = new ItemsTrackRecord(
                     JO.getString(FavoriteHelper.TRACK_DATE),
                     JO.getString(FavoriteHelper.TRACK_NAME),
                     JO.getInt(FavoriteHelper.TRACK_DIFFICULTY),
                     JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
                     JO.getString(FavoriteHelper.TRACK_POLYLINE),
-                    JO.getString(FavoriteHelper.TRACK_DISTANCE)
-            );
+                    JO.getString(FavoriteHelper.TRACK_DISTANCE),
+                    duration,
+                    speed);
 
             releaseObjects();
             return trackItem;

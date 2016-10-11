@@ -42,6 +42,8 @@ public class FavoriteHelper {
     public static final String TRACK_DESCRIPTION = "description";
     public static final String TRACK_POLYLINE = "polyline";
     public static final String TRACK_DISTANCE = "distance";
+    public static final String TRACK_DURATION = "duration";
+    public static final String TRACK_SPEED = "speed";
 
     private static int POI_INDEX;
 
@@ -379,7 +381,7 @@ public class FavoriteHelper {
         }
     }
 
-    public static void addTrack(String time, String name, int difficulty, String description, String polyline, String distance) {
+    public static void addTrack(String time, String name, int difficulty, String description, String polyline, String distance, String duration, String speed) {
         try {
             String ja_string = TrackingFileUtil.readTrackFile();
             JSONArray ja_track;
@@ -396,6 +398,8 @@ public class FavoriteHelper {
             jo.put(TRACK_DESCRIPTION, description);
             jo.put(TRACK_POLYLINE, polyline);
             jo.put(TRACK_DISTANCE, distance);
+            jo.put(TRACK_DURATION, duration);
+            jo.put(TRACK_SPEED, speed);
 
             ja_track.put(jo);
 
@@ -492,6 +496,28 @@ public class FavoriteHelper {
                 ja_track.getJSONObject(index).put(TRACK_NAME, name);
                 ja_track.getJSONObject(index).put(TRACK_DIFFICULTY, difficulty);
                 ja_track.getJSONObject(index).put(TRACK_DESCRIPTION, description);
+
+                TrackingFileUtil.writeTrackFile(ja_track.toString());
+
+                Log.i(TAG, "TrackFileUpdated: " + ja_track.toString());
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void modifyTrackInfo() {
+        String ja_string = TrackingFileUtil.readTrackFile();
+
+        if (ja_string != null) {
+            try {
+                JSONArray ja_track = new JSONArray(ja_string);
+
+                for (int i = 0; i < ja_track.length(); i++) {
+                    ja_track.getJSONObject(i).put(TRACK_DURATION, "20分");
+                    ja_track.getJSONObject(i).put(TRACK_SPEED, "50 km/h");
+                }
 
                 TrackingFileUtil.writeTrackFile(ja_track.toString());
 

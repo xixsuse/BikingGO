@@ -16,6 +16,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnGpsLocateCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 /**
@@ -83,6 +84,8 @@ public class TrackingService extends Service implements OnGpsLocateCallBack, Com
         stopReceiving();
         IS_TRACKING_REQUESTED = false;
         AppController.getInstance().releaseTrackManager();
+
+        SettingManager.TrackingTime.clearStartTime();
         Log.i(TAG, "Service onDestroy!!!");
     }
 

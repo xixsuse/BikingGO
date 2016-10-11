@@ -87,6 +87,9 @@ public class SettingManager {
     public static final String PREFS_LAYER_RENT_STATION = "LayerRentStation";
     public static final String PREFS_LAYER_YOU_BIKE = "LayerYouBike";
 
+    public static final String PREFS_START_TIME_MILLIS = "StartTimeMillis";
+    public static final String PREFS_END_TIME_MILLIS = "EndTimeMillis";
+
     public static SharedPreferences prefs;
     private static SharedPreferences.Editor editor;
 
@@ -440,6 +443,30 @@ public class SettingManager {
             return prefs.getBoolean(PREFS_LAYER_YOU_BIKE, false);
         }
     }
+
+    public static class TrackingTime {
+
+        public static void setStartTime(long currentTime) {
+            editor.putLong(PREFS_START_TIME_MILLIS, currentTime).apply();
+        }
+
+        public static long getStartTime() {
+            return prefs.getLong(PREFS_START_TIME_MILLIS, 0);
+        }
+
+        public static void clearStartTime() {
+            setStartTime(0);
+        }
+
+        public static void setEndTime(long endTime) {
+            editor.putLong(PREFS_END_TIME_MILLIS, endTime).apply();
+        }
+
+        public static long getEndTime() {
+            return prefs.getLong(PREFS_END_TIME_MILLIS, 0);
+        }
+    }
+
 /*
     public static class Favorite {
 

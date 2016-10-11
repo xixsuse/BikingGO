@@ -486,10 +486,15 @@
     <string name="track_upload">上傳軌跡</string>
     <string name="track_delete">刪除軌跡</string>
     <string name="track_length">軌跡長度：</string>
+    <string name="track_duration">花費時間：</string>
+    <string name="track_average_speed">平均速度：</string>
     <string name="track_in_background">軌跡錄製背景執行中</string>
-    <string name="track_done_and_total_length">軌跡錄製完成！\n總長度：%s</string>
-    <string name="track_total_length">軌跡總長度：%s</string>
+    <string name="track_done_and_total_length">軌跡錄製完成！\n總\t長\t度：%1$s\n花費時間：%2$s\n平均速度：%3$s</string>
+    <string name="track_total_length">軌跡長度：%1$s\n花費時間：%2$s\n平均速度：%3$s</string>
     <string name="track_chose_a_track_to_upload">請選擇要上傳的軌跡</string>
+    <string name="track_duration_text_seconds">%d秒</string>
+    <string name="track_duration_text">%d分</string>
+    <string name="track_duration_text_hours">%1$d小時%2$d分</string>
 
     <!-- Transit -->
     <string name="transit_my_location">您的位置</string>

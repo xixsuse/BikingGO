@@ -11,20 +11,23 @@ public class ItemsTrackRecord {
     public String DESCRIPTION;
     public String POLY_LINE;
     public String DISTANCE;
+    public String SPEND_TIME;
+    public String AVERAGE_SPEED;
 
-    public ItemsTrackRecord(String date, String name, int difficulty, String description, String polyLine, String distance) {
+    public ItemsTrackRecord(String date, String name, int difficulty, String description, String polyLine, String distance, String spendTime, String averageSpeed) {
         this.DATE = date;
         this.NAME = name;
         this.DIFFICULTY = difficulty;
         this.DESCRIPTION = description;
         this.POLY_LINE = polyLine;
         this.DISTANCE = distance;
+        this.SPEND_TIME = spendTime;
+        this.AVERAGE_SPEED = averageSpeed;
     }
 
-    public ItemsTrackRecord(String date, String name, int difficulty, String distance) {
+    public ItemsTrackRecord(String date, String name, String distance) {
         this.DATE = date;
         this.NAME = name;
-        this.DIFFICULTY = difficulty;
         this.DISTANCE = distance;
     }
 }

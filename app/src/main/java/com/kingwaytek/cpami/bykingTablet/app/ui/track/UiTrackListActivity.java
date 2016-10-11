@@ -26,6 +26,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
+import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.TrackListAdapter;
@@ -152,8 +153,10 @@ public class UiTrackListActivity extends BaseActivity {
     private void checkTrackingStatusAndSetButton() {
         if (TrackingService.IS_TRACKING_REQUESTED)
             floatingBtn_addTrack.setImageResource(R.drawable.ic_button_return);
-        else
+        else {
             floatingBtn_addTrack.setImageResource(R.drawable.ic_button_add);
+            SettingManager.TrackingTime.clearStartTime();
+        }
     }
 
     private void showTrackMenuDialog() {
