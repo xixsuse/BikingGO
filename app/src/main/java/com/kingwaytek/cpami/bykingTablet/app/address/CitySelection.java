@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.CommonFileUtil;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.data.ITown;
 import com.kingwaytek.cpami.bykingTablet.view.ListViewAdapter;
@@ -46,8 +46,8 @@ public class CitySelection extends ListActivity {
         TextView tvTitle = (TextView) findViewById(R.id.selection_listview_title);
         tvTitle.setText(R.string.address_search_city_prompt);
 
-        if (Util.city_sort == null) {
-            Util.getSortPOICity();
+        if (CommonFileUtil.city_sort == null) {
+            CommonFileUtil.getSortPOICity();
         }
         ShowList();
     }
@@ -107,8 +107,8 @@ public class CitySelection extends ListActivity {
     }
 
     protected void listItem_Click(int position) {
-        int cityID = Util.city_sort.get(position).getCityID();
-        String cityName = Util.city_sort.get(position).getCityName();
+        int cityID = CommonFileUtil.city_sort.get(position).getCityID();
+        String cityName = CommonFileUtil.city_sort.get(position).getCityName();
 
         sonav engine = sonav.getInstance();
 
@@ -142,9 +142,9 @@ public class CitySelection extends ListActivity {
     private void ShowList() {
         ArrayList<String> cur_city_name_sort = new ArrayList<>();
 
-        for (int i = 0; i < Util.city_sort.size(); i++) {
+        for (int i = 0; i < CommonFileUtil.city_sort.size(); i++) {
             String temp;
-            temp = Util.city_sort.get(i).getCityName();
+            temp = CommonFileUtil.city_sort.get(i).getCityName();
             cur_city_name_sort.add(temp);
         }
 

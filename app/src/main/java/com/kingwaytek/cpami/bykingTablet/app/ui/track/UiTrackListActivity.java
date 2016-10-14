@@ -26,7 +26,6 @@ import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.MenuHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
-import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.TrackListAdapter;
@@ -47,11 +46,9 @@ public class UiTrackListActivity extends BaseActivity {
     private TrackListAdapter trackListAdapter;
     private FloatingActionButton floatingBtn_addTrack;
 
-    private boolean isUploadMode;
-
     @Override
     protected void init() {
-
+        //FavoriteHelper.hardModifyTrackInfo();
     }
 
     @Override
@@ -93,19 +90,13 @@ public class UiTrackListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // 最後一行是 footer view，它不能有點擊事件！
-                if (position != parent.getCount() - 1) {
-                    if (isUploadMode) {
-                        String name = ((ItemsTrackRecord) parent.getItemAtPosition(position)).NAME;
-                        uploadTrack(name, position);
-                    }
-                    else {
-                        Intent intent = new Intent(UiTrackListActivity.this, UiTrackMapActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_TRACK_VIEWING);
-                        intent.putExtra(BUNDLE_TRACK_INDEX, position);
+                if (position != parent.getCount() - 1 && !trackListAdapter.isUploadMode()) {
+                    Intent intent = new Intent(UiTrackListActivity.this, UiTrackMapActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_TRACK_VIEWING);
+                    intent.putExtra(BUNDLE_TRACK_INDEX, position);
 
-                        startActivity(intent);
-                    }
+                    startActivity(intent);
                 }
             }
         });
@@ -114,7 +105,7 @@ public class UiTrackListActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // 最後一行是 footer view，它不能有點擊事件！
-                if (position != parent.getCount() - 1 && !isUploadMode) {
+                if (position != parent.getCount() - 1 && !trackListAdapter.isUploadMode()) {
                     trackListAdapter.showCheckBox(true);
                     trackListAdapter.setBoxChecked(position);
                     MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE);
@@ -153,10 +144,8 @@ public class UiTrackListActivity extends BaseActivity {
     private void checkTrackingStatusAndSetButton() {
         if (TrackingService.IS_TRACKING_REQUESTED)
             floatingBtn_addTrack.setImageResource(R.drawable.ic_button_return);
-        else {
+        else
             floatingBtn_addTrack.setImageResource(R.drawable.ic_button_add);
-            SettingManager.TrackingTime.clearStartTime();
-        }
     }
 
     private void showTrackMenuDialog() {
@@ -218,8 +207,7 @@ public class UiTrackListActivity extends BaseActivity {
     }
 
     private void setUploadMode(boolean isUploadMode) {
-        this.isUploadMode = isUploadMode;
-        trackListAdapter.setUploadRowBackground(isUploadMode);
+        trackListAdapter.setUploadMode(isUploadMode);
         floatingBtn_addTrack.setVisibility(isUploadMode ? View.GONE : View.VISIBLE);
 
         if (isUploadMode) {
@@ -230,7 +218,7 @@ public class UiTrackListActivity extends BaseActivity {
             MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_MORE);
     }
 
-    private void uploadTrack(final String trackName, final int trackIndex) {
+    public void uploadTrack(final String trackName, final int trackIndex) {
         DialogHelper.showUploadConfirmDialog(this, trackName, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -246,14 +234,12 @@ public class UiTrackListActivity extends BaseActivity {
                         public void onResultSucceed(String response) {
                             Utility.toastShort(getString(R.string.upload_done));
                             DialogHelper.dismissDialog();
-                            setUploadMode(false);
                         }
 
                         @Override
                         public void onResultFail(String errorMessage) {
                             Utility.toastLong(errorMessage);
                             DialogHelper.dismissDialog();
-                            setUploadMode(false);
                         }
                     });
                 }
@@ -294,7 +280,7 @@ public class UiTrackListActivity extends BaseActivity {
             case android.R.id.home:
                 if (notNull(trackListAdapter) && trackListAdapter.isCheckBoxShowing())
                     unCheckBoxAndResumeMenu();
-                else if (isUploadMode)
+                else if (notNull(trackListAdapter) && trackListAdapter.isUploadMode())
                     setUploadMode(false);
                 else
                     super.onOptionsItemSelected(item);
@@ -315,7 +301,7 @@ public class UiTrackListActivity extends BaseActivity {
     public void onBackPressed() {
         if (notNull(trackListAdapter) && trackListAdapter.isCheckBoxShowing())
             unCheckBoxAndResumeMenu();
-        else if (isUploadMode)
+        else if (notNull(trackListAdapter) && trackListAdapter.isUploadMode())
             setUploadMode(false);
         else
             super.onBackPressed();

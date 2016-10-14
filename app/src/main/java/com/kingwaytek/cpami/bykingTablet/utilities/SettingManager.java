@@ -87,9 +87,6 @@ public class SettingManager {
     public static final String PREFS_LAYER_RENT_STATION = "LayerRentStation";
     public static final String PREFS_LAYER_YOU_BIKE = "LayerYouBike";
 
-    public static final String PREFS_START_TIME_MILLIS = "StartTimeMillis";
-    public static final String PREFS_END_TIME_MILLIS = "EndTimeMillis";
-
     public static SharedPreferences prefs;
     private static SharedPreferences.Editor editor;
 
@@ -444,7 +441,14 @@ public class SettingManager {
         }
     }
 
-    public static class TrackingTime {
+    public static class TrackingTimeAndLayer {
+
+        private static final String PREFS_START_TIME_MILLIS = "StartTimeMillis";
+        private static final String PREFS_END_TIME_MILLIS = "EndTimeMillis";
+        public static final String PREFS_TRACK_MAP_LAYER_CYCLING_1 = "TrackMapLayerCycling1";
+        public static final String PREFS_TRACK_MAP_LAYER_TOP_TEN = "TrackMapLayerTopTen";
+        public static final String PREFS_TRACK_MAP_LAYER_RECOMMENDED = "TrackMapLayerRecommended";
+        public static final String PREFS_TRACK_MAP_LAYER_ALL_OF_TAIWAN = "TrackMapLayerAllOfTaiwan";
 
         public static void setStartTime(long currentTime) {
             editor.putLong(PREFS_START_TIME_MILLIS, currentTime).apply();
@@ -464,6 +468,38 @@ public class SettingManager {
 
         public static long getEndTime() {
             return prefs.getLong(PREFS_END_TIME_MILLIS, 0);
+        }
+
+        public static void setCyclingLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_TRACK_MAP_LAYER_CYCLING_1, isChecked).apply();
+        }
+
+        public static boolean getCyclingLayer() {
+            return prefs.getBoolean(PREFS_TRACK_MAP_LAYER_CYCLING_1, false);
+        }
+
+        public static void setTopTenLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_TRACK_MAP_LAYER_TOP_TEN, isChecked).apply();
+        }
+
+        public static boolean getTopTenLayer() {
+            return prefs.getBoolean(PREFS_TRACK_MAP_LAYER_TOP_TEN, false);
+        }
+
+        public static void setRecommendedLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_TRACK_MAP_LAYER_RECOMMENDED, isChecked).apply();
+        }
+
+        public static boolean getRecommendedLayer() {
+            return prefs.getBoolean(PREFS_TRACK_MAP_LAYER_RECOMMENDED, false);
+        }
+
+        public static void setAllOfTaiwanLayer(boolean isChecked) {
+            editor.putBoolean(PREFS_TRACK_MAP_LAYER_ALL_OF_TAIWAN, isChecked).apply();
+        }
+
+        public static boolean getAllOfTaiwanLayer() {
+            return prefs.getBoolean(PREFS_TRACK_MAP_LAYER_ALL_OF_TAIWAN, false);
         }
     }
 

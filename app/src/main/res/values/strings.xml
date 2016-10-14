@@ -307,13 +307,13 @@
 
     <!-- Permission Request -->
     <string name="location_permission_rationale_title">允許裝置存取目前位置</string>
-    <string name="location_permission_rationale_content">允許存取目前位置以獲得完整的服務，如附近景點之類的。</string>
+    <string name="location_permission_rationale_content">允許存取目前位置以使用定位功能，以及獲得完整的服務，如附近景點之類的。</string>
     <string name="location_permission_denied">定位功能未啟用！</string>
     <string name="camera_permission_rationale_title">允許裝置使用相簿與相機</string>
     <string name="camera_permission_rationale_content">允許以存取外部圖片檔案，以及取得拍照服務</string>
     <string name="camera_permission_denied">相簿或相機權限未開啟</string>
     <string name="storage_permission_rationale_title">允許裝置讀取與寫入檔案至儲存空間</string>
-    <string name="storage_permission_rationale_content">允許以將使用者自訂內容儲存至本機上，如行程規劃。</string>
+    <string name="storage_permission_rationale_content">允許以將使用者自訂內容儲存至本機上，如我的景點、行程規劃等。</string>
     <string name="storage_permission_denied">儲存空間讀取或寫入權限未開啟</string>
     <string name="storage_permission_denied_force_require">儲存空間讀取或寫入權限必須開啟，程式才可繼續使用！</string>
 
@@ -357,7 +357,7 @@
     <!-- YouBike Information -->
     <string name="you_bike_location">站點位置：%s\n</string>
     <string name="you_bike_available_bike">可借車輛：%d輛\n</string>
-    <string name="you_bike_available_space">可停空位：%s輛\n</string>
+    <string name="you_bike_available_space">可停空位：%d輛\n</string>
     <string name="you_bike_update_time">時　　間：%s</string>
     <string name="you_bike_all_data_get">資料更新完成</string>
     <string name="you_bike_service_unavailable">暫停營運</string>
@@ -393,14 +393,16 @@
     <string name="plan_save_completed">行程儲存完成</string>
     <string name="plan_update_completed">行程更新完成</string>
     <string name="plan_remove_completed">行程已刪除</string>
-    <string name="plan_require_more_then_two">需要至少兩個點位才可進行路徑規劃！</string>
+    <string name="plan_require_more_then_two">需要 2\t個點位以上才可進行路徑規劃！</string>
     <string name="plan_start_name_and_end_name">%1$s\t==>\t%2$s</string>
     <string name="plan_distance_is">距離：%s</string>
-    <string name="plan_duration_is">ETA：%s</string>
+    <string name="plan_duration_is">預計花費時間：%s</string>
     <string name="plan_browse_shared">查看車友分享的行程</string>
     <string name="plan_upload">上傳行程</string>
     <string name="plan_delete">刪除行程</string>
     <string name="plan_chose_a_plan_to_upload">請選擇要上傳的行程</string>
+    <string name="plan_duplicated_name">已有相同名稱的行程主題！</string>
+    <string name="plan_require_more_then_two_for_upload">行程內至少需要 2\t個點位以上才可上傳！</string>
 
     <!-- File Storage -->
     <string name="file_biking_data_directory">/_BikingData/</string>
@@ -489,12 +491,15 @@
     <string name="track_duration">花費時間：</string>
     <string name="track_average_speed">平均速度：</string>
     <string name="track_in_background">軌跡錄製背景執行中</string>
-    <string name="track_done_and_total_length">軌跡錄製完成！\n總\t長\t度：%1$s\n花費時間：%2$s\n平均速度：%3$s</string>
-    <string name="track_total_length">軌跡長度：%1$s\n花費時間：%2$s\n平均速度：%3$s</string>
+    <string name="track_done_and_total_length">軌跡錄製完成！\n總\t\t長\t\t度：%1$s\n平均速度：%2$s\n花費時間：%3$s</string>
+    <string name="track_total_length">軌跡長度：%1$s\n平均速度：%2$s\n花費時間：%3$s</string>
     <string name="track_chose_a_track_to_upload">請選擇要上傳的軌跡</string>
-    <string name="track_duration_text_seconds">%d秒</string>
-    <string name="track_duration_text">%d分</string>
-    <string name="track_duration_text_hours">%1$d小時%2$d分</string>
+    <string name="track_duration_text_seconds">%d\t秒</string>
+    <string name="track_duration_text">%d\t分鐘</string>
+    <string name="track_duration_text_hours">%1$d\t小時\t%2$d\t分</string>
+    <string name="track_average_speed_per_hour">%s\t公里/小時</string>
+    <string name="track_distance_meters">%s\t公尺</string>
+    <string name="track_distance_kilometers">%s\t公里</string>
 
     <!-- Transit -->
     <string name="transit_my_location">您的位置</string>

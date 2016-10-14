@@ -19,6 +19,44 @@
             tools:context=".app.ui.track.UiTrackMapActivity"
             android:name="com.google.android.gms.maps.SupportMapFragment" />
 
+        <RelativeLayout
+            android:id="@+id/polylineInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_size_xxl"
+            android:padding="@dimen/padding_size_l"
+            android:background="@color/transparent_quarter_black"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/text_polylineName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/md_amber_A400"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/text_polylineLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/padding_size_m"
+                android:layout_marginEnd="@dimen/padding_size_m"
+                android:layout_marginTop="@dimen/padding_size_m"
+                android:textColor="@color/md_grey_200"
+                android:layout_below="@+id/text_polylineName"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/text_polylineDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/md_grey_200"
+                android:layout_below="@+id/text_polylineLocation"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,7 +129,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.5"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -176,11 +214,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/track_duration"
+                android:text="@string/track_average_speed"
                 android:textColor="@color/md_grey_600"/>
 
             <TextView
-                android:id="@+id/text_trackDuration"
+                android:id="@+id/text_trackSpeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_size_s"
@@ -190,11 +228,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/track_average_speed"
+                android:text="@string/track_duration"
                 android:textColor="@color/md_grey_600"/>
 
             <TextView
-                android:id="@+id/text_trackSpeed"
+                android:id="@+id/text_trackDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_size_s"

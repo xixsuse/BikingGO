@@ -29,7 +29,7 @@ public class MyLocationManager implements LocationListener {
 
     private static final String TAG = "MyLocationManager";
 
-    private static final LatLng DEFAULT_LOCATION = new LatLng(24.993413, 121.301028);
+    private static final LatLng DEFAULT_LOCATION = new LatLng(25.026794, 121.522413);
 
     private static final long UPDATE_POSITION_TIME = 5000;
     private static final float UPDATE_POSITION_METERS = 1;
@@ -67,7 +67,7 @@ public class MyLocationManager implements LocationListener {
         setGPSUpdateRequest();
     }
 
-    public static LocationManager getLocationManager() {
+    private static LocationManager getLocationManager() {
         if (locManager == null || locManager.get() == null)
             locManager = new WeakReference<>((LocationManager) appContext().getSystemService(Context.LOCATION_SERVICE));
         return locManager.get();
@@ -288,8 +288,8 @@ public class MyLocationManager implements LocationListener {
                 Log.i(TAG, "Location Written!!!");
             }
 
-            if (SettingManager.TrackingTime.getStartTime() == 0)
-                SettingManager.TrackingTime.setStartTime(System.currentTimeMillis());
+            if (SettingManager.TrackingTimeAndLayer.getStartTime() == 0)
+                SettingManager.TrackingTimeAndLayer.setStartTime(System.currentTimeMillis());
         }
     }
 

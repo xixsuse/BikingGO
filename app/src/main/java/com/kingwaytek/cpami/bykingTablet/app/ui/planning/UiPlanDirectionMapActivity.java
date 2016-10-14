@@ -97,9 +97,10 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (notNull(pathListPager))
+        if (notNull(pathListPager)) {
             pathListPager.removeOnPageChangeListener(this);
-
+            pathListView.setOnItemClickListener(null);
+        }
         planItem = null;
     }
 
@@ -266,8 +267,10 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         if (PopWindowHelper.isPopWindowShowing()) {
             PopWindowHelper.dismissPopWindow();
 
-            if (notNull(pathListPager))
+            if (notNull(pathListPager)) {
                 pathListPager.removeOnPageChangeListener(this);
+                pathListView.setOnItemClickListener(null);
+            }
         }
         else {
             final View view = PopWindowHelper.getPathListPopWindowView(mapRootLayout, this);
@@ -424,10 +427,13 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     private void setPathListAndMoveCamera(int position) {
         ItemsPathList pathList = DataArray.list_pathList.get().get(position);
 
-        if (moveCameraWhilePageSelected)
-            moveCamera(new LatLng(pathList.START_LAT, pathList.START_LNG));
+        if (moveCameraWhilePageSelected) {
+            moveCameraAndZoomToFits(
+                    new LatLng(pathList.START_LAT, pathList.START_LNG),
+                    new LatLng(pathList.END_LAT, pathList.END_LNG));
+        }
 
-        drawStepsHighLight(position);
+        drawStepsHighLight(pathList.PATH_STEPS);
 
         pathListView.setAdapter(new PathStepsAdapter(this, pathList.PATH_STEPS, true));
 
@@ -446,15 +452,16 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
                 pathListSelectedItem = position;
 
                 pathListPager.removeOnPageChangeListener(UiPlanDirectionMapActivity.this);
+                pathListView.setOnItemClickListener(null);
                 PopWindowHelper.showPathStepPopWindow(planTitleLayout, pathStep.INSTRUCTIONS, pathStep.DISTANCE, pathStep.GO_ON_PATH);
             }
         });
     }
 
-    private void drawStepsHighLight(int position) {
+    private void drawStepsHighLight(ArrayList<ItemsPathStep> pathSteps) {
         removeHighLightPolyline();
 
-        for (ItemsPathStep pathStep : DataArray.list_pathList.get().get(position).PATH_STEPS) {
+        for (ItemsPathStep pathStep : pathSteps) {
             drawHighLight(pathStep.POLY_LINE);
         }
     }
@@ -540,6 +547,7 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     public void onBackPressed() {
         if (PopWindowHelper.isPopWindowShowing()) {
             pathListPager.removeOnPageChangeListener(this);
+            pathListView.setOnItemClickListener(null);
             PopWindowHelper.dismissPopWindow();
         }
         else

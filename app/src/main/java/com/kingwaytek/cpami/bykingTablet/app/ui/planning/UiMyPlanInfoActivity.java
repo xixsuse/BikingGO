@@ -164,34 +164,38 @@ public class UiMyPlanInfoActivity extends BaseActivity {
     }
 
     private void uploadPlan() {
-        final String name = planName.getText().toString();
+        if (canDirection()) {
+            final String name = planName.getText().toString();
 
-        DialogHelper.showUploadConfirmDialog(this, name, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            DialogHelper.showUploadConfirmDialog(this, name, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
 
-                final String planContent = DataArray.getPlanObjectString(PLAN_EDIT_INDEX);
+                    final String planContent = DataArray.getPlanObjectString(PLAN_EDIT_INDEX);
 
-                if (notNull(planContent)) {
-                    DialogHelper.showLoadingDialog(UiMyPlanInfoActivity.this);
+                    if (notNull(planContent)) {
+                        DialogHelper.showLoadingDialog(UiMyPlanInfoActivity.this);
 
-                    WebAgent.uploadDataToBikingService(POST_VALUE_TYPE_PLAN, name, planContent, new WebAgent.WebResultImplement() {
-                        @Override
-                        public void onResultSucceed(String response) {
-                            Utility.toastShort(getString(R.string.upload_done));
-                            DialogHelper.dismissDialog();
-                        }
+                        WebAgent.uploadDataToBikingService(POST_VALUE_TYPE_PLAN, name, planContent, new WebAgent.WebResultImplement() {
+                            @Override
+                            public void onResultSucceed(String response) {
+                                Utility.toastShort(getString(R.string.upload_done));
+                                DialogHelper.dismissDialog();
+                            }
 
-                        @Override
-                        public void onResultFail(String errorMessage) {
-                            Utility.toastLong(errorMessage);
-                            DialogHelper.dismissDialog();
-                        }
-                    });
+                            @Override
+                            public void onResultFail(String errorMessage) {
+                                Utility.toastLong(errorMessage);
+                                DialogHelper.dismissDialog();
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
+        else
+            Utility.toastLong(getString(R.string.plan_require_more_then_two_for_upload));
     }
 
     private boolean canDirection() {

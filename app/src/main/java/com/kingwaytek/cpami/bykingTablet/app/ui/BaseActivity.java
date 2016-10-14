@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
-import com.kingwaytek.cpami.bykingTablet.app.MainActivity;
 import com.kingwaytek.cpami.bykingTablet.app.model.ActionbarMenu;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
 import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
@@ -232,11 +231,14 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
     public boolean onCreateOptionsMenu(Menu menu) {
         switch (ENTRY_TYPE) {
             case ENTRY_TYPE_DEFAULT:
-            case ENTRY_TYPE_LOCATION_SELECT:
                 if (getLayoutId() == R.layout.activity_main_map) {
                     MenuInflater menuInflater = getMenuInflater();
                     menuInflater.inflate(R.menu.options_menu, menu);
                 }
+                break;
+
+            case ENTRY_TYPE_LOCATION_SELECT:
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_AROUND);
                 break;
 
             case ENTRY_TYPE_DIRECTIONS:
@@ -358,11 +360,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
 
     private void onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-
+            /*
             case R.id.menu_home:
                 goTo(MainActivity.class, false);
                 break;
-
+            */
             case R.id.menu_my_poi:
                 Intent intent = new Intent(this, UiMyPoiListActivity.class);
                 startActivityForResult(intent, REQUEST_RELOAD_ALL_MARKER);

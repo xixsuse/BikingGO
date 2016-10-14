@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanPreview;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
@@ -39,8 +40,6 @@ public class UiMyPlanListActivity extends BaseActivity {
     private ListView planListView;
     private PlanListAdapter planAdapter;
     private FloatingActionButton floatingBtn_addPlan;
-
-    private boolean isUploadMode;
 
     @Override
     protected void init() {
@@ -74,17 +73,11 @@ public class UiMyPlanListActivity extends BaseActivity {
         planListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position != parent.getCount() -1) {
-                    if (isUploadMode) {
-                        String name = ((String[]) parent.getItemAtPosition(position))[0];
-                        uploadPlan(name, position);
-                    }
-                    else {
-                        Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
-                        intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
+                if (position != parent.getCount() -1 && !planAdapter.isUploadMode()) {
+                    Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
+                    intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
             }
         });
@@ -92,7 +85,7 @@ public class UiMyPlanListActivity extends BaseActivity {
         planListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                if (position != parent.getCount() - 1 && !isUploadMode) {
+                if (position != parent.getCount() - 1 && !planAdapter.isUploadMode()) {
                     planAdapter.showCheckBox(true);
                     planAdapter.setBoxChecked(position);
                     setMenuOption(ACTION_DELETE);
@@ -127,7 +120,7 @@ public class UiMyPlanListActivity extends BaseActivity {
             case android.R.id.home:
                 if (notNull(planAdapter) && planAdapter.isCheckBoxShowing())
                     unCheckBoxAndResumeMenu();
-                else if (isUploadMode)
+                else if (notNull(planAdapter) && planAdapter.isUploadMode())
                     setUploadMode(false);
                 else
                     super.onOptionsItemSelected(item);
@@ -147,11 +140,11 @@ public class UiMyPlanListActivity extends BaseActivity {
 
     private void setPlanList() {
         if (PermissionCheckHelper.checkFileStoragePermissions(this)) {
-            ArrayList<String[]> planPairList = DataArray.getPlanNameAndDateList();
+            ArrayList<ItemsPlanPreview> planPreviewList = DataArray.getPlanPreviewItems();
 
-            if (notNull(planPairList)) {
+            if (notNull(planPreviewList)) {
                 if (planAdapter == null) {
-                    planAdapter = new PlanListAdapter(this, planPairList);
+                    planAdapter = new PlanListAdapter(this, planPreviewList);
                     planListView.setAdapter(planAdapter);
 
                     // Add an empty footer view, to prevent the final row of ListView get blocked by FloatingButton.
@@ -159,7 +152,7 @@ public class UiMyPlanListActivity extends BaseActivity {
                     planListView.addFooterView(view);
                 }
                 else
-                    planAdapter.refreshList(planPairList);
+                    planAdapter.refreshList(planPreviewList);
             }
         }
     }
@@ -226,8 +219,7 @@ public class UiMyPlanListActivity extends BaseActivity {
     }
 
     private void setUploadMode(boolean isUploadMode) {
-        this.isUploadMode = isUploadMode;
-        planAdapter.setUploadRowBackground(isUploadMode);
+        planAdapter.setUploadMode(isUploadMode);
         floatingBtn_addPlan.setVisibility(isUploadMode ? View.GONE : View.VISIBLE);
 
         if (isUploadMode) {
@@ -238,7 +230,7 @@ public class UiMyPlanListActivity extends BaseActivity {
             setMenuOption(ACTION_MORE);
     }
 
-    private void uploadPlan(final String planName, final int planIndex) {
+    public void uploadPlan(final String planName, final int planIndex) {
         DialogHelper.showUploadConfirmDialog(this, planName, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -254,14 +246,12 @@ public class UiMyPlanListActivity extends BaseActivity {
                         public void onResultSucceed(String response) {
                             Utility.toastShort(getString(R.string.upload_done));
                             DialogHelper.dismissDialog();
-                            setUploadMode(false);
                         }
 
                         @Override
                         public void onResultFail(String errorMessage) {
                             Utility.toastLong(errorMessage);
                             DialogHelper.dismissDialog();
-                            setUploadMode(false);
                         }
                     });
                 }
@@ -311,7 +301,7 @@ public class UiMyPlanListActivity extends BaseActivity {
     public void onBackPressed() {
         if (notNull(planAdapter) && planAdapter.isCheckBoxShowing())
             unCheckBoxAndResumeMenu();
-        else if (isUploadMode)
+        else if (notNull(planAdapter) && planAdapter.isUploadMode())
             setUploadMode(false);
         else
             super.onBackPressed();

@@ -5,15 +5,16 @@ import android.util.Log;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsEvents;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanPreview;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsShared;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
+import com.kingwaytek.cpami.bykingTablet.utilities.CommonFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import org.json.JSONArray;
@@ -88,8 +89,8 @@ public class DataArray implements ApiUrls {
         return JsonParser.parseMyPoiAndGetList();
     }
 
-    public static ArrayList<String[]> getPlanNameAndDateList() {
-        return JsonParser.getMyPlanNameAndDateList();
+    public static ArrayList<ItemsPlanPreview> getPlanPreviewItems() {
+        return JsonParser.getMyPlanPreviewItems();
     }
 
     public static ArrayList<ItemsPlans> getPlansData() {
@@ -101,7 +102,7 @@ public class DataArray implements ApiUrls {
      */
     public static String getPlanObjectString(int index) {
         try {
-            JSONArray ja = new JSONArray(Util.readPlanFile());
+            JSONArray ja = new JSONArray(CommonFileUtil.readPlanFile());
 
             return ja.getJSONObject(index).toString();
         }

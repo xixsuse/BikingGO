@@ -17,10 +17,10 @@ import android.widget.ScrollView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.ui.UiMainMapActivity;
+import com.kingwaytek.cpami.bykingTablet.utilities.CommonFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 /**
@@ -37,7 +37,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
  */
 public class StartupActivity extends Activity {
 
-    private static final long SPLASH_SCREEN_DURATION = 1000;
+    private static final long SPLASH_SCREEN_DURATION = 800;
     private static final long PERMISSION_REQUIREMENT_TIPS = 3500;
 
     @Override
@@ -61,7 +61,7 @@ public class StartupActivity extends Activity {
     }
 
     private void init() {
-        Util.initUserDatabase();
+        CommonFileUtil.initUserDatabase();
         FavoriteHelper.initPoiFavorite(true);
         goToMain();
     }

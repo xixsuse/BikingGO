@@ -275,9 +275,9 @@ public class Utility {
 
     public static String getDistanceText(double distance) {
         if (distance < 1000)
-            return String.valueOf((int) distance) + " m";
+            return AppController.getInstance().getString(R.string.track_distance_meters, String.valueOf((int) distance));
         else
-            return new DecimalFormat("#.00").format(distance / 1000) + " km";
+            return AppController.getInstance().getString(R.string.track_distance_kilometers, new DecimalFormat("#.00").format(distance / 1000));
     }
 
     public static String getDurationText(long duration) {
@@ -300,7 +300,8 @@ public class Utility {
         double minutes = (duration / 1000) / 60;
         double kmPerHour = (distance / (minutes / 60)) / 1000;
 
-        return new DecimalFormat("#.00").format(kmPerHour) + " km/h";
+        //return new DecimalFormat("#.00").format(kmPerHour) + " km/h";
+        return AppController.getInstance().getString(R.string.track_average_speed_per_hour, new DecimalFormat("#.00").format(kmPerHour));
     }
 
     public static String getCurrentTimeInFormat() {
@@ -309,6 +310,6 @@ public class Utility {
     }
 
     public static int getRoundMinutes(int seconds) {
-        return (int) Math.round(((double)seconds) / 60);
+        return (int) Math.round(((double) seconds) / 60);
     }
 }

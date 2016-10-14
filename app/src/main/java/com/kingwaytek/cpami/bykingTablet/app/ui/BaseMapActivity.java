@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -25,18 +27,25 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
+import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
+import com.kingwaytek.cpami.bykingTablet.utilities.DebugHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.LocationSearchHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PermissionCheckHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
@@ -54,7 +63,7 @@ import java.util.HashMap;
  */
 public abstract class BaseMapActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener, MapLayerHandler.OnLayerChangedCallback {
 
     protected abstract void onMapReady();
     protected abstract int getMapLayout();
@@ -82,8 +91,19 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     protected ImageButton markerBtn_edit;
     protected ImageButton markerBtn_direction;
     protected ImageButton markerBtn_navigation;
+    protected ImageButton uBikeRefreshBtn;
+
+    private TextView polylineName;
+    private TextView polylineLocation;
+    private TextView polylineDescription;
 
     protected RelativeLayout polylineInfoLayout;
+
+    protected MapLayerHandler layerHandler;
+    private static final String NAME_OF_HANDLER_THREAD = "LayerHandlerThread";
+    private HandlerThread handlerThread;
+
+    private ArrayList<ItemsYouBike> tempYouBikeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +126,19 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     @Override
     protected int getLayoutId() {
         return getMapLayout();
+    }
+
+    @Override
+    protected void findViews() {
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT || ENTRY_TYPE == ENTRY_TYPE_TRACKING) {
+            if (getMapLayout() == R.layout.activity_main_map)
+                uBikeRefreshBtn = (ImageButton) findViewById(R.id.uBikeRefreshBtn);
+
+            polylineInfoLayout = (RelativeLayout) findViewById(R.id.polylineInfoLayout);
+            polylineName = (TextView) findViewById(R.id.text_polylineName);
+            polylineLocation = (TextView) findViewById(R.id.text_polylineLocation);
+            polylineDescription = (TextView) findViewById(R.id.text_polylineDescription);
+        }
     }
 
     @Override
@@ -188,7 +221,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                 }
             });
 
-            if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT) {
+            if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT || ENTRY_TYPE == ENTRY_TYPE_TRACKING) {
                 map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
@@ -263,6 +296,30 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     public void moveCameraAndZoom(LatLng latLng, int zoomLevel) {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
+    }
+
+    public void moveCameraAndZoomToFits(LatLng origin, LatLng destination) {
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+
+        boundsBuilder.include(origin);
+        boundsBuilder.include(destination);
+
+        LatLngBounds bounds = boundsBuilder.build();
+
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+        //map.animateCamera(cu);
+
+        map.animateCamera(cu, new GoogleMap.CancelableCallback() {
+            @Override
+            public void onFinish() {
+                //CameraUpdate zoomOut = CameraUpdateFactory.zoomBy(-3.0f);
+                //map.animateCamera(zoomOut);
+                Log.i(TAG, "MapZoomBounds!!!!!");
+            }
+
+            @Override
+            public void onCancel() {}
+        });
     }
 
     private boolean checkPlayServices() {
@@ -406,10 +463,12 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             });
         }
         else {
-            markerBtnLayout.setVisibility(View.GONE);
-            markerBtn_edit.setOnClickListener(null);
-            markerBtn_navigation.setOnClickListener(null);
-            markerBtn_direction.setOnClickListener(null);
+            if (notNull(markerBtnLayout)) {
+                markerBtnLayout.setVisibility(View.GONE);
+                markerBtn_edit.setOnClickListener(null);
+                markerBtn_navigation.setOnClickListener(null);
+                markerBtn_direction.setOnClickListener(null);
+            }
         }
     }
 
@@ -456,11 +515,361 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
         }
     }
 
+    /************************ Polyline layer control area ************************/
+
+    /**
+     * Updated by Vincent on 2016/10/12:<p>
+     *
+     * Load polyline data of GeoJson files which in the project resources.<br>
+     * Add and remove polyline and markers by using HandlerThread and {@link MapLayerHandler}
+     *
+     * @param key The key of SharedPreferences.
+     */
+    protected void setLayersByPrefKey(final String key) {
+        if (handlerThread == null) {
+            handlerThread = new HandlerThread(NAME_OF_HANDLER_THREAD);
+            handlerThread.start();
+        }
+
+        if (layerHandler == null)
+            layerHandler = new MapLayerHandler(handlerThread.getLooper(), new Handler(), this);
+
+        boolean isLayerAdded;
+
+        switch (key) {
+            case SettingManager.PREFS_LAYER_CYCLING_1:
+            case SettingManager.TrackingTimeAndLayer.PREFS_TRACK_MAP_LAYER_CYCLING_1:
+
+                if (getMapLayout() == R.layout.activity_main_map)
+                    isLayerAdded = SettingManager.MapLayer.getCyclingLayer();
+                else
+                    isLayerAdded = SettingManager.TrackingTimeAndLayer.getCyclingLayer();
+
+                if (isLayerAdded) {
+                    checkBitmapCache(BITMAP_KEY_SUPPLY_STATION);
+                    layerHandler.addLayer(map, getBitmapFromMemCache(BITMAP_KEY_SUPPLY_STATION), MapLayerHandler.LAYER_CYCLING);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_CYCLING);
+
+                break;
+
+            case SettingManager.PREFS_LAYER_TOP_TEN:
+            case SettingManager.TrackingTimeAndLayer.PREFS_TRACK_MAP_LAYER_TOP_TEN:
+
+                if (getMapLayout() == R.layout.activity_main_map)
+                    isLayerAdded = SettingManager.MapLayer.getTopTenLayer();
+                else
+                    isLayerAdded = SettingManager.TrackingTimeAndLayer.getTopTenLayer();
+
+                if (isLayerAdded) {
+                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_TOP_TEN);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_TOP_TEN);
+
+                break;
+
+            case SettingManager.PREFS_LAYER_RECOMMENDED:
+            case SettingManager.TrackingTimeAndLayer.PREFS_TRACK_MAP_LAYER_RECOMMENDED:
+
+                if (getMapLayout() == R.layout.activity_main_map)
+                    isLayerAdded = SettingManager.MapLayer.getRecommendedLayer();
+                else
+                    isLayerAdded = SettingManager.TrackingTimeAndLayer.getRecommendedLayer();
+
+                if (isLayerAdded) {
+                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_RECOMMENDED);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_RECOMMENDED);
+
+                break;
+
+            case SettingManager.PREFS_LAYER_ALL_OF_TAIWAN:
+            case SettingManager.TrackingTimeAndLayer.PREFS_TRACK_MAP_LAYER_ALL_OF_TAIWAN:
+
+                if (getMapLayout() == R.layout.activity_main_map)
+                    isLayerAdded = SettingManager.MapLayer.getAllOfTaiwanLayer();
+                else
+                    isLayerAdded = SettingManager.TrackingTimeAndLayer.getAllOfTaiwanLayer();
+
+                if (isLayerAdded) {
+                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+
+                break;
+
+            case SettingManager.PREFS_LAYER_RENT_STATION:
+                if (SettingManager.MapLayer.getRentStationLayer()) {
+                    checkBitmapCache(BITMAP_KEY_BIKE_RENT_STATION);
+                    layerHandler.addLayer(map, getBitmapFromMemCache(BITMAP_KEY_BIKE_RENT_STATION), MapLayerHandler.LAYER_RENT_STATION);
+                    showLoadingCircle(true);
+                }
+                else
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_RENT_STATION);
+                break;
+
+            case SettingManager.PREFS_LAYER_YOU_BIKE:
+            case MARKERS_YOU_BIKE_REFRESH:
+                if (SettingManager.MapLayer.getYouBikeLayer()) {
+                    showLoadingCircle(true);
+
+                    setYouBikeRefreshButtonStatus(false);
+                    layerHandler.setIsLayerChanging(true);
+
+                    if (DebugHelper.GET_YOU_BIKE_FROM_OPEN_DATA)
+                    {
+                        DataArray.getYouBikeData(new DataArray.OnYouBikeDataGetCallback() {
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public void onTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
+                                if (tempYouBikeList == null || tempYouBikeList.isEmpty())
+                                    tempYouBikeList = uBikeItems;
+                                else {
+                                    tempYouBikeList.addAll(0, uBikeItems);
+                                    if (key.equals(MARKERS_YOU_BIKE_REFRESH))
+                                        layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
+                                    else
+                                        layerHandler.new YouBikeMarkerAddTask(BaseMapActivity.this, map).execute(tempYouBikeList);
+                                }
+                            }
+
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public void onNewTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
+                                if (tempYouBikeList == null || tempYouBikeList.isEmpty())
+                                    tempYouBikeList = uBikeItems;
+                                else {
+                                    tempYouBikeList.addAll(uBikeItems);
+                                    if (key.equals(MARKERS_YOU_BIKE_REFRESH))
+                                        layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
+                                    else
+                                        layerHandler.new YouBikeMarkerAddTask(BaseMapActivity.this, map).execute(tempYouBikeList);
+                                }
+                            }
+
+                            @Override
+                            public void onDataGetFailed() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showLoadingCircle(false);
+                                        Utility.toastShort(getString(R.string.network_connection_error_please_retry));
+                                        if (notNull(tempYouBikeList)) {
+                                            tempYouBikeList.clear();
+                                            tempYouBikeList = null;
+                                        }
+                                        if (notNull(layerHandler) && layerHandler.isYouBikeMarkerAdded())
+                                            setYouBikeRefreshButtonStatus(true);
+
+                                        layerHandler.setIsLayerChanging(false);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        DataArray.getAllYouBikeData(new DataArray.OnAllYouBikeDataGetCallback() {
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public void onAllYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
+                                if (key.equals(MARKERS_YOU_BIKE_REFRESH))
+                                    layerHandler.refreshAllYouBikeMarkers(uBikeItems);
+                                else
+                                    layerHandler.new YouBikeMarkerAddTask(BaseMapActivity.this, map).execute(uBikeItems);
+                            }
+
+                            @Override
+                            public void onDataGetFailed() {
+                                showLoadingCircle(false);
+                                Utility.toastShort(getString(R.string.network_connection_error_please_retry));
+
+                                if (notNull(layerHandler) && layerHandler.isYouBikeMarkerAdded())
+                                    setYouBikeRefreshButtonStatus(true);
+
+                                layerHandler.setIsLayerChanging(false);
+                            }
+                        });
+                    }
+                }
+                else {
+                    setYouBikeRefreshButtonStatus(false);
+                    layerHandler.removeLayer(MapLayerHandler.LAYER_YOU_BIKE);
+                }
+                break;
+        }
+    }
+
+    protected boolean isLayerChanging() {
+        return notNull(layerHandler) && layerHandler.isLayerChanging();
+    }
+
+    @Override
+    public void onPolylinePrepared(final int layerCode, final PolylineOptions polyLine) {
+        if (layerHandler == null)
+            return;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (layerCode) {
+                    case MapLayerHandler.LAYER_CYCLING:
+                        layerHandler.polyLineCyclingList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_TOP_TEN:
+                        layerHandler.polyLineTopTenList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_RECOMMENDED:
+                        layerHandler.polyLineRecommendList.add(map.addPolyline(polyLine));
+                        break;
+
+                    case MapLayerHandler.LAYER_ALL_OF_TAIWAN:
+                        layerHandler.polyLineTaiwanList.add(map.addPolyline(polyLine));
+                        break;
+                }
+
+                map.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+                    @Override
+                    public void onPolylineClick(Polyline polyline) {
+                        int zIndex;
+                        Log.i(TAG, "zIndex: " + polyline.getZIndex() + " LayerCode: " + getLayerCodeByZIndex((int) polyline.getZIndex()));
+                        switch (getLayerCodeByZIndex((int) polyline.getZIndex())) {
+                            case MapLayerHandler.LAYER_CYCLING:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_CYCLING);
+                                showPolylineInfo(R.raw.layer_cycling_route_line, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_TOP_TEN:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_TOP_TEN);
+                                showPolylineInfo(R.raw.layer_top10, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_RECOMMENDED:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_RECOMMENDED);
+                                showPolylineInfo(R.raw.layer_recommend, zIndex);
+                                break;
+
+                            case MapLayerHandler.LAYER_ALL_OF_TAIWAN:
+                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_ALL_OF_TAIWAN);
+                                showPolylineInfo(R.raw.layer_biking_route_taiwan, zIndex);
+                                break;
+                        }
+                        showMarkerButtonLayout(false, false);
+                    }
+                });
+            }
+        });
+    }
+
+    private int getLayerCodeByZIndex(int zIndex) {
+        if (zIndex - MapLayerHandler.LAYER_CYCLING < 100 && zIndex - MapLayerHandler.LAYER_CYCLING >= 0)
+            return MapLayerHandler.LAYER_CYCLING;
+
+        else if (zIndex - MapLayerHandler.LAYER_TOP_TEN < 100 && zIndex - MapLayerHandler.LAYER_TOP_TEN >= 0)
+            return MapLayerHandler.LAYER_TOP_TEN;
+
+        else if (zIndex - MapLayerHandler.LAYER_RECOMMENDED < 100 && zIndex - MapLayerHandler.LAYER_RECOMMENDED >= 0)
+            return MapLayerHandler.LAYER_RECOMMENDED;
+
+        else if (zIndex - MapLayerHandler.LAYER_ALL_OF_TAIWAN >= 0)
+            return MapLayerHandler.LAYER_ALL_OF_TAIWAN;
+
+        else
+            return 0;
+    }
+
+    private void showPolylineInfo(int geoJsonData, final int zIndex) {
+        showLoadingCircle(true);
+
+        layerHandler.getLayerProperties(geoJsonData, zIndex);
+    }
+
+    @Override
+    public void onPolylineClick(String name, String location, String description) {
+        polylineInfoLayout.setVisibility(View.VISIBLE);
+
+        polylineName.setText(name);
+
+        if (!location.isEmpty()) {
+            polylineLocation.setVisibility(View.VISIBLE);
+            polylineLocation.setText(location);
+        }
+        else
+            polylineLocation.setVisibility(View.GONE);
+
+        if (!description.isEmpty()) {
+            polylineDescription.setVisibility(View.VISIBLE);
+            polylineDescription.setText(description);
+        }
+        else
+            polylineDescription.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLayerAdded(int layerCode) {
+        showLoadingCircle(false);
+
+        if (layerCode == MapLayerHandler.LAYER_YOU_BIKE) {
+            Utility.toastShort(getString(R.string.you_bike_all_data_get));
+            if (notNull(tempYouBikeList)) {
+                tempYouBikeList.clear();
+                tempYouBikeList = null;
+            }
+            setYouBikeRefreshButtonStatus(true);
+        }
+    }
+
+    @Override
+    public void onLayersAllGone() {
+        if (notNull(handlerThread)) {
+            handlerThread.quit();
+            handlerThread.interrupt();
+            handlerThread = null;
+        }
+        if (notNull(layerHandler) && !isLayerChanging())
+            layerHandler = null;
+
+        map.setOnPolylineClickListener(null);
+        polylineInfoLayout.setVisibility(View.GONE);
+
+        Log.i(TAG, "onLayersAllGone!!!!! isLayerChanging: " + isLayerChanging());
+    }
+
+    private void setYouBikeRefreshButtonStatus(boolean enabled) {
+        if (enabled) {
+            uBikeRefreshBtn.setVisibility(View.VISIBLE);
+            uBikeRefreshBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setLayersByPrefKey(MARKERS_YOU_BIKE_REFRESH);
+                }
+            });
+        }
+        else {
+            uBikeRefreshBtn.setVisibility(View.GONE);
+            uBikeRefreshBtn.setOnClickListener(null);
+        }
+    }
+
+    /************************ Polyline layer control area ************************/
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         turnOnSearchKeyListener(false);
         if (notNull(drawer))
             drawer.removeDrawerListener(drawerToggle);
+
+        if (notNull(layerHandler))
+            onLayersAllGone();
     }
 }

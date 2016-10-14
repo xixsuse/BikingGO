@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Handler;
 import android.provider.Settings;
@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -24,12 +25,12 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -44,7 +45,6 @@ import com.kingwaytek.cpami.bykingTablet.app.service.TrackingService;
 import com.kingwaytek.cpami.bykingTablet.app.ui.BaseMapActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
-import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.JsonParser;
@@ -56,6 +56,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.SettingManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -78,8 +79,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
     private RatingBar trackRating;
     private TextView text_trackDescription;
     private TextView text_trackLength;
-    private TextView text_trackDuration;
     private TextView text_trackSpeed;
+    private TextView text_trackDuration;
 
     private Handler textHandler;
 
@@ -99,6 +100,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
     protected void onMapReady() {
         drawPolylineIfTrackFileContainsData();
         getRecordDataAndDrawLine();
+        setAllLayerFlagWithDelayDuration();
     }
 
     @Override
@@ -108,14 +110,17 @@ public class UiTrackMapActivity extends BaseMapActivity {
             trackingServiceIntent = new Intent(this, TrackingService.class);
             gettingReceive();
             checkGpsAndServiceState();
+            registerPreferenceChangedListener();
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (ENTRY_TYPE == ENTRY_TYPE_TRACKING)
+        if (ENTRY_TYPE == ENTRY_TYPE_TRACKING) {
             stopReceiving();
+            unRegisterPreferenceChangedListener();
+        }
     }
 
     @Override
@@ -130,6 +135,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
     @Override
     protected void findViews() {
+        super.findViews();
         mapRootLayout = (RelativeLayout) findViewById(R.id.mapRootLayout);
 
         gpsStateLayout = (LinearLayout) findViewById(R.id.gpsStateLayout);
@@ -143,8 +149,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
         trackRating = (RatingBar) findViewById(R.id.trackRatingBar);
         text_trackDescription = (TextView) findViewById(R.id.text_trackDescription);
         text_trackLength = (TextView) findViewById(R.id.text_trackLength);
-        text_trackDuration = (TextView) findViewById(R.id.text_trackDuration);
         text_trackSpeed = (TextView) findViewById(R.id.text_trackSpeed);
+        text_trackDuration = (TextView) findViewById(R.id.text_trackDuration);
     }
 
     @Override
@@ -158,7 +164,9 @@ public class UiTrackMapActivity extends BaseMapActivity {
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {}
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        setLayersByPrefKey(key);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,7 +175,9 @@ public class UiTrackMapActivity extends BaseMapActivity {
         switch (ENTRY_TYPE) {
             case ENTRY_TYPE_TRACKING:
                 if (TrackingFileUtil.isTrackingFileContainsData() && !TrackingService.IS_TRACKING_REQUESTED)
-                    MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SAVE);
+                    MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SWITCH, ACTION_SAVE);
+                else
+                    MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SWITCH);
                 break;
 
             case ENTRY_TYPE_TRACK_VIEWING:
@@ -204,6 +214,10 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
             case ACTION_LIKE:
                 showRatingWindow();
+                break;
+
+            case ACTION_SWITCH:
+                showSwitchPopView();
                 break;
         }
 
@@ -272,21 +286,31 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
                 map.addPolyline(polyLine);
 
-                Bitmap pinBitmap = getBitmapFromMemCache(BITMAP_KEY_PIN_PLACE);
-
-                if (pinBitmap == null) {
-                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_pin_place);
-                    pinBitmap = BitmapUtility.convertDrawableToBitmap(drawable, getResources().getDimensionPixelSize(R.dimen.icon_common_size));
-                    addBitmapToMemoryCache(BITMAP_KEY_PIN_PLACE, pinBitmap);
+                Bitmap startMarker = getBitmapFromMemCache(BITMAP_KEY_START_POINT);
+                
+                if (startMarker == null) {
+                    InputStream is = getResources().openRawResource(+R.drawable.ic_marker_start);
+                    startMarker = BitmapFactory.decodeStream(is);
+                    addBitmapToMemoryCache(BITMAP_KEY_START_POINT, startMarker);
+                    closeInputStream(is);
                 }
-                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(pinBitmap);
+
+                Bitmap endMarker = getBitmapFromMemCache(BITMAP_KEY_END_POINT);
+
+                if (endMarker == null) {
+                    InputStream is = getResources().openRawResource(+R.drawable.ic_marker_end);
+                    endMarker = BitmapFactory.decodeStream(is);
+                    addBitmapToMemoryCache(BITMAP_KEY_END_POINT, endMarker);
+                    closeInputStream(is);
+                }
 
                 MarkerOptions marker = new MarkerOptions();
 
-                marker.icon(icon);
+                marker.icon(BitmapDescriptorFactory.fromBitmap(startMarker));
                 marker.position(latLngList.get(0));
                 map.addMarker(marker);
 
+                marker.icon(BitmapDescriptorFactory.fromBitmap(endMarker));
                 marker.position(latLngList.get(latLngList.size() - 1));
                 map.addMarker(marker);
 
@@ -298,6 +322,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
         }
     }
 
+    // TODO 應該使用 LatLngBounds來 MoveCamera，但目前此方法準確度不佳，待改善後再採用！
     private void zoomToFitsStartAndEnd(LatLng origin, LatLng destination) {
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
 
@@ -335,8 +360,8 @@ public class UiTrackMapActivity extends BaseMapActivity {
             trackRating.setRating(trackItem.DIFFICULTY);
             text_trackDescription.setText(trackItem.DESCRIPTION);
             text_trackLength.setText(trackItem.DISTANCE);
-            text_trackDuration.setText(trackItem.SPEND_TIME);
             text_trackSpeed.setText(trackItem.AVERAGE_SPEED);
+            text_trackDuration.setText(trackItem.SPEND_TIME);
         }
     }
 
@@ -395,10 +420,12 @@ public class UiTrackMapActivity extends BaseMapActivity {
         trackBtn.setImageResource(R.drawable.selector_button_stop);
 
         TrackingFileUtil.cleanTrackingFile();
-        map.clear();
+        MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SWITCH);
         menu.clear();
 
         LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
+
+        SettingManager.TrackingTimeAndLayer.clearStartTime();
     }
 
     private void sendStopRequest(Intent intent) {
@@ -409,11 +436,10 @@ public class UiTrackMapActivity extends BaseMapActivity {
         LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
         TrackingFileUtil.closeWriter();
 
-        SettingManager.TrackingTime.clearStartTime();
-        SettingManager.TrackingTime.setEndTime(System.currentTimeMillis());
+        SettingManager.TrackingTimeAndLayer.setEndTime(System.currentTimeMillis());
 
         if (TrackingFileUtil.isTrackingFileContainsData()) {
-            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SAVE);
+            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SWITCH, ACTION_SAVE);
             showSaveDialog();
         }
     }
@@ -424,10 +450,10 @@ public class UiTrackMapActivity extends BaseMapActivity {
         final long trackDuration = getTrackingDuration();
 
         final String distanceText = Utility.getDistanceText(trackLength);
-        final String durationText = Utility.getDurationText(trackDuration);
         final String speedText = Utility.getAverageSpeedText(trackLength, trackDuration);
+        final String durationText = Utility.getDurationText(trackDuration);
 
-        DialogHelper.showTrackSaveDialog(this, distanceText, durationText, speedText, new DialogHelper.OnTrackSavedCallBack() {
+        DialogHelper.showTrackSaveDialog(this, distanceText, speedText, durationText, new DialogHelper.OnTrackSavedCallBack() {
             @Override
             public void onTrackSaved(String name, int difficulty, String description) {
                 if (!TrackingFileUtil.isTrackingFileEmpty()) {
@@ -437,13 +463,15 @@ public class UiTrackMapActivity extends BaseMapActivity {
                             name, difficulty, description,
                             getEncodedPolyline(latLngList),
                             distanceText,
-                            durationText,
-                            speedText);
+                            speedText,
+                            durationText);
 
                     TrackingFileUtil.cleanTrackingFile();
                     menu.clear();
 
                     Utility.toastShort(AppController.getInstance().getString(R.string.track_save_done));
+
+                    SettingManager.TrackingTimeAndLayer.clearStartTime();
                 }
             }
         });
@@ -469,7 +497,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
     }
 
     private long getTrackingDuration() {
-        return SettingManager.TrackingTime.getEndTime() - SettingManager.TrackingTime.getStartTime();
+        return SettingManager.TrackingTimeAndLayer.getEndTime() - SettingManager.TrackingTimeAndLayer.getStartTime();
     }
 
     private void gettingReceive() {
@@ -534,6 +562,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
             map.addPolyline(new PolylineOptions()
                     .add(preLatLng, newLatLng)
                     .color(ContextCompat.getColor(appContext(), R.color.md_blue_A700))
+                    .clickable(false)
                     .width(20));
 
             preLatLng = newLatLng;
@@ -643,6 +672,108 @@ public class UiTrackMapActivity extends BaseMapActivity {
         });
     }
 
+    private void showSwitchPopView() {
+        View view = PopWindowHelper.getMarkerSwitchWindowView(mapRootLayout, true);
+
+        final Switch switch_layerCycling = (Switch) view.findViewById(R.id.switch_layer_cycling_1);
+        final Switch switch_layerTopTen = (Switch) view.findViewById(R.id.switch_layer_top_ten);
+        final Switch switch_layerRecommended = (Switch) view.findViewById(R.id.switch_layer_recommended);
+        final Switch switch_layerAllOfTaiwan = (Switch) view.findViewById(R.id.switch_layer_all_of_taiwan);
+
+        final ImageButton closeBtn = (ImageButton) view.findViewById(R.id.switchWindowCloseBtn);
+
+        switch_layerCycling.setChecked(SettingManager.TrackingTimeAndLayer.getCyclingLayer());
+        switch_layerTopTen.setChecked(SettingManager.TrackingTimeAndLayer.getTopTenLayer());
+        switch_layerRecommended.setChecked(SettingManager.TrackingTimeAndLayer.getRecommendedLayer());
+        switch_layerAllOfTaiwan.setChecked(SettingManager.TrackingTimeAndLayer.getAllOfTaiwanLayer());
+
+        switch_layerCycling.setTag(switch_layerCycling.getId());
+        switch_layerTopTen.setTag(switch_layerTopTen.getId());
+        switch_layerRecommended.setTag(switch_layerRecommended.getId());
+        switch_layerAllOfTaiwan.setTag(switch_layerAllOfTaiwan.getId());
+
+        CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                boolean checked = isLayerChanging() != isChecked;
+
+                switch ((int)buttonView.getTag()) {
+
+                    case R.id.switch_layer_cycling_1:
+                        if (isChecked)
+                            switch_layerAllOfTaiwan.setChecked(false);
+
+                        switch_layerCycling.setChecked(checked);
+                        SettingManager.TrackingTimeAndLayer.setCyclingLayer(checked);
+                        break;
+
+                    case R.id.switch_layer_top_ten:
+                        if (isChecked)
+                            switch_layerAllOfTaiwan.setChecked(false);
+
+                        switch_layerTopTen.setChecked(checked);
+                        SettingManager.TrackingTimeAndLayer.setTopTenLayer(checked);
+                        break;
+
+                    case R.id.switch_layer_recommended:
+                        if (isChecked)
+                            switch_layerAllOfTaiwan.setChecked(false);
+
+                        switch_layerRecommended.setChecked(checked);
+                        SettingManager.TrackingTimeAndLayer.setRecommendedLayer(checked);
+                        break;
+
+                    case R.id.switch_layer_all_of_taiwan:
+                        if (checked) {
+                            switch_layerCycling.setChecked(false);
+                            switch_layerTopTen.setChecked(false);
+                            switch_layerRecommended.setChecked(false);
+                        }
+                        switch_layerAllOfTaiwan.setChecked(checked);
+                        SettingManager.TrackingTimeAndLayer.setAllOfTaiwanLayer(checked);
+                        break;
+                }
+            }
+        };
+
+        switch_layerCycling.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerTopTen.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerRecommended.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerAllOfTaiwan.setOnCheckedChangeListener(checkedChangeListener);
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopWindowHelper.dismissPopWindow();
+
+                switch_layerCycling.setOnCheckedChangeListener(null);
+                switch_layerTopTen.setOnCheckedChangeListener(null);
+                switch_layerRecommended.setOnCheckedChangeListener(null);
+                switch_layerAllOfTaiwan.setOnCheckedChangeListener(null);
+                closeBtn.setOnClickListener(null);
+            }
+        });
+    }
+
+    private void setAllLayerFlagWithDelayDuration() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SettingManager.TrackingTimeAndLayer.setCyclingLayer(SettingManager.TrackingTimeAndLayer.getCyclingLayer());
+                SettingManager.TrackingTimeAndLayer.setTopTenLayer(SettingManager.TrackingTimeAndLayer.getTopTenLayer());
+                SettingManager.TrackingTimeAndLayer.setRecommendedLayer(SettingManager.TrackingTimeAndLayer.getRecommendedLayer());
+                SettingManager.TrackingTimeAndLayer.setAllOfTaiwanLayer(SettingManager.TrackingTimeAndLayer.getAllOfTaiwanLayer());
+            }
+        }, 1500);
+    }
+
+    private void closeAllLayerFlag() {
+        SettingManager.TrackingTimeAndLayer.setCyclingLayer(false);
+        SettingManager.TrackingTimeAndLayer.setTopTenLayer(false);
+        SettingManager.TrackingTimeAndLayer.setRecommendedLayer(false);
+        SettingManager.TrackingTimeAndLayer.setAllOfTaiwanLayer(false);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -651,6 +782,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
         else {
             if (ENTRY_TYPE == ENTRY_TYPE_TRACKING) {
                 stopService(trackingServiceIntent);
+                closeAllLayerFlag();
                 Log.i(TAG, "StopService");
             }
             NotifyHelper.clearServiceNotification();

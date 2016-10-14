@@ -79,11 +79,11 @@ public class PopWindowHelper {
         return view;
     }
 
-    public static View getMarkerSwitchWindowView(View anchorView) {
+    public static View getMarkerSwitchWindowView(View anchorView, boolean lineOnly) {
         dismissPopWindow();
 
         inflater = LayoutInflater.from(appContext());
-        View view = inflater.inflate(R.layout.popup_layer_switch_window, null);
+        View view = inflater.inflate(lineOnly ? R.layout.popup_layer_switch_window_line_only : R.layout.popup_layer_switch_window, null);
 
         double popWidth = Utility.getScreenWidth();
         double popHeight = Utility.getScreenHeight() - Utility.getActionbarHeight();

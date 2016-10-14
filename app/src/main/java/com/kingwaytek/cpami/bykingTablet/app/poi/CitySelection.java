@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.CommonFileUtil;
 import com.kingwaytek.cpami.bykingTablet.app.AlertDialogUtil.ToggleSwitch;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog.DialogType;
 import com.kingwaytek.cpami.bykingTablet.view.ListViewAdapter;
@@ -87,7 +87,7 @@ public class CitySelection extends ListActivity {
 		int[] result = itenCaller.getIntArrayExtra("POICount");
 
 		for (int i = 0; i < result.length; i++) {
-			cityMap.put(Util.city_sort.get(i).getCityID(), Util.city_sort.get(i).getCityName() + " (" + result[i] + ")");
+			cityMap.put(CommonFileUtil.city_sort.get(i).getCityID(), CommonFileUtil.city_sort.get(i).getCityName() + " (" + result[i] + ")");
 		}
 
 		return cityMap.values().toArray(new String[cityMap.size()]);
@@ -125,7 +125,7 @@ public class CitySelection extends ListActivity {
 		itenContent.putExtra("POIList_Caller", ActivityCaller.POI);
 		itenContent.putExtra("POI_Search", SearchMode.BY_KEYWORD);
 		itenContent.putExtra("POI_Keyword", poiKeyword);
-		itenContent.putExtra("POI_City", Util.city_sort.get(arg).getCityCode());
+		itenContent.putExtra("POI_City", CommonFileUtil.city_sort.get(arg).getCityCode());
 		itenContent.putExtra("setpoint", itenCaller.getStringExtra("setpoint"));
 		startActivityForResult(itenContent, ActivityCaller.POI.getValue());
 	}

@@ -67,12 +67,12 @@
 
     </RelativeLayout>
 
-    <ImageView
+    <ImageButton
         android:id="@+id/icon_rightArrow"
         android:layout_width="@dimen/icon_common_size"
         android:layout_height="@dimen/icon_common_size_l"
-        android:tint="@color/md_grey_400"
-        android:src="@drawable/ic_right_arrow"
-        android:scaleType="centerCrop"/>
+        android:src="@drawable/ic_right_arrow_grey"
+        android:background="@null"
+        android:scaleType="fitCenter"/>
 
 </LinearLayout>

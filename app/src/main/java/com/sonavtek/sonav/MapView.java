@@ -18,7 +18,7 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.MapActivity;
 import com.kingwaytek.cpami.bykingTablet.data.GeoPoint;
 import com.kingwaytek.cpami.bykingTablet.maps.IMapView;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.CommonFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 
 import java.util.concurrent.Semaphore;
@@ -239,7 +239,7 @@ public class MapView extends SurfaceView implements IMapView, OnSonavEventListen
 		// defualt to choosePoint
 		this.choosePointMode = true;
 
-		this.precolors = Util.initPrecolors((Activity) getContext());
+		this.precolors = CommonFileUtil.initPrecolors((Activity) getContext());
 		// DisplayMetrics dm = new DisplayMetrics();
 		// ((Activity)
 		// getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -251,7 +251,7 @@ public class MapView extends SurfaceView implements IMapView, OnSonavEventListen
 		// Log.i("Map Size@MapView init", "Width:" + this.mapWidth + " Height:"
 		// + this.mapHeight);
 		//
-		// Util.precolors = new int[(this.mapWidth / 3*2) * (this.mapHeight /
+		// CommonFileUtil.precolors = new int[(this.mapWidth / 3*2) * (this.mapHeight /
 		// 3*2)];
 
 		this.isMapResizing = false;

@@ -46,13 +46,21 @@ public class TransitStepAdapter extends BaseAdapter {
         Log.i("UiTransitStepAdapter", "DataRefreshed!!!");
     }
 
+    public void clearAllData() {
+        transitSteps.clear();
+        notifyDataSetChanged();
+    }
+
     private Context appContext() {
         return AppController.getInstance().getAppContext();
     }
 
     @Override
     public int getCount() {
-        return transitSteps.size() + 1;
+        if (transitSteps.isEmpty())
+            return 0;
+        else
+            return transitSteps.size() + 1;
     }
 
     @Override

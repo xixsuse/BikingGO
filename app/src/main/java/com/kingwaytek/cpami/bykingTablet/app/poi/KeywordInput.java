@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.DataProgressDialog.DialogType;
 import com.kingwaytek.cpami.bykingTablet.sql.POI;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.CommonFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.UtilDialog;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 
@@ -129,14 +129,14 @@ public class KeywordInput extends Activity implements OnClickListener {
 		Log.i("KeywordInput", "Search Button Clicked. sender is : " + sender.getClass().getName());
 		Log.i("poi_KeywordInput", "keyword = " + poiKeyword);
 
-		if (Util.city_sort == null) {
-			Util.getSortPOICity();
+		if (CommonFileUtil.city_sort == null) {
+			CommonFileUtil.getSortPOICity();
 		}
 		int[] poiCount = null;
-		if (Util.city_sort != null) {
-			poiCount = new int[Util.city_sort.size()];
-			for (int i = 0; i < Util.city_sort.size(); i++) {
-				poiCount[i] = POI.SearchCount(this, poiKeyword, Util.city_sort.get(i).getCityCode());
+		if (CommonFileUtil.city_sort != null) {
+			poiCount = new int[CommonFileUtil.city_sort.size()];
+			for (int i = 0; i < CommonFileUtil.city_sort.size(); i++) {
+				poiCount[i] = POI.SearchCount(this, poiKeyword, CommonFileUtil.city_sort.get(i).getCityCode());
 			}
 		}
 		// call CitySelection for Keyword Result

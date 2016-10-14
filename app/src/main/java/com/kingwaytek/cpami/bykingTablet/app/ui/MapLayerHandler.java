@@ -74,14 +74,14 @@ public class MapLayerHandler extends Handler {
     private Handler uiHandler;
     private OnLayerChangedCallback layerChangedCallback;
 
-    public ArrayList<Polyline> polyLineCyclingList;
-    public ArrayList<Polyline> polyLineTopTenList;
-    public ArrayList<Polyline> polyLineRecommendList;
-    public ArrayList<Polyline> polyLineTaiwanList;
+    ArrayList<Polyline> polyLineCyclingList;
+    ArrayList<Polyline> polyLineTopTenList;
+    ArrayList<Polyline> polyLineRecommendList;
+    ArrayList<Polyline> polyLineTaiwanList;
 
     private Context context;
 
-    public ArrayList<Marker> markerYouBikeList;
+    private ArrayList<Marker> markerYouBikeList;
 
     private BitmapDescriptor you_bike_icon_normal;
     private BitmapDescriptor you_bike_icon_empty;
@@ -94,14 +94,14 @@ public class MapLayerHandler extends Handler {
 
     private boolean isLayerChanging;
 
-    public interface OnLayerChangedCallback {
+    interface OnLayerChangedCallback {
         void onPolylinePrepared(int layerCode, PolylineOptions polyLine);
         void onPolylineClick(String name, String location, String description);
         void onLayerAdded(int layerCode);
         void onLayersAllGone();
     }
 
-    public MapLayerHandler(Looper looper, Handler uiHandler, OnLayerChangedCallback layerChangedCallback) {
+    MapLayerHandler(Looper looper, Handler uiHandler, OnLayerChangedCallback layerChangedCallback) {
         super(looper);
         this.uiHandler = uiHandler;
         this.layerChangedCallback = layerChangedCallback;
@@ -111,7 +111,7 @@ public class MapLayerHandler extends Handler {
         return AppController.getInstance().getAppContext();
     }
 
-    public void addLayer(final GoogleMap map, @Nullable final Bitmap markerBitmap, final int layerCode) {
+    void addLayer(final GoogleMap map, @Nullable final Bitmap markerBitmap, final int layerCode) {
         if (isLayerChanging)
             return;
 
@@ -278,7 +278,7 @@ public class MapLayerHandler extends Handler {
         });
     }
 
-    public void getLayerProperties(final int geoJsonData, final int zIndex) {
+    void getLayerProperties(final int geoJsonData, final int zIndex) {
         this.post(new Runnable() {
             @Override
             public void run() {
@@ -344,7 +344,7 @@ public class MapLayerHandler extends Handler {
         });
     }
 
-    public void removeLayer(int layerCode) {
+    void removeLayer(int layerCode) {
         switch (layerCode) {
             case LAYER_CYCLING:
                 if ( layer_cyclingPoints != null) {
@@ -428,19 +428,19 @@ public class MapLayerHandler extends Handler {
         System.gc();
     }
 
-    public void setIsLayerChanging(boolean isChanging) {
+    void setIsLayerChanging(boolean isChanging) {
         isLayerChanging = isChanging;
     }
 
-    public boolean isLayerChanging() {
+    boolean isLayerChanging() {
         return isLayerChanging;
     }
 
-    public class YouBikeMarkerAddTask extends AsyncTask<List<ItemsYouBike>, MarkerOptions, Void> {
+    class YouBikeMarkerAddTask extends AsyncTask<List<ItemsYouBike>, MarkerOptions, Void> {
 
         private GoogleMap map;
 
-        public YouBikeMarkerAddTask(Context context, GoogleMap map) {
+        YouBikeMarkerAddTask(Context context, GoogleMap map) {
             MapLayerHandler.this.context = context;
             this.map = map;
         }
@@ -535,7 +535,7 @@ public class MapLayerHandler extends Handler {
                 appContext().getString(R.string.you_bike_update_time, youBikeItem.UPDATE_TIME);
     }
 
-    public void refreshAllYouBikeMarkers(final ArrayList<ItemsYouBike> youBikeItems) {
+    void refreshAllYouBikeMarkers(final ArrayList<ItemsYouBike> youBikeItems) {
         if (markerYouBikeList != null) {
             uiHandler.post(new Runnable() {
                 @Override
@@ -572,7 +572,7 @@ public class MapLayerHandler extends Handler {
         }
     }
 
-    public boolean isYouBikeMarkerAdded() {
+    boolean isYouBikeMarkerAdded() {
         return markerYouBikeList != null;
     }
 }

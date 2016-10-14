@@ -1,5 +1,6 @@
 package com.kingwaytek.cpami.bykingTablet.utilities;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -13,6 +14,7 @@ import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathList;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanItem;
+import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlanPreview;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPoiDetail;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsSearchResult;
@@ -111,7 +113,7 @@ public class JsonParser {
         try {
             ArrayList<ItemsMyPOI> myPoiList = new ArrayList<>();
 
-            String poiJsonString = Util.readPoiFile();
+            String poiJsonString = CommonFileUtil.readPoiFile();
 
             if (poiJsonString == null)
                 return null;
@@ -148,6 +150,7 @@ public class JsonParser {
         }
     }
 
+    @Nullable
     public static String getPolyLineOverview(String jsonString) {
         try {
             JO = new JSONObject(jsonString);
@@ -175,25 +178,32 @@ public class JsonParser {
         return null;
     }
 
-    public static ArrayList<String[]> getMyPlanNameAndDateList() {
+    @Nullable
+    public static ArrayList<ItemsPlanPreview> getMyPlanPreviewItems() {
         try {
-            if (Util.isPlanFileNotExistOrEmpty())
+            if (CommonFileUtil.isPlanFileNotExistOrEmpty())
                 return null;
 
-            JA = new JSONArray(Util.readPlanFile());
+            JA = new JSONArray(CommonFileUtil.readPlanFile());
 
-            ArrayList<String[]> planPairList = new ArrayList<>();
+            ArrayList<ItemsPlanPreview> planPreviewList = new ArrayList<>();
+
+            String name;
+            String date;
+            int count;
 
             for (int i = 0; i < JA.length(); i++) {
-                String[] pair = new String[] {
-                        JA.getJSONObject(i).getString(FavoriteHelper.PLAN_NAME),
-                        JA.getJSONObject(i).getString(FavoriteHelper.PLAN_DATE)
-                };
-                planPairList.add(pair);
+                JO = JA.getJSONObject(i);
+
+                name = JO.getString(FavoriteHelper.PLAN_NAME);
+                date = JO.getString(FavoriteHelper.PLAN_DATE);
+                count = JO.getJSONArray(FavoriteHelper.PLAN_ITEMS).length();
+
+                planPreviewList.add(new ItemsPlanPreview(name, date, count));
             }
 
             releaseObjects();
-            return planPairList;
+            return planPreviewList;
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -202,12 +212,13 @@ public class JsonParser {
         }
     }
 
+    @Nullable
     public static ArrayList<ItemsPlans> getPlansData() {
         try {
-            if (Util.isPlanFileNotExistOrEmpty())
+            if (CommonFileUtil.isPlanFileNotExistOrEmpty())
                 return null;
 
-            JA = new JSONArray(Util.readPlanFile());
+            JA = new JSONArray(CommonFileUtil.readPlanFile());
 
             ArrayList<ItemsPlans> plansList = new ArrayList<>();
 
@@ -524,14 +535,14 @@ public class JsonParser {
 
                 JO = JA.getJSONObject(index);
 
-                String duration = "";
                 String speed = "";
-
-                if (JO.has(FavoriteHelper.TRACK_DURATION))
-                    duration = JO.getString(FavoriteHelper.TRACK_DURATION);
+                String duration = "";
 
                 if (JO.has(FavoriteHelper.TRACK_SPEED))
                     speed = JO.getString(FavoriteHelper.TRACK_SPEED);
+
+                if (JO.has(FavoriteHelper.TRACK_DURATION))
+                    duration = JO.getString(FavoriteHelper.TRACK_DURATION);
 
                 ItemsTrackRecord trackItem = new ItemsTrackRecord(
                         JO.getString(FavoriteHelper.TRACK_DATE),
@@ -540,8 +551,8 @@ public class JsonParser {
                         JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
                         JO.getString(FavoriteHelper.TRACK_POLYLINE),
                         JO.getString(FavoriteHelper.TRACK_DISTANCE),
-                        duration,
-                        speed);
+                        speed,
+                        duration);
 
                 releaseObjects();
 
@@ -680,7 +691,7 @@ public class JsonParser {
         try {
             ArrayList<ItemsYouBike> uBikeItems = new ArrayList<>();
 
-            JSONObject jo = new JSONObject(Util.readYouBikeTPData());
+            JSONObject jo = new JSONObject(CommonFileUtil.readYouBikeTPData());
 
             JSONObject jo_stations = jo.getJSONObject("retVal");
             JSONObject jo_eachStation;
@@ -868,14 +879,14 @@ public class JsonParser {
             String contentString = new JSONObject(jsonString).getString("content");
             JO = new JSONObject(contentString);
 
-            String duration = "";
             String speed = "";
-
-            if (JO.has(FavoriteHelper.TRACK_DURATION))
-                duration = JO.getString(FavoriteHelper.TRACK_DURATION);
+            String duration = "";
 
             if (JO.has(FavoriteHelper.TRACK_SPEED))
                 speed = JO.getString(FavoriteHelper.TRACK_SPEED);
+
+            if (JO.has(FavoriteHelper.TRACK_DURATION))
+                duration = JO.getString(FavoriteHelper.TRACK_DURATION);
 
             ItemsTrackRecord trackItem = new ItemsTrackRecord(
                     JO.getString(FavoriteHelper.TRACK_DATE),
@@ -884,8 +895,8 @@ public class JsonParser {
                     JO.getString(FavoriteHelper.TRACK_DESCRIPTION),
                     JO.getString(FavoriteHelper.TRACK_POLYLINE),
                     JO.getString(FavoriteHelper.TRACK_DISTANCE),
-                    duration,
-                    speed);
+                    speed,
+                    duration);
 
             releaseObjects();
             return trackItem;

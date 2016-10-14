@@ -413,7 +413,7 @@ public class DialogHelper {
         changeDialogTitleColor();
     }
 
-    public static void showTrackSaveDialog(Context context, String distance, String duration, String speed, final OnTrackSavedCallBack savedCallBack) {
+    public static void showTrackSaveDialog(Context context, String distance, String speed, String duration, final OnTrackSavedCallBack savedCallBack) {
         dialogBuilder = new AlertDialog.Builder(context);
 
         View view = LayoutInflater.from(context).inflate(R.layout.popup_track_saving, null);
@@ -435,7 +435,7 @@ public class DialogHelper {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
-        text_trackLength.setText(AppController.getInstance().getString(R.string.track_done_and_total_length, distance, duration, speed));
+        text_trackLength.setText(AppController.getInstance().getString(R.string.track_done_and_total_length, distance, speed, duration));
 
         saveTrack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -491,7 +491,7 @@ public class DialogHelper {
         dialog.show();
 
         text_trackLength.setText(AppController.getInstance().getString(R.string.track_total_length,
-                trackItem.DISTANCE, trackItem.SPEND_TIME, trackItem.AVERAGE_SPEED));
+                trackItem.DISTANCE, trackItem.AVERAGE_SPEED, trackItem.SPEND_TIME));
 
         edit_trackName.setText(trackItem.NAME);
         edit_trackName.setSelection(trackItem.NAME.length());

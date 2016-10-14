@@ -23,9 +23,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-public class Util {
+public class CommonFileUtil {
 
-	public static int[] precolors;
+	private static int[] precolors;
 	private static String citySortCode[] = { "A", "F", "G", "C", "H", "J", "O", "K", "B", "N", "M", "P", "W" };
 	private static String citySortName[] = { "台北市", "新北市", "宜蘭縣", "基隆市", "桃園縣", "新竹縣", "新竹市", "苗栗縣", "台中市", "彰化縣",
 			"南投縣", "雲林縣", "金門縣" };
@@ -63,9 +63,9 @@ public class Util {
 			int mapHeight = 0 == dm.heightPixels ? dm.heightPixels : dm.heightPixels + 1;
 			Log.i("Map Size@MapView init", "Width:" + mapWidth + " Height:" + mapHeight);
 
-			Util.precolors = new int[mapWidth  * mapHeight ];
+			CommonFileUtil.precolors = new int[mapWidth  * mapHeight ];
 		}
-		return Util.precolors;
+		return CommonFileUtil.precolors;
 	}
 
     /**

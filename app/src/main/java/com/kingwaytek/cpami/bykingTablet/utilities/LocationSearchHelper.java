@@ -56,7 +56,7 @@ public class LocationSearchHelper {
         }
 
         if (addrList == null || addrList.isEmpty()) {
-            Utility.toastShort("Search by Google API");
+            Utility.toastShort("Search by Google Geocoding API");
             searchByGoogleApi(input, locationFound);
         }
         else {
@@ -81,6 +81,7 @@ public class LocationSearchHelper {
             }
             locationFound.onLocationFound(resultList, locationNameList, true);
             DialogHelper.dismissDialog();
+            clearList();
         }
     }
 
@@ -101,6 +102,7 @@ public class LocationSearchHelper {
                     locationFound.onNothingFound();
 
                 DialogHelper.dismissDialog();
+                clearList();
             }
         });
     }
@@ -152,5 +154,12 @@ public class LocationSearchHelper {
         address = address.replace("null", "");
 
         return address;
+    }
+
+    private static void clearList() {
+        addrList.clear();
+        addrList = null;
+        locationNameList.clear();
+        locationNameList = null;
     }
 }

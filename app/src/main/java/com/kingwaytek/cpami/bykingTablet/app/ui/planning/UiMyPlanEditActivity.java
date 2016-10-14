@@ -49,7 +49,7 @@ public class UiMyPlanEditActivity extends BaseActivity {
     private PlanEditListAdapter editListAdapter;
 
     private static final int MAX_POINTS_COUNT = 5;
-    private static final int INDEX_ADD_A_NEW_ONE = -1;
+    private static final int ITEM_INDEX_ADD_A_NEW_ONE = -1;
     private int INDEX_WHICH_PLAN_ITEM;
 
     private static final int PLAN_EDIT_INDEX_A_NEW_ONE = -1;
@@ -88,7 +88,7 @@ public class UiMyPlanEditActivity extends BaseActivity {
         planAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectPlanItem(INDEX_ADD_A_NEW_ONE);
+                selectPlanItem(ITEM_INDEX_ADD_A_NEW_ONE);
             }
         });
 
@@ -133,7 +133,7 @@ public class UiMyPlanEditActivity extends BaseActivity {
                 switch (which) {
                     case 0:
                         Location location = MyLocationManager.getLastLocation();
-                        if (index == INDEX_ADD_A_NEW_ONE)
+                        if (index == ITEM_INDEX_ADD_A_NEW_ONE)
                             addItemToListView(getString(R.string.location_current), location.getLatitude(), location.getLongitude());
                         else
                             setItemToPosition(getString(R.string.location_current), location.getLatitude(), location.getLongitude());
@@ -218,7 +218,7 @@ public class UiMyPlanEditActivity extends BaseActivity {
                 LatLng latLng = bundle.getParcelable(BUNDLE_LOCATION_LATLNG);
 
                 if (notNull(latLng)) {
-                    if (INDEX_WHICH_PLAN_ITEM == INDEX_ADD_A_NEW_ONE)
+                    if (INDEX_WHICH_PLAN_ITEM == ITEM_INDEX_ADD_A_NEW_ONE)
                         addItemToListView(title, latLng.latitude, latLng.longitude);
                     else
                         setItemToPosition(title, latLng.latitude, latLng.longitude);
@@ -256,7 +256,7 @@ public class UiMyPlanEditActivity extends BaseActivity {
             edit_planTitle.requestFocus();
             hideKeyboard(false);
         }
-        else {
+        else if (FavoriteHelper.isPlanNotDuplicated(getPlanTitle()) || PLAN_EDIT_INDEX != PLAN_EDIT_INDEX_A_NEW_ONE) {
             try {
                 JSONArray ja = new JSONArray();
                 ItemsPlanItem planItem;
@@ -287,11 +287,12 @@ public class UiMyPlanEditActivity extends BaseActivity {
                     FavoriteHelper.updatePlan(PLAN_EDIT_INDEX, getPlanTitle(), Utility.getCurrentTimeInFormat(), ja);
                     finish();
                 }
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        else
+            Utility.toastShort(getString(R.string.plan_duplicated_name));
     }
 
     private void goToPlanInfo(int planEditIndex) {

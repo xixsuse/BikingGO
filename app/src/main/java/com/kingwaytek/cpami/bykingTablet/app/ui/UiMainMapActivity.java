@@ -12,8 +12,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -30,7 +28,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -44,13 +41,10 @@ import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -60,13 +54,11 @@ import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.DataArray;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsMyPOI;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsPathStep;
-import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsYouBike;
 import com.kingwaytek.cpami.bykingTablet.app.ui.poi.UiMyPoiInfoActivity;
 import com.kingwaytek.cpami.bykingTablet.app.web.WebAgent;
 import com.kingwaytek.cpami.bykingTablet.callbacks.OnPhotoRemovedCallBack;
 import com.kingwaytek.cpami.bykingTablet.hardware.MyLocationManager;
 import com.kingwaytek.cpami.bykingTablet.utilities.BitmapUtility;
-import com.kingwaytek.cpami.bykingTablet.utilities.DebugHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.ImageSelectHelper;
@@ -88,7 +80,7 @@ import java.util.ArrayList;
  * @author Vincent (2016/4/15).
  */
 public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatcher, GoogleMap.OnMapLongClickListener,
-        OnPhotoRemovedCallBack, MapLayerHandler.OnLayerChangedCallback, View.OnTouchListener, TabLayout.OnTabSelectedListener {
+        OnPhotoRemovedCallBack, View.OnTouchListener, TabLayout.OnTabSelectedListener {
 
     private boolean isFirstTimeRun = true;  //每次startActivity過來這個值都會被重設，除非設為static
 
@@ -106,19 +98,11 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private ImageView poiImageView;
     private String photoPath;
 
-    private MapLayerHandler layerHandler;
-    private static final String NAME_OF_HANDLER_THREAD = "LayerHandlerThread";
-    private static HandlerThread handlerThread;
-
     private DirectionModePagerAdapter pagerAdapter;
     private LinearLayout pathInfoLayout;
     private TabLayout modeTab;
     private ViewPager pathListPager;
     private Polyline highLightPoly;
-
-    private TextView polylineName;
-    private TextView polylineLocation;
-    private TextView polylineDescription;
 
     private ImageView footerImage;
     private static final int FOOTER_TAG_BACKGROUND_LIGHT = 0;
@@ -127,8 +111,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     private final int screenWidth = Utility.getScreenWidth();
     private final int screenHeight = Utility.getScreenHeight();
     private int pathInfoLayoutMaxHeight;
-
-    private ArrayList<ItemsYouBike> tempYouBikeList;
 
     private static long exitTime = 0;
 
@@ -150,11 +132,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         pathInfoLayout = (LinearLayout) findViewById(R.id.pathInfoLayout);
         modeTab = (TabLayout) findViewById(R.id.directionModeTabLayout);
         pathListPager = (ViewPager) findViewById(R.id.pathListPager);
-
-        polylineInfoLayout = (RelativeLayout) findViewById(R.id.polylineInfoLayout);
-        polylineName = (TextView) findViewById(R.id.text_polylineName);
-        polylineLocation = (TextView) findViewById(R.id.text_polylineLocation);
-        polylineDescription = (TextView) findViewById(R.id.text_polylineDescription);
 
         footerImage = (ImageView) findViewById(R.id.footerImage);
     }
@@ -365,7 +342,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     }
 
     private void showSwitchPopView() {
-        View view = PopWindowHelper.getMarkerSwitchWindowView(mapRootLayout);
+        View view = PopWindowHelper.getMarkerSwitchWindowView(mapRootLayout, false);
 
         final Switch switch_myPoi = (Switch) view.findViewById(R.id.switch_my_poi);
         final Switch switch_layerCycling = (Switch) view.findViewById(R.id.switch_layer_cycling_1);
@@ -549,7 +526,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     private void putMarkerAndMoveCameraByPlace(Place place) {
         Utility.toastShort(place.getName().toString());
-        moveCameraAndZoom(place.getLatLng(), 17);
+        moveCameraAndZoom(place.getLatLng(), 18);
 
         if (notNull(lastAroundPoiMarker))
             lastAroundPoiMarker.remove();
@@ -620,8 +597,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         else
             marker.snippet(getString(R.string.poi_edit_this_point));
 
-        InputStream is = getResources().openRawResource(+R.drawable.ic_marker_end);
-        marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+        Bitmap markerBitmap = getBitmapFromMemCache(BITMAP_KEY_END_POINT);
+
+        if (markerBitmap == null) {
+            InputStream is = getResources().openRawResource(+R.drawable.ic_marker_end);
+            markerBitmap = BitmapFactory.decodeStream(is);
+            addBitmapToMemoryCache(BITMAP_KEY_END_POINT, markerBitmap);
+            closeInputStream(is);
+        }
+        marker.icon(BitmapDescriptorFactory.fromBitmap(markerBitmap));
 
         setMarkerTypeMap(latLng.latitude, latLng.longitude, R.drawable.ic_marker_end);
 
@@ -637,8 +621,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             moveCamera(latLng);
 
         onMarkerClick(myNewMarker);
-
-        closeInputStream(is);
     }
 
     private void editMyPoi(final LatLng latLng, @Nullable String title, @Nullable String address) {
@@ -1063,8 +1045,15 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
             marker.position(linePoints.get(0));
 
-            InputStream is = getResources().openRawResource(+ R.drawable.ic_marker_start);
-            marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeStream(is)));
+            Bitmap markerBitmap = getBitmapFromMemCache(BITMAP_KEY_START_POINT);
+
+            if (markerBitmap == null) {
+                InputStream is = getResources().openRawResource(+ R.drawable.ic_marker_start);
+                markerBitmap = BitmapFactory.decodeStream(is);
+                addBitmapToMemoryCache(BITMAP_KEY_START_POINT, markerBitmap);
+                closeInputStream(is);
+            }
+            marker.icon(BitmapDescriptorFactory.fromBitmap(markerBitmap));
 
             myPositionMarker = map.addMarker(marker);
 
@@ -1072,8 +1061,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 zoomToFitsBetweenTwoMarkers(linePoints.get(0));
             else
                 moveCamera(linePoints.get(0));
-
-            closeInputStream(is);
         }
     }
 
@@ -1203,286 +1190,12 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             moveCamera(location);
     }
 
-    private void setLayersByPrefKey(final String key) {
-        if (handlerThread == null) {
-            handlerThread = new HandlerThread(NAME_OF_HANDLER_THREAD);
-            handlerThread.start();
-        }
-
-        if (layerHandler == null)
-            layerHandler = new MapLayerHandler(handlerThread.getLooper(), new Handler(), this);
-
-        switch (key) {
-            case SettingManager.PREFS_LAYER_CYCLING_1:
-                if (SettingManager.MapLayer.getCyclingLayer()) {
-                    checkBitmapCache(BITMAP_KEY_SUPPLY_STATION);
-                    layerHandler.addLayer(map, getBitmapFromMemCache(BITMAP_KEY_SUPPLY_STATION), MapLayerHandler.LAYER_CYCLING);
-                    showLoadingCircle(true);
-                }
-                else
-                    layerHandler.removeLayer(MapLayerHandler.LAYER_CYCLING);
-                break;
-
-            case SettingManager.PREFS_LAYER_TOP_TEN:
-                if (SettingManager.MapLayer.getTopTenLayer()) {
-                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_TOP_TEN);
-                    showLoadingCircle(true);
-                }
-                else
-                    layerHandler.removeLayer(MapLayerHandler.LAYER_TOP_TEN);
-
-                break;
-
-            case SettingManager.PREFS_LAYER_RECOMMENDED:
-                if (SettingManager.MapLayer.getRecommendedLayer()) {
-                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_RECOMMENDED);
-                    showLoadingCircle(true);
-                }
-                else
-                    layerHandler.removeLayer(MapLayerHandler.LAYER_RECOMMENDED);
-                break;
-
-            case SettingManager.PREFS_LAYER_ALL_OF_TAIWAN:
-                if (SettingManager.MapLayer.getAllOfTaiwanLayer()) {
-                    layerHandler.addLayer(map, null, MapLayerHandler.LAYER_ALL_OF_TAIWAN);
-                    showLoadingCircle(true);
-                }
-                else
-                    layerHandler.removeLayer(MapLayerHandler.LAYER_ALL_OF_TAIWAN);
-                break;
-
-            case SettingManager.PREFS_LAYER_RENT_STATION:
-                if (SettingManager.MapLayer.getRentStationLayer()) {
-                    checkBitmapCache(BITMAP_KEY_BIKE_RENT_STATION);
-                    layerHandler.addLayer(map, getBitmapFromMemCache(BITMAP_KEY_BIKE_RENT_STATION), MapLayerHandler.LAYER_RENT_STATION);
-                    showLoadingCircle(true);
-                }
-                else
-                    layerHandler.removeLayer(MapLayerHandler.LAYER_RENT_STATION);
-                break;
-
-            case SettingManager.PREFS_LAYER_YOU_BIKE:
-            case MARKERS_YOU_BIKE_REFRESH:
-                if (SettingManager.MapLayer.getYouBikeLayer()) {
-                    showLoadingCircle(true);
-
-                    setYouBikeRefreshButtonStatus(false);
-                    layerHandler.setIsLayerChanging(true);
-
-                    if (DebugHelper.GET_YOU_BIKE_FROM_OPEN_DATA)
-                    {
-                        DataArray.getYouBikeData(new DataArray.OnYouBikeDataGetCallback() {
-                            @SuppressWarnings("unchecked")
-                            @Override
-                            public void onTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
-                                if (tempYouBikeList == null || tempYouBikeList.isEmpty())
-                                    tempYouBikeList = uBikeItems;
-                                else {
-                                    tempYouBikeList.addAll(0, uBikeItems);
-                                    if (key.equals(MARKERS_YOU_BIKE_REFRESH))
-                                        layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
-                                    else
-                                        layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(tempYouBikeList);
-                                }
-                            }
-
-                            @SuppressWarnings("unchecked")
-                            @Override
-                            public void onNewTaipeiYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
-                                if (tempYouBikeList == null || tempYouBikeList.isEmpty())
-                                    tempYouBikeList = uBikeItems;
-                                else {
-                                    tempYouBikeList.addAll(uBikeItems);
-                                    if (key.equals(MARKERS_YOU_BIKE_REFRESH))
-                                        layerHandler.refreshAllYouBikeMarkers(tempYouBikeList);
-                                    else
-                                        layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(tempYouBikeList);
-                                }
-                            }
-
-                            @Override
-                            public void onDataGetFailed() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        showLoadingCircle(false);
-                                        Utility.toastShort(getString(R.string.network_connection_error_please_retry));
-                                        if (notNull(tempYouBikeList)) {
-                                            tempYouBikeList.clear();
-                                            tempYouBikeList = null;
-                                        }
-                                        if (notNull(layerHandler) && layerHandler.isYouBikeMarkerAdded())
-                                            setYouBikeRefreshButtonStatus(true);
-
-                                        layerHandler.setIsLayerChanging(false);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    else {
-                        DataArray.getAllYouBikeData(new DataArray.OnAllYouBikeDataGetCallback() {
-                            @SuppressWarnings("unchecked")
-                            @Override
-                            public void onAllYouBikeGet(ArrayList<ItemsYouBike> uBikeItems) {
-                                if (key.equals(MARKERS_YOU_BIKE_REFRESH))
-                                    layerHandler.refreshAllYouBikeMarkers(uBikeItems);
-                                else
-                                    layerHandler.new YouBikeMarkerAddTask(UiMainMapActivity.this, map).execute(uBikeItems);
-                            }
-
-                            @Override
-                            public void onDataGetFailed() {
-                                showLoadingCircle(false);
-                                Utility.toastShort(getString(R.string.network_connection_error_please_retry));
-
-                                if (notNull(layerHandler) && layerHandler.isYouBikeMarkerAdded())
-                                    setYouBikeRefreshButtonStatus(true);
-
-                                layerHandler.setIsLayerChanging(false);
-                            }
-                        });
-                    }
-                }
-                else {
-                    setYouBikeRefreshButtonStatus(false);
-                    layerHandler.removeLayer(MapLayerHandler.LAYER_YOU_BIKE);
-                }
-                break;
-        }
-    }
-
-    private boolean isLayerChanging() {
-        return notNull(layerHandler) && layerHandler.isLayerChanging();
-    }
-
-    @Override
-    public void onPolylinePrepared(final int layerCode, final PolylineOptions polyLine) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                switch (layerCode) {
-                    case MapLayerHandler.LAYER_CYCLING:
-                        layerHandler.polyLineCyclingList.add(map.addPolyline(polyLine));
-                        break;
-
-                    case MapLayerHandler.LAYER_TOP_TEN:
-                        layerHandler.polyLineTopTenList.add(map.addPolyline(polyLine));
-                        break;
-
-                    case MapLayerHandler.LAYER_RECOMMENDED:
-                        layerHandler.polyLineRecommendList.add(map.addPolyline(polyLine));
-                        break;
-
-                    case MapLayerHandler.LAYER_ALL_OF_TAIWAN:
-                        layerHandler.polyLineTaiwanList.add(map.addPolyline(polyLine));
-                        break;
-                }
-
-                map.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
-                    @Override
-                    public void onPolylineClick(Polyline polyline) {
-                        int zIndex;
-                        Log.i(TAG, "zIndex: " + polyline.getZIndex() + " LayerCode: " + getLayerCodeByZIndex((int) polyline.getZIndex()));
-                        switch (getLayerCodeByZIndex((int) polyline.getZIndex())) {
-                            case MapLayerHandler.LAYER_CYCLING:
-                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_CYCLING);
-                                showPolylineInfo(R.raw.layer_cycling_route_line, zIndex);
-                                break;
-
-                            case MapLayerHandler.LAYER_TOP_TEN:
-                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_TOP_TEN);
-                                showPolylineInfo(R.raw.layer_top10, zIndex);
-                                break;
-
-                            case MapLayerHandler.LAYER_RECOMMENDED:
-                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_RECOMMENDED);
-                                showPolylineInfo(R.raw.layer_recommend, zIndex);
-                                break;
-
-                            case MapLayerHandler.LAYER_ALL_OF_TAIWAN:
-                                zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_ALL_OF_TAIWAN);
-                                showPolylineInfo(R.raw.layer_biking_route_taiwan, zIndex);
-                                break;
-                        }
-                        showMarkerButtonLayout(false, false);
-                    }
-                });
-            }
-        });
-    }
-
-    private int getLayerCodeByZIndex(int zIndex) {
-        if (zIndex - MapLayerHandler.LAYER_CYCLING < 100 && zIndex - MapLayerHandler.LAYER_CYCLING >= 0)
-            return MapLayerHandler.LAYER_CYCLING;
-
-        else if (zIndex - MapLayerHandler.LAYER_TOP_TEN < 100 && zIndex - MapLayerHandler.LAYER_TOP_TEN >= 0)
-            return MapLayerHandler.LAYER_TOP_TEN;
-
-        else if (zIndex - MapLayerHandler.LAYER_RECOMMENDED < 100 && zIndex - MapLayerHandler.LAYER_RECOMMENDED >= 0)
-            return MapLayerHandler.LAYER_RECOMMENDED;
-
-        else if (zIndex - MapLayerHandler.LAYER_ALL_OF_TAIWAN >= 0)
-            return MapLayerHandler.LAYER_ALL_OF_TAIWAN;
-
-        else
-            return 0;
-    }
-
-    private void showPolylineInfo(int geoJsonData, final int zIndex) {
-        showLoadingCircle(true);
-
-        layerHandler.getLayerProperties(geoJsonData, zIndex);
-    }
-
-    @Override
-    public void onPolylineClick(String name, String location, String description) {
-        polylineInfoLayout.setVisibility(View.VISIBLE);
-
-        polylineName.setText(name);
-
-        if (!location.isEmpty()) {
-            polylineLocation.setVisibility(View.VISIBLE);
-            polylineLocation.setText(location);
-        }
-        else
-            polylineLocation.setVisibility(View.GONE);
-
-        if (!description.isEmpty()) {
-            polylineDescription.setVisibility(View.VISIBLE);
-            polylineDescription.setText(description);
-        }
-        else
-            polylineDescription.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onLayerAdded(int layerCode) {
-        showLoadingCircle(false);
-
-        if (layerCode == MapLayerHandler.LAYER_YOU_BIKE) {
-            Utility.toastShort(getString(R.string.you_bike_all_data_get));
-            if (notNull(tempYouBikeList)) {
-                tempYouBikeList.clear();
-                tempYouBikeList = null;
-            }
-            setYouBikeRefreshButtonStatus(true);
-        }
-    }
-
-    @Override
-    public void onLayersAllGone() {
-        if (notNull(handlerThread)) {
-            handlerThread.quit();
-            handlerThread.interrupt();
-            handlerThread = null;
-        }
-        if (notNull(layerHandler))
-            layerHandler = null;
-
-        map.setOnPolylineClickListener(null);
-        polylineInfoLayout.setVisibility(View.GONE);
-    }
+    /**
+     * <h1>2016/10/12 Updated:<p>
+     *
+     * All the map layers and polyline click functions were moved to {@link BaseMapActivity}.
+     * @see #setLayersByPrefKey(String)
+     */
 
     private void closeAllLayerFlag() {
         SettingManager.MapLayer.setCyclingLayer(false);
@@ -1491,22 +1204,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         SettingManager.MapLayer.setAllOfTaiwanLayer(false);
         SettingManager.MapLayer.setRentStationLayer(false);
         SettingManager.MapLayer.setYouBikeLayer(false);
-    }
-
-    private void setYouBikeRefreshButtonStatus(boolean enabled) {
-        if (enabled) {
-            uBikeRefreshBtn.setVisibility(View.VISIBLE);
-            uBikeRefreshBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setLayersByPrefKey(MARKERS_YOU_BIKE_REFRESH);
-                }
-            });
-        }
-        else {
-            uBikeRefreshBtn.setVisibility(View.GONE);
-            uBikeRefreshBtn.setOnClickListener(null);
-        }
     }
 
     private void setPathInfoLayoutMaxHeight() {
@@ -1618,27 +1315,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         double[] coordinates = getIntent().getDoubleArrayExtra(BUNDLE_PUT_MARKER_COORDINATES);
         LatLng destination = new LatLng(coordinates[0], coordinates[1]);
 
-        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-
-        boundsBuilder.include(origin);
-        boundsBuilder.include(destination);
-
-        LatLngBounds bounds = boundsBuilder.build();
-
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-        //map.animateCamera(cu);
-
-        map.animateCamera(cu, new GoogleMap.CancelableCallback() {
-            @Override
-            public void onFinish() {
-                //CameraUpdate zoomOut = CameraUpdateFactory.zoomBy(-3.0f);
-                //map.animateCamera(zoomOut);
-                Log.i(TAG, "MapZoomBounds!!!!!");
-            }
-
-            @Override
-            public void onCancel() {}
-        });
+        moveCameraAndZoomToFits(origin, destination);
 
         getIntent().removeExtra(BUNDLE_DIRECTION_FROM_POI_BOOK);
     }

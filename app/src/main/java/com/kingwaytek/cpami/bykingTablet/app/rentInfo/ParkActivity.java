@@ -15,7 +15,7 @@ import com.kingwaytek.cpami.bykingTablet.app.ApplicationGlobal;
 import com.kingwaytek.cpami.bykingTablet.app.poi.POIListView;
 import com.kingwaytek.cpami.bykingTablet.sql.SQLiteBot;
 import com.kingwaytek.cpami.bykingTablet.sql.SqliteConstant.TableName;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
+import com.kingwaytek.cpami.bykingTablet.utilities.CommonFileUtil;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.ActivityCaller;
 import com.kingwaytek.cpami.bykingTablet.view.ViewConstant.SearchMode;
 
@@ -33,11 +33,11 @@ public class ParkActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.park_station);
-		if (Util.city_sort == null) {
-			Util.getSortPOICity();
+		if (CommonFileUtil.city_sort == null) {
+			CommonFileUtil.getSortPOICity();
 		}
 		listView = (ListView) findViewById(R.id.rentStation_listView);
-		adapter = new RentStationAdapter(R.layout.rent_station_cell, this, Util.city_sort);
+		adapter = new RentStationAdapter(R.layout.rent_station_cell, this, CommonFileUtil.city_sort);
 		listView.setAdapter(adapter);
 		sqliteDatabase = new SQLiteBot(this.getString(R.string.SQLite_App_Database_Name),
 				this.getString(R.string.SQLite_App_Database_Path), TableName.POI);

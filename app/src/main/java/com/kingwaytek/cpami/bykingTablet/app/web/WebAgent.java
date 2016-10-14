@@ -19,10 +19,10 @@ import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.ApiUrls;
 import com.kingwaytek.cpami.bykingTablet.app.model.CommonBundle;
+import com.kingwaytek.cpami.bykingTablet.utilities.CommonFileUtil;
 import com.kingwaytek.cpami.bykingTablet.utilities.DebugHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.DialogHelper;
 import com.kingwaytek.cpami.bykingTablet.utilities.PopWindowHelper;
-import com.kingwaytek.cpami.bykingTablet.utilities.Util;
 import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 
 import java.io.BufferedReader;
@@ -271,7 +271,7 @@ public class WebAgent implements ApiUrls, CommonBundle {
                     connection.setReadTimeout(CONNECT_TIME_OUT_COMMON);
                     connection.connect();
 
-                    File storagePath = new File(Util.sdPath, AppController.getInstance().getString(R.string.file_path_you_bike_data));
+                    File storagePath = new File(CommonFileUtil.sdPath, AppController.getInstance().getString(R.string.file_path_you_bike_data));
                     if (!storagePath.exists())
                         storagePath.createNewFile();
 

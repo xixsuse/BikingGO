@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.bykingTablet.AppController;
 import com.kingwaytek.cpami.bykingTablet.R;
 import com.kingwaytek.cpami.bykingTablet.app.model.items.ItemsTrackRecord;
+import com.kingwaytek.cpami.bykingTablet.app.ui.track.UiTrackListActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,33 +24,34 @@ import java.util.HashMap;
  */
 public class TrackListAdapter extends BaseAdapter {
 
-    private ArrayList<ItemsTrackRecord> trackNameList;
-    private LayoutInflater inflater;
+    private Context context;
+    private ArrayList<ItemsTrackRecord> trackItemList;
 
     private boolean showCheckBox;
     private HashMap<Integer, Boolean> checkedMap;
 
     private boolean isUploadMode;
 
-    public TrackListAdapter(Context context, ArrayList<ItemsTrackRecord> trackNameList) {
-        this.trackNameList = trackNameList;
-        inflater = LayoutInflater.from(context);
+    public TrackListAdapter(Context context, ArrayList<ItemsTrackRecord> trackItemList) {
+        this.trackItemList = trackItemList;
+        this.context = context;
+
         checkedMap = new HashMap<>();
     }
 
-    public void refreshList(ArrayList<ItemsTrackRecord> trackNameList) {
-        this.trackNameList = trackNameList;
+    public void refreshList(ArrayList<ItemsTrackRecord> trackItemList) {
+        this.trackItemList = trackItemList;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return trackNameList.size();
+        return trackItemList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return trackNameList.get(position);
+        return trackItemList.get(position);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class TrackListAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.inflate_track_list, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.inflate_track_list, null);
 
             holder = new ViewHolder();
             holder.trackName = (TextView) convertView.findViewById(R.id.edit_trackName);
@@ -76,9 +78,9 @@ public class TrackListAdapter extends BaseAdapter {
         else
             holder = (ViewHolder) convertView.getTag();
 
-        holder.trackName.setText(trackNameList.get(position).NAME);
-        holder.trackTime.setText(trackNameList.get(position).DATE);
-        holder.trackDistance.setText(trackNameList.get(position).DISTANCE);
+        holder.trackName.setText(trackItemList.get(position).NAME);
+        holder.trackTime.setText(trackItemList.get(position).DATE);
+        holder.trackDistance.setText(trackItemList.get(position).DISTANCE);
 
         if (!checkedMap.containsKey(position))
             checkedMap.put(position, false);
@@ -110,7 +112,19 @@ public class TrackListAdapter extends BaseAdapter {
             holder.checkbox.setChecked(false);
         }
 
-        convertView.setBackgroundResource(isUploadMode ? R.drawable.background_upload_item : 0);
+        if (isUploadMode) {
+            holder.rightArrow.setImageResource(R.drawable.selector_toolbar_upload);
+            holder.rightArrow.setBackgroundColor(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.md_blue_grey_900));
+            holder.rightArrow.setOnClickListener(getUploadClick(trackItemList.get(position).NAME, position));
+        }
+        else {
+            holder.rightArrow.setImageResource(R.drawable.ic_right_arrow_grey);
+            holder.rightArrow.setBackgroundResource(0);
+            holder.rightArrow.setOnClickListener(null);
+        }
+        holder.rightArrow.setFocusable(false);
+        holder.rightArrow.setFocusableInTouchMode(false);
+        holder.rightArrow.setClickable(true);
 
         return convertView;
     }
@@ -151,9 +165,22 @@ public class TrackListAdapter extends BaseAdapter {
         return checkedList;
     }
 
-    public void setUploadRowBackground(boolean isUploadMode) {
+    public void setUploadMode(boolean isUploadMode) {
         this.isUploadMode = isUploadMode;
         notifyDataSetChanged();
+    }
+
+    public boolean isUploadMode() {
+        return isUploadMode;
+    }
+
+    private View.OnClickListener getUploadClick(final String name, final int position) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((UiTrackListActivity) context).uploadTrack(name, position);
+            }
+        };
     }
 
     private class ViewHolder {

@@ -228,8 +228,15 @@ public class UiDirectionModeFragment extends BaseFragment {
 
             ((UiMainMapActivity) getContext()).setPolylineOverviewAndDraw(transitOverview.POLY_LINE, false);
         }
-        else
+        else {
+            overviewLayout.removeTransportationWidgets();
+            overviewLayout.setTotalTime("");
+
+            if (transitStepAdapter != null)
+                transitStepAdapter.clearAllData();
+
             text_noSuggestion.setVisibility(View.VISIBLE);
+        }
     }
 
     private void getColorResAndDrawHighlight(ItemsTransitStep transitStep) {

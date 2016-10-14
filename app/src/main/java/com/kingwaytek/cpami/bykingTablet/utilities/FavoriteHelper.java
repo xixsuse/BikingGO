@@ -36,28 +36,28 @@ public class FavoriteHelper {
     public static final String PLAN_DATE = "planDate";
     public static final String PLAN_ITEMS = "planItems";
 
-    public static final String TRACK_DATE = "time";
-    public static final String TRACK_NAME = "name";
-    public static final String TRACK_DIFFICULTY = "difficulty";
-    public static final String TRACK_DESCRIPTION = "description";
-    public static final String TRACK_POLYLINE = "polyline";
-    public static final String TRACK_DISTANCE = "distance";
-    public static final String TRACK_DURATION = "duration";
-    public static final String TRACK_SPEED = "speed";
+    static final String TRACK_DATE = "time";
+    static final String TRACK_NAME = "name";
+    static final String TRACK_DIFFICULTY = "difficulty";
+    static final String TRACK_DESCRIPTION = "description";
+    static final String TRACK_POLYLINE = "polyline";
+    static final String TRACK_DISTANCE = "distance";
+    static final String TRACK_SPEED = "speed";
+    static final String TRACK_DURATION = "duration";
 
     private static int POI_INDEX;
 
     public static void initPoiFavorite(boolean checkPhotoPath) {
         try {
-            if (Util.isPoiFileNotExistOrEmpty()) {
+            if (CommonFileUtil.isPoiFileNotExistOrEmpty()) {
                 JA_POI = new SoftReference<>(new JSONArray());
 
-                Util.writePoiFile(JA_POI.get().toString());
+                CommonFileUtil.writePoiFile(JA_POI.get().toString());
 
                 Log.i(TAG, "JA_POI isNull, FavInit!!");
             }
             else {
-                JA_POI =  new SoftReference<>(new JSONArray(Util.readPoiFile()));
+                JA_POI =  new SoftReference<>(new JSONArray(CommonFileUtil.readPoiFile()));
                 Log.i(TAG, "JA_POI isNotNull, FavInit!!");
                 Log.i(TAG, "PoiInit: " + JA_POI.toString());
             }
@@ -135,7 +135,7 @@ public class FavoriteHelper {
 
             JA_POI.get().put(jo);
 
-            Util.writePoiFile(JA_POI.get().toString());
+            CommonFileUtil.writePoiFile(JA_POI.get().toString());
             Log.i(TAG, "PoiAdded: " + JA_POI.get().toString());
         }
         catch (JSONException e) {
@@ -164,7 +164,7 @@ public class FavoriteHelper {
                     if (jo != null)
                         ja_poi.put(jo);
                 }
-                Util.writePoiFile(ja_poi.toString());
+                CommonFileUtil.writePoiFile(ja_poi.toString());
                 Log.i(TAG, "PoiRemoved: " + ja_poi.toString());
             }
             else
@@ -205,7 +205,7 @@ public class FavoriteHelper {
                 ja_poi.put(jo);
             }
 
-            Util.writePoiFile(ja_poi.toString());
+            CommonFileUtil.writePoiFile(ja_poi.toString());
 
             Utility.toastShort(AppController.getInstance().getString(R.string.poi_remove_done));
             Log.i(TAG, "removePoi: " + ja_poi.toString());
@@ -225,7 +225,7 @@ public class FavoriteHelper {
             ja_poi.getJSONObject(POI_INDEX).put(POI_DESCRIPTION, desc);
             ja_poi.getJSONObject(POI_INDEX).put(POI_PHOTO_PATH, photoPath);
 
-            Util.writePoiFile(ja_poi.toString());
+            CommonFileUtil.writePoiFile(ja_poi.toString());
 
             Log.i(TAG, "PoiUpdated: " + ja_poi.toString());
         }
@@ -256,7 +256,7 @@ public class FavoriteHelper {
             }
 
             if (needRewrite)
-                Util.writePoiFile(ja_poi.toString());
+                CommonFileUtil.writePoiFile(ja_poi.toString());
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -270,13 +270,13 @@ public class FavoriteHelper {
         JSONArray ja_plan;
 
         try {
-            if (Util.isPlanFileNotExistOrEmpty())
+            if (CommonFileUtil.isPlanFileNotExistOrEmpty())
                 ja_plan = new JSONArray();
             else
-                ja_plan = new JSONArray(Util.readPlanFile());
+                ja_plan = new JSONArray(CommonFileUtil.readPlanFile());
 
             ja_plan.put(singlePlanJO);
-            Util.writePlanFile(ja_plan.toString());
+            CommonFileUtil.writePlanFile(ja_plan.toString());
 
             Utility.toastShort(AppController.getInstance().getString(R.string.plan_save_completed));
             Log.i(TAG, "addPlan: " + ja_plan.toString());
@@ -291,14 +291,14 @@ public class FavoriteHelper {
 
     public static void updatePlan(int index, String planName, String planDate, JSONArray planItems) {
         try {
-            if (!Util.isPlanFileNotExistOrEmpty()) {
-                JSONArray ja_plans = new JSONArray(Util.readPlanFile());
+            if (!CommonFileUtil.isPlanFileNotExistOrEmpty()) {
+                JSONArray ja_plans = new JSONArray(CommonFileUtil.readPlanFile());
 
                 ja_plans.getJSONObject(index).put(PLAN_NAME, planName);
                 ja_plans.getJSONObject(index).put(PLAN_DATE, planDate);
                 ja_plans.getJSONObject(index).put(PLAN_ITEMS, planItems);
 
-                Util.writePlanFile(ja_plans.toString());
+                CommonFileUtil.writePlanFile(ja_plans.toString());
 
                 Utility.toastShort(AppController.getInstance().getString(R.string.plan_update_completed));
                 Log.i(TAG, "updatePlan: " + ja_plans.toString());
@@ -309,10 +309,31 @@ public class FavoriteHelper {
         }
     }
 
+    public static boolean isPlanNotDuplicated(String planName) {
+        try {
+            if (!CommonFileUtil.isPlanFileNotExistOrEmpty()) {
+                JSONArray ja_plans = new JSONArray(CommonFileUtil.readPlanFile());
+                JSONObject jo;
+
+                for (int i = 0; i < ja_plans.length(); i++) {
+                    jo = ja_plans.getJSONObject(i);
+                    if (jo.getString(PLAN_NAME).equals(planName))
+                        return false;
+                }
+                return true;
+            }
+            return true;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
     public static void removePlan(int index) {
         try {
-            if (!Util.isPlanFileNotExistOrEmpty()) {
-                JSONArray ja_plans = new JSONArray(Util.readPlanFile());
+            if (!CommonFileUtil.isPlanFileNotExistOrEmpty()) {
+                JSONArray ja_plans = new JSONArray(CommonFileUtil.readPlanFile());
 
                 int len = ja_plans.length();
 
@@ -329,7 +350,7 @@ public class FavoriteHelper {
                     ja_plans.put(jo);
                 }
 
-                Util.writePlanFile(ja_plans.toString());
+                CommonFileUtil.writePlanFile(ja_plans.toString());
 
                 Utility.toastShort(AppController.getInstance().getString(R.string.plan_remove_completed));
                 Log.i(TAG, "removePlan: " + ja_plans.toString());
@@ -342,8 +363,8 @@ public class FavoriteHelper {
 
     public static void removeMultiPlan(ArrayList<Integer> checkedList) {
         try {
-            if (!Util.isPlanFileNotExistOrEmpty()) {
-                JSONArray ja_plans = new JSONArray(Util.readPlanFile());
+            if (!CommonFileUtil.isPlanFileNotExistOrEmpty()) {
+                JSONArray ja_plans = new JSONArray(CommonFileUtil.readPlanFile());
 
                 int len = ja_plans.length();
 
@@ -370,7 +391,7 @@ public class FavoriteHelper {
                     ja_plans.put(jo);
                 }
 
-                Util.writePlanFile(ja_plans.toString());
+                CommonFileUtil.writePlanFile(ja_plans.toString());
 
                 Utility.toastShort(AppController.getInstance().getString(R.string.plan_remove_completed));
                 Log.i(TAG, "removePlan: " + ja_plans.toString());
@@ -381,7 +402,7 @@ public class FavoriteHelper {
         }
     }
 
-    public static void addTrack(String time, String name, int difficulty, String description, String polyline, String distance, String duration, String speed) {
+    public static void addTrack(String time, String name, int difficulty, String description, String polyline, String distance, String speed, String duration) {
         try {
             String ja_string = TrackingFileUtil.readTrackFile();
             JSONArray ja_track;
@@ -398,8 +419,8 @@ public class FavoriteHelper {
             jo.put(TRACK_DESCRIPTION, description);
             jo.put(TRACK_POLYLINE, polyline);
             jo.put(TRACK_DISTANCE, distance);
-            jo.put(TRACK_DURATION, duration);
             jo.put(TRACK_SPEED, speed);
+            jo.put(TRACK_DURATION, duration);
 
             ja_track.put(jo);
 
@@ -507,7 +528,7 @@ public class FavoriteHelper {
         }
     }
 
-    public static void modifyTrackInfo() {
+    public static void hardModifyTrackInfo() {
         String ja_string = TrackingFileUtil.readTrackFile();
 
         if (ja_string != null) {
@@ -515,8 +536,8 @@ public class FavoriteHelper {
                 JSONArray ja_track = new JSONArray(ja_string);
 
                 for (int i = 0; i < ja_track.length(); i++) {
-                    ja_track.getJSONObject(i).put(TRACK_DURATION, "20分");
-                    ja_track.getJSONObject(i).put(TRACK_SPEED, "50 km/h");
+                    ja_track.getJSONObject(i).put(TRACK_SPEED, "");
+                    ja_track.getJSONObject(i).put(TRACK_DURATION, "");
                 }
 
                 TrackingFileUtil.writeTrackFile(ja_track.toString());

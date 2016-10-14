@@ -58,7 +58,9 @@ public class TrackingFileUtil {
 
             writer.write(location);
             writer.flush();
-            firstWrite = false;
+
+            if (!location.isEmpty())
+                firstWrite = false;
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -124,6 +126,9 @@ public class TrackingFileUtil {
                 sb.append(eachLine);
             }
             reader.close();
+
+            if (sb.toString().indexOf("&") == 0)
+                sb.deleteCharAt(0);
 
             String[] latLngArray = sb.toString().split("&");
             ArrayList<LatLng> latLngList = new ArrayList<>();

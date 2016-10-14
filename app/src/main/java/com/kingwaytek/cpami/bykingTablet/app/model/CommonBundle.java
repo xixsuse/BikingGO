@@ -84,6 +84,8 @@ public interface CommonBundle {
     String BITMAP_KEY_SUPPLY_STATION = "SupplyStation";
     String BITMAP_KEY_PIN_PLACE = "PinPlace";
     String BITMAP_KEY_PIN_POINT = "PinPoint";
+    String BITMAP_KEY_START_POINT = "StartPoint";
+    String BITMAP_KEY_END_POINT = "EndPoint";
 
     // Other keys
     String MARKERS_YOU_BIKE_REFRESH = "YouBikeMarkersRefresh";
