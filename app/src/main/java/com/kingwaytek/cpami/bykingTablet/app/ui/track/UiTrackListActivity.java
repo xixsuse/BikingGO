@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import com.kingwaytek.cpami.bykingTablet.utilities.Utility;
 import com.kingwaytek.cpami.bykingTablet.utilities.adapter.TrackListAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * 軌跡錄製清單
@@ -94,6 +96,8 @@ public class UiTrackListActivity extends BaseActivity {
                     Intent intent = new Intent(UiTrackListActivity.this, UiTrackMapActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra(BUNDLE_ENTRY_TYPE, ENTRY_TYPE_TRACK_VIEWING);
+                    // Reverse the order of position, because the list has already reversed.
+                    position = parent.getCount() - (position + 2);
                     intent.putExtra(BUNDLE_TRACK_INDEX, position);
 
                     startActivity(intent);
@@ -126,7 +130,10 @@ public class UiTrackListActivity extends BaseActivity {
 
             ArrayList<ItemsTrackRecord> trackList = JsonParser.getTrackList();
 
+
             if (notNull(trackList)) {
+                Collections.reverse(trackList); // Reverse the items order of trackList.
+
                 if (trackListAdapter == null) {
                     trackListAdapter = new TrackListAdapter(this, trackList);
                     trackListView.setAdapter(trackListAdapter);
@@ -218,37 +225,44 @@ public class UiTrackListActivity extends BaseActivity {
             MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_MORE);
     }
 
-    public void uploadTrack(final String trackName, final int trackIndex) {
-        DialogHelper.showUploadConfirmDialog(this, trackName, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+    public void uploadTrack(final String trackName, int trackIndex) {
+        if (notNull(trackListAdapter)) {
+            final int index = trackListAdapter.getCount() - (trackIndex + 1);
 
-                final String trackContent = DataArray.getTrackObjectString(trackIndex);
+            DialogHelper.showUploadConfirmDialog(this, trackName, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
 
-                if (notNull(trackContent)) {
-                    DialogHelper.showLoadingDialog(UiTrackListActivity.this);
+                    final String trackContent = DataArray.getTrackObjectString(index);
 
-                    WebAgent.uploadDataToBikingService(POST_VALUE_TYPE_TRACK, trackName, trackContent, new WebAgent.WebResultImplement() {
-                        @Override
-                        public void onResultSucceed(String response) {
-                            Utility.toastShort(getString(R.string.upload_done));
-                            DialogHelper.dismissDialog();
-                        }
+                    if (notNull(trackContent)) {
+                        DialogHelper.showLoadingDialog(UiTrackListActivity.this);
 
-                        @Override
-                        public void onResultFail(String errorMessage) {
-                            Utility.toastLong(errorMessage);
-                            DialogHelper.dismissDialog();
-                        }
-                    });
+                        WebAgent.uploadDataToBikingService(POST_VALUE_TYPE_TRACK, trackName, trackContent, new WebAgent.WebResultImplement() {
+                            @Override
+                            public void onResultSucceed(String response) {
+                                Utility.toastShort(getString(R.string.upload_done));
+                                DialogHelper.dismissDialog();
+                            }
+
+                            @Override
+                            public void onResultFail(String errorMessage) {
+                                Utility.toastLong(errorMessage);
+                                DialogHelper.dismissDialog();
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void deleteSelectedTrack() {
         final ArrayList<Integer> indexList = trackListAdapter.getCheckedList();
+        Log.i(TAG, indexList.toString());
+        reverseList(indexList);
+        Log.i(TAG, indexList.toString());
 
         if (!indexList.isEmpty()) {
             DialogHelper.showDeleteConfirmDialog(this, new DialogInterface.OnClickListener() {
@@ -259,6 +273,14 @@ public class UiTrackListActivity extends BaseActivity {
                     unCheckBoxAndResumeMenu();
                 }
             });
+        }
+    }
+
+    private void reverseList(ArrayList<Integer> indexList) {
+        if (notNull(trackListAdapter)) {
+            for (int i = 0; i < indexList.size(); i++) {
+                indexList.set(i, trackListAdapter.getCount() - (indexList.get(i) + 1));
+            }
         }
     }
 

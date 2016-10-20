@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/md_grey_400"
-            android:dividerHeight="0.5dp" />
+            android:dividerHeight="0.5dp"/>
 
     </FrameLayout>
 

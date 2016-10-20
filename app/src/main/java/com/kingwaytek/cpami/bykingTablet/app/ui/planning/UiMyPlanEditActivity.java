@@ -280,14 +280,15 @@ public class UiMyPlanEditActivity extends BaseActivity {
                     singlePlanJO.put(FavoriteHelper.PLAN_DATE, Utility.getCurrentTimeInFormat());
                     singlePlanJO.put(FavoriteHelper.PLAN_ITEMS, ja);
 
-                    int planEditIndex = FavoriteHelper.addPlan(singlePlanJO);
-                    goToPlanInfo(planEditIndex);
+                    FavoriteHelper.addPlan(singlePlanJO);
+                    goToPlanInfo();
                 }
                 else {
                     FavoriteHelper.updatePlan(PLAN_EDIT_INDEX, getPlanTitle(), Utility.getCurrentTimeInFormat(), ja);
                     finish();
                 }
-            } catch (JSONException e) {
+            }
+            catch (JSONException e) {
                 e.printStackTrace();
             }
         }
@@ -295,9 +296,9 @@ public class UiMyPlanEditActivity extends BaseActivity {
             Utility.toastShort(getString(R.string.plan_duplicated_name));
     }
 
-    private void goToPlanInfo(int planEditIndex) {
+    private void goToPlanInfo() {
         Intent intent = new Intent(UiMyPlanEditActivity.this, UiMyPlanInfoActivity.class);
-        intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, planEditIndex);
+        intent.putExtra(BUNDLE_PLAN_NAME, getPlanTitle());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

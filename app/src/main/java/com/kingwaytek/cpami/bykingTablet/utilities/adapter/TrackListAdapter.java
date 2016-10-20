@@ -51,7 +51,7 @@ public class TrackListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return trackItemList.get(position);
+        return trackItemList.get(getCount() - (position + 1));
     }
 
     @Override

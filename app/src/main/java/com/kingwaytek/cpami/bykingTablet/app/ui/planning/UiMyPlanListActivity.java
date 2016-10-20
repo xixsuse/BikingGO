@@ -75,7 +75,7 @@ public class UiMyPlanListActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position != parent.getCount() -1 && !planAdapter.isUploadMode()) {
                     Intent intent = new Intent(UiMyPlanListActivity.this, UiMyPlanInfoActivity.class);
-                    intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, position);
+                    intent.putExtra(BUNDLE_PLAN_NAME, planAdapter.getName(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }

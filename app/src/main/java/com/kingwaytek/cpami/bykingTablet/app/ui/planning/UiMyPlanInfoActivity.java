@@ -83,12 +83,21 @@ public class UiMyPlanInfoActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 2016/10/20 Updated by Vincent:<p>
+     *
+     * PLAN_EDIT_INDEX 取得的方式改成：<br>
+     * 從上一個 Activity Intent 傳 planName來，<br>
+     * 然後再用 FavoriteHelper.getPlanIndexByName(planName)來取得回傳的 index.
+     */
     private void getIndexAndItems() {
         if (ENTRY_TYPE != ENTRY_TYPE_VIEW_SHARED_PLAN) {
             Intent intent = getIntent();
 
-            if (intent.hasExtra(BUNDLE_PLAN_EDIT_INDEX)) {
-                PLAN_EDIT_INDEX = intent.getIntExtra(BUNDLE_PLAN_EDIT_INDEX, 0);
+            if (intent.hasExtra(BUNDLE_PLAN_NAME)) {
+                PLAN_EDIT_INDEX = FavoriteHelper.getPlanIndexByName(intent.getStringExtra(BUNDLE_PLAN_NAME));
+
+                Log.i(TAG, "getIndexAndItems() PLAN_EDIT_INDEX: " + PLAN_EDIT_INDEX);
 
                 ItemsPlans planAndItems = DataArray.getPlansData().get(PLAN_EDIT_INDEX);
 
@@ -127,7 +136,7 @@ public class UiMyPlanInfoActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (ENTRY_TYPE != ENTRY_TYPE_VIEW_SHARED_PLAN)
-            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_UPLOAD, ACTION_DELETE, ACTION_EDIT);
+            MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_UPLOAD, ACTION_EDIT);
         return true;
     }
 

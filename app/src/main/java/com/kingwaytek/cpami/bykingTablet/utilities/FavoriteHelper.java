@@ -11,7 +11,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.SoftReference;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * 用 json的格式記錄我的景點 or 行程規劃，
@@ -264,9 +267,10 @@ public class FavoriteHelper {
     }
 
     /**
-     * @return index where the PlanItem just added.
+     * 2016/10/20 Updated by Vincent:<p>
+     * 不再回傳 index了！
      */
-    public static int addPlan(JSONObject singlePlanJO) {
+    public static void addPlan(JSONObject singlePlanJO) {
         JSONArray ja_plan;
 
         try {
@@ -276,16 +280,20 @@ public class FavoriteHelper {
                 ja_plan = new JSONArray(CommonFileUtil.readPlanFile());
 
             ja_plan.put(singlePlanJO);
-            CommonFileUtil.writePlanFile(ja_plan.toString());
 
-            Utility.toastShort(AppController.getInstance().getString(R.string.plan_save_completed));
-            Log.i(TAG, "addPlan: " + ja_plan.toString());
+            String jaPlanString = getSortedPlanString(ja_plan);
 
-            return (ja_plan.length() - 1);
+            if (jaPlanString != null) {
+                CommonFileUtil.writePlanFile(jaPlanString);
+
+                Utility.toastShort(AppController.getInstance().getString(R.string.plan_save_completed));
+                Log.i(TAG, "addPlan: " + jaPlanString);
+            }
+            else
+                Utility.toastShort(AppController.getInstance().getString(R.string.plan_update_failed));
         }
         catch (JSONException e) {
             e.printStackTrace();
-            return -1;
         }
     }
 
@@ -298,14 +306,85 @@ public class FavoriteHelper {
                 ja_plans.getJSONObject(index).put(PLAN_DATE, planDate);
                 ja_plans.getJSONObject(index).put(PLAN_ITEMS, planItems);
 
-                CommonFileUtil.writePlanFile(ja_plans.toString());
+                String jaPlanString = getSortedPlanString(ja_plans);
 
-                Utility.toastShort(AppController.getInstance().getString(R.string.plan_update_completed));
-                Log.i(TAG, "updatePlan: " + ja_plans.toString());
+                if (jaPlanString != null) {
+                    CommonFileUtil.writePlanFile(jaPlanString);
+
+                    Utility.toastShort(AppController.getInstance().getString(R.string.plan_update_completed));
+                    Log.i(TAG, "updatePlan: " + jaPlanString);
+                }
+                else
+                    Utility.toastShort(AppController.getInstance().getString(R.string.plan_update_failed));
             }
         }
         catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Bubble Sort!
+    private static String getSortedPlanString(JSONArray ja_plan) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm", Locale.TAIWAN);
+        ArrayList<JSONObject> joArray = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < ja_plan.length(); i++) {
+                joArray.add(ja_plan.getJSONObject(i));
+            }
+
+            for (int i = 0; i < joArray.size(); i++) {
+                for (int j = i; j < joArray.size() - 1; j++) {
+                    if (isSmallerThenNext(dateFormat, joArray, i, j + 1)) {
+                        JSONObject jo_temp = joArray.get(i);
+                        joArray.set(i, joArray.get(j + 1));
+                        joArray.set(j + 1, jo_temp);
+                    }
+                }
+            }
+
+            ja_plan = new JSONArray();
+            for (JSONObject jo : joArray) {
+                ja_plan.put(jo);
+            }
+
+            return ja_plan.toString();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static boolean isSmallerThenNext(SimpleDateFormat dateFormat, ArrayList<JSONObject> joArray, int origin, int next) {
+        try {
+            return dateFormat.parse(joArray.get(origin).getString(PLAN_DATE)).getTime() <
+                    dateFormat.parse(joArray.get(next).getString(PLAN_DATE)).getTime();
+        }
+        catch (ParseException | JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static int getPlanIndexByName(String planName) {
+        try {
+            if (!CommonFileUtil.isPlanFileNotExistOrEmpty()) {
+                JSONArray ja_plans = new JSONArray(CommonFileUtil.readPlanFile());
+                JSONObject jo;
+
+                for (int i = 0; i < ja_plans.length(); i++) {
+                    jo = ja_plans.getJSONObject(i);
+                    if (jo.getString(PLAN_NAME).equals(planName))
+                        return i;
+                }
+                return -1;
+            }
+            return -1;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return -1;
         }
     }
 

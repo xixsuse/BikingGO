@@ -200,6 +200,10 @@ public class PlanListAdapter extends BaseAdapter {
         return planPreviewList.get(position).SPOT_COUNTS > 1;
     }
 
+    public String getName(int position) {
+        return planPreviewList.get(position).NAME;
+    }
+
     private class ViewHolder {
         TextView planName;
         TextView planDate;

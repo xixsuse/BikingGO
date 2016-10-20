@@ -281,18 +281,24 @@ public class Utility {
     }
 
     public static String getDurationText(long duration) {
-        double minutes =  (duration / 1000) / 60;
+        double seconds =  (duration / 1000);
+        double minutes;
 
-        if (minutes < 1) {
-            minutes = minutes * 60;
-            return AppController.getInstance().getString(R.string.track_duration_text_seconds, (int) minutes);
+        if (seconds < 60) {
+            return AppController.getInstance().getString(R.string.track_duration_text_seconds, (int) seconds);
         }
-        else if (minutes < 60)
-            return AppController.getInstance().getString(R.string.track_duration_text, (int) minutes);
         else {
-            int hours = (int) (minutes / 60);
-            int minutesOfTheHour = (int) (minutes % 60);
-            return AppController.getInstance().getString(R.string.track_duration_text_hours, hours, minutesOfTheHour);
+            minutes = seconds / 60;
+
+            if (minutes < 60) {
+                seconds = seconds % 60;
+                return AppController.getInstance().getString(R.string.track_duration_text, (int) minutes, (int) seconds);
+            }
+            else {
+                int hours = (int) (minutes / 60);
+                int minutesOfTheHour = (int) (minutes % 60);
+                return AppController.getInstance().getString(R.string.track_duration_text_hours, hours, minutesOfTheHour);
+            }
         }
     }
 

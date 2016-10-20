@@ -183,41 +183,12 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/padding_size_m"
-                    android:layout_marginBottom="@dimen/padding_size_m"
-                    android:layout_marginRight="@dimen/padding_size_m"
-                    android:layout_marginEnd="@dimen/padding_size_m" >
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top|center_horizontal"
-                        android:layout_marginTop="@dimen/padding_size_s"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/empty"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/announce_spot" />
-
-                    <TextView
-                        android:id="@+id/TextView4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5"
-                        android:text="@string/announce_description4"
-                        android:textColor="#605f51"
-                        android:textSize="@dimen/font_text_size_s"/>
-
-                </LinearLayout>
-
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="@dimen/padding_size_m"
                 android:background="@color/gray" />
 
             <LinearLayout

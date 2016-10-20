@@ -181,7 +181,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 break;
 
             case ENTRY_TYPE_TRACK_VIEWING:
-                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_UPLOAD, ACTION_DELETE, ACTION_EDIT);
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_DELETE, ACTION_UPLOAD, ACTION_EDIT);
                 break;
 
             case ENTRY_TYPE_VIEW_SHARED_TRACK:

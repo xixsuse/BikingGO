@@ -238,12 +238,11 @@
 
     <!-- 軟體使用聲明 -->
     <string name="announce_title">軟體使用聲明</string>
-    <string name="announce_warning">提醒您, 騎乘自行車上路請注意交通安全, 並務必遵守交通法規與標誌號誌指示</string>
-    <string name="announce_description">下載, 安裝或使用本應用程式及其所屬的任何原件(以下簡稱"本應用程式")時, 即表示您同意以下聲明 :</string>
-    <string name="announce_description1">您明確了解並同意, "本應用程式"提供之所有資訊, 僅供您參考應用, 建議您仍須根據實際道路或地點狀況進行判斷。</string>
-    <string name="announce_description2">使用"本應用程式"必須自行承擔所有風險, "本應用程式"不提供任何形式之擔保</string>
-    <string name="announce_description3">就任何因為個人行為而引致之行動裝置或其他裝置的損害或資料遺失, 您必須承擔全部責任</string>
-    <string name="announce_description4">"本應用程式"使用GPS定位技術, GPS定為結果可能因天候, 使用環境地點而有所影響, 因此"本應用程式"提供之坐標數據僅供參考</string>
+    <string name="announce_warning">提醒您，騎乘自行車時請注意交通安全並務必遵守交通法規及交通標誌。</string>
+    <string name="announce_description">下載或安裝使用本應用程式，即表示您同意以下聲明：</string>
+    <string name="announce_description1">本應用程式規劃路徑資訊僅供參考，建議仍須根據實際道路或地點狀況進行判斷。</string>
+    <string name="announce_description2">若因個人行為引致行動裝置損害或資料遺失，責任須自行承擔。</string>
+    <string name="announce_description3">本應用程式使用GPS定位技術，GPS定位結果可能因天候或使用地點有所影響，因此GPS定位僅供參考，使用GPS錄製軌跡時請注意在背景中持續使用GPS可能會減短電池壽命。</string>
     <string name="announce_btn">確定</string>
     <string name="announce_check">下次不再顯示</string>
 
@@ -392,6 +391,7 @@
     <string name="plan_require_title">請輸入行程主題！</string>
     <string name="plan_save_completed">行程儲存完成</string>
     <string name="plan_update_completed">行程更新完成</string>
+    <string name="plan_update_failed">行程儲存失敗！</string>
     <string name="plan_remove_completed">行程已刪除</string>
     <string name="plan_require_more_then_two">需要 2\t個點位以上才可進行路徑規劃！</string>
     <string name="plan_start_name_and_end_name">%1$s\t==>\t%2$s</string>
@@ -488,14 +488,14 @@
     <string name="track_upload">上傳軌跡</string>
     <string name="track_delete">刪除軌跡</string>
     <string name="track_length">軌跡長度：</string>
-    <string name="track_duration">花費時間：</string>
+    <string name="track_duration">騎乘時間：</string>
     <string name="track_average_speed">平均速度：</string>
     <string name="track_in_background">軌跡錄製背景執行中</string>
-    <string name="track_done_and_total_length">軌跡錄製完成！\n總\t\t長\t\t度：%1$s\n平均速度：%2$s\n花費時間：%3$s</string>
-    <string name="track_total_length">軌跡長度：%1$s\n平均速度：%2$s\n花費時間：%3$s</string>
+    <string name="track_done_and_total_length">軌跡錄製完成！\n總\t\t長\t\t度：%1$s\n平均速度：%2$s\n騎乘時間：%3$s</string>
+    <string name="track_total_length">軌跡長度：%1$s\n平均速度：%2$s\n騎乘時間：%3$s</string>
     <string name="track_chose_a_track_to_upload">請選擇要上傳的軌跡</string>
     <string name="track_duration_text_seconds">%d\t秒</string>
-    <string name="track_duration_text">%d\t分鐘</string>
+    <string name="track_duration_text">%1$d\t分\t%2$d\t秒</string>
     <string name="track_duration_text_hours">%1$d\t小時\t%2$d\t分</string>
     <string name="track_average_speed_per_hour">%s\t公里/小時</string>
     <string name="track_distance_meters">%s\t公尺</string>
