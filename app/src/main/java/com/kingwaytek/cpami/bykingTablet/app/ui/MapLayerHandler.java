@@ -138,6 +138,7 @@ public class MapLayerHandler extends Handler {
                             JsonParser.parseGeoJsonCoordinates(R.raw.layer_cycling_route_line, true, new JsonParser.GeoJsonParseResult() {
                                 @Override
                                 public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                                    Log.i(TAG, "GeoLineItemSize getCoordinates: " + geoLines.size());
                                     polyLineCyclingList = new ArrayList<>();
 
                                     for (int i = 0; i < geoLines.size(); i++) {
@@ -169,6 +170,7 @@ public class MapLayerHandler extends Handler {
                             JsonParser.parseGeoJsonCoordinates(R.raw.layer_top10, true, new JsonParser.GeoJsonParseResult() {
                                 @Override
                                 public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                                    Log.i(TAG, "GeoLineItemSize getCoordinates: " + geoLines.size());
                                     polyLineTopTenList = new ArrayList<>();
 
                                     for (int i = 0; i < geoLines.size(); i++) {
@@ -199,6 +201,7 @@ public class MapLayerHandler extends Handler {
                             JsonParser.parseGeoJsonCoordinates(R.raw.layer_recommend, true, new JsonParser.GeoJsonParseResult() {
                                 @Override
                                 public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                                    Log.i(TAG, "GeoLineItemSize getCoordinates: " + geoLines.size());
                                     polyLineRecommendList = new ArrayList<>();
 
                                     for (int i = 0; i < geoLines.size(); i++) {
@@ -229,6 +232,7 @@ public class MapLayerHandler extends Handler {
                             JsonParser.parseGeoJsonCoordinates(R.raw.layer_biking_route_taiwan, false, new JsonParser.GeoJsonParseResult() {
                                 @Override
                                 public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                                    Log.i(TAG, "GeoLineItemSize getCoordinates: " + geoLines.size());
                                     polyLineTaiwanList = new ArrayList<>();
 
                                     for (int i = 0; i < geoLines.size(); i++) {
@@ -285,6 +289,7 @@ public class MapLayerHandler extends Handler {
                 JsonParser.parseGeoJsonProperty(geoJsonData, new JsonParser.GeoJsonParseResult() {
                     @Override
                     public void onParseFinished(ArrayList<ItemsGeoLines> geoLines) {
+                        Log.i(TAG, "GeoLineItemSize getProperties: " + geoLines.size());
                         ItemsGeoLines geoItem = geoLines.get(zIndex);
                         obtainMessage(LAYER_GET_PROPERTIES, geoItem).sendToTarget();
                     }
@@ -311,9 +316,7 @@ public class MapLayerHandler extends Handler {
                 switch (layerCode) {
                     case LAYER_CYCLING:
                         layer_cyclingPoints.addLayerToMap();
-
                         Log.i(TAG, "LayerCycling Added!!");
-
                         break;
 
                     case LAYER_TOP_TEN:

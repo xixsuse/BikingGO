@@ -742,6 +742,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
                     public void onPolylineClick(Polyline polyline) {
                         int zIndex;
                         Log.i(TAG, "zIndex: " + polyline.getZIndex() + " LayerCode: " + getLayerCodeByZIndex((int) polyline.getZIndex()));
+
                         switch (getLayerCodeByZIndex((int) polyline.getZIndex())) {
                             case MapLayerHandler.LAYER_CYCLING:
                                 zIndex = (int) (polyline.getZIndex() - MapLayerHandler.LAYER_CYCLING);

@@ -202,16 +202,15 @@
                 android:paddingRight="@dimen/padding_size_l"
                 android:paddingEnd="@dimen/padding_size_l" >
 
-                <CheckBox
-                    android:id="@+id/checkbox_terms_of_use_summit"
+                <Button
+                    android:id="@+id/startup_terms_of_use_summit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:button="@drawable/check_selector"
-                    android:gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/padding_size_m"
-                    android:layout_marginStart="@dimen/padding_size_m"
-                    android:text="@string/announce_check"
+                    android:background="@drawable/background_transparent_button_no_board"
+                    android:gravity="center"
+                    android:text="@string/announce_btn"
                     android:textSize="@dimen/font_text_size_m"
                     android:textColor="#1571fb" />
 
@@ -220,17 +219,17 @@
                     android:layout_height="match_parent"
                     android:background="@color/gray" />
 
-                <Button
-                    android:id="@+id/startup_terms_of_use_summit"
+                <CheckBox
+                    android:id="@+id/checkbox_terms_of_use_summit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:background="@color/md_white_1000"
-                    android:gravity="center"
-                    android:text="@string/announce_btn"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_size_s"
+                    android:layout_marginStart="@dimen/padding_size_s"
+                    android:text="@string/announce_check"
                     android:textSize="@dimen/font_text_size_m"
-                    android:textColor="#1571fb" />
+                    android:textColor="@color/md_blue_600" />
 
             </LinearLayout>
 

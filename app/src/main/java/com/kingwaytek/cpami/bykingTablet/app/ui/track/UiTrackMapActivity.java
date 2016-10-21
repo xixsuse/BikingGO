@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.kingwaytek.cpami.bykingTablet.AppController;
@@ -92,13 +93,15 @@ public class UiTrackMapActivity extends BaseMapActivity {
     private ItemsTrackRecord trackItem;
     private static final int INVALIDATED_INDEX = -1;
 
+    private Polyline tempPolyline;
+
     private Context appContext() {
         return AppController.getInstance().getAppContext();
     }
 
     @Override
     protected void onMapReady() {
-        drawPolylineIfTrackFileContainsData();
+        drawPolylineIfTrackFileContainsData(true);
         getRecordDataAndDrawLine();
         setAllLayerFlagWithDelayDuration();
     }
@@ -241,7 +244,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
         Log.i(TAG, "removeLocationUpdate (Do Nothing)");
     }
 
-    private void drawPolylineIfTrackFileContainsData() {
+    private void drawPolylineIfTrackFileContainsData(boolean moveCamera) {
         if (ENTRY_TYPE == ENTRY_TYPE_TRACKING && TrackingFileUtil.isTrackingFileContainsData()) {
             ArrayList<LatLng> latLngList = TrackingFileUtil.readTrackingLatLng();
 
@@ -254,9 +257,10 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 polyLine.color(ContextCompat.getColor(appContext(), R.color.md_blue_A700));
                 polyLine.width(20);
 
-                map.addPolyline(polyLine);
+                tempPolyline = map.addPolyline(polyLine);
 
-                moveCameraAndZoom(latLngList.get(latLngList.size() - 1), 16);
+                if (moveCamera)
+                    moveCameraAndZoom(latLngList.get(latLngList.size() - 1), 16);
             }
         }
     }
@@ -421,7 +425,9 @@ public class UiTrackMapActivity extends BaseMapActivity {
 
         TrackingFileUtil.cleanTrackingFile();
         MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SWITCH);
-        menu.clear();
+
+        if (notNull(tempPolyline))
+            tempPolyline.remove();
 
         LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
 
@@ -439,6 +445,10 @@ public class UiTrackMapActivity extends BaseMapActivity {
         SettingManager.TrackingTimeAndLayer.setEndTime(System.currentTimeMillis());
 
         if (TrackingFileUtil.isTrackingFileContainsData()) {
+            closeAllLayerFlag();
+            map.clear();
+            drawPolylineIfTrackFileContainsData(false);
+
             MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SWITCH, ACTION_SAVE);
             showSaveDialog();
         }
@@ -467,7 +477,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                             durationText);
 
                     TrackingFileUtil.cleanTrackingFile();
-                    menu.clear();
+                    MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SWITCH);
 
                     Utility.toastShort(AppController.getInstance().getString(R.string.track_save_done));
 
@@ -789,6 +799,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
             showTrackingText(false);
             trackItem = null;
             textHandler = null;
+            tempPolyline = null;
             finish();
         }
         Log.i(TAG, "IsServiceRunning: " + isTrackingServiceRunning());

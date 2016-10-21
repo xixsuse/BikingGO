@@ -591,29 +591,40 @@ public class JsonParser {
                 JA = JO.getJSONArray("features");
 
                 JSONArray coordinates;
-                JSONArray coordinateArray;
+                JSONArray coordinatesL2;
 
                 ArrayList<LatLng> latLngList;
 
-                for (int i = 0; i < JA.length(); i++) {
+                Log.i(TAG, "JA length: " + JA.length());
+                for (int i = 0; i < JA.length(); i++)
+                {
                     coordinates = JA.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
 
                     latLngList = new ArrayList<>();
 
-                    for (int j = 0; j < coordinates.length(); j++) {
-
-                        coordinateArray = coordinates.getJSONArray(j);
+                    Log.i(TAG, "coordinates length: " + coordinates.length());
+                    for (int j = 0; j < coordinates.length(); j++)
+                    {
+                        coordinatesL2 = coordinates.getJSONArray(j);
+                        Log.i(TAG, "coordinateL2 length: " + coordinatesL2.length());
 
                         if (nestedCoordinates) {
-                            for (int k = 0; k < coordinateArray.length(); k++) {
-                                latLngList.add(new LatLng(coordinateArray.getJSONArray(k).getDouble(1), coordinateArray.getJSONArray(k).getDouble(0)));
+                            latLngList = new ArrayList<>();
+                            JSONArray coordinateDouble;
+
+                            for (int k = 0; k < coordinatesL2.length(); k++)
+                            {
+                                coordinateDouble = coordinatesL2.getJSONArray(k);
+                                latLngList.add(new LatLng(coordinateDouble.getDouble(1), coordinateDouble.getDouble(0)));
                             }
+                            geoLines.add(new ItemsGeoLines(latLngList));
                         }
                         else
-                            latLngList.add(new LatLng(coordinateArray.getDouble(1), coordinateArray.getDouble(0)));
+                            latLngList.add(new LatLng(coordinatesL2.getDouble(1), coordinatesL2.getDouble(0)));
                     }
 
-                    geoLines.add(new ItemsGeoLines(latLngList));
+                    if (!nestedCoordinates)
+                        geoLines.add(new ItemsGeoLines(latLngList));
                 }
                 parseResult.onParseFinished(geoLines);
 
@@ -646,6 +657,8 @@ public class JsonParser {
         }
         finally {
             try {
+                boolean isNotAll = rawGeoJson != R.raw.layer_biking_route_taiwan;
+
                 ArrayList<ItemsGeoLines> geoLines = new ArrayList<>();
 
                 JO = new JSONObject(sb.toString());
@@ -653,6 +666,7 @@ public class JsonParser {
 
                 JSONObject jo;
                 JSONObject jo_properties;
+                JSONArray coordinates;
 
                 String name;
                 String description;
@@ -671,7 +685,14 @@ public class JsonParser {
                     if (jo_properties.has("Location"))
                         location = jo_properties.getString("Location");
 
-                    geoLines.add(new ItemsGeoLines(name, description, location));
+                    if (isNotAll) {
+                        coordinates = jo.getJSONObject("geometry").getJSONArray("coordinates");
+                        for (int j = 0; j < coordinates.length(); j++) {
+                            geoLines.add(new ItemsGeoLines(name, description, location));
+                        }
+                    }
+                    else
+                        geoLines.add(new ItemsGeoLines(name, description, location));
                 }
                 parseResult.onParseFinished(geoLines);
 

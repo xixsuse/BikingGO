@@ -173,12 +173,10 @@ public class UiMyPlanListActivity extends BaseActivity {
                 switch ((int)v.getTag()) {
                     case R.id.planMenu_browse:
                         goToSharedList();
-                        DialogHelper.dismissDialog();
                         break;
 
                     case R.id.planMenu_upload:
                         setUploadMode(true);
-                        DialogHelper.dismissDialog();
                         break;
 
                     case R.id.planMenu_delete:
@@ -187,10 +185,9 @@ public class UiMyPlanListActivity extends BaseActivity {
                             planAdapter.notifyDataSetChanged();
                         }
                         setMenuOption(ACTION_DELETE);
-
-                        DialogHelper.dismissDialog();
                         break;
                 }
+                DialogHelper.dismissDialog();
                 planBrowse.setOnClickListener(null);
                 planUpload.setOnClickListener(null);
                 planDelete.setOnClickListener(null);

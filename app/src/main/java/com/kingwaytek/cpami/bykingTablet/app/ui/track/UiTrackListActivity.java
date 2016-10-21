@@ -130,7 +130,6 @@ public class UiTrackListActivity extends BaseActivity {
 
             ArrayList<ItemsTrackRecord> trackList = JsonParser.getTrackList();
 
-
             if (notNull(trackList)) {
                 Collections.reverse(trackList); // Reverse the items order of trackList.
 

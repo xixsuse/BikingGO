@@ -271,26 +271,24 @@ public class FavoriteHelper {
      * 不再回傳 index了！
      */
     public static void addPlan(JSONObject singlePlanJO) {
-        JSONArray ja_plan;
+        JSONArray ja_plan = new JSONArray();
+        JSONArray ja_tempPlan;
 
         try {
             if (CommonFileUtil.isPlanFileNotExistOrEmpty())
-                ja_plan = new JSONArray();
-            else
-                ja_plan = new JSONArray(CommonFileUtil.readPlanFile());
+                ja_plan.put(singlePlanJO);
+            else {
+                ja_tempPlan = new JSONArray(CommonFileUtil.readPlanFile());
+                ja_plan.put(singlePlanJO);
 
-            ja_plan.put(singlePlanJO);
-
-            String jaPlanString = getSortedPlanString(ja_plan);
-
-            if (jaPlanString != null) {
-                CommonFileUtil.writePlanFile(jaPlanString);
-
-                Utility.toastShort(AppController.getInstance().getString(R.string.plan_save_completed));
-                Log.i(TAG, "addPlan: " + jaPlanString);
+                for (int i = 0; i < ja_tempPlan.length(); i++) {
+                    ja_plan.put(ja_tempPlan.getJSONObject(i));
+                }
             }
-            else
-                Utility.toastShort(AppController.getInstance().getString(R.string.plan_update_failed));
+            CommonFileUtil.writePlanFile(ja_plan.toString());
+
+            Utility.toastShort(AppController.getInstance().getString(R.string.plan_save_completed));
+            Log.i(TAG, "addPlan: " + ja_plan.toString());
         }
         catch (JSONException e) {
             e.printStackTrace();
