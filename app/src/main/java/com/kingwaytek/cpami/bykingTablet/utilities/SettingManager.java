@@ -75,8 +75,7 @@ public class SettingManager {
     /** Preference name for setting weight of user. */
     private static final String PREF_USER_WEIGHT = "userWeight";
 
-    private static final String PREFS_FAVORITE = "FavoriteAndPOI";
-    private static final String PREFS_MY_POI = "MyPoi";
+    private static final String PREF_APP_FIRST_LAUNCH = "AppFirstLaunch";
 
     /** MainMap Map Layer */
     public static final String PREFS_MARKER_MY_POI = "MyPoiMarker";
@@ -382,6 +381,14 @@ public class SettingManager {
         editor.putInt(PREF_USER_WEIGHT, weight).apply();
     }
 
+    public static void setAppFirstLaunch(boolean launched) {
+        editor.putBoolean(PREF_APP_FIRST_LAUNCH, launched);
+    }
+
+    public static boolean getAppFirstLaunch() {
+        return prefs.getBoolean(PREF_APP_FIRST_LAUNCH, true);
+    }
+
     public static class MapLayer {
 
         public static void setMyPoiFlag(boolean isChecked) {
@@ -502,29 +509,4 @@ public class SettingManager {
             return prefs.getBoolean(PREFS_TRACK_MAP_LAYER_ALL_OF_TAIWAN, false);
         }
     }
-
-/*
-    public static class Favorite {
-
-        private static SharedPreferences prefs;
-        private static SharedPreferences.Editor editor;
-
-        public static void initFavoritePreference() {
-            if (prefs == null || editor == null) {
-                prefs = getPreferences(PREFS_FAVORITE);
-                editor = prefs.edit();
-            }
-            else
-                Log.i(TAG, "FavoritePreference has already init!");
-        }
-
-        public static void setMyPoi(String poiJsonString) {
-            editor.putString(PREFS_MY_POI, poiJsonString).apply();
-        }
-
-        public static String getMyPoi() {
-            return prefs.getString(PREFS_MY_POI, null);
-        }
-    }
-*/
 }

@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -182,6 +183,16 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
                 String[] jsonStringAndFromTo = getIntent().getStringArrayExtra(BUNDLE_DIRECTION_FROM_POI_BOOK);
                 getPolylineAndDrawLine(jsonStringAndFromTo[0], jsonStringAndFromTo[1]);
+            }
+
+            if (SettingManager.getAppFirstLaunch()) {
+                getUiHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawer.openDrawer(GravityCompat.START);
+                        SettingManager.setAppFirstLaunch(false);
+                    }
+                }, 1500);
             }
 
             isFirstTimeRun = false;
@@ -785,6 +796,19 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             SettingManager.MapLayer.setMyPoiFlag(true);
 
             Log.i(TAG, "PoiListSize: " + myPoiMarkerList.size());
+
+            /**
+             * 如果 Reloaded marker是來自新增的 marker (myNewMarker) 的話，<br>
+             * 那麼此時 myNewMarker & selectedMarker都會是等於 myPoiMarker，<br>
+             * 那就要 assign myNewMarker to null，<br>
+             * 避免下次 putNewMarker時，現在新增的 myPoiMarker也會被移除！
+             */
+            if (notNull(myNewMarker) &&
+                    myNewMarker.getPosition().latitude == selectedMarker.getPosition().latitude &&
+                    myNewMarker.getPosition().longitude == selectedMarker.getPosition().longitude)
+            {
+                myNewMarker = null;
+            }
         }
     }
 
