@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">單車ing</string>
+    <string name="app_name">單車ing 2.0</string>
 
     <!-- name of file which stores preferences -->
     <string name="preference_file">general.pref</string>
@@ -28,27 +28,6 @@
     <!-- 營建署URL     : http://biking.cpami.gov.tw/ -->
     <!-- 勤崴測試機URL : http://192.168.1.186:8080/BikeGo/ -->
 
-
-    <!-- OK button for confirm dialog -->
-    <string name="confirm_ok">確定</string>
-    <string name="track_detail">詳細資訊</string>
-
-    <!-- Cancel button for confirm dialog -->
-    <string name="confirm_cancel">取消</string>
-
-    <!-- message of confirmation for stopping navigation -->
-    <string name="confirm_stop_navi">確定停止導航？</string>
-
-    <!-- message of confirmation for closing application -->
-    <string name="confirm_close_app">確定關閉程式？</string>
-
-    <!-- message for unexpected error occured -->
-    <string name="msg_err">程式發生錯誤</string>
-    <string name="strRceiver">收件人</string>
-    <string name="strcontact">選擇連絡人</string>
-    <string name="strSend_button">傳送</string>
-    <string name="strEnd_button">結束</string>
-
     <!-- GPS Functions -->
     <string name="gps_service_not_available">GPS無法定位，使用上次位置？</string>
     <string name="gps_service_disable">目前無GPS服務</string>
@@ -56,34 +35,6 @@
     <string name="gps_position_finish">GPS定位完成</string>
     <string name="gps_unable_to_get_location">無法取得您目前的位置</string>
     <string name="gps_is_not_enabled">您尚未開啟系統GPS功能，請先開啟。</string>
-
-    <!-- AP Functions -->
-    <string name="byking_function_address_search_title">地址查詢</string>
-    <string name="byking_function_poi_search_title">景點查詢</string>
-    <string name="byking_function_spoi_title">景點書</string>
-    <string name="byking_function_track_title">單車軌跡</string>
-    <string name="byking_function_address_title">地址查詢</string>
-    <string name="byking_function_favorite_title">我的最愛</string>
-    <string name="byking_function_history_title">查詢記錄</string>
-    <string name="byking_function_GPSPhoto_title">GPS相片</string>
-    <string name="byking_function_PublicTransport_title">大眾運輸</string>
-    <string name="byking_function_AroundScenic_title">沿途景點</string>
-    <string name="byking_function_RoadList_title">路徑清單</string>
-    <string name="byking_function_TrackDownLoad_title">軌跡下載</string>
-    <string name="byking_function_Report_title">車友通報</string>
-    <string name="byking_function_traffic_upload_title">訊息上傳</string>
-    <string name="byking_function_traffic_update_title">訊息瀏覽</string>
-    <string name="transport_plan">轉乘規劃</string>
-
-    <!-- 景點書 -->
-    <string name="spoi_title">景點書</string>
-    <string name="spoi_select_title">請選擇景點</string>
-
-    <!-- Terminalogies -->
-    <string name="byking_term_poi">重要地標</string>
-    <string name="byking_term_search">搜尋</string>
-    <string name="byking_term_result">結果</string>
-    <string name="byking_term_locate">定位</string>
 
     <!-- Address Search -->
     <string name="address_search_city_prompt">請選擇縣市</string>
@@ -93,32 +44,6 @@
     <string name="address_search_no_result">查無地址資料，請返回重新查詢</string>
     <string name="address_search_no_locate">查無定位資訊，請選擇其他地址</string>
     <string name="address_search_result_options">定位完成，請選擇</string>
-
-    <!-- User Data -->
-    <string name="favorite_duplicate_poi_msg">重要地標已在我的最愛中</string>
-    <string name="favorite_duplicate_track_msg">軌跡已在我的最愛中</string>
-    <string name="favorite_add_success_msg">成功加入我的最愛</string>
-    <string name="favorite_add_fail_msg">加入失敗</string>
-    <string name="data_delete_fail_msg">刪除失敗</string>
-    <string name="data_delete_success_msg">刪除成功</string>
-    <string name="data_export_success_msg">匯出成功</string>
-    <string name="data_export_fail_msg">匯出失敗</string>
-    <string name="data_no_selection_msg">沒有選擇項目</string>
-    <string name="data_empty_msg">沒有項目</string>
-    <string name="data_delete_all_confirm_msg">確定刪除所有項目？</string>
-    <string name="data_delete_selection_confirm_msg">確定刪除選擇項目？</string>
-    <string name="data_not_install_yet">尚未安裝圖資，是否前往下載?</string>
-
-    <!-- POI Search -->
-    <string name="poi_search_method_prompt">請選擇查詢方式</string>
-    <string name="poi_search_category_prompt">請選擇類別</string>
-    <string name="poi_search_keyword_prompt">請輸入關鍵字</string>
-    <string name="poi_search_city_prompt">請選擇縣市</string>
-    <string name="poi_search_poiselection_prompt">請選擇景點</string>
-    <string name="poi_search_no_result">查無景點資料，請返回重新查詢</string>
-    <string name="poi_search_result_options">定位完成，請選擇</string>
-    <string name="poi_search_by_distance_no_result">無查詢結果。</string>
-    <string name="poi_search_location">地點查詢</string>
 
     <!-- Track Export Messages -->
     <string name="error_track_does_not_exist">軌跡不存在.</string>
@@ -174,17 +99,6 @@
     <string name="cell_infomation_end">End</string>
     <string name="cell_infomation_dash">" - "</string>
     <string name="information_title">活動訊息</string>
-
-    <!-- 訊息詳細 -->
-    <string name="infomation_detail_title">詳細內容</string>
-    <string name="infomation_detail_name">Name</string>
-    <string name="infomation_detail_img">detail_image</string>
-    <string name="infomation_detail_description">description</string>
-    <string name="facebook_share">shareToFacebook</string>
-    <string name="share">分享</string>
-    <string name="infomation_detail_location">地址：</string>
-    <string name="infomation_detail_start_time">起始時間：</string>
-    <string name="infomation_detail_end_time">結束時間：</string>
 
     <!-- Facebook id -->
     <string name="app_id">332790266863951</string>
@@ -303,6 +217,7 @@
     <string name="rating_completed">評分完成！</string>
     <string name="google_maps_is_not_installed">Google Maps is not installed!</string>
     <string name="confirm_to_exit">再按一次Back離開程式</string>
+    <string name="data_has_not_installed_yet">圖資尚未安裝</string>
 
     <!-- Permission Request -->
     <string name="location_permission_rationale_title">允許裝置存取目前位置</string>

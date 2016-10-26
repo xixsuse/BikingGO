@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.kingwaytek.cpami.bykingTablet.app.widget.TransitOverviewLayout
+    <com.kingwaytek.cpami.biking.app.widget.TransitOverviewLayout
         android:id="@+id/transitOverviewLayoutWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

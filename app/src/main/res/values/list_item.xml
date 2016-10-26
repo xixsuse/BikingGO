@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<!-- Defined contents for ListView -->
 <resources>
-	<!-- Icons for global main menu -->
-	<integer-array name="main_menu_icon">
-		<item>@drawable/selection_menu_icon_address</item>
-		<item>@drawable/selection_menu_icon_spots</item>
-		<item>@drawable/selection_menu_icon_spots_book</item>
-		<item>@drawable/selection_menu_icon_gps_photo</item>
-		<item>@drawable/selection_menu_icon_cycling_tracks</item>
-		<item>@drawable/selection_menu_icon_my_favorite</item>
-		<item>@drawable/selection_menu_icon_share_position</item>
-		<item>@drawable/selection_menu_icon_public_transportation</item>
-		<item>@drawable/selection_menu_icon_record_search</item>
-		<item>@drawable/selection_menu_icon_traffic_condition</item>
-		<item>@drawable/selection_menu_icon_info</item>
-		<item>@drawable/selection_menu_icon_cycling_tracks</item>
-		<item>@drawable/selection_menu_icon_settings</item>
-	</integer-array>
 
 	<!-- Texts for global main menu -->
 	<string-array name="main_menu_text">

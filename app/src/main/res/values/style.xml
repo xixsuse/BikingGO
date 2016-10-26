@@ -98,7 +98,7 @@
         <!-- 拿掉標題 -->
         <item name="android:windowNoTitle">true</item>
         <!-- 背景透明 -->
-        <item name="android:windowBackground">@drawable/dialogshape2</item>
+        <item name="android:windowBackground">@null</item>
 
         <!-- 由 XML 設定 Dialog 視窗是否變暗 -->
         <item name="android:backgroundDimEnabled">true</item>
@@ -115,7 +115,7 @@
         <!-- 拿掉標題 -->
         <item name="android:windowNoTitle">true</item>
         <!-- 背景透明 -->
-        <item name="android:windowBackground">@drawable/dialogshape2</item>
+        <item name="android:windowBackground">@null</item>
 
         <!-- 由 XML 設定 Dialog 視窗是否變暗 -->
         <item name="android:backgroundDimEnabled">true</item>

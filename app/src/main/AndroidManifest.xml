@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kingwaytek.cpami.bykingTablet" >
-
-    <!--
-  package Name
-    平板  com.kingwaytek.cpami.bykingTabletPad
-    手機  com.kingwaytek.cpami.bykingTablet
-    -->
+    package="com.kingwaytek.cpami.biking" >
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -26,27 +20,14 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-
-    <!-- for 平板 -->
-    <!--
-    <uses-feature
-        android:name="android.hardware.telephony"
-        android:required="false" />
-    -->
-
-    <!-- for 手機板簡訊 -->
-    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <!-- For Google Map v2 -->
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <permission
-        android:name="com.kingwaytek.cpami.bykingTablet.permission.MAPS_RECEIVE"
+        android:name="com.kingwaytek.cpami.biking.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
     <!-- If using OpenGL ES version 2 -->
@@ -55,7 +36,7 @@
         android:required="true" />
 
     <application
-        android:name=".AppController"
+        android:name="com.kingwaytek.cpami.biking.AppController"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/app_launch_icon"
@@ -78,7 +59,7 @@
         <!-- ******************************* -->
 
         <activity
-            android:name=".app.StartupActivity"
+            android:name="com.kingwaytek.cpami.biking.app.StartupActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -89,512 +70,82 @@
         </activity>
 
         <activity
-            android:name=".app.AnnounceActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-
-        <activity
-            android:name=".app.MapActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-
-        <!-- 主畫面 -->
-        <activity
-            android:name=".app.MainActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.PreferenceActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.MapDownloadActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <service
-            android:name=".app.TrackRecordService"
-            android:exported="true"
-            android:icon="@drawable/icon"
-            android:process="com.kingwaytek.cpami.bykingTablet.app.trackRecordService" >
-        </service>
-
-        <receiver android:name=".app.HippoCustomIntentReceiver" >
-
-            <!-- 設定要捕捉的訊息名稱為HIPPO_ON_SERVICE_001 -->
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-                <!-- HIPPO_ON_SERVICE_001 -->
-                <!-- <category android:name="android.intent.category.HOME" /> -->
-
-            </intent-filter>
-        </receiver>
-
-        <activity android:name=".app.ShowDialog" />
-
-        <!-- 地址活動 -->
-        <activity
-            android:name=".app.address.CitySelection"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.address.TownSelection"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.address.RoadInput"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.address.RoadSelection"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.address.AddressContent"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- POI活動 -->
-        <activity
-            android:name=".app.poi.POIListView"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.poi.POISelectionView"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.poi.POIMethodSelection"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.poi.KeywordInput"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.poi.CitySelection"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- <activity android:name=".app.poi.POIContent"></activity> -->
-        <activity
-            android:name=".app.poi.POIMapContent"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.poi.SpoiContent"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.poi.SpoiCatalog"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- 軌跡活動 -->
-        <activity
-            android:name=".app.track.TrackListView"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.track.TrackTypeSelectionActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.track.TrackRecord"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- <activity android:name=".app.track.TrackContent"></activity> -->
-        <activity
-            android:name=".app.track.TrackMapContent"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.track.TrackDownLoad"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- 共用活動 -->
-        <activity
-            android:name=".view.UserDataListView"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- 我的最愛 -->
-        <activity
-            android:name=".app.MyFavorite"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- 查詢記錄 -->
-        <activity
-            android:name=".app.MyHistory"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- 分享SMS -->
-        <activity
-            android:name=".app.POI_SMS"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.SMSMapContent"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/generalTitleBarStyle" >
-        </activity>
-
-        <!-- 快速測試用 -->
-        <!-- activity android:name=".app.DbBench"></activity> -->
-        <!-- 設定 -->
-        <activity
-            android:name=".app.HealthManager"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.OperationSetting"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.VersionUpdate.Update"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.VersionUpdate.ConnectWeb"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.NaviSetting"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.About"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- GPS相片 -->
-        <activity
-            android:name=".app.PhotoGallery"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.ShowPhoto"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.UICamera"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-        <activity
-            android:name=".app.SMS"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/generalTitleBarStyle" >
-        </activity>
-
-        <!-- 大眾運輸 -->
-        <activity
-            android:name=".bus.PublicTransport"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".bus.PublicTransportList"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".bus.PublicTransportTable"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
-        <!-- 路徑規劃 -->
-        <activity
-            android:name=".app.RoadList"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-
-        <!-- 沿途景點 -->
-        <activity
-            android:name=".app.AroundScenic"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <!-- 路況回報更新 -->
-        <activity
-            android:name=".TrafficCondition.RoadCondition"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".TrafficCondition.Report"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".TrafficCondition.TrafficUpdate"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".TrafficCondition.TrafficDetail"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-
-        <!-- 活動資訊 -->
-        <activity
-            android:name=".app.Infomation.InformationActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!--    Removed by Vincent.
-        <activity
-            android:name=".app.Infomation.DetailActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-        -->
-
-        <!-- Ubike -->
-        <activity
-            android:name=".app.rentInfo.UbikeActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <!-- 租車資訊 -->
-        <activity
-            android:name=".app.rentInfo.RentInfoActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.rentInfo.RentStationActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.rentInfo.UbkieListActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.rentInfo.UbikeFavorAvtivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.rentInfo.ParkActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name="com.kingwaytek.cpmi.maptag.MapIconDescriptionActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
-
-        <activity
-            android:name=".app.ui.UiMainMapActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.UiMainMapActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".app.ui.poi.UiMyPoiListActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.poi.UiMyPoiListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.poi.UiMyPoiInfoActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.poi.UiMyPoiInfoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".app.ui.planning.UiMyPlanListActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiMyPlanListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.planning.UiMyPlanEditActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiMyPlanEditActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".app.ui.planning.UiMyPlanInfoActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiMyPlanInfoActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.planning.UiPlanDirectionMapActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiPlanDirectionMapActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".app.ui.report.UiReportActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.report.UiReportActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.events.UiEventListActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.events.UiEventListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.events.UiEventDetailActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.events.UiEventDetailActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.settings.UiSettingMenuActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.settings.UiSettingMenuActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.settings.UiAboutActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.settings.UiAboutActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.settings.UiHealthActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.settings.UiHealthActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.track.UiTrackListActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.track.UiTrackListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.track.UiTrackMapActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.track.UiTrackMapActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.planning.UiSharedListActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiSharedListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".app.ui.poi_book.UiPoiCityListActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.poi_book.UiPoiCityListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.ui.poi_book.UiPoiDetailActivity"
+            android:name="com.kingwaytek.cpami.biking.app.ui.poi_book.UiPoiDetailActivity"
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".app.service.TrackingService"
+            android:name="com.kingwaytek.cpami.biking.app.service.TrackingService"
             android:enabled="true"
             android:exported="true" />
 
