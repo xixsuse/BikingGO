@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '24.0.0'
+    buildToolsVersion "24.0.0"
     defaultConfig {
         applicationId "com.kingwaytek.cpami.biking"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 210
-        versionName "2.1.0"
+        versionCode 212
+        versionName "2.1.2"
     }
-    useLibrary 'org.apache.http.legacy'
+    //useLibrary 'org.apache.http.legacy'
     buildTypes {
         release {
             minifyEnabled false
@@ -37,7 +37,7 @@ android {
 dependencies {
     //compile project(':facebookSDK')
     compile project(':naviKingApi')
-    compile files('libs/apache-ant-zip-1.8.0.jar')
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.android.support:design:23.3.0'
@@ -46,9 +46,9 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
 
     /** For crawling Taipei YouBike data.
-    compile 'com.github.abola:crawler:1.0.3-1'
-    */
-
+     compile 'com.github.abola:crawler:1.0.3-1'
+     */
     /** This library already added in naviKingApi. */
     //compile 'asia.ivity.android:drag-sort-listview:1.0'
 }
+apply plugin: 'com.google.gms.google-services'

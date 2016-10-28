@@ -12,7 +12,7 @@ import com.kingwaytek.cpami.biking.app.model.ApiUrls;
 import com.kingwaytek.cpami.biking.app.model.CommonBundle;
 
 /**
- * The Base for fragments.
+ * The Basement for fragments.
  *
  * @author Vincent (2016/9/7)
  */

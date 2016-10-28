@@ -1,7 +1,9 @@
 package com.kingwaytek.cpami.biking.app.ui.fragment;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -9,6 +11,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.kingwaytek.cpami.biking.AppController;
 import com.kingwaytek.cpami.biking.R;
 import com.kingwaytek.cpami.biking.app.model.items.ItemsPathStep;
 import com.kingwaytek.cpami.biking.app.model.items.ItemsTransitOverview;
@@ -18,15 +22,19 @@ import com.kingwaytek.cpami.biking.app.ui.UiMainMapActivity;
 import com.kingwaytek.cpami.biking.app.web.WebAgent;
 import com.kingwaytek.cpami.biking.app.widget.TransitOverviewLayout;
 import com.kingwaytek.cpami.biking.app.widget.TransportationWidget;
+import com.kingwaytek.cpami.biking.callbacks.OnLocationChangedCallback;
 import com.kingwaytek.cpami.biking.utilities.JsonParser;
 import com.kingwaytek.cpami.biking.utilities.Utility;
 import com.kingwaytek.cpami.biking.utilities.adapter.PathStepsAdapter;
 import com.kingwaytek.cpami.biking.utilities.adapter.TransitStepAdapter;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /**
  * Created by vincent.chang on 2016/8/15.
  */
-public class UiDirectionModeFragment extends BaseFragment {
+public class UiDirectionModeFragment extends BaseFragment implements OnLocationChangedCallback {
 
     public static final int MODE_WALK = 1;
     public static final int MODE_TRANSIT = 2;
@@ -39,10 +47,12 @@ public class UiDirectionModeFragment extends BaseFragment {
 
     private TransitOverviewLayout overviewLayout;
     private ListView pathListView;
+    private TextView text_walkTotalTime;
     private ProgressBar loadingCircle;
     private Button transitConnectionRetryBtn;
     private TextView text_noSuggestion;
 
+    private PathStepsAdapter pathStepsAdapter;
     private TransitStepAdapter transitStepAdapter;
 
     private static class SingleInstance {
@@ -106,6 +116,7 @@ public class UiDirectionModeFragment extends BaseFragment {
             text_noSuggestion = (TextView) rootView.findViewById(R.id.text_noTransitSuggestion);
         }
         pathListView = (ListView) rootView.findViewById(R.id.pathListView);
+        text_walkTotalTime = (TextView) rootView.findViewById(R.id.text_totalWalkDuration);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.pathLoadingCircle);
     }
 
@@ -149,8 +160,56 @@ public class UiDirectionModeFragment extends BaseFragment {
     }
 
     private void getPathStepsInfo() {
-        pathListView.setAdapter(new PathStepsAdapter(getContext(), JsonParser.parseAnGetDirectionItems(jsonString), false));
-        showLoadingCircle(false);
+        Pair<ArrayList<ItemsPathStep>, String> pathItemPair = JsonParser.parseAndGetDirectionItems(jsonString);
+
+        if (pathItemPair != null) {
+            if (pathStepsAdapter == null)
+                pathStepsAdapter = new PathStepsAdapter(getContext(), pathItemPair.first, false);
+            else
+                pathStepsAdapter.refreshList(pathItemPair.first);
+
+            pathListView.setAdapter(pathStepsAdapter);
+            text_walkTotalTime.setText(pathItemPair.second);
+            showLoadingCircle(false);
+
+            receiveLocationCallback(((UiMainMapActivity) getContext()).getSelectedTabPosition() == 0);
+        }
+    }
+
+    public void receiveLocationCallback(boolean gettingReceive) {
+        if (AppController.getInstance().getLocationManager() != null) {
+            if (gettingReceive) {
+                AppController.getInstance().getLocationManager().setLocationCallback(this);
+                pathStepsAdapter.pointNearestSpot(true);
+            }
+            else {
+                AppController.getInstance().getLocationManager().removeLocationCallback();
+                pathStepsAdapter.pointNearestSpot(false);
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        ArrayList<Double> distanceList = new ArrayList<>();
+        ItemsPathStep stepItem;
+
+        for (int i = 0; i < pathStepsAdapter.getCount(); i++) {
+            LatLng from = new LatLng(location.getLatitude(), location.getLongitude());
+            stepItem = (ItemsPathStep) pathStepsAdapter.getItem(i);
+            LatLng to = new LatLng(stepItem.START_LAT, stepItem.START_LNG);
+            distanceList.add(Utility.getDistance(from, to));
+        }
+        int nearestIndex = distanceList.indexOf(Collections.min(distanceList));
+        pathStepsAdapter.setSelectedItem(nearestIndex);
+
+        stepItem = (ItemsPathStep) pathStepsAdapter.getItem(nearestIndex);
+        ((UiMainMapActivity) getContext()).drawStepHighlight(stepItem.POLY_LINE, 0);
+
+        if (nearestIndex < pathStepsAdapter.getCount())
+            pathListView.smoothScrollToPosition(nearestIndex);
+
+        Log.i(TAG, "distanceArray: " + distanceList.toString() + "\nNearestIndex: " + nearestIndex);
     }
 
     public void updateData(String updateString) {

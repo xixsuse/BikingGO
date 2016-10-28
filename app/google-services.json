@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "253128568847",
+    "project_id": "api-project-253128568847"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253128568847:android:68a0f1742604eeff",
+        "android_client_info": {
+          "package_name": "com.kingwaytek.cpami.biking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9qRSPGDHQ1ks3k4wDILK5UZumhF-zLaM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-86480223-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

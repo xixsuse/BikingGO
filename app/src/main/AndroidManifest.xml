@@ -4,16 +4,12 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
-    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_OWNER_DATA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -36,12 +32,10 @@
         android:required="true" />
 
     <application
-        android:name="com.kingwaytek.cpami.biking.AppController"
+        android:name=".AppController"
         android:allowBackup="true"
-        android:hardwareAccelerated="true"
         android:icon="@mipmap/app_launch_icon"
         android:label="@string/app_name"
-        android:screenOrientation="portrait"
         android:theme="@style/AppTheme" >
 
         <meta-data
@@ -59,93 +53,97 @@
         <!-- ******************************* -->
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.StartupActivity"
-            android:configChanges="orientation|screenSize"
+            android:name=".app.StartupActivity"
+            android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.UiMainMapActivity"
+            android:name=".app.ui.UiTutorialActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.poi.UiMyPoiListActivity"
+            android:name=".app.ui.UiMainMapActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+            android:name=".app.ui.poi.UiMyPoiListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.poi.UiMyPoiInfoActivity"
+            android:name=".app.ui.poi.UiMyPoiInfoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiMyPlanListActivity"
+            android:name=".app.ui.planning.UiMyPlanListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiMyPlanEditActivity"
+            android:name=".app.ui.planning.UiMyPlanEditActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiMyPlanInfoActivity"
+            android:name=".app.ui.planning.UiMyPlanInfoActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiPlanDirectionMapActivity"
+            android:name=".app.ui.planning.UiPlanDirectionMapActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.report.UiReportActivity"
+            android:name=".app.ui.report.UiReportActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.events.UiEventListActivity"
+            android:name=".app.ui.events.UiEventListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.events.UiEventDetailActivity"
+            android:name=".app.ui.events.UiEventDetailActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.settings.UiSettingMenuActivity"
+            android:name=".app.ui.settings.UiSettingMenuActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.settings.UiAboutActivity"
+            android:name=".app.ui.settings.UiAboutActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.settings.UiHealthActivity"
+            android:name=".app.ui.settings.UiHealthActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.track.UiTrackListActivity"
+            android:name=".app.ui.track.UiTrackListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.track.UiTrackMapActivity"
+            android:name=".app.ui.track.UiTrackMapActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.planning.UiSharedListActivity"
+            android:name=".app.ui.planning.UiSharedListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.poi_book.UiPoiCityListActivity"
+            android:name=".app.ui.poi_book.UiPoiCityListActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kingwaytek.cpami.biking.app.ui.poi_book.UiPoiDetailActivity"
+            android:name=".app.ui.poi_book.UiPoiDetailActivity"
             android:screenOrientation="portrait" />
 
         <service
-            android:name="com.kingwaytek.cpami.biking.app.service.TrackingService"
+            android:name=".app.service.TrackingService"
             android:enabled="true"
             android:exported="true" />
 

@@ -1,19 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/walkTotalTimeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/padding_size_l"
+        android:paddingStart="@dimen/padding_size_l"
+        android:paddingRight="@dimen/padding_size_l"
+        android:paddingEnd="@dimen/padding_size_l"
+        android:paddingTop="@dimen/padding_size_m"
+        android:paddingBottom="@dimen/padding_size_m">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/walk_total_duration"
+            android:textStyle="bold"
+            android:textColor="@color/md_grey_900"
+            android:textSize="@dimen/font_text_size_s"/>
+
+        <TextView
+            android:id="@+id/text_totalWalkDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textStyle="bold"
+            android:textColor="@color/md_grey_900"
+            android:textSize="@dimen/font_text_size_s"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="@dimen/padding_size_l"
+        android:layout_marginStart="@dimen/padding_size_l"
+        android:layout_marginRight="@dimen/padding_size_l"
+        android:layout_marginEnd="@dimen/padding_size_l"
+        android:background="@color/md_grey_300"
+        android:layout_below="@+id/walkTotalTimeLayout"/>
+
     <ListView
         android:id="@+id/pathListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/walkTotalTimeLayout"/>
 
     <ProgressBar
         android:id="@+id/pathLoadingCircle"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_centerInParent="true"/>
 
-</FrameLayout>
+</RelativeLayout>

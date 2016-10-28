@@ -2,6 +2,7 @@ package com.kingwaytek.cpami.biking.utilities;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.biking.AppController;
@@ -267,9 +268,11 @@ public class JsonParser {
         }
     }
 
-    public static ArrayList<ItemsPathStep> parseAnGetDirectionItems(String jsonString) {
+    public static Pair<ArrayList<ItemsPathStep>, String> parseAndGetDirectionItems(String jsonString) {
         try {
             ArrayList<ItemsPathStep> dirItemList = new ArrayList<>();
+
+            String totalTime;
 
             String distance;
             String duration;
@@ -283,7 +286,10 @@ public class JsonParser {
             JO = new JSONObject(jsonString);
             JA = JO.getJSONArray("routes");
             JSONObject route = JA.getJSONObject(0);
-            JSONArray stepArr = route.getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+            JSONObject jo_leg = route.getJSONArray("legs").getJSONObject(0);
+            JSONArray stepArr = jo_leg.getJSONArray("steps");
+
+            totalTime = jo_leg.getJSONObject("duration").getString("text");
 
             for (int i = 0; i < stepArr.length(); i++) {
                 JSONObject singleStep = stepArr.getJSONObject(i);
@@ -303,7 +309,7 @@ public class JsonParser {
 
             releaseObjects();
 
-            return dirItemList;
+            return new Pair<>(dirItemList, totalTime);
         }
         catch (JSONException e) {
             e.printStackTrace();

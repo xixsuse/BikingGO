@@ -87,7 +87,7 @@ public class StartupActivity extends Activity {
 
         transparentView.setVisibility(View.VISIBLE);
         announceLayout.setVisibility(View.VISIBLE);
-
+/*
         final float scale = this.getResources().getDisplayMetrics().density;
 
         checkbox.setPadding(
@@ -96,7 +96,7 @@ public class StartupActivity extends Activity {
                 checkbox.getPaddingRight(),
                 checkbox.getPaddingBottom()
         );
-
+*/
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +107,7 @@ public class StartupActivity extends Activity {
     }
 
     private void goToMain() {
+        closeAllLayerFlag();
         startActivity(new Intent(this, UiMainMapActivity.class));
         finish();
     }
@@ -146,5 +147,14 @@ public class StartupActivity extends Activity {
         }
         else
             return keyCode == KeyEvent.KEYCODE_MENU;
+    }
+
+    private void closeAllLayerFlag() {
+        SettingManager.MapLayer.setCyclingLayer(false);
+        SettingManager.MapLayer.setTopTenLayer(false);
+        SettingManager.MapLayer.setRecommendedLayer(false);
+        SettingManager.MapLayer.setAllOfTaiwanLayer(false);
+        SettingManager.MapLayer.setRentStationLayer(false);
+        SettingManager.MapLayer.setYouBikeLayer(false);
     }
 }

@@ -1,11 +1,12 @@
 package com.kingwaytek.cpami.biking;
 
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -25,7 +26,7 @@ import com.kingwaytek.cpami.biking.utilities.SettingManager;
  *
  * @author Vincent (2016/4/14)
  */
-public class AppController extends Application {
+public class AppController extends MultiDexApplication {
 
     private static AppController appInstance;
     private MyLocationManager locationManager;
@@ -33,6 +34,12 @@ public class AppController extends Application {
 
     private RequestQueue mQueue;
     private ImageLoader imageLoader;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
@@ -65,6 +72,13 @@ public class AppController extends Application {
     public void removeLocationManager() {
         if (locationManager != null)
             locationManager.removeUpdate();
+    }
+
+    public MyLocationManager getLocationManager() {
+        if (locationManager != null)
+            return locationManager;
+        else
+            return null;
     }
 
     public void initTrackManager(long updateTime, float updateDistance, OnGpsLocateCallBack gpsCallBack) {

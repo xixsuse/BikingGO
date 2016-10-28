@@ -152,8 +152,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     public void onDestroy() {
         super.onDestroy();
         map.setOnMapLongClickListener(null);
-        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
-            closeAllLayerFlag();
     }
 
     private void checkIntentAndDoActions() {
@@ -1140,6 +1138,8 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         Log.i(TAG, "TabSelected!!! " + tab.getPosition());
         drawPolyline(tab.getPosition() == 0);
         pathListPager.setCurrentItem(tab.getPosition(), true);
+
+        pagerAdapter.getDirectionFragmentInstance(0).receiveLocationCallback(tab.getPosition() == 0);
     }
 
     @Override
@@ -1148,6 +1148,9 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
     @Override
     public void onTabReselected(TabLayout.Tab tab) {}
 
+    public int getSelectedTabPosition() {
+        return modeTab.getSelectedTabPosition();
+    }
 
     public void onPathStepClick(ItemsPathStep pathStepItem) {
         showMarkerButtonLayout(false, false);
@@ -1183,6 +1186,18 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
      * @param colorRes Set to 0 to using default color.
      */
     private void moveCameraAndDrawHighlight(LatLng location, String polyline, int colorRes) {
+        drawStepHighlight(polyline, colorRes);
+
+        if (colorRes == 0)
+            moveCameraAndZoom(location, 18);
+        else
+            moveCamera(location);
+    }
+
+    /**
+     * @param colorRes Set to 0 to using default color.
+     */
+    public void drawStepHighlight(String polyline, int colorRes) {
         ArrayList<LatLng> latLngList = PolyHelper.decodePolyLine(polyline);
 
         PolylineOptions polyLine = new PolylineOptions();
@@ -1207,11 +1222,6 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             highLightPoly.remove();
 
         highLightPoly = map.addPolyline(polyLine);
-
-        if (colorRes == 0)
-            moveCameraAndZoom(location, 18);
-        else
-            moveCamera(location);
     }
 
     /**

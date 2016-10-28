@@ -11,6 +11,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.kingwaytek.cpami.biking.AppController;
 import com.kingwaytek.cpami.biking.callbacks.OnGpsLocateCallBack;
+import com.kingwaytek.cpami.biking.callbacks.OnLocationChangedCallback;
 import com.kingwaytek.cpami.biking.utilities.SettingManager;
 import com.kingwaytek.cpami.biking.utilities.TrackingFileUtil;
 import com.kingwaytek.cpami.biking.utilities.Utility;
@@ -47,6 +48,8 @@ public class MyLocationManager implements LocationListener {
     private boolean isGpsLocated;
     private Location lastLocation;
     private static final float TRACKING_MINI_DISTANCE = 8;
+
+    private OnLocationChangedCallback locationCallback;
 
     private static Context appContext() {
         return AppController.getInstance().getAppContext();
@@ -206,6 +209,14 @@ public class MyLocationManager implements LocationListener {
                 getLocationManager().isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
+    public void setLocationCallback(OnLocationChangedCallback locationCallback) {
+        this.locationCallback = locationCallback;
+    }
+
+    public void removeLocationCallback() {
+        this.locationCallback = null;
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         Log.i(TAG, "onLocationChanged!!!");
@@ -240,6 +251,9 @@ public class MyLocationManager implements LocationListener {
 
         if (isTrackingMode)
             tracking(location);
+
+        if (locationCallback != null)
+            locationCallback.onLocationChanged(location);
     }
 
     @Override

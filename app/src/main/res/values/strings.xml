@@ -389,7 +389,7 @@
     <!-- Tracking -->
     <string name="track_gps_locating">GPS定位中&#8230;</string>
     <string name="track_gps_locate_done">GPS定位完成！</string>
-    <string name="track_waiting_for_gps_located">GPS尚未定未完成，請稍候</string>
+    <string name="track_waiting_for_gps_located">GPS尚未定位完成，請稍候</string>
     <string name="track_tracking_right_now">軌跡錄製中..</string>
     <string name="track_confirm_to_override">是否要覆寫尚未儲存的軌跡記錄?</string>
     <string name="track_name">軌跡名稱：</string>
@@ -425,6 +425,7 @@
     <string name="transit_fare">費用：%s</string>
     <string name="transit_connection_retry">重試</string>
     <string name="transit_no_suggestion">無大眾運輸方案</string>
+    <string name="walk_total_duration">總步行時間：</string>
 
     <string-array name="dialog_photo_menu">
         <item>@string/dialog_menu_photo_from_camera</item>

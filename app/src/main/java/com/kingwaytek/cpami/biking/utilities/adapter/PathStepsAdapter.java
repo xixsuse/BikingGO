@@ -24,6 +24,7 @@ public class PathStepsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
     private boolean lightText;
+    private boolean highlightNearest;
     private int selectedItem;
 
     public PathStepsAdapter(Context context, ArrayList<ItemsPathStep> pathStepList, boolean lightText) {
@@ -32,9 +33,18 @@ public class PathStepsAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(context);
     }
 
+    public void refreshList(ArrayList<ItemsPathStep> pathStepList) {
+        this.pathStepList = pathStepList;
+        notifyDataSetChanged();
+    }
+
     public void setSelectedItem(int position) {
         this.selectedItem = position;
         notifyDataSetChanged();
+    }
+
+    public void pointNearestSpot(boolean highlightNearest) {
+        this.highlightNearest = highlightNearest;
     }
 
     @Override
@@ -82,7 +92,7 @@ public class PathStepsAdapter extends BaseAdapter {
 
         holder.goOnPath.setText(Html.fromHtml(pathStepList.get(position).GO_ON_PATH));
 
-        if (position == selectedItem && lightText)
+        if (position == selectedItem && (lightText || highlightNearest))
             convertView.setBackgroundColor(ContextCompat.getColor(AppController.getInstance().getAppContext(), R.color.transparent_crystal_light));
         else
             convertView.setBackgroundColor(0);

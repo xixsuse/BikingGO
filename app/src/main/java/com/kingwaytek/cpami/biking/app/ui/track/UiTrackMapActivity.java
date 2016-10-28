@@ -429,9 +429,9 @@ public class UiTrackMapActivity extends BaseMapActivity {
         if (notNull(tempPolyline))
             tempPolyline.remove();
 
-        LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
-
         SettingManager.TrackingTimeAndLayer.clearStartTime();
+
+        LocalBroadcastManager.getInstance(appContext()).sendBroadcast(intent);
     }
 
     private void sendStopRequest(Intent intent) {
