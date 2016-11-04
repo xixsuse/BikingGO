@@ -46,6 +46,7 @@ import com.kingwaytek.cpami.biking.app.service.TrackingService;
 import com.kingwaytek.cpami.biking.app.ui.BaseMapActivity;
 import com.kingwaytek.cpami.biking.app.web.WebAgent;
 import com.kingwaytek.cpami.biking.hardware.MyLocationManager;
+import com.kingwaytek.cpami.biking.utilities.DebugHelper;
 import com.kingwaytek.cpami.biking.utilities.DialogHelper;
 import com.kingwaytek.cpami.biking.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.biking.utilities.JsonParser;
@@ -507,7 +508,20 @@ public class UiTrackMapActivity extends BaseMapActivity {
     }
 
     private long getTrackingDuration() {
-        return SettingManager.TrackingTimeAndLayer.getEndTime() - SettingManager.TrackingTimeAndLayer.getStartTime();
+        long endTime = SettingManager.TrackingTimeAndLayer.getEndTime();
+        long startTime = SettingManager.TrackingTimeAndLayer.getStartTime();
+
+        if (endTime < startTime) {
+            Utility.toastLong(getString(R.string.track_using_file_last_modified_date));
+            endTime = TrackingFileUtil.getTrackingFileLastModifiedDate();
+        }
+
+        if (endTime == 0 || endTime < startTime) {
+            Utility.toastLong(getString(R.string.track_unable_to_get_duration));
+            return 0;
+        }
+        else
+            return endTime - startTime;
     }
 
     private void gettingReceive() {
@@ -710,7 +724,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                 switch ((int)buttonView.getTag()) {
 
                     case R.id.switch_layer_cycling_1:
-                        if (isChecked)
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS)
                             switch_layerAllOfTaiwan.setChecked(false);
 
                         switch_layerCycling.setChecked(checked);
@@ -718,7 +732,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                         break;
 
                     case R.id.switch_layer_top_ten:
-                        if (isChecked)
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS)
                             switch_layerAllOfTaiwan.setChecked(false);
 
                         switch_layerTopTen.setChecked(checked);
@@ -726,7 +740,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                         break;
 
                     case R.id.switch_layer_recommended:
-                        if (isChecked)
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS)
                             switch_layerAllOfTaiwan.setChecked(false);
 
                         switch_layerRecommended.setChecked(checked);
@@ -734,7 +748,7 @@ public class UiTrackMapActivity extends BaseMapActivity {
                         break;
 
                     case R.id.switch_layer_all_of_taiwan:
-                        if (checked) {
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS) {
                             switch_layerCycling.setChecked(false);
                             switch_layerTopTen.setChecked(false);
                             switch_layerRecommended.setChecked(false);

@@ -14,11 +14,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -38,11 +41,13 @@ import com.kingwaytek.cpami.biking.app.model.items.ItemsPlans;
 import com.kingwaytek.cpami.biking.app.ui.BaseGoogleApiActivity;
 import com.kingwaytek.cpami.biking.app.web.WebAgent;
 import com.kingwaytek.cpami.biking.utilities.BitmapUtility;
+import com.kingwaytek.cpami.biking.utilities.DebugHelper;
 import com.kingwaytek.cpami.biking.utilities.DialogHelper;
 import com.kingwaytek.cpami.biking.utilities.JsonParser;
 import com.kingwaytek.cpami.biking.utilities.MenuHelper;
 import com.kingwaytek.cpami.biking.utilities.PolyHelper;
 import com.kingwaytek.cpami.biking.utilities.PopWindowHelper;
+import com.kingwaytek.cpami.biking.utilities.SettingManager;
 import com.kingwaytek.cpami.biking.utilities.Utility;
 import com.kingwaytek.cpami.biking.utilities.adapter.PathListPagerAdapter;
 import com.kingwaytek.cpami.biking.utilities.adapter.PathStepsAdapter;
@@ -88,20 +93,22 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        registerPreferenceChangedListener();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        unRegisterPreferenceChangedListener();
+    }
+
+    @Override
     protected void findViews() {
         super.findViews();
         planTitleLayout = (LinearLayout) findViewById(R.id.planTitleLayout);
         text_planTitle = (TextView) findViewById(R.id.text_planTitle);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (notNull(pathListPager)) {
-            pathListPager.removeOnPageChangeListener(this);
-            pathListView.setOnItemClickListener(null);
-        }
-        planItem = null;
     }
 
     @Override
@@ -119,7 +126,9 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
     public void onInfoWindowClick(Marker marker) {}
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {}
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        setLayersByPrefKey(key);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,6 +155,10 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
 
             case ACTION_LIKE:
                 showRatingWindow();
+                break;
+
+            case ACTION_SWITCH:
+                showSwitchPopView();
                 break;
         }
 
@@ -552,6 +565,96 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         });
     }
 
+    private void showSwitchPopView() {
+        View view = PopWindowHelper.getMarkerSwitchWindowView(mapRootLayout, true);
+
+        final Switch switch_layerCycling = (Switch) view.findViewById(R.id.switch_layer_cycling_1);
+        final Switch switch_layerTopTen = (Switch) view.findViewById(R.id.switch_layer_top_ten);
+        final Switch switch_layerRecommended = (Switch) view.findViewById(R.id.switch_layer_recommended);
+        final Switch switch_layerAllOfTaiwan = (Switch) view.findViewById(R.id.switch_layer_all_of_taiwan);
+
+        final ImageButton closeBtn = (ImageButton) view.findViewById(R.id.switchWindowCloseBtn);
+
+        switch_layerCycling.setChecked(SettingManager.TrackingTimeAndLayer.getCyclingLayer());
+        switch_layerTopTen.setChecked(SettingManager.TrackingTimeAndLayer.getTopTenLayer());
+        switch_layerRecommended.setChecked(SettingManager.TrackingTimeAndLayer.getRecommendedLayer());
+        switch_layerAllOfTaiwan.setChecked(SettingManager.TrackingTimeAndLayer.getAllOfTaiwanLayer());
+
+        switch_layerCycling.setTag(switch_layerCycling.getId());
+        switch_layerTopTen.setTag(switch_layerTopTen.getId());
+        switch_layerRecommended.setTag(switch_layerRecommended.getId());
+        switch_layerAllOfTaiwan.setTag(switch_layerAllOfTaiwan.getId());
+
+        CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                boolean checked = isLayerChanging() != isChecked;
+
+                switch ((int)buttonView.getTag()) {
+
+                    case R.id.switch_layer_cycling_1:
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS)
+                            switch_layerAllOfTaiwan.setChecked(false);
+
+                        switch_layerCycling.setChecked(checked);
+                        SettingManager.TrackingTimeAndLayer.setCyclingLayer(checked);
+                        break;
+
+                    case R.id.switch_layer_top_ten:
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS)
+                            switch_layerAllOfTaiwan.setChecked(false);
+
+                        switch_layerTopTen.setChecked(checked);
+                        SettingManager.TrackingTimeAndLayer.setTopTenLayer(checked);
+                        break;
+
+                    case R.id.switch_layer_recommended:
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS)
+                            switch_layerAllOfTaiwan.setChecked(false);
+
+                        switch_layerRecommended.setChecked(checked);
+                        SettingManager.TrackingTimeAndLayer.setRecommendedLayer(checked);
+                        break;
+
+                    case R.id.switch_layer_all_of_taiwan:
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS) {
+                            switch_layerCycling.setChecked(false);
+                            switch_layerTopTen.setChecked(false);
+                            switch_layerRecommended.setChecked(false);
+                        }
+                        switch_layerAllOfTaiwan.setChecked(checked);
+                        SettingManager.TrackingTimeAndLayer.setAllOfTaiwanLayer(checked);
+                        break;
+                }
+            }
+        };
+
+        switch_layerCycling.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerTopTen.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerRecommended.setOnCheckedChangeListener(checkedChangeListener);
+        switch_layerAllOfTaiwan.setOnCheckedChangeListener(checkedChangeListener);
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopWindowHelper.dismissPopWindow();
+
+                switch_layerCycling.setOnCheckedChangeListener(null);
+                switch_layerTopTen.setOnCheckedChangeListener(null);
+                switch_layerRecommended.setOnCheckedChangeListener(null);
+                switch_layerAllOfTaiwan.setOnCheckedChangeListener(null);
+                closeBtn.setOnClickListener(null);
+            }
+        });
+    }
+
+    private void closeAllLayerFlag() {
+        SettingManager.TrackingTimeAndLayer.setCyclingLayer(false);
+        SettingManager.TrackingTimeAndLayer.setTopTenLayer(false);
+        SettingManager.TrackingTimeAndLayer.setRecommendedLayer(false);
+        SettingManager.TrackingTimeAndLayer.setAllOfTaiwanLayer(false);
+    }
+
     @Override
     public void onBackPressed() {
         if (PopWindowHelper.isPopWindowShowing()) {
@@ -561,5 +664,16 @@ public class UiPlanDirectionMapActivity extends BaseGoogleApiActivity implements
         }
         else
             super.onBackPressed();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (notNull(pathListPager)) {
+            pathListPager.removeOnPageChangeListener(this);
+            pathListView.setOnItemClickListener(null);
+        }
+        closeAllLayerFlag();
+        planItem = null;
     }
 }

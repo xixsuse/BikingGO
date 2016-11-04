@@ -99,8 +99,11 @@ public class UiMyPlanEditActivity extends BaseActivity {
     private void setPlanIfExists() {
         PLAN_EDIT_INDEX = getIntent().getIntExtra(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX_A_NEW_ONE);
 
+        edit_planTitle.setSingleLine();
+        edit_planTitle.setImeOptions(EditorInfo.IME_ACTION_NONE);
+
         if (PLAN_EDIT_INDEX != PLAN_EDIT_INDEX_A_NEW_ONE) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
             ItemsPlans planAndItems = DataArray.getPlansData().get(PLAN_EDIT_INDEX);
 
@@ -109,7 +112,7 @@ public class UiMyPlanEditActivity extends BaseActivity {
         }
         else {
             edit_planTitle.requestFocus();
-            edit_planTitle.setImeOptions(EditorInfo.IME_ACTION_NONE);
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
     }
 
@@ -285,6 +288,9 @@ public class UiMyPlanEditActivity extends BaseActivity {
                 }
                 else {
                     FavoriteHelper.updatePlan(PLAN_EDIT_INDEX, getPlanTitle(), Utility.getCurrentTimeInFormat(), ja);
+                    Intent intent = new Intent();
+                    intent.putExtra(BUNDLE_PLAN_NAME, getPlanTitle());
+                    setResult(RESULT_OK, intent);
                     finish();
                 }
             }
@@ -302,5 +308,9 @@ public class UiMyPlanEditActivity extends BaseActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    public void hideSoftKeyboard() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 }

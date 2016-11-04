@@ -186,20 +186,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/track_description"
-                android:textColor="@color/md_grey_600"/>
-
-            <TextView
-                android:id="@+id/text_trackDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_size_s"
-                android:layout_marginBottom="@dimen/padding_size_m"
-                android:textColor="@color/md_grey_900"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/track_length"
                 android:textColor="@color/md_grey_600"/>
 
@@ -236,7 +222,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_size_s"
-                android:layout_marginBottom="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_m"
+                android:textColor="@color/md_grey_900"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/track_description"
+                android:textColor="@color/md_grey_600"/>
+
+            <TextView
+                android:id="@+id/text_trackDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_size_s"
+                android:layout_marginBottom="@dimen/padding_size_m"
                 android:textColor="@color/md_grey_900"/>
 
         </LinearLayout>

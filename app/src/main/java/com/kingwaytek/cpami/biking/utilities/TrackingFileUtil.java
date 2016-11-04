@@ -150,6 +150,10 @@ public class TrackingFileUtil {
         return null;
     }
 
+    public static long getTrackingFileLastModifiedDate() {
+        return isTrackingFileContainsData() ? locationTrackFile.lastModified() : 0;
+    }
+
     public static void writeTrackFile(String jsonString) {
         File trackFile = new File(sdPath, AppController.getInstance().getString(R.string.file_path_track_saved));
 

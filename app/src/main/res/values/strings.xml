@@ -154,9 +154,10 @@
     <string name="announce_title">軟體使用聲明</string>
     <string name="announce_warning">提醒您，騎乘自行車時請注意交通安全並務必遵守交通法規及交通標誌。</string>
     <string name="announce_description">下載或安裝使用本應用程式，即表示您同意以下聲明：</string>
-    <string name="announce_description1">本應用程式規劃路徑資訊僅供參考，建議仍須根據實際道路或地點狀況進行判斷。</string>
-    <string name="announce_description2">若因個人行為引致行動裝置損害或資料遺失，責任須自行承擔。</string>
-    <string name="announce_description3">本應用程式使用GPS定位技術，GPS定位結果可能因天候或使用地點有所影響，因此GPS定位僅供參考，使用GPS錄製軌跡時請注意在背景中持續使用GPS可能會減短電池壽命。</string>
+    <string name="announce_description1">本應用程式路徑規劃提供步行及大眾運輸結果，自行車路線使用規劃上若有疑義請向內政部營建署反應。</string>
+    <string name="announce_description2">本應用程式規劃路徑資訊僅供參考，建議仍須根據實際道路或地點狀況進行判斷。</string>
+    <string name="announce_description3">若因個人行為引致行動裝置損害或資料遺失，責任須自行承擔。</string>
+    <string name="announce_description4">本應用程式使用GPS定位技術，GPS定位結果可能因天候或使用地點有所影響，因此GPS定位僅供參考，使用GPS錄製軌跡時請注意在背景中持續使用GPS可能會減短電池壽命。</string>
     <string name="announce_btn">確定</string>
     <string name="announce_check">下次不再顯示</string>
 
@@ -295,6 +296,7 @@
     <string name="poi_add_a_new_one_instruction">可從附近景點、地點搜尋或在地圖上長按新增點位來新增景點。</string>
     <string name="poi_select_this_point">選擇此點位</string>
     <string name="poi_edit_this_point">編輯此點位</string>
+    <string name="poi_edit_spot_title">編輯點位名稱</string>
 
     <string name="dialog_menu_photo_from_camera">相機</string>
     <string name="dialog_menu_photo_from_gallery">從相簿選擇</string>
@@ -415,6 +417,8 @@
     <string name="track_average_speed_per_hour">%s\t公里/小時</string>
     <string name="track_distance_meters">%s\t公尺</string>
     <string name="track_distance_kilometers">%s\t公里</string>
+    <string name="track_using_file_last_modified_date">Using the last modified date of temp file.</string>
+    <string name="track_unable_to_get_duration">無法取得騎乘時間！</string>
 
     <!-- Transit -->
     <string name="transit_my_location">您的位置</string>

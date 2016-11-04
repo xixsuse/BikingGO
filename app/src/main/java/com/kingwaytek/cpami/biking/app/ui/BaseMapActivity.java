@@ -97,7 +97,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
     private TextView polylineLocation;
     private TextView polylineDescription;
 
-    protected RelativeLayout polylineInfoLayout;
+    private RelativeLayout polylineInfoLayout;
 
     protected MapLayerHandler layerHandler;
     private static final String NAME_OF_HANDLER_THREAD = "LayerHandlerThread";
@@ -130,7 +130,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
     @Override
     protected void findViews() {
-        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT || ENTRY_TYPE == ENTRY_TYPE_TRACKING) {
+        if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT || ENTRY_TYPE == ENTRY_TYPE_TRACKING || ENTRY_TYPE == ENTRY_TYPE_DIRECTIONS) {
             if (getMapLayout() == R.layout.activity_main_map)
                 uBikeRefreshBtn = (ImageButton) findViewById(R.id.uBikeRefreshBtn);
 
@@ -536,11 +536,13 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
 
         boolean isLayerAdded;
 
+        Log.i(TAG, "key: " + key + " ENTRY_TYPE: " + ENTRY_TYPE);
+
         switch (key) {
             case SettingManager.PREFS_LAYER_CYCLING_1:
             case SettingManager.TrackingTimeAndLayer.PREFS_TRACK_MAP_LAYER_CYCLING_1:
 
-                if (getMapLayout() == R.layout.activity_main_map)
+                if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
                     isLayerAdded = SettingManager.MapLayer.getCyclingLayer();
                 else
                     isLayerAdded = SettingManager.TrackingTimeAndLayer.getCyclingLayer();
@@ -558,7 +560,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             case SettingManager.PREFS_LAYER_TOP_TEN:
             case SettingManager.TrackingTimeAndLayer.PREFS_TRACK_MAP_LAYER_TOP_TEN:
 
-                if (getMapLayout() == R.layout.activity_main_map)
+                if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
                     isLayerAdded = SettingManager.MapLayer.getTopTenLayer();
                 else
                     isLayerAdded = SettingManager.TrackingTimeAndLayer.getTopTenLayer();
@@ -575,7 +577,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             case SettingManager.PREFS_LAYER_RECOMMENDED:
             case SettingManager.TrackingTimeAndLayer.PREFS_TRACK_MAP_LAYER_RECOMMENDED:
 
-                if (getMapLayout() == R.layout.activity_main_map)
+                if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
                     isLayerAdded = SettingManager.MapLayer.getRecommendedLayer();
                 else
                     isLayerAdded = SettingManager.TrackingTimeAndLayer.getRecommendedLayer();
@@ -592,7 +594,7 @@ public abstract class BaseMapActivity extends BaseActivity implements OnMapReady
             case SettingManager.PREFS_LAYER_ALL_OF_TAIWAN:
             case SettingManager.TrackingTimeAndLayer.PREFS_TRACK_MAP_LAYER_ALL_OF_TAIWAN:
 
-                if (getMapLayout() == R.layout.activity_main_map)
+                if (ENTRY_TYPE == ENTRY_TYPE_DEFAULT)
                     isLayerAdded = SettingManager.MapLayer.getAllOfTaiwanLayer();
                 else
                     isLayerAdded = SettingManager.TrackingTimeAndLayer.getAllOfTaiwanLayer();

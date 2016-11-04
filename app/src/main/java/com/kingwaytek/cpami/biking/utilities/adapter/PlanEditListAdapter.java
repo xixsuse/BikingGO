@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.kingwaytek.cpami.biking.R;
 import com.kingwaytek.cpami.biking.app.model.items.ItemsPlanItem;
 import com.kingwaytek.cpami.biking.app.ui.planning.UiMyPlanEditActivity;
+import com.kingwaytek.cpami.biking.utilities.DialogHelper;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,9 @@ public class PlanEditListAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<ItemsPlanItem> planItemList;
     private LayoutInflater inflater;
+
+    private View.OnClickListener planSelectClick;
+    private View.OnLongClickListener planLongClick;
 
     public PlanEditListAdapter(Context context, ArrayList<ItemsPlanItem> planItemList) {
         this.context = context;
@@ -99,7 +103,9 @@ public class PlanEditListAdapter extends BaseAdapter {
             holder.planNumberLine_up.setVisibility(View.VISIBLE);
 
         holder.planSelectedName.setText(planItemList.get(position).TITLE);
-        holder.planSelectedName.setOnClickListener(getPlanSelectClick(position));
+        holder.planSelectedName.setTag(position);
+        holder.planSelectedName.setOnClickListener(getPlanSelectClick());
+        holder.planSelectedName.setOnLongClickListener(getLongClick());
 
         return convertView;
     }
@@ -114,13 +120,36 @@ public class PlanEditListAdapter extends BaseAdapter {
         };
     }
 
-    private View.OnClickListener getPlanSelectClick(final int position) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((UiMyPlanEditActivity) context).selectPlanItem(position);
-            }
-        };
+    private View.OnClickListener getPlanSelectClick() {
+        if (planSelectClick == null) {
+            planSelectClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((UiMyPlanEditActivity) context).selectPlanItem((int)v.getTag());
+                }
+            };
+        }
+        return planSelectClick;
+    }
+
+    private View.OnLongClickListener getLongClick() {
+        if (planLongClick == null) {
+            planLongClick = new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    final int index = (int) v.getTag();
+                    DialogHelper.showSpotTitleEditDialog(context, planItemList.get(index).TITLE, true, new DialogHelper.OnSpotTitleConfirmCallback() {
+                        @Override
+                        public void onSpotTitleConfirm(String title) {
+                            planItemList.get(index).setTitle(title);
+                            notifyDataSetChanged();
+                        }
+                    });
+                    return true;
+                }
+            };
+        }
+        return planLongClick;
     }
 
     private class ViewHolder {

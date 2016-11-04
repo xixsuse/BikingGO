@@ -177,7 +177,7 @@ public class UiDirectionModeFragment extends BaseFragment implements OnLocationC
     }
 
     public void receiveLocationCallback(boolean gettingReceive) {
-        if (AppController.getInstance().getLocationManager() != null) {
+        if (pathStepsAdapter != null && AppController.getInstance().getLocationManager() != null) {
             if (gettingReceive) {
                 AppController.getInstance().getLocationManager().setLocationCallback(this);
                 pathStepsAdapter.pointNearestSpot(true);

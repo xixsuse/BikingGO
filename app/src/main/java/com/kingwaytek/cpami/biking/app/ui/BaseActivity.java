@@ -242,7 +242,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Actionba
                 break;
 
             case ENTRY_TYPE_DIRECTIONS:
-                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_LIST);
+                MenuHelper.setMenuOptionsByMenuAction(menu, ACTION_SWITCH, ACTION_LIST);
                 break;
         }
 

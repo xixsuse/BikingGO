@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:padding="@dimen/padding_size_xl">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_track_window"
+        android:paddingTop="@dimen/padding_size_xl"
+        android:paddingBottom="@dimen/padding_size_m"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/padding_size_m"
+            android:text="@string/poi_edit_spot_title"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/edit_spotTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_size_m"
+            android:layout_marginStart="@dimen/padding_size_m"
+            android:layout_marginRight="@dimen/padding_size_m"
+            android:layout_marginEnd="@dimen/padding_size_m"
+            android:layout_marginBottom="@dimen/padding_size_s"
+            android:layout_gravity="center"
+            android:textColorHint="@color/md_grey_500"
+            android:textColor="@color/md_black_1000"
+            android:textSize="@dimen/font_text_size_m"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/padding_size_m"
+            android:background="@color/transparent_little_black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding_size_l"
+            android:paddingStart="@dimen/padding_size_l"
+            android:paddingRight="@dimen/padding_size_l"
+            android:paddingEnd="@dimen/padding_size_l">
+
+            <TextView
+                android:id="@+id/text_spotEditCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:clickable="true"
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m"
+                android:text="@string/cancel"
+                android:textColor="@color/md_blue_A700"
+                android:textSize="@dimen/font_text_size_m"
+                android:background="@drawable/background_transparent_button_no_board"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/transparent_little_black"/>
+
+            <TextView
+                android:id="@+id/text_spotEditConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:clickable="true"
+                android:paddingTop="@dimen/padding_size_m"
+                android:paddingBottom="@dimen/padding_size_m"
+                android:text="@string/confirm"
+                android:textColor="@color/md_blue_A700"
+                android:textSize="@dimen/font_text_size_m"
+                android:background="@drawable/background_transparent_button_no_board"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -17,15 +17,16 @@ import android.widget.ScrollView;
 
 import com.kingwaytek.cpami.biking.R;
 import com.kingwaytek.cpami.biking.app.ui.UiMainMapActivity;
+import com.kingwaytek.cpami.biking.app.ui.UiTutorialActivity;
 import com.kingwaytek.cpami.biking.utilities.CommonFileUtil;
+import com.kingwaytek.cpami.biking.utilities.DebugHelper;
 import com.kingwaytek.cpami.biking.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.biking.utilities.PermissionCheckHelper;
 import com.kingwaytek.cpami.biking.utilities.SettingManager;
 import com.kingwaytek.cpami.biking.utilities.Utility;
 
 /**
- * This is the first activity for launching. Shows splash screen and do
- * initialization .
+ * This is the first activity for launching. Shows splash screen and do initialization .
  *
  * @author Harvey Cheng(harvey@kingwaytek.com)
  *
@@ -63,7 +64,12 @@ public class StartupActivity extends Activity {
     private void init() {
         CommonFileUtil.initUserDatabase();
         FavoriteHelper.initPoiFavorite(true);
-        goToMain();
+        closeAllLayerFlag();
+
+        if (DebugHelper.SHOW_TUTORIAL_SCREEN && SettingManager.getAppFirstLaunch())
+            goToTutorial();
+        else
+            goToMain();
     }
 
     private void showAnnouncementIfNecessary() {
@@ -106,8 +112,12 @@ public class StartupActivity extends Activity {
         });
     }
 
+    private void goToTutorial() {
+        startActivity(new Intent(this, UiTutorialActivity.class));
+        finish();
+    }
+
     private void goToMain() {
-        closeAllLayerFlag();
         startActivity(new Intent(this, UiMainMapActivity.class));
         finish();
     }

@@ -14,4 +14,8 @@ public class ItemsPlanItem {
         this.LAT = lat;
         this.LNG = lng;
     }
+
+    public void setTitle(String title) {
+        this.TITLE = title;
+    }
 }

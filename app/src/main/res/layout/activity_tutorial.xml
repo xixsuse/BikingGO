@@ -19,7 +19,7 @@
     <LinearLayout
         android:id="@+id/pageDotLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_size_xl"
+        android:layout_height="@dimen/padding_size_l"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_alignParentBottom="true"

@@ -61,6 +61,10 @@ public class DialogHelper {
         void onTrackSaved(String name, int difficulty, String description);
     }
 
+    public interface OnSpotTitleConfirmCallback {
+        void onSpotTitleConfirm(String title);
+    }
+
     public static void showLoadingDialog(Context context) {
         dialogBuilder = new AlertDialog.Builder(context);
 
@@ -552,6 +556,60 @@ public class DialogHelper {
         dialog.show();
 
         return view;
+    }
+
+    public static void showSpotTitleEditDialog(final Context context, String hintString, boolean setHintAsText, final OnSpotTitleConfirmCallback spotTitleCallback) {
+        dialogBuilder = new AlertDialog.Builder(context);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.inflate_spot_title_edit, null);
+
+        final EditText edit_title = (EditText) view.findViewById(R.id.edit_spotTitle);
+        final TextView cancel = (TextView) view.findViewById(R.id.text_spotEditCancel);
+        final TextView confirm = (TextView) view.findViewById(R.id.text_spotEditConfirm);
+
+        edit_title.setHint(hintString);
+
+        if (setHintAsText) {
+            edit_title.setText(hintString);
+            edit_title.setSelection(hintString.length());
+        }
+
+        dialogBuilder.setView(view);
+        dialogBuilder.setCancelable(false);
+
+        dialog = dialogBuilder.create();
+
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        dialog.show();
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((BaseActivity) context).hideKeyboard(true);
+                dismissDialog();
+                cancel.setOnClickListener(null);
+                confirm.setOnClickListener(null);
+            }
+        });
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((BaseActivity) context).hideKeyboard(true);
+
+                String title = edit_title.getText().toString();
+                if (title.isEmpty())
+                    title = edit_title.getHint().toString();
+
+                dismissDialog();
+                cancel.setOnClickListener(null);
+                confirm.setOnClickListener(null);
+
+                spotTitleCallback.onSpotTitleConfirm(title);
+            }
+        });
     }
 
     private static void changeDialogTitleColor() {

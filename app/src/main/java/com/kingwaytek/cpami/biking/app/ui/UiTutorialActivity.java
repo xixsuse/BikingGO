@@ -1,7 +1,9 @@
 package com.kingwaytek.cpami.biking.app.ui;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -11,12 +13,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.kingwaytek.cpami.biking.R;
+import com.kingwaytek.cpami.biking.utilities.adapter.TutorialImagePagerAdapter;
 
 /**
  * Created by vincent.chang on 2016/10/26.
  */
 
-public class UiTutorialActivity extends FragmentActivity {
+public class UiTutorialActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
 
     private ViewPager viewPager;
     private LinearLayout dotsLayout;
@@ -24,6 +27,7 @@ public class UiTutorialActivity extends FragmentActivity {
     private int pageSize;
     private ImageView pageDots[];
 
+    private static final long ENTER_DELAY_DURATION = 1000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +51,8 @@ public class UiTutorialActivity extends FragmentActivity {
 
     private void init() {
         addPageDots();
+        viewPager.setAdapter(new TutorialImagePagerAdapter(getSupportFragmentManager()));
+        viewPager.addOnPageChangeListener(this);
     }
 
     private void addPageDots() {
@@ -68,7 +74,43 @@ public class UiTutorialActivity extends FragmentActivity {
                 pageDots[i].setLayoutParams(params);
                 dotsLayout.addView(pageDots[i]);
             }
-            //setPageDotState(0);
+            setPageDotState(0);
         }
+    }
+
+    private void setPageDotState(int position) {
+        for (int i = 0; i < pageSize; i++) {
+            if (i == position)
+                pageDots[i].setImageResource(R.drawable.ic_page_dot_white_on);
+            else
+                pageDots[i].setImageResource(R.drawable.ic_page_dot_white_off);
+        }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        setPageDotState(position);
+        if (position == pageSize - 1)
+            goToMain();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    private void goToMain() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(UiTutorialActivity.this, UiMainMapActivity.class));
+                finish();
+            }
+        }, ENTER_DELAY_DURATION);
     }
 }

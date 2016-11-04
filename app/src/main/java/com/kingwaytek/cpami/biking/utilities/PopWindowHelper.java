@@ -128,7 +128,7 @@ public class PopWindowHelper {
         double popHeight = Utility.getScreenHeight() - (actionbarHeight + planTitleLayoutHeight);
 
         RelativeLayout headerLayout = (RelativeLayout) view.findViewById(R.id.pathListHeaderLayout);
-        setHeaderLayoutHeight(headerLayout, (int) (popHeight * 0.18));
+        setHeaderLayoutHeight(headerLayout, (int) (popHeight * 0.2));
 
         popWindow = new PopupWindow(view, (int) popWidth, (int) popHeight, true);
 

@@ -32,7 +32,7 @@ public class MenuHelper implements ActionbarMenu {
 
                 case ACTION_ADD:
                     menu.add(Menu.NONE, action, Menu.NONE, R.string.actionbar_add_poi)
-                            .setIcon(R.drawable.selector_toolbar_add)
+                            .setIcon(R.drawable.selector_toolbar_add_poi)
                             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
 

@@ -56,6 +56,20 @@ public class UiMyPlanInfoActivity extends BaseActivity {
         getIndexAndItems();
     }
 
+    /**
+     * 2016/11/14 Updated by Vincent:<p>
+     *
+     * 如果頁面是從 {@link UiMyPlanEditActivity} savePlan回來的話，<br>
+     * 就要假設 PlanName已被修改過，因此就要用 Intent帶 PlanName回來更新 extra，<br>
+     * 這樣在執行 getPlanIndexByName(planName)時才能找到對的 index。
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_PlAN_UPDATE) {
+            getIntent().putExtra(BUNDLE_PLAN_NAME, data.getStringExtra(BUNDLE_PLAN_NAME));
+        }
+    }
+
     @Override
     protected String getActionBarTitle() {
         return getString(R.string.menu_planning);
@@ -149,7 +163,7 @@ public class UiMyPlanInfoActivity extends BaseActivity {
                 Intent intent = new Intent(UiMyPlanInfoActivity.this, UiMyPlanEditActivity.class);
                 intent.putExtra(BUNDLE_PLAN_EDIT_INDEX, PLAN_EDIT_INDEX);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_PlAN_UPDATE);
                 break;
 
             case ACTION_UPLOAD:

@@ -60,6 +60,7 @@ import com.kingwaytek.cpami.biking.app.web.WebAgent;
 import com.kingwaytek.cpami.biking.callbacks.OnPhotoRemovedCallBack;
 import com.kingwaytek.cpami.biking.hardware.MyLocationManager;
 import com.kingwaytek.cpami.biking.utilities.BitmapUtility;
+import com.kingwaytek.cpami.biking.utilities.DebugHelper;
 import com.kingwaytek.cpami.biking.utilities.DialogHelper;
 import com.kingwaytek.cpami.biking.utilities.FavoriteHelper;
 import com.kingwaytek.cpami.biking.utilities.ImageSelectHelper;
@@ -252,10 +253,11 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
 
     @Override
     public void onInfoWindowClick(Marker marker) {
+        String key = String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude);
+
         switch (ENTRY_TYPE) {
             case ENTRY_TYPE_DEFAULT:
                 selectedMarker = marker;
-                String key = String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude);
 
                 if (markerTypeMap.containsKey(key)) {
                     switch (markerTypeMap.get(key)) {
@@ -286,16 +288,25 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                 break;
 
             case ENTRY_TYPE_LOCATION_SELECT:
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
+                String title = marker.getTitle();
+                final LatLng latLng = marker.getPosition();
 
-                bundle.putString(BUNDLE_LOCATION_TITLE, marker.getTitle());
-                bundle.putParcelable(BUNDLE_LOCATION_LATLNG, marker.getPosition());
+                if (notNull(markerTypeMap) && markerTypeMap.containsKey(key))
+                {
+                    if (markerTypeMap.get(key) == R.drawable.ic_marker_end || markerTypeMap.get(key) == R.drawable.ic_marker_search_result)
+                    {
+                        boolean setHintAsText = markerTypeMap.get(key) == R.drawable.ic_marker_search_result;
 
-                intent.putExtras(bundle);
-
-                setResult(RESULT_OK, intent);
-                finish();
+                        DialogHelper.showSpotTitleEditDialog(this, marker.getTitle(), setHintAsText, new DialogHelper.OnSpotTitleConfirmCallback() {
+                            @Override
+                            public void onSpotTitleConfirm(String title) {
+                                onLocationSelected(title, latLng);
+                            }
+                        });
+                    }
+                    else
+                        onLocationSelected(title, latLng);
+                }
                 break;
         }
     }
@@ -331,6 +342,19 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             markerPoiPhoto.setVisibility(View.GONE);
 
         return view;
+    }
+
+    private void onLocationSelected(String title, LatLng latLng) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+
+        bundle.putString(BUNDLE_LOCATION_TITLE, title);
+        bundle.putParcelable(BUNDLE_LOCATION_LATLNG, latLng);
+
+        intent.putExtras(bundle);
+
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
@@ -383,6 +407,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 boolean checked = isLayerChanging() != isChecked;
+                Log.i(TAG, "isChecked: " + isChecked + " checked: " + checked);
 
                 switch ((int)buttonView.getTag()) {
                     case R.id.switch_my_poi:
@@ -391,7 +416,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         break;
 
                     case R.id.switch_layer_cycling_1:
-                        if (isChecked) {
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS) {
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
                         }
@@ -400,7 +425,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         break;
 
                     case R.id.switch_layer_top_ten:
-                        if (isChecked) {
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS) {
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
                         }
@@ -409,7 +434,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         break;
 
                     case R.id.switch_layer_recommended:
-                        if (isChecked) {
+                        if (isChecked && DebugHelper.LIMITED_MAP_LAYERS) {
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
                         }
@@ -418,7 +443,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         break;
 
                     case R.id.switch_layer_all_of_taiwan:
-                        if (checked) {
+                        if (checked && DebugHelper.LIMITED_MAP_LAYERS) {
                             switch_layerCycling.setChecked(false);
                             switch_layerTopTen.setChecked(false);
                             switch_layerRecommended.setChecked(false);
@@ -430,7 +455,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         break;
 
                     case R.id.switch_layer_rent_station:
-                        if (checked) {
+                        if (checked && DebugHelper.LIMITED_MAP_LAYERS) {
                             switch_layerCycling.setChecked(false);
                             switch_layerTopTen.setChecked(false);
                             switch_layerRecommended.setChecked(false);
@@ -442,7 +467,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
                         break;
 
                     case R.id.switch_layer_you_bike:
-                        if (checked) {
+                        if (checked && DebugHelper.LIMITED_MAP_LAYERS) {
                             switch_layerAllOfTaiwan.setChecked(false);
                             switch_layerRentStation.setChecked(false);
                         }
@@ -604,7 +629,7 @@ public class UiMainMapActivity extends BaseGoogleApiActivity implements TextWatc
         if (ENTRY_TYPE == ENTRY_TYPE_LOCATION_SELECT)
             marker.snippet(getString(R.string.poi_select_this_point));
         else
-            marker.snippet(getString(R.string.poi_edit_this_point));
+            marker.snippet("");
 
         Bitmap markerBitmap = getBitmapFromMemCache(BITMAP_KEY_END_POINT);
 

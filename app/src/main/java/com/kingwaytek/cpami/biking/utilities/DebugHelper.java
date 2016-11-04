@@ -17,4 +17,8 @@ public class DebugHelper {
      * If set to false, the source will come from our Biking service, it contains all the counties of YouBike data.
      */
     public static final boolean GET_YOU_BIKE_FROM_OPEN_DATA = false;
+
+    public static final boolean LIMITED_MAP_LAYERS = false;
+
+    public static final boolean SHOW_TUTORIAL_SCREEN = false;
 }

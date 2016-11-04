@@ -12,6 +12,7 @@ public interface CommonBundle {
     int REQUEST_RELOAD_MARKER = 30;
     int REQUEST_RELOAD_ALL_MARKER = 35;
     int REQUEST_SELECT_LOCATION = 40;
+    int REQUEST_PlAN_UPDATE = 50;
 
     // Result Code
     int RESULT_DELETE = -2;
