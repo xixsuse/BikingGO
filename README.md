@@ -1,1 +1,2 @@
-The 單車ing for Android phone, build in Android Studio projects.
+# BikingGO
+A brand new BikingGo App powered by Vincent Chang.
